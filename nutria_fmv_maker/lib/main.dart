@@ -1,15 +1,18 @@
-import 'package:first_actual_tests/home_screen_body.dart';
-import 'package:first_actual_tests/grid_canvas.dart';
-import 'package:first_actual_tests/providers/home_screen_provider.dart';
-import 'package:first_actual_tests/simple_class.dart';
-import 'package:flutter/gestures.dart';
+import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
+
+import './providers/grid_canvas_provider.dart';
+
+import './grid_canvas.dart';
+import './providers/home_screen_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 void main() {
   runApp(MultiProvider(
     providers: [
-      ChangeNotifierProvider(create: (context) => HomeScreenProvider())
+      ChangeNotifierProvider(create: (context) => HomeScreenProvider()),
+      ChangeNotifierProvider(create: (context) => GridCanvasProvider()),
+      ChangeNotifierProvider(create: (context) => NodesProvider()),
     ],
     child: const MyApp(),
   ));

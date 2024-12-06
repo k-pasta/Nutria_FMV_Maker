@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 
-class GridCanvasProvider extends ChangeNotifier{
-double _scaleFactor = 0.1;
+class GridCanvasProvider extends ChangeNotifier {
+  final double _scaleFactor = 0.1;
+  final double minScale = 0.01;
+  final double maxScale = 300;
+
   double _currentScale = 1.0;
   final TransformationController _transformationController =
       TransformationController();
@@ -13,8 +16,9 @@ double _scaleFactor = 0.1;
 
   void updateScaleAndMatrix(PointerScrollEvent event, BuildContext context) {
     // Calculate scale factor
-    double scaleFactor = event.scrollDelta.dy < 0 ? 1 + _scaleFactor : 1 - _scaleFactor;
-    double newScale = (_currentScale * scaleFactor).clamp(0.1, 20.0);
+    double scaleFactor =
+        event.scrollDelta.dy < 0 ? 1 + _scaleFactor : 1 - _scaleFactor;
+    double newScale = (_currentScale * scaleFactor).clamp(minScale, maxScale);
 
     // Get mouse position in local coordinates
     RenderBox renderBox = context.findRenderObject() as RenderBox;
@@ -29,14 +33,12 @@ double _scaleFactor = 0.1;
       ..translate(-localFocalPoint.dx, -localFocalPoint.dy);
 
     // Combine transformations
-    _transformationController.value = translationToPointer *
-        scaleMatrix *
-        translationBack *
-        currentMatrix;
+    _transformationController.value =
+        translationToPointer * scaleMatrix * translationBack * currentMatrix;
 
     // Update current scale
     _currentScale = newScale;
-
+//  print (newScale);
     notifyListeners();
   }
 }
