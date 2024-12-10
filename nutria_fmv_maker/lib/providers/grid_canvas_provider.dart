@@ -1,18 +1,65 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
+import '../static_data/grid_canvas_properties.dart';
 
 class GridCanvasProvider extends ChangeNotifier {
+TransformationController _transformationController = TransformationController();
+
+GridCanvasProvider(){
+ _transformationController = TransformationController();
+  offsetPosition(GridCanvasProperties.topLeftToMiddle);
+}
+
   final double _scaleFactor = 0.1;
   final double minScale = 0.01;
   final double maxScale = 300;
 
+  ShortcutActivator _moveUp = LogicalKeySet(LogicalKeyboardKey.arrowUp);
+  ShortcutActivator _moveLeft = LogicalKeySet(LogicalKeyboardKey.arrowLeft);
+  ShortcutActivator _moveRight = LogicalKeySet(LogicalKeyboardKey.arrowRight);
+  ShortcutActivator _moveDown = LogicalKeySet(LogicalKeyboardKey.arrowDown);
+
+  ShortcutActivator get moveUp => _moveUp;
+  ShortcutActivator get moveLeft => _moveLeft;
+  ShortcutActivator get moveRight => _moveRight;
+  ShortcutActivator get moveDown => _moveDown;
+
+// Offset _positionOffset = Offset.zero;
+  Offset get positionOffset => Offset(
+        _transformationController.value.getTranslation().x,
+        _transformationController.value.getTranslation().y,
+      );
+
   double _currentScale = 1.0;
-  final TransformationController _transformationController =
-      TransformationController();
+
 
   double get currentScale => _currentScale;
   TransformationController get transformationController =>
       _transformationController;
+
+  void offsetPosition(offset, {bool isScreenSpaceTransformation = false}) {
+   
+    if (!isScreenSpaceTransformation) {
+      offset = Offset(
+        offset.dx * _currentScale,
+        offset.dy * _currentScale,
+      );
+    }
+
+    // Retrieve the current transformation matrix
+    Matrix4 currentMatrix = _transformationController.value;
+
+    // Create a translation matrix for the offset
+    Matrix4 translationMatrix = Matrix4.identity()
+      ..translate(offset.dx, offset.dy);
+
+    // Combine the translation with the current transformation matrix
+    _transformationController.value = translationMatrix * currentMatrix;
+
+    // Notify listeners about the change
+    notifyListeners();
+  }
 
   void updateScaleAndMatrix(PointerScrollEvent event, BuildContext context) {
     // Calculate scale factor
@@ -39,6 +86,7 @@ class GridCanvasProvider extends ChangeNotifier {
     // Update current scale
     _currentScale = newScale;
 //  print (newScale);
+    print('${positionOffset.dx} - dx, ${positionOffset.dy} - dy');
     notifyListeners();
   }
 }
