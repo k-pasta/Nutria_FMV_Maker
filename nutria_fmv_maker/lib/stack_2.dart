@@ -29,17 +29,12 @@ class Stack2 extends Stack {
 
 class RenderStack2 extends RenderStack {
   RenderStack2({
-    List<RenderBox>? children,
-    AlignmentGeometry alignment = AlignmentDirectional.topStart,
-    TextDirection? textDirection,
-    StackFit fit = StackFit.loose,
-    Clip clipBehavior = Clip.hardEdge,
-  }) : super(
-            alignment: alignment,
-            textDirection: textDirection,
-            fit: fit,
-            clipBehavior: clipBehavior,
-            children: children);
+    super.children,
+    super.alignment,
+    super.textDirection,
+    super.fit,
+    super.clipBehavior,
+  });
 }
 
 /*

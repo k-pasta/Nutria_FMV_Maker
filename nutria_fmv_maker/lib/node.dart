@@ -10,7 +10,7 @@ import './static_data/grid_canvas_properties.dart';
 class Node extends StatefulWidget {
   ///generic node type
   final NodeData nodeData;
-  Node({super.key, required this.nodeData});
+  const Node({super.key, required this.nodeData});
 
   @override
   State<Node> createState() => _NodeState();
@@ -80,7 +80,7 @@ class _NodeState extends State<Node> {
           left: 0,
           child: Column(
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 50,
               ),
               ...widget.nodeData.knots.map((knotData) {
@@ -99,7 +99,7 @@ class _NodeState extends State<Node> {
             onPressed: () {
               print('pressed $widget.nodeData.id');
             },
-            icon: Icon(Icons.abc),
+            icon: const Icon(Icons.abc),
           ),
         ),
       ]),

@@ -10,7 +10,7 @@ class GridPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final Paint paint = Paint()
-      ..color = Color.fromARGB(150, 0, 0, 0)
+      ..color = const Color.fromARGB(150, 0, 0, 0)
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill
       ..strokeWidth = 5.0 / transformationController.value.getMaxScaleOnAxis();

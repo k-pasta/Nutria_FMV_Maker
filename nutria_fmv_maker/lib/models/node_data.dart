@@ -10,12 +10,10 @@ NodeData({required this.position, required this.id, this.knots = const []});
 
 class SimpleNodeData extends NodeData{
 
-SimpleNodeData({required Offset position, required String id, required String extra, List<KnotData> knots = const []})
-:super(position: position, id:id, knots:knots);
+SimpleNodeData({required super.position, required super.id, required String extra, super.knots});
 }
 
 class VideoNodeData extends NodeData{
 
-VideoNodeData({required Offset position, required String id, required String videoDataPath})
-:super(position: position, id:id);
+VideoNodeData({required super.position, required super.id, required String videoDataPath});
 }

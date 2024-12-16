@@ -12,7 +12,7 @@ class GridCanvas extends StatelessWidget {
   GridCanvas({super.key});
   double keyboardMoveSensitivity = 100;
 
-  late TransformationController _transformationController =
+  late final TransformationController _transformationController =
       TransformationController();
       
   @override
@@ -87,13 +87,11 @@ class GridCanvas extends StatelessWidget {
                     ),
               
                     SizedBox(
+                      height: GridCanvasProperties.canvasSize,
+                      width: GridCanvasProperties.canvasSize,
                       child: Container(
                         color: Colors.black12,
                       ),
-                      // height: double.maxFinite,
-                      // width: double.maxFinite
-                      height: GridCanvasProperties.canvasSize,
-                      width: GridCanvasProperties.canvasSize,
                     ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
               
                     ...nodesProvider.nodes.map((node) {

@@ -4,19 +4,19 @@ import '../models/node_data.dart';
 
 class NodesProvider extends ChangeNotifier {
   final List<NodeData> _nodes = [
-    SimpleNodeData(id: 'aaa', position: Offset(0, 0), extra: "", knots: [
-      KnotData(knotID: 'aaa1', isInput: true, positionFromTop: Offset(0, 10)),
-      KnotData(knotID: 'aaa2', isInput: true, positionFromTop: Offset(0, 60)),
-      KnotData(knotID: 'aaa3', isInput: true, positionFromTop: Offset(0, 110)),
+    SimpleNodeData(id: 'aaa', position: const Offset(0, 0), extra: "", knots: [
+      KnotData(knotID: 'aaa1', isInput: true, positionFromTop: const Offset(0, 10)),
+      KnotData(knotID: 'aaa2', isInput: true, positionFromTop: const Offset(0, 60)),
+      KnotData(knotID: 'aaa3', isInput: true, positionFromTop: const Offset(0, 110)),
     ]),
     SimpleNodeData(
       id: 'bbb',
-      position: Offset(150, 250),
+      position: const Offset(150, 250),
       extra: "",
     ),
     SimpleNodeData(
       id: 'ccc',
-      position: Offset(150, 20),
+      position: const Offset(150, 20),
       extra: "",
     ),
   ];

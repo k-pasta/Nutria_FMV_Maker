@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/knot_data.dart';
 
+
 class Knot extends StatefulWidget {
   final double sizeLarge = 30;
   final double sizeSmall = 15;
@@ -60,7 +61,7 @@ class _KnotState extends State<Knot> {
           width: boxSize,
           height: boxSize,
           child: Center(
-            child: Container(
+            child: SizedBox(
               width: hovered
                   ? widget.sizeLarge
                   : widget.sizeSmall, // Scale up on hover

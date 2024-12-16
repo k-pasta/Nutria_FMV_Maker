@@ -15,10 +15,10 @@ GridCanvasProvider(){
   final double minScale = 0.01;
   final double maxScale = 300;
 
-  ShortcutActivator _moveUp = LogicalKeySet(LogicalKeyboardKey.arrowUp);
-  ShortcutActivator _moveLeft = LogicalKeySet(LogicalKeyboardKey.arrowLeft);
-  ShortcutActivator _moveRight = LogicalKeySet(LogicalKeyboardKey.arrowRight);
-  ShortcutActivator _moveDown = LogicalKeySet(LogicalKeyboardKey.arrowDown);
+  final ShortcutActivator _moveUp = LogicalKeySet(LogicalKeyboardKey.arrowUp);
+  final ShortcutActivator _moveLeft = LogicalKeySet(LogicalKeyboardKey.arrowLeft);
+  final ShortcutActivator _moveRight = LogicalKeySet(LogicalKeyboardKey.arrowRight);
+  final ShortcutActivator _moveDown = LogicalKeySet(LogicalKeyboardKey.arrowDown);
 
   ShortcutActivator get moveUp => _moveUp;
   ShortcutActivator get moveLeft => _moveLeft;
