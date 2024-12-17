@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:menu_bar/menu_bar.dart';
 
+///returns material app!
+
 class MyMenuBar extends StatefulWidget {
   const MyMenuBar({super.key});
 
@@ -167,8 +169,14 @@ class _MyMenuBarState extends State<MyMenuBar> {
       theme: ThemeData(
         menuTheme: const MenuThemeData(
           style: MenuStyle(
-            padding:
-                MaterialStatePropertyAll(EdgeInsets.symmetric(vertical: 16.0)),
+            padding: MaterialStatePropertyAll(
+              EdgeInsets.symmetric(vertical: 16.0),
+            ),
+            // shape: WidgetStatePropertyAll<OutlinedBorder>(
+            //   RoundedRectangleBorder(
+            //     borderRadius: BorderRadius.zero, // Removes circular borders
+            //   ),
+            // ),
           ),
         ),
       ),
@@ -183,6 +191,11 @@ class _MyMenuBarState extends State<MyMenuBar> {
           padding: MaterialStatePropertyAll(EdgeInsets.zero),
           backgroundColor: MaterialStatePropertyAll(Color(0xFF2b2b2b)),
           maximumSize: MaterialStatePropertyAll(Size(double.infinity, 28.0)),
+           shape: WidgetStatePropertyAll<OutlinedBorder>(
+              RoundedRectangleBorder(
+                borderRadius: BorderRadius.zero, // Removes circular borders
+              ),
+            ),
         ),
 
         // Style the menu bar buttons. Hover over [ButtonStyle] for all the options

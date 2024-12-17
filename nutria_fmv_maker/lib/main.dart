@@ -2,6 +2,7 @@ import 'package:nutria_fmv_maker/internationalisation_example.dart';
 import 'package:nutria_fmv_maker/menu_bar.dart';
 import 'package:nutria_fmv_maker/providers/locale_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
+import 'package:nutria_fmv_maker/thumbnail_example.dart';
 
 import './providers/grid_canvas_provider.dart';
 
@@ -58,7 +59,8 @@ class MyHomePage extends StatelessWidget {
       ),
       // body: GridCanvas(),
       // body: const InternationalisationExample(),
-      body: MyMenuBar()
+      // body: MyMenuBar()
+      body: ThumbnailExample()
     );
   }
 }
