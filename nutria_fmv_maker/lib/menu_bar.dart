@@ -12,12 +12,28 @@ class MyMenuBar extends StatefulWidget {
 }
 
 class _MyMenuBarState extends State<MyMenuBar> {
+   Color _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 0);
   List<BarButton> _menuBarButtons() {
     return [
       BarButton(
-        text: const Text(
-          'File',
-          style: TextStyle(color: Colors.white),
+        
+        text: MouseRegion(
+          onEnter: (pointerEnterEvent) {setState(() {
+            _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 1);
+          });},
+          onExit: (pointerExitEvent){setState(() {
+            _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 0);
+          });},
+          child: Container(
+            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
+            decoration: BoxDecoration(
+              color: _menuBarButtonColor
+            ),
+            child: const Text(
+              'File',
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
         ),
         submenu: SubMenu(
           menuItems: [
@@ -169,6 +185,7 @@ class _MyMenuBarState extends State<MyMenuBar> {
       theme: ThemeData(
         menuTheme: const MenuThemeData(
           style: MenuStyle(
+            // visualDensity: VisualDensity(horizontal: 0, vertical: 0),
             padding: MaterialStatePropertyAll(
               EdgeInsets.symmetric(vertical: 16.0),
             ),
@@ -207,6 +224,7 @@ class _MyMenuBarState extends State<MyMenuBar> {
 
         // Style the menu and submenu buttons. Hover over [ButtonStyle] for all the options
         menuButtonStyle: const ButtonStyle(
+          overlayColor: WidgetStatePropertyAll(Color.fromRGBO(25, 25, 25, 1)),
           minimumSize: MaterialStatePropertyAll(Size.fromHeight(36.0)),
           padding: MaterialStatePropertyAll(
               EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0)),
@@ -220,12 +238,15 @@ class _MyMenuBarState extends State<MyMenuBar> {
           appBar: AppBar(
             title: const Text('Menu Bar Example'),
           ),
-          body: const Center(
-            child: Text(
-              'My application',
-              style: TextStyle(
-                fontSize: 32.0,
-                fontWeight: FontWeight.bold,
+          body: Center(
+            child: MouseRegion(
+              onHover: (_) {print("hovered");},
+              child: Text(
+                'My application',
+                style: TextStyle(
+                  fontSize: 32.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),

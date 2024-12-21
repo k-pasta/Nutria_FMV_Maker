@@ -59,8 +59,8 @@ class MyHomePage extends StatelessWidget {
       ),
       // body: GridCanvas(),
       // body: const InternationalisationExample(),
-      // body: MyMenuBar()
-      body: ThumbnailExample()
+      body: MyMenuBar()
+      // body: ThumbnailExample()
     );
   }
 }
