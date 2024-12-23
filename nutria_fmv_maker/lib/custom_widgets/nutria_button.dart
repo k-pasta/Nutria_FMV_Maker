@@ -5,9 +5,9 @@ import '../providers/theme_provider.dart';
 
 class NutriaButton extends StatefulWidget {
   final Widget? child;
-  bool isAccented;
-  bool isActive;
-  NutriaButton({
+  final bool isAccented;
+  final bool isActive;
+  const NutriaButton({
     super.key,
     this.child,
     this.isAccented = true,
@@ -24,34 +24,42 @@ class _NutriaButtonState extends State<NutriaButton> {
   void initState() {
     super.initState();
     // Initialize buttonColor based on the current widget state
-buttonState = ButtonState(isAccented: widget.isAccented, isActive: widget.isActive, buttonStateType: ButtonStateType.normal);
-
+    buttonState = ButtonState(
+        isAccented: widget.isAccented,
+        isActive: widget.isActive,
+        buttonStateType: ButtonStateType.normal);
   }
 
-//  Color getColor(ButtonState buttonState){
-// switch (buttonStateType) {
-//   case ButtonStateType.hovered:
-//   case ButtonStateType.pressed:
-//   return widget.isAccented ? theme.cAccentButtonPressed : theme.cButtonPressed;
-//   case ButtonStateType.normal:
-
-//     break;
-//   default:
-// }
-// return
-//  };
-
-  @override
-  void didUpdateWidget(covariant NutriaButton oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    // Update buttonColor if widget properties change
-    if (oldWidget.isAccented != widget.isAccented) {
-      AppTheme theme = context.read<ThemeProvider>().currentAppTheme;
-      setState(() {
-        
-      });
+  Color getColor(ButtonState buttonState, AppTheme theme) {
+    switch (buttonState.buttonStateType) {
+      case ButtonStateType.hovered:
+        return buttonState.isAccented
+            ? theme.cAccentButtonHovered
+            : theme.cButtonHovered;
+      case ButtonStateType.pressed:
+        return buttonState.isAccented
+            ? theme.cAccentButtonPressed
+            : theme.cButtonPressed;
+      case ButtonStateType.normal:
+        return buttonState.isAccented ? theme.cAccentButton : theme.cButton;
+      // default: theme.cButton;
+      // return theme.cButton;
     }
   }
+
+  @override
+void didUpdateWidget(covariant NutriaButton oldWidget) {
+  super.didUpdateWidget(oldWidget);
+  
+  // Update button state if widget properties change
+  if (oldWidget.isAccented != widget.isAccented ||
+      oldWidget.isActive != widget.isActive) {
+    setState(() {
+      buttonState.isAccented = widget.isAccented;
+      buttonState.isActive = widget.isActive;
+    });
+  }
+}
 
   @override
   Widget build(BuildContext context) {
@@ -68,6 +76,11 @@ buttonState = ButtonState(isAccented: widget.isAccented, isActive: widget.isActi
           buttonState.buttonStateType = ButtonStateType.hovered;
         });
       },
+      onTapCancel: () {
+        setState(() {
+          buttonState.buttonStateType = ButtonStateType.normal;
+        });
+      },
       onTap: widget.isActive
           ? () {
               context.read<ThemeProvider>().toggleThemeMode();
@@ -76,22 +89,23 @@ buttonState = ButtonState(isAccented: widget.isAccented, isActive: widget.isActi
       child: MouseRegion(
         onEnter: (_) {
           setState(() {
-          buttonState.buttonStateType = ButtonStateType.hovered;
+            buttonState.buttonStateType = ButtonStateType.hovered;
           });
         },
         onExit: (_) {
           setState(() {
-          buttonState.buttonStateType = ButtonStateType.normal;
+            buttonState.buttonStateType = ButtonStateType.normal;
           });
         },
-        cursor: widget.isActive ? SystemMouseCursors.click : MouseCursor.defer,
+        cursor:
+            buttonState.isActive ? SystemMouseCursors.click : MouseCursor.defer,
         child: Container(
           constraints: BoxConstraints(minWidth: theme.dButtonHeight),
           height: theme.dButtonHeight,
           decoration: BoxDecoration(
-              color: ,
+              color: getColor(buttonState, theme),
               border: Border.all(
-                color: widget.isAccented ? theme.cAccent : theme.cOutlines,
+                color: buttonState.isAccented ? theme.cAccent : theme.cOutlines,
                 width: 1,
               ),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
@@ -103,9 +117,9 @@ buttonState = ButtonState(isAccented: widget.isAccented, isActive: widget.isActi
 }
 
 class ButtonState {
-   bool isAccented;
-   bool isActive;
-   ButtonStateType buttonStateType;
+  bool isAccented;
+  bool isActive;
+  ButtonStateType buttonStateType;
   ButtonState({
     required this.isAccented,
     required this.isActive,
