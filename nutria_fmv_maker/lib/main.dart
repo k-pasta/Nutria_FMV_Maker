@@ -1,9 +1,11 @@
 import 'package:nutria_fmv_maker/internationalisation_example.dart';
 import 'package:nutria_fmv_maker/menu_bar.dart';
 import 'package:nutria_fmv_maker/providers/locale_provider.dart';
+import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/thumbnail_example.dart';
-
+import 'custom_widgets/nutria_button.dart';
+import 'models/app_theme.dart';
 import './providers/grid_canvas_provider.dart';
 
 import './grid_canvas.dart';
@@ -18,6 +20,8 @@ void main() {
       ChangeNotifierProvider(create: (context) => LocaleProvider()),
       ChangeNotifierProvider(create: (context) => GridCanvasProvider()),
       ChangeNotifierProvider(create: (context) => NodesProvider()),
+      ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      
     ],
     child: const MyApp(),
   ));
@@ -51,15 +55,19 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.apptitle});
   final String apptitle;
+  
   @override
   Widget build(BuildContext context) {
+    AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Scaffold(
+backgroundColor: theme.cBackground,
       appBar: AppBar(
         title: Text(apptitle),
       ),
       // body: GridCanvas(),
       // body: const InternationalisationExample(),
-      body: MyMenuBar()
+      // body: MyMenuBar()
+      body: Center(child: NutriaButton()),
       // body: ThumbnailExample()
     );
   }
