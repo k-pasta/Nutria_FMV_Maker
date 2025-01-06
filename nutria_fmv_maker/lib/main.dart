@@ -60,14 +60,15 @@ class MyHomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Scaffold(
-backgroundColor: theme.cBackground,
+// backgroundColor: theme.cBackground,
+backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(apptitle),
       ),
-      // body: GridCanvas(),
+      body: GridCanvas(),
       // body: const InternationalisationExample(),
       // body: MyMenuBar()
-      body: Center(child: NutriaButton()),
+      // body: Center(child: NutriaButton.leftRight(onTapLeft: (){print('Left');},onTapRight: (){print('Right');},)),
       // body: ThumbnailExample()
     );
   }

@@ -7,7 +7,7 @@ class ThemeProvider extends ChangeNotifier {
 //   AppTheme _customAppThemeDark;
 //   AppTheme _customAppThemeLight;
   AppTheme _currentAppTheme = _appThemeDark;
-  bool _isThemeDark = false;
+  bool _isThemeDark = true;
 
   ThemeProvider();
 
