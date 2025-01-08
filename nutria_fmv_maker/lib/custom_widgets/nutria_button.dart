@@ -70,11 +70,10 @@ class _NutriaButtonState extends State<NutriaButton> {
     }
   }
 
+  // Update button state if widget properties change
   @override
   void didUpdateWidget(covariant NutriaButton oldWidget) {
     super.didUpdateWidget(oldWidget);
-
-    // Update button state if widget properties change
     if (oldWidget.isAccented != widget.isAccented ||
         oldWidget.isActive != widget.isActive) {
       setState(() {
@@ -96,14 +95,15 @@ class _NutriaButtonState extends State<NutriaButton> {
         widgetWidth = box.size.width;
         positionX = details.localPosition.dx;
         if (positionX < widgetWidth / 2) {
-          // Tap is on the left half
+          // Hover is on the left half
           // widget.onTapLeft();
         } else {
-          // Tap is on the right half
+          // Hover is on the right half
           // widget.onTapRight();
         }
       },
-      hitTestBehavior: HitTestBehavior.deferToChild,
+      hitTestBehavior: HitTestBehavior
+          .deferToChild, // accepting hits only where the child is, to prevent a rounded corners bug where hits are accepted outside the corners
       onEnter: (_) {
         setState(() {
           buttonState.buttonStateType = ButtonStateType.hovered;
@@ -114,10 +114,11 @@ class _NutriaButtonState extends State<NutriaButton> {
           buttonState.buttonStateType = ButtonStateType.normal;
         });
       },
-      cursor:
-          buttonState.isActive ? SystemMouseCursors.click : MouseCursor.defer,
+      cursor: buttonState.isActive
+          ? SystemMouseCursors.click
+          : MouseCursor.defer, //hand cursor if active, normal cursor if not
       child: GestureDetector(
-        behavior: HitTestBehavior.deferToChild,
+        behavior: HitTestBehavior.deferToChild, // for rounded corners bug
         onTapDown: (details) {
           final RenderBox box = context.findRenderObject() as RenderBox;
           widgetWidth = box.size.width;
@@ -145,7 +146,7 @@ class _NutriaButtonState extends State<NutriaButton> {
         },
         onTap: widget.isActive
             ? () {
-                context.read<ThemeProvider>().toggleThemeMode();
+                context.read<ThemeProvider>().toggleThemeMode(); //Todo remove
                 widget.onTap();
               }
             : () {},
@@ -156,11 +157,35 @@ class _NutriaButtonState extends State<NutriaButton> {
               color: getColor(buttonState, theme),
               border: Border.all(
                 color: buttonState.isAccented ? theme.cAccent : theme.cOutlines,
-                width: 1,
+                width: 1, //TODO de-hardcode
               ),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
           child: IgnorePointer(
-            child: widget.child,
+            //only allow for the button to receive events. nested buttons etc won't work for simplicity.
+            // child: Center(child: widget.child)
+            child: Stack(children: [
+             widget._isLeftRight? Positioned(
+                top: 0,
+                bottom: 0,
+                left: -theme.dButtonHeight / 5,
+                child: Icon(Icons.arrow_left,
+                    size: theme.dButtonHeight,
+                    color: buttonState.buttonStateType == ButtonStateType.normal
+                        ? theme.cPanel
+                        : theme.cText),
+              ) : Container(),
+             widget._isLeftRight? Positioned(
+                top: 0,
+                bottom: 0,
+                right: -theme.dButtonHeight / 5,
+                child: Icon(Icons.arrow_right,
+                    size: theme.dButtonHeight,
+                    color: buttonState.buttonStateType == ButtonStateType.normal
+                        ? theme.cPanel
+                        : theme.cText),
+              ) : Container(),
+              Center(child: widget.child),
+            ]),
           ),
         ),
       ),

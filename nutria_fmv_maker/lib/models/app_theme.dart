@@ -14,6 +14,7 @@ class AppTheme {
 //text
   final Color cText;
   final Color cTextActive;
+  final Color cTextInactive;
 
 //panels
   final Color cPanel;
@@ -58,14 +59,15 @@ class AppTheme {
     this.cAccentButton = const Color(0xff842b37),
     this.cAccentButtonHovered = const Color.fromARGB(255, 199, 64, 82), //TODO set
     this.cAccentButtonPressed = const Color.fromARGB(255, 224, 74, 94), //TODO set
-    this.cText = const Color(0xff919191),
+    this.cText = const Color(0xff919191), //TODO make from transparent
     this.cTextActive = const Color(0xffffffff),
+    this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
     this.cPanel = const Color(0xff252525),
     this.cPanelTransparent = const Color(0xf1252525),
     this.cOutlines = const Color(0xff919191),
-    this.cButton = const Color(0x00000000), //transparent
-    this.cButtonHovered = const Color(0xff555555), //TODO remove
-    this.cButtonPressed = const Color(0xff121212), //TODO remove
+    this.cButton = const Color(0xff383838), //transparent
+    this.cButtonHovered = const Color(0xff4a4a4a), //TODO remove
+    this.cButtonPressed = const Color(0xff555555), //TODO remove
     this.cTextField = const Color(0x00000000), //transparent
     this.cTextFieldActive = const Color(0x4a000000),
     this.dPanelPadding = 7,

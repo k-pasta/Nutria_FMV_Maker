@@ -1,3 +1,4 @@
+import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
 import 'package:nutria_fmv_maker/internationalisation_example.dart';
 import 'package:nutria_fmv_maker/menu_bar.dart';
 import 'package:nutria_fmv_maker/providers/locale_provider.dart';
@@ -21,7 +22,6 @@ void main() {
       ChangeNotifierProvider(create: (context) => GridCanvasProvider()),
       ChangeNotifierProvider(create: (context) => NodesProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
-      
     ],
     child: const MyApp(),
   ));
@@ -55,20 +55,42 @@ class MyApp extends StatelessWidget {
 class MyHomePage extends StatelessWidget {
   const MyHomePage({super.key, required this.apptitle});
   final String apptitle;
-  
+
   @override
   Widget build(BuildContext context) {
     AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Scaffold(
-// backgroundColor: theme.cBackground,
-backgroundColor: Colors.white,
+      backgroundColor: theme.cBackground,
+// backgroundColor: Colors.white,
       appBar: AppBar(
         title: Text(apptitle),
       ),
-      body: GridCanvas(),
+      // body: GridCanvas(),
       // body: const InternationalisationExample(),
       // body: MyMenuBar()
-      // body: Center(child: NutriaButton.leftRight(onTapLeft: (){print('Left');},onTapRight: (){print('Right');},)),
+      body: Column(children: [
+        Row(
+          children: [
+            Expanded(
+                child: NutriaButton.leftRight(
+              child: Text('text'),
+              onTapLeft: () {
+                print('Left');
+              },
+              onTapRight: () {
+                print('Right');
+              },
+            )),
+            Expanded(
+                child: NutriaButton(
+              child: Text('text'),
+              onTap: () {},
+            )),
+          ],
+        ),
+        Container(width:MediaQuery.of(context).size.width, child:NutriaTextfield()),
+        Container(width:MediaQuery.of(context).size.width, child:NutriaTextfield())
+      ]),
       // body: ThumbnailExample()
     );
   }
