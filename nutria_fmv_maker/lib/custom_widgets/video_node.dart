@@ -117,18 +117,26 @@ class _VideoNodeState extends State<VideoNode> {
                                 SizedBox(
                                   height: theme.dPanelPadding,
                                 ),
-                                NutriaTextfield(index: 2,),
+                                NutriaTextfield(
+                                  index: 2,
+                                ),
                                 SizedBox(
                                   height: theme.dPanelPadding,
                                 ),
                                 Row(
                                   // crossAxisAlignment: CrossAxisAlignment.stretch,
                                   children: [
-                                    Expanded(child: NutriaTextfield(index: 3,)),
-                                      SizedBox(
-                                  width: theme.dPanelPadding,
-                                ),
-                                    NutriaButton(onTap: (){}, child: Icon(Icons.arrow_drop_down),),
+                                    Expanded(
+                                        child: NutriaTextfield(
+                                      index: 3,
+                                    )),
+                                    SizedBox(
+                                      width: theme.dPanelPadding,
+                                    ),
+                                    NutriaButton(
+                                      onTap: () {},
+                                      child: Icon(Icons.arrow_drop_down),
+                                    ),
                                   ],
                                 )
                               ],

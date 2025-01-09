@@ -46,6 +46,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
 
     return TextField(
+      
       controller: myController,
       onChanged: (String e) {
         setState(() {
@@ -59,12 +60,13 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
       focusNode: _focusNode,
       cursorColor: theme.cText,
       style: TextStyle(
-        color: textColor,
+        color: textColor, 
       ),
       maxLines: null,
       maxLength: 500, //TODO De-hardcode and document
 
       decoration: InputDecoration(
+      
         contentPadding: EdgeInsets.symmetric(
             vertical: 8, horizontal: 8.0), // Reduced padding
         counterText: "", //disables max character counter

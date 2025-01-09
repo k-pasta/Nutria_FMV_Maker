@@ -152,7 +152,8 @@ class _NutriaButtonState extends State<NutriaButton> {
             : () {},
         child: Container(
           constraints: BoxConstraints(minWidth: theme.dButtonHeight, minHeight: theme.dButtonHeight),
-          // height: theme.dButtonHeight,
+          height: theme.dButtonHeight,
+          width: theme.dButtonHeight,
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(
@@ -184,7 +185,12 @@ class _NutriaButtonState extends State<NutriaButton> {
                         ? theme.cPanel
                         : theme.cText),
               ) : Container(),
-              Center(child: widget.child),
+              // Center(child: widget.child), //TODO figure why this is not centered
+              Center(child: Icon(Icons.arrow_drop_down,
+                    size: theme.dButtonHeight,
+                    color: buttonState.buttonStateType == ButtonStateType.normal
+                        ? theme.cPanel
+                        : theme.cText)), //TODO figure why this is not centered
             ]),
           ),
         ),
