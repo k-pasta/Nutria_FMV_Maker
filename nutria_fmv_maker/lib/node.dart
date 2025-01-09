@@ -5,7 +5,7 @@ import './models/node_data.dart';
 import './providers/nodes_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:math' as math;
-import './static_data/grid_canvas_properties.dart';
+import 'static_data/ui_static_properties.dart';
 
 class Node extends StatefulWidget {
   ///generic node type
@@ -32,8 +32,10 @@ class _NodeState extends State<Node> {
     // final nodesProvider = context.read<NodesProvider>();
 
     return Positioned(
-      top: _dragPosition.dy + (GridCanvasProperties.canvasSize / 2),
-      left: _dragPosition.dx + (GridCanvasProperties.canvasSize / 2),
+      // top: _dragPosition.dy + (GridCanvasProperties.canvasSize / 2),
+      // left: _dragPosition.dx + (GridCanvasProperties.canvasSize / 2),
+            top: _dragPosition.dy,
+      left: _dragPosition.dx,
       // child: DeferPointer(
 
       child: Stack(children: [

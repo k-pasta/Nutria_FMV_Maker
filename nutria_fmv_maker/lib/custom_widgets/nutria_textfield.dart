@@ -51,11 +51,10 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
       decoration: InputDecoration(
         counterText: "", //disables max character counter
         hintText: 'option ${widget.index} ...',
-        hintStyle: TextStyle(
-          color: theme.cTextInactive,
-          fontWeight: FontWeight.normal
-          // color: olors.red,
-        ),
+        hintStyle:
+            TextStyle(color: theme.cTextInactive, fontWeight: FontWeight.normal
+                // color: olors.red,
+                ),
         border: InputBorder.none,
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
@@ -63,8 +62,10 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
               width: 1), // Visible border when not focused
           borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
         ),
-        focusedBorder: InputBorder.none,
-        disabledBorder: InputBorder.none,
+        focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
+        disabledBorder:OutlineInputBorder(
+            borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
         contentPadding: EdgeInsets.all(8),
         filled: true,
         fillColor: backgroundColor,

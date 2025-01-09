@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
-import '../static_data/grid_canvas_properties.dart';
+import '../static_data/ui_static_properties.dart';
 
 class GridCanvasProvider extends ChangeNotifier {
 TransformationController _transformationController = TransformationController();
 
 GridCanvasProvider(){
  _transformationController = TransformationController();
-  offsetPosition(GridCanvasProperties.topLeftToMiddle);
+  offsetPosition(UiStaticProperties.topLeftToMiddle);
 }
 
   final double _scaleFactor = 0.1;

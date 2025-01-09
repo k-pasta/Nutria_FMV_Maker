@@ -5,12 +5,12 @@ import '../models/node_data.dart';
 import '../models/app_theme.dart';
 import '../providers/theme_provider.dart';
 import '../providers/nodes_provider.dart';
-import '../static_data/grid_canvas_properties.dart';
+import '../static_data/ui_static_properties.dart';
 
 class VideoNode extends StatefulWidget {
-  final VideoNodeData videoNodeData;
+  final VideoNodeData nodeData;
   // final double width = ;
-  const VideoNode({super.key, required this.videoNodeData});
+  const VideoNode({super.key, required this.nodeData});
 
   @override
   State<VideoNode> createState() => _VideoNodeState();
@@ -22,15 +22,17 @@ class _VideoNodeState extends State<VideoNode> {
   @override
   void initState() {
     super.initState();
-    _dragPosition = widget.videoNodeData.position;
+    _dragPosition = widget.nodeData.position;
   }
 
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Positioned(
-      top: _dragPosition.dy + (GridCanvasProperties.canvasSize / 2),
-      left: _dragPosition.dx + (GridCanvasProperties.canvasSize / 2),
+      // top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
+      // left: _dragPosition.dx + (UiStaticProperties.topLeftToMiddle.dx),
+      top: _dragPosition.dy,
+      left: _dragPosition.dx,
       child: Stack(children: [
         Positioned(
           top: 25,
@@ -42,23 +44,33 @@ class _VideoNodeState extends State<VideoNode> {
                 _dragPosition += details.delta;
               });
               Provider.of<NodesProvider>(context, listen: false)
-                  .updateNodePosition(widget.videoNodeData.id, _dragPosition);
+                  .updateNodePosition(widget.nodeData.id, _dragPosition);
             },
             onPanStart: (details) {
               Provider.of<NodesProvider>(context, listen: false)
-                  .setActiveNode(widget.videoNodeData.id);
+                  .setActiveNode(widget.nodeData.id);
             },
             onTap: () {
               Provider.of<NodesProvider>(context, listen: false)
-                  .setActiveNode(widget.videoNodeData.id);
+                  .setActiveNode(widget.nodeData.id);
             },
             child: Container(
-              // width: widget.,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                color: theme.cPanelTransparent,
+              width: 200,
+              height: 200,
+              child: Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  color: theme.cPanelTransparent,
+                ),
               ),
             ),
+          ),
+        ),
+         IgnorePointer(
+          child: SizedBox(
+            height: 250,
+            width: 250,
+            child: Container(color: Colors.black26),
           ),
         ),
       ]),

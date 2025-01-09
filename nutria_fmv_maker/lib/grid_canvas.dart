@@ -6,15 +6,12 @@ import './grid_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import './static_data/grid_canvas_properties.dart';
+import 'static_data/ui_static_properties.dart';
 
 class GridCanvas extends StatelessWidget {
   GridCanvas({super.key});
   double keyboardMoveSensitivity = 100;
 
-  late final TransformationController _transformationController =
-      TransformationController();
-      
   @override
   Widget build(BuildContext context) {
     final gridCanvasProvider = context.watch<GridCanvasProvider>();
@@ -87,8 +84,8 @@ class GridCanvas extends StatelessWidget {
                     ),
               
                     SizedBox(
-                      height: GridCanvasProperties.canvasSize,
-                      width: GridCanvasProperties.canvasSize,
+                      height: UiStaticProperties.canvasSize,
+                      width: UiStaticProperties.canvasSize,
                       child: Container(
                         color: Colors.black12,
                       ),

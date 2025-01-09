@@ -19,6 +19,7 @@ class NodesProvider extends ChangeNotifier {
       position: const Offset(150, 20),
       extra: "",
     ),
+    VideoNodeData(position: Offset(0, 0), id: 'id', videoDataPath: 'videoDataPath')
   ];
 
   String? activeNodeId;
@@ -68,6 +69,7 @@ class NodesProvider extends ChangeNotifier {
         orElse: () => throw Exception("Node not found"));
 
     node.position = newPosition;
+    print(newPosition);
     notifyListeners();
   }
 
