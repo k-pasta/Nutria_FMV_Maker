@@ -151,8 +151,8 @@ class _NutriaButtonState extends State<NutriaButton> {
               }
             : () {},
         child: Container(
-          constraints: BoxConstraints(minWidth: theme.dButtonHeight),
-          height: theme.dButtonHeight,
+          constraints: BoxConstraints(minWidth: theme.dButtonHeight, minHeight: theme.dButtonHeight),
+          // height: theme.dButtonHeight,
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(

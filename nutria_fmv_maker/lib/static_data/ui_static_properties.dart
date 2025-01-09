@@ -7,7 +7,7 @@ class UiStaticProperties {
   
   //Nodes
   //TODO Make precise
-  static const double nodeMinSize = 200;
-  static const double nodeMinWidth = 350;
-  static const double nodePadding = 25;
+  static const double nodeMinWidth = 230;
+  static const double nodeMaxWidth = 500;
+  static const double nodePadding = 30;
 }

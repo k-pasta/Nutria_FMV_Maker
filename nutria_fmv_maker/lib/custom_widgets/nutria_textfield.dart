@@ -35,6 +35,9 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     setState(() {}); // Rebuild the widget when focus state changes
   }
 
+  final TextEditingController myController = TextEditingController();
+  int numLines = 1;
+
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
@@ -43,12 +46,27 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
 
     return TextField(
+      controller: myController,
+      onChanged: (String e) {
+        setState(() {
+          final RenderBox box =
+              context.findRenderObject() as RenderBox; //TODO expose to provider
+          print(box.size.height);
+          print(numLines);
+          numLines = '\n'.allMatches(e).length + 1;
+        });
+      },
       focusNode: _focusNode,
       cursorColor: theme.cText,
-      style: TextStyle(color: textColor),
+      style: TextStyle(
+        color: textColor,
+      ),
       maxLines: null,
       maxLength: 500, //TODO De-hardcode and document
+
       decoration: InputDecoration(
+        contentPadding: EdgeInsets.symmetric(
+            vertical: 8, horizontal: 8.0), // Reduced padding
         counterText: "", //disables max character counter
         hintText: 'option ${widget.index} ...',
         hintStyle:
@@ -63,10 +81,13 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
         ),
         focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
-        disabledBorder:OutlineInputBorder(
-            borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
-        contentPadding: EdgeInsets.all(8),
+          borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+          borderSide: BorderSide(color: Colors.transparent),
+        ),
+        disabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+          borderSide: BorderSide(color: Colors.transparent),
+        ),
         filled: true,
         fillColor: backgroundColor,
       ),
