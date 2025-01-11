@@ -98,7 +98,7 @@ class MyHomePage extends StatelessWidget {
                   nodeData: VideoNodeData(
                       position: Offset(0, 0),
                       id: 'id',
-                      videoDataPath: 'videoDataPath')),
+                      videoDataPath: 'videoDataPath videoDataPath videoDataPath')),
               SizedBox(
                 width: 50,
                 height: 50,

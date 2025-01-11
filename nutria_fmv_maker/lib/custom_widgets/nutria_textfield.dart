@@ -46,7 +46,6 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
 
     return TextField(
-      
       controller: myController,
       onChanged: (String e) {
         setState(() {
@@ -60,15 +59,16 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
       focusNode: _focusNode,
       cursorColor: theme.cText,
       style: TextStyle(
-        color: textColor, 
+        color: textColor,
       ),
       maxLines: null,
       maxLength: 500, //TODO De-hardcode and document
 
       decoration: InputDecoration(
-      
+        isDense:
+            true, //allows custom height and overwrites min height of 48 px (flutter's default for accessibility)
         contentPadding: EdgeInsets.symmetric(
-            vertical: 8, horizontal: 8.0), // Reduced padding
+            vertical: (theme.dButtonHeight - 16)/2, horizontal: 8.0), // TODO de-hardcode
         counterText: "", //disables max character counter
         hintText: 'option ${widget.index} ...',
         hintStyle:

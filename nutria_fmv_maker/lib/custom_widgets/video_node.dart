@@ -69,6 +69,7 @@ class _VideoNodeState extends State<VideoNode> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  //Swatch Strip on top
                   Container(
                     height: 10, //TODO de-hardcode
                     decoration: BoxDecoration(
@@ -78,11 +79,12 @@ class _VideoNodeState extends State<VideoNode> {
                       color: theme.cSwatches[0], //TODO implement into nodedata
                     ),
                   ),
+                  //Main node background
                   Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.only(
-                        bottomLeft: Radius.circular(theme.dButtonBorderRadius),
-                        bottomRight: Radius.circular(theme.dButtonBorderRadius),
+                        bottomLeft: Radius.circular(theme.dPanelBorderRadius),
+                        bottomRight: Radius.circular(theme.dPanelBorderRadius),
                       ),
                       border: Border(
                         left: BorderSide(color: theme.cOutlines, width: 1),
@@ -93,54 +95,131 @@ class _VideoNodeState extends State<VideoNode> {
                     ),
                     child: Column(
                       children: [
+                        //thumbnail
                         Container(
                           height: _currentWidth *
                               9 /
                               16, //TODO allow for vertical aspect ratio
                           color: theme.cPanelTransparent,
-                        ),
-                        Container(
-                          padding: EdgeInsets.all(theme.dPanelPadding),
-                          color: theme.cPanelTransparent,
-                          child: Center(
-                            child: Text(
-                              widget.nodeData.videoDataPath,
-                              style: TextStyle(color: theme.cText),
-                            ),
+                          child: Placeholder(
+                            strokeWidth: 2,
                           ),
                         ),
+                        //under thumbnail
                         Container(
-                            padding: EdgeInsets.all(theme.dPanelPadding),
-                            child: Column(
-                              children: [
-                                NutriaTextfield(),
-                                SizedBox(
-                                  height: theme.dPanelPadding,
-                                ),
-                                NutriaTextfield(
-                                  index: 2,
-                                ),
-                                SizedBox(
-                                  height: theme.dPanelPadding,
-                                ),
-                                Row(
-                                  // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                  children: [
-                                    Expanded(
-                                        child: NutriaTextfield(
-                                      index: 3,
-                                    )),
-                                    SizedBox(
-                                      width: theme.dPanelPadding,
+                          padding: EdgeInsets.all(theme.dPanelPadding),
+                          child: Column(
+                            children: [
+                              //video file name
+                              Text(
+                                widget.nodeData.videoDataPath,
+                                textAlign: TextAlign.center,
+                                style: TextStyle(color: theme.cText),
+                              ),
+                              //sizedbox for spacing
+                              SizedBox(
+                                height: theme.dPanelPadding,
+                              ),
+                              //textfields
+                              NutriaTextfield(),
+                              SizedBox(
+                                height: theme.dPanelPadding,
+                              ),
+                              NutriaTextfield(
+                                index: 2,
+                              ),
+                              SizedBox(
+                                height: theme.dPanelPadding,
+                              ),
+                              Row(
+                                // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                children: [
+                                  Expanded(
+                                      child: NutriaTextfield(
+                                    index: 3,
+                                  )),
+                                  SizedBox(
+                                    width: theme.dPanelPadding,
+                                  ),
+                                  NutriaButton(
+                                    onTap: () {},
+                                    child: Icon(Icons.arrow_drop_down),
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  //distance between main node and expansion
+                  SizedBox(
+                    height: theme.dPanelPadding / 4,
+                  ),
+                  //expansion
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius:
+                          BorderRadius.circular(theme.dPanelBorderRadius),
+                      border: Border.all(color: theme.cOutlines, width: 1),
+                      color: theme.cPanelTransparent,
+                    ),
+                    padding: EdgeInsets.all(theme.dPanelPadding),
+                    child: Column(
+                      children: [
+                        //swatches picker
+                        LayoutBuilder(
+                          builder: (context, constraints) {
+                            final spacing =
+                                theme.dPanelPadding; // Spacing between items
+                            final totalSpacing =
+                                spacing * (theme.cSwatches.length - 1);
+                            final itemWidth =
+                                (constraints.maxWidth - totalSpacing) /
+                                    theme.cSwatches.length;
+                            return Wrap(
+                              spacing: theme.dPanelPadding,
+                              children:
+                                  theme.cSwatches.asMap().entries.map((entry) {
+                                final index = entry.key;
+                                final color = entry.value;
+                                return MouseRegion(
+                                  cursor: SystemMouseCursors.click,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      print(index);
+                                    },
+                                    child: Container(
+                                      height: itemWidth,
+                                      width: itemWidth,
+                                      margin: EdgeInsets.zero,
+                                      decoration: BoxDecoration(
+                                        color: color,
+                                        borderRadius:
+                                            BorderRadius.circular(4.0),
+                                      ),
                                     ),
-                                    NutriaButton(
-                                      onTap: () {},
-                                      child: Icon(Icons.arrow_drop_down),
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ))
+                                  ),
+                                );
+                              }).toList(),
+                            );
+                          },
+                        ),
+                        SizedBox(
+                          height: theme.dPanelPadding,
+                        ),
+                        Text(
+                          'Node ID: ${widget.nodeData.id}',
+                          style: TextStyle(color: theme.cText),
+                        ),
+                        SizedBox(
+                          height: theme.dPanelPadding,
+                        ),
+                        Text(
+                          'Position: ${_dragPosition.toString()}',
+                          style: TextStyle(color: theme.cText),
+                        ),
                       ],
                     ),
                   ),
