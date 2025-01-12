@@ -32,16 +32,16 @@ class _VideoNodeState extends State<VideoNode> {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Positioned(
-      // top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
-      // left: _dragPosition.dx + (UiStaticProperties.topLeftToMiddle.dx),
-      top: _dragPosition.dy,
-      left: _dragPosition.dx,
+      top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
+      left: _dragPosition.dx + (UiStaticProperties.topLeftToMiddle.dx),
+      // top: _dragPosition.dy,
+      // left: _dragPosition.dx,
       child: Stack(clipBehavior: Clip.none, children: [
         IgnorePointer(
           child: SizedBox(
             height: 1000,
             width: 500,
-            child: Container(color: Colors.black26),
+            // child: Container(color: Colors.black26),
           ),
         ),
         Positioned(
@@ -111,11 +111,11 @@ class _VideoNodeState extends State<VideoNode> {
                           child: Column(
                             children: [
                               //video file name
-                              Text(
-                                widget.nodeData.videoDataPath,
-                                textAlign: TextAlign.center,
-                                style: TextStyle(color: theme.cText),
-                              ),
+                              // Text(
+                              //   widget.nodeData.videoDataPath,
+                              //   textAlign: TextAlign.center,
+                              //   style: TextStyle(color: theme.cText),
+                              // ),
                               //sizedbox for spacing
                               SizedBox(
                                 height: theme.dPanelPadding,
@@ -158,7 +158,8 @@ class _VideoNodeState extends State<VideoNode> {
                     height: theme.dPanelPadding / 4,
                   ),
                   //expansion
-                  Container(
+                    if (widget.nodeData.isExpanded)  
+                    Container(
                     decoration: BoxDecoration(
                       borderRadius:
                           BorderRadius.circular(theme.dPanelBorderRadius),
@@ -198,6 +199,8 @@ class _VideoNodeState extends State<VideoNode> {
                                         color: color,
                                         borderRadius:
                                             BorderRadius.circular(4.0),
+                                        border: Border.all(
+                                            color: theme.cOutlines, width: 1),
                                       ),
                                     ),
                                   ),
@@ -206,20 +209,29 @@ class _VideoNodeState extends State<VideoNode> {
                             );
                           },
                         ),
-                        SizedBox(
-                          height: theme.dPanelPadding,
-                        ),
-                        Text(
-                          'Node ID: ${widget.nodeData.id}',
-                          style: TextStyle(color: theme.cText),
-                        ),
-                        SizedBox(
-                          height: theme.dPanelPadding,
-                        ),
-                        Text(
-                          'Position: ${_dragPosition.toString()}',
-                          style: TextStyle(color: theme.cText),
-                        ),
+                        if (UiStaticProperties.isDebug) ...[
+                          SizedBox(
+                            height: theme.dPanelPadding,
+                          ),
+                          Text(
+                            'Debug Info:',
+                            style: TextStyle(color: theme.cText),
+                          ),
+                          SizedBox(
+                            height: theme.dPanelPadding,
+                          ),
+                          Text(
+                            'Node ID: ${widget.nodeData.id}',
+                            style: TextStyle(color: theme.cText),
+                          ),
+                          SizedBox(
+                            height: theme.dPanelPadding,
+                          ),
+                          Text(
+                            'Position: ${_dragPosition.toString()}',
+                            style: TextStyle(color: theme.cText),
+                          ),
+                        ],
                       ],
                     ),
                   ),

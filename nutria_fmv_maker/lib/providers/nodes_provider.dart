@@ -1,31 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:nutria_fmv_maker/models/knot_data.dart';
 import '../models/node_data.dart';
 
 class NodesProvider extends ChangeNotifier {
   final List<NodeData> _nodes = [
-    SimpleNodeData(id: 'aaa', position: const Offset(0, 0), extra: "", knots: [
-      KnotData(knotID: 'aaa1', isInput: true, positionFromTop: const Offset(0, 10)),
-      KnotData(knotID: 'aaa2', isInput: true, positionFromTop: const Offset(0, 60)),
-      KnotData(knotID: 'aaa3', isInput: true, positionFromTop: const Offset(0, 110)),
-    ]),
-    SimpleNodeData(
-      id: 'bbb',
-      position: const Offset(150, 250),
-      extra: "",
+    VideoNodeData(
+      id: 'aaa',
+      position: const Offset(0, 0),
+      videoDataId: 'a',
+      isExpanded: false,
     ),
-    SimpleNodeData(
-      id: 'ccc',
-      position: const Offset(150, 20),
-      extra: "",
-    ),
-    VideoNodeData(position: Offset(0, 0), id: 'id', videoDataPath: 'videoDataPath')
+    // VideoNodeData(
+    //   id: 'bbb',
+    //   position: const Offset(150, 250),
+    //   videoDataId: 'a',
+    // ),
+    // VideoNodeData(
+    //   id: 'ccc',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    // ),
   ];
-
-  String? activeNodeId;
-
   get nodes => _nodes;
 
+  final List<VideoData> _videos = [
+    VideoData(id: 'a', videoDataPath: ''),
+    VideoData(id: 'b', videoDataPath: '')
+  ];
+
+  get videos => _videos;
+
+  String? activeNodeId;
 // void drawNoodle(String id, Offset mousePosition) {
 //   final KnotData = _nodes.firstWhere((n) => n.id == id,
 //         orElse: () => throw Exception("Node not found"));
@@ -39,6 +43,19 @@ class NodesProvider extends ChangeNotifier {
     _nodes.add(node);
     activeNodeId = node.id;
     notifyListeners();
+  }
+
+void expandToggle(String id) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+    final node = _nodes[nodeIndex];
+    if(node is BaseNodeData){
+    node.isExpanded = !node.isExpanded;
+        notifyListeners();
+    }
   }
 
   void setActiveNode(String id) {
@@ -57,7 +74,7 @@ class NodesProvider extends ChangeNotifier {
       _nodes.removeAt(nodeIndex);
       _nodes.add(node);
     }
-    print(nodes[0].id + nodes[1].id + nodes[2].id);
+    // print(nodes[0].id + nodes[1].id + nodes[2].id);
     // Notify listeners after making changes
     notifyListeners();
   }

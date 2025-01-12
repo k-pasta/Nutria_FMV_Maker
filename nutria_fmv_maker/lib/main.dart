@@ -85,25 +85,26 @@ class MyHomePage extends StatelessWidget {
         // body: const InternationalisationExample(),
         // body: MyMenuBar()
         // body: CustomNodesExample()
-        body: SizedBox(
-            width: 1000,
-            height: 1000,
-            // color: Colors.red,
-            child: Stack(clipBehavior: Clip.none, children: [
-              Positioned.fill(
-                  child: Container(
-                color: Colors.red,
-              )),
-              VideoNode(
-                  nodeData: VideoNodeData(
-                      position: Offset(0, 0),
-                      id: 'id',
-                      videoDataPath: 'videoDataPath videoDataPath videoDataPath')),
-              SizedBox(
-                width: 50,
-                height: 50,
-              ),
-            ]))
+        // body: SizedBox(
+        //     width: 1000,
+        //     height: 1000,
+        //     // color: Colors.red,
+        //     child: Stack(clipBehavior: Clip.none, children: [
+        //       Positioned.fill(
+        //           child: Container(
+        //         color: Colors.red,
+        //       )),
+        //       VideoNode(
+        //           nodeData: VideoNodeData(
+        //               position: Offset(0, 0),
+        //               id: 'aaa',
+        //               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
+        //       SizedBox(
+        //         width: 50,
+        //         height: 50,
+        //       ),
+        //     ]))
+        body: GridCanvas(),
         // body: ThumbnailExample()
         );
   }

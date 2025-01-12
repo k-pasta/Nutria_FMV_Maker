@@ -32,10 +32,10 @@ class _NodeState extends State<Node> {
     // final nodesProvider = context.read<NodesProvider>();
 
     return Positioned(
-      // top: _dragPosition.dy + (GridCanvasProperties.canvasSize / 2),
-      // left: _dragPosition.dx + (GridCanvasProperties.canvasSize / 2),
-            top: _dragPosition.dy,
-      left: _dragPosition.dx,
+      top: _dragPosition.dy - (UiStaticProperties.canvasSize / 2),
+      left: _dragPosition.dx - (UiStaticProperties.canvasSize / 2),
+      //       top: _dragPosition.dy,
+      // left: _dragPosition.dx,
       // child: DeferPointer(
 
       child: Stack(children: [
@@ -78,19 +78,19 @@ class _NodeState extends State<Node> {
           ),
         ),
         
-        Positioned(
-          left: 0,
-          child: Column(
-            children: [
-              const SizedBox(
-                height: 50,
-              ),
-              ...widget.nodeData.knots.map((knotData) {
-                return Knot(knotData: knotData);
-              })
-            ],
-          ),
-        ),
+        // Positioned(
+        //   left: 0,
+        //   child: Column(
+        //     children: [
+        //       const SizedBox(
+        //         height: 50,
+        //       ),
+        //       ...widget.nodeData.knots.map((knotData) {
+        //         return Knot(knotData: knotData);
+        //       })
+        //     ],
+        //   ),
+        // ),
         GestureDetector(
           // behavior: HitTestBehavior.opaque,
           // onScaleUpdate: (details) {

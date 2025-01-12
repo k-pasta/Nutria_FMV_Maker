@@ -1,29 +1,23 @@
 import 'package:flutter/material.dart';
 import '../static_data/ui_static_properties.dart';
-import 'knot_data.dart';
+import 'package:collection/collection.dart';
 
 abstract class NodeData {
   Offset position;
   final String id;
-  NodeData({required this.position, required this.id});
+  NodeData({
+    required this.position,
+    required this.id,
+  });
 }
-
-//TODO MAKE OBSOLETE
-// class SimpleNodeData extends NodeData {
-//   SimpleNodeData({
-//     required super.position,
-//     required super.id,
-//     required String extra,
-//   });
-// }
 
 abstract class BaseNodeData extends NodeData {
   String? nodeName;
   double nodeWidth;
   bool isExpanded;
-  final List<Output> outputs = []; //final?
+  final List<Output> outputs = <Output>[]; //final?
   int swatch;
-  Offset get InputOffsetFromTopLeft;
+  Offset get inputOffsetFromTopLeft;
   BaseNodeData(
       {required super.position,
       required super.id,
@@ -35,25 +29,53 @@ abstract class BaseNodeData extends NodeData {
 
 class VideoNodeData extends BaseNodeData {
   final String videoDataId;
-  Offset get InputOffsetFromTopLeft => Offset(UiStaticProperties.nodePadding, UiStaticProperties.nodePadding+);
-  VideoNodeData({
-    required super.position,
-    required super.id,
-    required this.videoDataId,
-  });
+  Map<String, dynamic> overrides;
+
+  Offset get inputOffsetFromTopLeft => Offset(UiStaticProperties.nodePadding,
+      UiStaticProperties.nodePadding + nodeWidth * 9 / 16);
+
+  /// Set an override for a property
+  void setOverride(String key, dynamic value) {
+    overrides[key] = value;
+  }
+
+  /// Remove an override (revert to default)
+  void removeOverride(String key) {
+    overrides.remove(key);
+  }
+
+  /// Get the effective value of a property
+// dynamic getProperty(String key) {
+// return overrides.containsKey(key) ? overrides[key] : projectSettings.getDefault(key);
+// }
+
+///Get the video data for this node
+VideoData? getVideoData(List<VideoData> videoList) {
+  return videoList.firstWhereOrNull((element) => element.id == videoDataId);
+}
+
+  VideoNodeData(
+      {required super.position,
+      required super.id,
+      required this.videoDataId,
+      this.overrides = const <String, dynamic>{},
+      super.nodeName,
+      super.isExpanded = false,
+      super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
+      super.swatch = 0});
 }
 
 class Output {
-  double CurrentHeight;
-  String OptionText;
-  Offset OutputOffsetFromTopLeft;
-  String? TargetNodeId;
+  double currentHeight;
+  String optionText;
+  Offset outputOffsetFromTopLeft;
+  String? targetNodeId;
 
   Output({
-    required this.CurrentHeight,
-    required this.OptionText,
-    required this.OutputOffsetFromTopLeft,
-    this.TargetNodeId,
+    required this.currentHeight,
+    required this.optionText,
+    required this.outputOffsetFromTopLeft,
+    this.targetNodeId,
   });
 }
 
@@ -61,13 +83,11 @@ class VideoData {
   final String id;
   final String videoDataPath;
   final String? thumbnailPath;
-  final String fileName;
-  Duration duration;
+  String get fileName => videoDataPath.split('/').last;
+  Duration get duration => const Duration(seconds: 10); //TODO make work with videoplayer plugin
   VideoData({
     required this.videoDataPath,
     required this.id,
     this.thumbnailPath,
-    required this.fileName,
-    required this.duration,
   });
 }

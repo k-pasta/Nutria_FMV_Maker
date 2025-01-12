@@ -8,7 +8,7 @@ TransformationController _transformationController = TransformationController();
 
 GridCanvasProvider(){
  _transformationController = TransformationController();
-  offsetPosition(UiStaticProperties.topLeftToMiddle);
+  offsetPosition(-UiStaticProperties.topLeftToMiddle); //move view to the middle
 }
 
   final double _scaleFactor = 0.1;
@@ -86,7 +86,7 @@ GridCanvasProvider(){
     // Update current scale
     _currentScale = newScale;
 //  print (newScale);
-    print('${positionOffset.dx} - dx, ${positionOffset.dy} - dy');
+    // print('${positionOffset.dx} - dx, ${positionOffset.dy} - dy');
     notifyListeners();
   }
 }
