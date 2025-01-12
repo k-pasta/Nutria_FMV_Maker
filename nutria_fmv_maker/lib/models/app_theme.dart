@@ -23,6 +23,7 @@ class AppTheme {
   final double dPanelPadding;
   final double dPanelRowDistance;
   final double dPanelBorderRadius;
+  final double dOutlinesWidth;
 
 //button 3 states
   final Color cButton;
@@ -54,12 +55,12 @@ class AppTheme {
   // Constructor
   const AppTheme({
     this.cBackground = const Color(0xff121212),
-    this.cBackgroundDots = const Color(0xffffffff),
+    this.cBackgroundDots = const Color(0xff212121),
     this.cAccent = const Color(0xffff4e6a),
     this.cAccentButton = const Color(0xff842b37),
-    this.cAccentButtonHovered = const Color.fromARGB(255, 199, 64, 82), //TODO set
-    this.cAccentButtonPressed = const Color.fromARGB(255, 224, 74, 94), //TODO set
-    this.cText = const Color(0xff919191), //TODO make from transparent
+    this.cAccentButtonHovered = const Color.fromARGB(255, 199, 64, 82), 
+    this.cAccentButtonPressed = const Color.fromARGB(255, 224, 74, 94), 
+    this.cText = const Color(0x91ffffff), //TODO make from transparent
     this.cTextActive = const Color(0xffffffff),
     this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
     this.cPanel = const Color(0xff252525),
@@ -73,6 +74,7 @@ class AppTheme {
     this.dPanelPadding = 7,
     this.dPanelRowDistance = 7,
     this.dPanelBorderRadius = 7,
+    this.dOutlinesWidth = 1,
     this.dButtonHeight = 45,
     this.dButtonBorderRadius =  5,
     this.dScrollbarWidth = 11,

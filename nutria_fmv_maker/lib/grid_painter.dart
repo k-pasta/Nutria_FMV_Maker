@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'models/app_theme.dart';
 import 'dart:ui';
+import 'package:provider/provider.dart';
+import '../providers/theme_provider.dart';
 
 class GridPainter extends CustomPainter {
   final TransformationController transformationController;
@@ -9,8 +12,10 @@ class GridPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
+    final AppTheme theme = Provider.of<ThemeProvider>(context, listen: false).currentAppTheme;
+
     final Paint paint = Paint()
-      ..color = const Color.fromARGB(150, 0, 0, 0)
+      ..color = theme.cBackgroundDots
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.fill
       ..strokeWidth = 5.0 / transformationController.value.getMaxScaleOnAxis();

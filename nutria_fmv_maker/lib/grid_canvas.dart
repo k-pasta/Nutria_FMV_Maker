@@ -1,6 +1,5 @@
 import 'package:defer_pointer/defer_pointer.dart';
 import 'custom_widgets/video_node.dart';
-import 'node.dart';
 import './providers/grid_canvas_provider.dart';
 import './providers/nodes_provider.dart';
 import './grid_painter.dart';
@@ -56,10 +55,7 @@ class GridCanvas extends StatelessWidget {
           // child: DeferredPointerHandler(
           child: Center(
             child: InteractiveViewer(
-              onInteractionUpdate: (_) {
-                print(gridCanvasProvider.transformationController.value
-                    .getTranslation());
-              },
+              onInteractionUpdate: (_) {},
               /*scale settings*/
               scaleEnabled: false, // handled separately
 
@@ -97,15 +93,15 @@ class GridCanvas extends StatelessWidget {
                       child: Placeholder(),
                     ),
                   ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
-                  Positioned(
-                    top: -(UiStaticProperties.canvasSize / 2),
-                    left: -(UiStaticProperties.canvasSize / 2),
-                    child: Container(
-                      width: 100,
-                      height: 100,
-                      color: Colors.red,
-                    ),
-                  ),
+                  // Positioned(
+                  //   top: -(UiStaticProperties.canvasSize / 2),
+                  //   left: -(UiStaticProperties.canvasSize / 2),
+                  //   child: Container(
+                  //     width: 100,
+                  //     height: 100,
+                  //     color: Colors.red,
+                  //   ),
+                  // ),
                   ...nodesProvider.nodes.map((node) {
                     return VideoNode(
                       nodeData: node,

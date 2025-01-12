@@ -10,6 +10,7 @@ class NutriaButton extends StatefulWidget {
   final VoidCallback onTap;
   final VoidCallback onTapRight;
   final VoidCallback onTapLeft;
+  final IconData? icon;
 
   final bool _isLeftRight;
   static void _defaultOnTap() {
@@ -24,7 +25,8 @@ class NutriaButton extends StatefulWidget {
     this.isActive = true,
   })  : onTapLeft = _defaultOnTap,
         onTapRight = _defaultOnTap,
-        _isLeftRight = false;
+        _isLeftRight = false,
+        icon = null;
 
   const NutriaButton.leftRight({
     super.key,
@@ -34,7 +36,19 @@ class NutriaButton extends StatefulWidget {
     this.isAccented = false,
     this.isActive = true,
   })  : onTap = _defaultOnTap,
-        _isLeftRight = true;
+        _isLeftRight = true,
+        icon = null;
+
+  const NutriaButton.Icon({
+    super.key,
+    required this.onTap,
+    required this.icon,
+    this.isAccented = false,
+    this.isActive = true,
+  })  : onTapLeft = _defaultOnTap,
+        onTapRight = _defaultOnTap,
+        child = null,
+        _isLeftRight = false;
 
   @override
   State<NutriaButton> createState() => _NutriaButtonState();
@@ -151,46 +165,57 @@ class _NutriaButtonState extends State<NutriaButton> {
               }
             : () {},
         child: Container(
-          constraints: BoxConstraints(minWidth: theme.dButtonHeight, minHeight: theme.dButtonHeight),
+          constraints: BoxConstraints(
+              minWidth: theme.dButtonHeight, minHeight: theme.dButtonHeight),
           height: theme.dButtonHeight,
           width: theme.dButtonHeight,
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(
                 color: buttonState.isAccented ? theme.cAccent : theme.cOutlines,
-                width: 1, //TODO de-hardcode
+                width: theme.dOutlinesWidth,
               ),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
           child: IgnorePointer(
             //only allow for the button to receive events. nested buttons etc won't work for simplicity.
             // child: Center(child: widget.child)
             child: Stack(children: [
-             widget._isLeftRight? Positioned(
-                top: 0,
-                bottom: 0,
-                left: -theme.dButtonHeight / 5,
-                child: Icon(Icons.arrow_left,
-                    size: theme.dButtonHeight,
-                    color: buttonState.buttonStateType == ButtonStateType.normal
-                        ? theme.cPanel
-                        : theme.cText),
-              ) : Container(),
-             widget._isLeftRight? Positioned(
-                top: 0,
-                bottom: 0,
-                right: -theme.dButtonHeight / 5,
-                child: Icon(Icons.arrow_right,
-                    size: theme.dButtonHeight,
-                    color: buttonState.buttonStateType == ButtonStateType.normal
-                        ? theme.cPanel
-                        : theme.cText),
-              ) : Container(),
+              widget._isLeftRight
+                  ? Positioned(
+                      top: 0,
+                      bottom: 0,
+                      left: -theme.dButtonHeight / 5,
+                      child: Icon(Icons.arrow_left,
+                          size: theme.dButtonHeight,
+                          color: buttonState.buttonStateType ==
+                                  ButtonStateType.normal
+                              ? theme.cPanel
+                              : theme.cText),
+                    )
+                  : Container(),
+              widget._isLeftRight
+                  ? Positioned(
+                      top: 0,
+                      bottom: 0,
+                      right: -theme.dButtonHeight / 5,
+                      child: Icon(Icons.arrow_right,
+                          size: theme.dButtonHeight,
+                          color: buttonState.buttonStateType ==
+                                  ButtonStateType.normal
+                              ? theme.cPanel
+                              : theme.cText),
+                    )
+                  : Container(),
               // Center(child: widget.child), //TODO figure why this is not centered
-              Center(child: Icon(Icons.arrow_drop_down,
-                    size: theme.dButtonHeight,
-                    color: buttonState.buttonStateType == ButtonStateType.normal
-                        ? theme.cPanel
-                        : theme.cText)), //TODO figure why this is not centered
+
+              Center(
+                  child: Icon(widget.icon,
+                      size: theme.dButtonHeight,
+                      color: buttonState.buttonStateType ==
+                              ButtonStateType.normal
+                          ? theme.cPanel
+                          : theme
+                              .cText)), //TODO figure why this is not centered
             ]),
           ),
         ),

@@ -11,9 +11,9 @@ GridCanvasProvider(){
   offsetPosition(-UiStaticProperties.topLeftToMiddle); //move view to the middle
 }
 
-  final double _scaleFactor = 0.1;
-  final double minScale = 0.01;
-  final double maxScale = 300;
+  final double _scaleFactor = UiStaticProperties.gridCanvasScaleFactor; 
+  final double _minScale = UiStaticProperties.gridCanvasMinScale;
+  final double _maxScale = UiStaticProperties.gridCanvasMaxScale;
 
   final ShortcutActivator _moveUp = LogicalKeySet(LogicalKeyboardKey.arrowUp);
   final ShortcutActivator _moveLeft = LogicalKeySet(LogicalKeyboardKey.arrowLeft);
@@ -65,7 +65,7 @@ GridCanvasProvider(){
     // Calculate scale factor
     double scaleFactor =
         event.scrollDelta.dy < 0 ? 1 + _scaleFactor : 1 - _scaleFactor;
-    double newScale = (_currentScale * scaleFactor).clamp(minScale, maxScale);
+    double newScale = (_currentScale * scaleFactor).clamp(_minScale, _maxScale);
 
     // Get mouse position in local coordinates
     RenderBox renderBox = context.findRenderObject() as RenderBox;

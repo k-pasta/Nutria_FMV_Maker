@@ -9,18 +9,22 @@ class NodesProvider extends ChangeNotifier {
       videoDataId: 'a',
       isExpanded: false,
     ),
-    // VideoNodeData(
-    //   id: 'bbb',
-    //   position: const Offset(150, 250),
-    //   videoDataId: 'a',
-    // ),
-    // VideoNodeData(
-    //   id: 'ccc',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    // ),
+    VideoNodeData(
+      id: 'bbb',
+      position: const Offset(150, 250),
+      videoDataId: 'a',
+    ),
+    VideoNodeData(
+      id: 'ccc',
+      position: const Offset(150, 20),
+      videoDataId: 'a',
+    ),
   ];
   get nodes => _nodes;
+
+NodeData getNodeById(String id) {
+    return _nodes.firstWhere((n) => n.id == id, orElse: () => throw Exception("Node not found")); //TOTO: handle exception
+  }
 
   final List<VideoData> _videos = [
     VideoData(id: 'a', videoDataPath: ''),
@@ -54,6 +58,19 @@ void expandToggle(String id) {
     final node = _nodes[nodeIndex];
     if(node is BaseNodeData){
     node.isExpanded = !node.isExpanded;
+        notifyListeners();
+    }
+  }
+
+  void setSwatch(String id, int swatch) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+    final node = _nodes[nodeIndex];
+    if(node is BaseNodeData){
+    node.swatch = swatch;
         notifyListeners();
     }
   }

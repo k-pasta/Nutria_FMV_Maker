@@ -8,6 +8,9 @@ class UiStaticProperties {
   static const double canvasSize = 2000;
   static Offset get topLeftToMiddle =>
       const Offset(canvasSize / 2, canvasSize / 2);
+  static const double gridCanvasScaleFactor = 0.1; 
+  static const double gridCanvasMinScale = 0.01;
+  static const double gridCanvasMaxScale = 300;
 
   //Nodes
   //TODO Make precise

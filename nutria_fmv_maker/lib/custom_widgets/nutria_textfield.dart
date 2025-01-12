@@ -79,7 +79,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         enabledBorder: OutlineInputBorder(
           borderSide: BorderSide(
               color: theme.cOutlines,
-              width: 1), // Visible border when not focused
+              width: theme.dOutlinesWidth), // Visible border when not focused
           borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
         ),
         focusedBorder: OutlineInputBorder(

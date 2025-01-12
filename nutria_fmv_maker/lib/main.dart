@@ -3,7 +3,6 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
 import 'package:nutria_fmv_maker/internationalisation_example.dart';
 import 'package:nutria_fmv_maker/menu_bar.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
-import 'package:nutria_fmv_maker/node.dart';
 import 'package:nutria_fmv_maker/providers/locale_provider.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
