@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
+import 'package:nutria_fmv_maker/knot.dart';
 import 'package:provider/provider.dart';
 
 import '../models/node_data.dart';
@@ -21,11 +23,17 @@ class VideoNode extends StatefulWidget {
 class _VideoNodeState extends State<VideoNode> {
   late Offset _dragPosition;
   double _currentWidth = UiStaticProperties.nodeMinWidth;
+  GlobalKey _parentKey = GlobalKey(); // Key for the Positioned parent
+  final List<GlobalKey> _childKeys = []; // Key for the Positioned parent
 
   @override
   void initState() {
     super.initState();
     _dragPosition = widget.nodeData.position;
+    for (int i = 0; i < 20; i++) {
+      //TODO de-hardcode
+      _childKeys.add(GlobalKey());
+    }
   }
 
   @override
@@ -37,6 +45,7 @@ class _VideoNodeState extends State<VideoNode> {
               .getNodeById(widget.nodeData.id), // Only listen to this node
           builder: (context, node, child) {
             return Positioned(
+              key: _parentKey,
               top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
               left: _dragPosition.dx + (UiStaticProperties.topLeftToMiddle.dx),
               // top: _dragPosition.dy,
@@ -77,7 +86,7 @@ class _VideoNodeState extends State<VideoNode> {
                         children: [
                           //Swatch Strip on top
                           Container(
-                            height: 10, //TODO de-hardcode
+                            height: theme.dSwatchHeight,
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   topLeft:
@@ -116,62 +125,77 @@ class _VideoNodeState extends State<VideoNode> {
                                   height: _currentWidth *
                                       9 /
                                       16, //TODO allow for vertical aspect ratio
-                                  color: theme.cPanelTransparent,
                                   child: Placeholder(
                                     strokeWidth: 2,
                                   ),
                                 ),
                                 //under thumbnail
-                                Container(
-                                  padding: EdgeInsets.all(theme.dPanelPadding),
-                                  child: Column(
-                                    children: [
-                                      //video file name
-                                      // Text(
-                                      //   widget.nodeData.videoDataPath,
-                                      //   textAlign: TextAlign.center,
-                                      //   style: TextStyle(color: theme.cText),
-                                      // ),
-                                      //sizedbox for spacing
-                                      SizedBox(
-                                        height: theme.dPanelPadding,
-                                      ),
-                                      //textfields
-                                      NutriaTextfield(),
-                                      SizedBox(
-                                        height: theme.dPanelPadding,
-                                      ),
-                                      NutriaTextfield(
-                                        index: 2,
-                                      ),
-                                      SizedBox(
-                                        height: theme.dPanelPadding,
-                                      ),
-                                      Row(
-                                        // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                        children: [
-                                          Expanded(
-                                              child: NutriaTextfield(
-                                            index: 3,
-                                          )),
-                                          SizedBox(
-                                            width: theme.dPanelPadding,
-                                          ),
-                                          NutriaButton.Icon(
-                                            icon: widget.nodeData.isExpanded? Icons.arrow_drop_up : Icons.arrow_drop_down ,
-                                            onTap: () {
-                                              Provider.of<NodesProvider>(
-                                                      context,
-                                                      listen: false)
-                                                  .expandToggle(
-                                                      widget.nodeData.id);
-                                            },
-                                            // child: Icon(Icons.arrow_drop_down),
-                                            // child: Placeholder(),
-                                          ),
-                                        ],
-                                      )
-                                    ],
+                                FocusScope(
+                                  //this makes it so the tab key only cycles through the current node's inputs
+                                  child: Container(
+                                    padding:
+                                        EdgeInsets.all(theme.dPanelPadding),
+                                    child: Column(
+                                      children: [
+                                        //video file name
+                                        Text(
+                                          widget.nodeData
+                                              .getVideoData(context
+                                                  .read<NodesProvider>()
+                                                  .videos)!
+                                              .fileName, //TODO handle null
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(color: theme.cText),
+                                        ),
+                                        //sizedbox for spacing
+                                        SizedBox(
+                                          height: theme.dPanelPadding,
+                                        ),
+                                        //textfields
+                                        NutriaTextfield(
+                                            key: _childKeys[0], index: 1),
+
+                                        SizedBox(
+                                          height: theme.dPanelPadding,
+                                        ),
+                                        NutriaTextfield(
+                                          key: _childKeys[1],
+                                          index: 2,
+                                        ),
+                                        SizedBox(
+                                          height: theme.dPanelPadding,
+                                        ),
+                                        Row(
+                                          key: _childKeys[2],
+                                          // crossAxisAlignment: CrossAxisAlignment.stretch,
+                                          children: [
+                                            Expanded(
+                                                child: NutriaTextfield(
+                                              index: 3,
+                                            )),
+                                            SizedBox(
+                                              width: theme.dPanelPadding,
+                                            ),
+                                            NutriaButton.Icon(
+                                              icon: widget.nodeData.isExpanded
+                                                  ? Icons.arrow_drop_up
+                                                  : Icons.arrow_drop_down,
+                                              onTap: () {
+                                                _getContainerPositionRelativeToParent(_childKeys[0]);
+                                                _getContainerPositionRelativeToParent(_childKeys[1]);
+                                                _getContainerPositionRelativeToParent(_childKeys[2]);
+                                                // _getContainerPositionRelativeToParent(_childKeys[3]);
+                                                Provider.of<NodesProvider>(
+                                                        context,
+                                                        listen: false)
+                                                    .expandToggle(
+                                                        widget.nodeData.id);
+                                              },
+                                            ),
+                                          ],
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ],
@@ -179,7 +203,7 @@ class _VideoNodeState extends State<VideoNode> {
                           ),
                           //distance between main node and expansion
                           SizedBox(
-                            height: theme.dPanelPadding ,
+                            height: theme.dPanelPadding,
                           ),
                           //expansion
                           if (widget.nodeData.isExpanded)
@@ -275,9 +299,31 @@ class _VideoNodeState extends State<VideoNode> {
                     ),
                   ),
                 ),
+                Knot(offset: widget.nodeData.inputOffsetFromTopLeft)
               ]),
             );
           });
+    }
+  }
+
+  void _getContainerPositionRelativeToParent(GlobalKey key) {
+    // Get the RenderBox of the container (target widget)
+    final RenderBox containerRenderBox =
+        key.currentContext?.findRenderObject() as RenderBox;
+    final RenderBox parentRenderBox =
+        _parentKey.currentContext?.findRenderObject() as RenderBox;
+
+    if (containerRenderBox != null && parentRenderBox != null) {
+      // Get the global position of the container
+      final containerGlobalPosition =
+          containerRenderBox.localToGlobal(Offset.zero);
+      // Get the global position of the parent (Positioned widget)
+      final parentGlobalPosition = parentRenderBox.localToGlobal(Offset.zero);
+
+      // Calculate the position relative to the parent by subtracting
+      final relativePosition = containerGlobalPosition - parentGlobalPosition;
+
+      print('Container Position Relative to Parent: $relativePosition');
     }
   }
 }

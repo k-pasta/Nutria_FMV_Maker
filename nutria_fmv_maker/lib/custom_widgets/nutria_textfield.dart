@@ -46,16 +46,19 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
 
     return TextField(
+      
       controller: myController,
-      onChanged: (String e) {
+      onChanged: (String currentText) {
+        
         setState(() {
           final RenderBox box =
               context.findRenderObject() as RenderBox; //TODO expose to provider
           print(box.size.height);
           print(numLines);
-          numLines = '\n'.allMatches(e).length + 1;
+          numLines = '\n'.allMatches(currentText).length + 1;
         });
       },
+      onTap: (){print('tapped');},
       focusNode: _focusNode,
       cursorColor: theme.cText,
       style: TextStyle(

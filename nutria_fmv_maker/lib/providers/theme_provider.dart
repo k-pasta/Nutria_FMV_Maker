@@ -4,7 +4,7 @@ import '../models/app_theme.dart';
 class ThemeProvider extends ChangeNotifier {
   static const AppTheme _appThemeDark = AppTheme();
   static const AppTheme _appThemeLight = AppTheme(dButtonHeight: 20,
-  cBackgroundDots: Colors.white);
+  cBackgroundDots: Colors.white, cBackground: Colors.white);
 //   AppTheme _customAppThemeDark;
 //   AppTheme _customAppThemeLight;
   AppTheme _currentAppTheme = _appThemeDark;
@@ -13,6 +13,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeProvider();
 
   get currentAppTheme => _currentAppTheme;
+  get isThemeDark => _isThemeDark;
 
   void toggleThemeMode() {
     _currentAppTheme = _isThemeDark ? _appThemeLight : _appThemeDark;

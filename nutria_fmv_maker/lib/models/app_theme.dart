@@ -24,6 +24,7 @@ class AppTheme {
   final double dPanelRowDistance;
   final double dPanelBorderRadius;
   final double dOutlinesWidth;
+  final double dSwatchHeight;
 
 //button 3 states
   final Color cButton;
@@ -75,6 +76,7 @@ class AppTheme {
     this.dPanelRowDistance = 7,
     this.dPanelBorderRadius = 7,
     this.dOutlinesWidth = 1,
+    this.dSwatchHeight= 10,
     this.dButtonHeight = 45,
     this.dButtonBorderRadius =  5,
     this.dScrollbarWidth = 11,

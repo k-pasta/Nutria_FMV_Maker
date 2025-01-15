@@ -160,7 +160,7 @@ class _NutriaButtonState extends State<NutriaButton> {
         },
         onTap: widget.isActive
             ? () {
-                context.read<ThemeProvider>().toggleThemeMode(); //Todo remove
+                // context.read<ThemeProvider>().toggleThemeMode(); //Todo remove
                 widget.onTap();
               }
             : () {},

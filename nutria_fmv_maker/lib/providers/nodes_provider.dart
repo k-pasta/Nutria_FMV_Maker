@@ -22,12 +22,14 @@ class NodesProvider extends ChangeNotifier {
   ];
   get nodes => _nodes;
 
-NodeData getNodeById(String id) {
-    return _nodes.firstWhere((n) => n.id == id, orElse: () => throw Exception("Node not found")); //TOTO: handle exception
+  NodeData getNodeById(String id) {
+    return _nodes.firstWhere((n) => n.id == id,
+        orElse: () =>
+            throw Exception("Node not found")); //TOTO: handle exception
   }
 
   final List<VideoData> _videos = [
-    VideoData(id: 'a', videoDataPath: ''),
+    VideoData(id: 'a', videoDataPath: 'test/test.test.test'),
     VideoData(id: 'b', videoDataPath: '')
   ];
 
@@ -43,22 +45,40 @@ NodeData getNodeById(String id) {
 
 // }
 
+  // List<String> getEffectiveOutputs(String id) {
+  //   final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+  //   if (nodeIndex == -1) {
+  //     throw Exception("Node not found");
+  //   }
+  //   final node = _nodes[nodeIndex];
+  //   if (node is VideoNodeData) {
+  //     if (node.outputs.length > 2) {
+  //       return node.outputs.length;
+  //     }
+  //   }
+  //   else{
+  //      throw Exception("Node is not VideoNode");
+  //   }
+  //   return ['','']; // Default return value
+  // }
+
   void addNode(NodeData node) {
     _nodes.add(node);
     activeNodeId = node.id;
     notifyListeners();
   }
 
-void expandToggle(String id) {
+  void expandToggle(String id) {
     final nodeIndex = _nodes.indexWhere((n) => n.id == id);
 
     if (nodeIndex == -1) {
       throw Exception("Node not found");
     }
     final node = _nodes[nodeIndex];
-    if(node is BaseNodeData){
-    node.isExpanded = !node.isExpanded;
-        notifyListeners();
+    if (node is BaseNodeData) {
+      node.isExpanded = !node.isExpanded;
+      notifyListeners();
     }
   }
 
@@ -69,9 +89,22 @@ void expandToggle(String id) {
       throw Exception("Node not found");
     }
     final node = _nodes[nodeIndex];
-    if(node is BaseNodeData){
-    node.swatch = swatch;
-        notifyListeners();
+    if (node is BaseNodeData) {
+      node.swatch = swatch;
+      notifyListeners();
+    }
+  }
+
+  void updateText(String id, String currentText) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+    final node = _nodes[nodeIndex];
+    if (node is VideoNodeData) {
+      // node.swatch = swatch;
+      //     notifyListeners();
     }
   }
 

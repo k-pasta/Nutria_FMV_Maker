@@ -1,4 +1,3 @@
-import 'package:defer_pointer/defer_pointer.dart';
 import 'custom_widgets/video_node.dart';
 import './providers/grid_canvas_provider.dart';
 import './providers/nodes_provider.dart';
@@ -10,7 +9,7 @@ import 'static_data/ui_static_properties.dart';
 
 class GridCanvas extends StatelessWidget {
   GridCanvas({super.key});
-  double keyboardMoveSensitivity = 100;
+  final double keyboardMoveSensitivity = UiStaticProperties.gridCanvasArrowMoveSensitivity;
 
   @override
   Widget build(BuildContext context) {

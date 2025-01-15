@@ -1,18 +1,18 @@
-import 'package:nutria_fmv_maker/custom_nodes_example.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
-import 'package:nutria_fmv_maker/internationalisation_example.dart';
-import 'package:nutria_fmv_maker/menu_bar.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
-import 'package:nutria_fmv_maker/providers/locale_provider.dart';
-import 'package:nutria_fmv_maker/providers/theme_provider.dart';
-import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
-import 'package:nutria_fmv_maker/thumbnail_example.dart';
+import './custom_nodes_example.dart';
+import './custom_widgets/nutria_textfield.dart';
+import './internationalisation_example.dart';
+import './menu_bar.dart';
+import './models/node_data.dart';
+import './providers/locale_provider.dart';
+import './providers/theme_provider.dart';
+import './providers/nodes_provider.dart';
+import 'thumbnail_example.dart';
 import 'custom_widgets/nutria_button.dart';
 import 'custom_widgets/video_node.dart';
 import 'models/app_theme.dart';
 import './providers/grid_canvas_provider.dart';
-
 import './grid_canvas.dart';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 // import 'package:flutter_localizations/flutter_localizations.dart';
@@ -73,38 +73,41 @@ class MyHomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    // AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Scaffold(
-        backgroundColor: theme.cBackground,
+      backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
-        appBar: AppBar(
-          title: Text(apptitle),
-        ),
-        // body: GridCanvas(),
-        // body: const InternationalisationExample(),
-        // body: MyMenuBar()
-        // body: CustomNodesExample()
-        // body: SizedBox(
-        //     width: 1000,
-        //     height: 1000,
-        //     // color: Colors.red,
-        //     child: Stack(clipBehavior: Clip.none, children: [
-        //       Positioned.fill(
-        //           child: Container(
-        //         color: Colors.red,
-        //       )),
-        //       VideoNode(
-        //           nodeData: VideoNodeData(
-        //               position: Offset(0, 0),
-        //               id: 'aaa',
-        //               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
-        //       SizedBox(
-        //         width: 50,
-        //         height: 50,
-        //       ),
-        //     ]))
-        body: GridCanvas(),
-        // body: ThumbnailExample()
-        );
+      // appBar: AppBar(
+      //   title: Text(apptitle),
+      // ),
+
+      body: GridCanvas(),
+      // body: ThumbnailExample()
+    );
   }
 }
+
+      // body: GridCanvas(),
+      // body: const InternationalisationExample(),
+      // body: MyMenuBar()
+      // body: CustomNodesExample()
+      // body: SizedBox(
+      //     width: 1000,
+      //     height: 1000,
+      //     // color: Colors.red,
+      //     child: Stack(clipBehavior: Clip.none, children: [
+      //       Positioned.fill(
+      //           child: Container(
+      //         color: Colors.red,
+      //       )),
+      //       VideoNode(
+      //           nodeData: VideoNodeData(
+      //               position: Offset(0, 0),
+      //               id: 'aaa',
+      //               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
+      //       SizedBox(
+      //         width: 50,
+      //         height: 50,
+      //       ),
+      //     ]))
