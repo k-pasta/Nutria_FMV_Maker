@@ -9,23 +9,36 @@ abstract class NodeData {
     required this.position,
     required this.id,
   });
+
+// @override
+// bool operator ==(Object other) {
+//   if (identical(this, other)) return true;
+
+//   return other is NodeData &&
+//       other.id == id &&
+//       other.position == position; // Add other properties if necessary.
+// }
+
+// @override
+// int get hashCode => id.hashCode ^ position.hashCode; //
 }
 
 abstract class BaseNodeData extends NodeData {
   String? nodeName;
   double nodeWidth;
   bool isExpanded;
-  final List<Output> outputs; //final?
+  List<Output> outputs; //final?
   int swatch;
   Offset get inputOffsetFromTopLeft;
   BaseNodeData(
       {required super.position,
       required super.id,
-      this.outputs = const <Output>[],
+      List<Output>? outputs,
       this.nodeName,
       this.isExpanded = false,
       this.nodeWidth = UiStaticProperties.nodeDefaultWidth,
-      this.swatch = 0});
+      this.swatch = 0})
+      : outputs = outputs ?? <Output>[];
 }
 
 class VideoNodeData extends BaseNodeData {
@@ -45,6 +58,23 @@ class VideoNodeData extends BaseNodeData {
     overrides.remove(key);
   }
 
+  void initializeOutputs() {
+    if (outputs.isEmpty) {
+      outputs.add(VideoOutput());
+      outputs.add(VideoOutput());
+      outputs.add(VideoOutput());
+      print('no error');
+    }
+    if (outputs.length < 3) {
+      while (outputs.length < 3) {
+        outputs.add(VideoOutput());
+      }
+    }
+    if (!(outputs[outputs.length - 1] as VideoOutput).outputText.isEmpty) {
+      outputs.add(VideoOutput());
+    }
+  }
+
   /// Get the effective value of a property
 // dynamic getProperty(String key) {
 // return overrides.containsKey(key) ? overrides[key] : projectSettings.getDefault(key);
@@ -60,7 +90,7 @@ class VideoNodeData extends BaseNodeData {
       required super.id,
       required this.videoDataId,
       this.overrides = const <String, dynamic>{},
-      super.outputs = const <VideoOutput>[],
+      super.outputs,
       super.nodeName,
       super.isExpanded = false,
       super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
@@ -70,14 +100,16 @@ class VideoNodeData extends BaseNodeData {
 abstract class Output {
   // double currentHeight;
   // String optionText;
+  // GlobalKey? outputKey;
   Offset outputOffsetFromTopLeft;
   String? targetNodeId;
 
   Output({
     // required this.currentHeight,
     // required this.optionText,
-    required this.outputOffsetFromTopLeft,
+    this.outputOffsetFromTopLeft = const Offset(0, 0),
     this.targetNodeId,
+    // this.outputKey,
   });
 }
 
@@ -85,7 +117,7 @@ class VideoOutput extends Output {
   final String outputText;
 
   VideoOutput({
-    required super.outputOffsetFromTopLeft,
+    super.outputOffsetFromTopLeft,
     this.outputText = '',
     super.targetNodeId,
   });

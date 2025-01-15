@@ -1,4 +1,3 @@
-import './custom_nodes_example.dart';
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
 import './menu_bar.dart';

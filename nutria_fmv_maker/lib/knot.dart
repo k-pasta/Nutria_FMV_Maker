@@ -22,15 +22,16 @@ class Knot extends StatefulWidget {
 
 class _KnotState extends State<Knot> {
   bool hovered = false;
+  bool dragging = false;
 
   @override
   Widget build(BuildContext context) {
-        final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final double boxSize = widget._sizeLarge * sqrt2;
 
     return Positioned(
-      top: widget.offset.dy - boxSize/2,
-      left: widget.offset.dx - boxSize/2,
+      top: widget.offset.dy - boxSize / 2,
+      left: widget.offset.dx - boxSize / 2,
       child: MouseRegion(
         onEnter: (_) {
           setState(() {
@@ -38,17 +39,24 @@ class _KnotState extends State<Knot> {
           });
         },
         onExit: (_) {
+          if (dragging) return;
           setState(() {
             hovered = false;
           });
         },
         child: GestureDetector(
+          behavior: HitTestBehavior.opaque,
           onPanStart: (details) {
+            dragging = true;
             print('start triggered');
           },
           // onPanUpdate: widget.onPanUpdate,
           onPanEnd: (details) {
             print('end triggered');
+            setState(() {
+              hovered = false;
+              dragging = false;
+            });
           },
 
           child: SizedBox(

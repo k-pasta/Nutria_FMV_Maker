@@ -1,5 +1,6 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
 import 'package:nutria_fmv_maker/knot.dart';
@@ -13,7 +14,6 @@ import '../static_data/ui_static_properties.dart';
 
 class VideoNode extends StatefulWidget {
   final VideoNodeData nodeData;
-  // final double width = ;
   const VideoNode({super.key, required this.nodeData});
 
   @override
@@ -24,14 +24,19 @@ class _VideoNodeState extends State<VideoNode> {
   late Offset _dragPosition;
   double _currentWidth = UiStaticProperties.nodeMinWidth;
   GlobalKey _parentKey = GlobalKey(); // Key for the Positioned parent
-  final List<GlobalKey> _childKeys = []; // Key for the Positioned parent
+  final List<GlobalKey> _childKeys = []; // Key for the Child
 
-  @override
   void initState() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _getContainerPositionRelativeToParent(
+          _childKeys, context.read<NodesProvider>(), widget.nodeData.id);
+    });
     super.initState();
+    widget.nodeData.initializeOutputs();
+    int currentOutputs =
+        context.read<NodesProvider>().getEffectiveOutputs(widget.nodeData.id);
     _dragPosition = widget.nodeData.position;
-    for (int i = 0; i < 20; i++) {
-      //TODO de-hardcode
+    for (int i = 0; i < currentOutputs; i++) {
       _childKeys.add(GlobalKey());
     }
   }
@@ -39,11 +44,15 @@ class _VideoNodeState extends State<VideoNode> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final NodesProvider nodesProvider = context.read<NodesProvider>();
+    final VideoNodeData videoNodeData =
+        nodesProvider.getNodeById(widget.nodeData.id);
     {
       return Selector<NodesProvider, NodeData>(
-          selector: (context, provider) => provider
+          selector: (context, provider) => nodesProvider
               .getNodeById(widget.nodeData.id), // Only listen to this node
           builder: (context, node, child) {
+            print('rebuilding ${widget.nodeData.id}');
             return Positioned(
               key: _parentKey,
               top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
@@ -67,17 +76,14 @@ class _VideoNodeState extends State<VideoNode> {
                       setState(() {
                         _dragPosition += details.delta;
                       });
-                      Provider.of<NodesProvider>(context, listen: false)
-                          .updateNodePosition(
-                              widget.nodeData.id, _dragPosition);
+                      nodesProvider.updateNodePosition(
+                          videoNodeData.id, _dragPosition);
                     },
                     onPanStart: (details) {
-                      Provider.of<NodesProvider>(context, listen: false)
-                          .setActiveNode(widget.nodeData.id);
+                      nodesProvider.setActiveNode(videoNodeData.id);
                     },
                     onTap: () {
-                      Provider.of<NodesProvider>(context, listen: false)
-                          .setActiveNode(widget.nodeData.id);
+                      nodesProvider.setActiveNode(videoNodeData.id);
                     },
                     child: Container(
                       width: _currentWidth,
@@ -93,7 +99,7 @@ class _VideoNodeState extends State<VideoNode> {
                                       Radius.circular(theme.dPanelBorderRadius),
                                   topRight: Radius.circular(
                                       theme.dPanelBorderRadius)),
-                              color: theme.cSwatches[widget.nodeData.swatch],
+                              color: theme.cSwatches[videoNodeData.swatch],
                             ),
                           ),
                           //Main node background
@@ -139,10 +145,9 @@ class _VideoNodeState extends State<VideoNode> {
                                       children: [
                                         //video file name
                                         Text(
-                                          widget.nodeData
-                                              .getVideoData(context
-                                                  .read<NodesProvider>()
-                                                  .videos)!
+                                          videoNodeData
+                                              .getVideoData(
+                                                  nodesProvider.videos)!
                                               .fileName, //TODO handle null
                                           textAlign: TextAlign.center,
                                           style: TextStyle(color: theme.cText),
@@ -151,49 +156,65 @@ class _VideoNodeState extends State<VideoNode> {
                                         SizedBox(
                                           height: theme.dPanelPadding,
                                         ),
-                                        //textfields
-                                        NutriaTextfield(
-                                            key: _childKeys[0], index: 1),
 
-                                        SizedBox(
-                                          height: theme.dPanelPadding,
-                                        ),
-                                        NutriaTextfield(
-                                          key: _childKeys[1],
-                                          index: 2,
-                                        ),
-                                        SizedBox(
-                                          height: theme.dPanelPadding,
-                                        ),
-                                        Row(
-                                          key: _childKeys[2],
-                                          // crossAxisAlignment: CrossAxisAlignment.stretch,
-                                          children: [
-                                            Expanded(
-                                                child: NutriaTextfield(
-                                              index: 3,
-                                            )),
-                                            SizedBox(
-                                              width: theme.dPanelPadding,
-                                            ),
-                                            NutriaButton.Icon(
-                                              icon: widget.nodeData.isExpanded
-                                                  ? Icons.arrow_drop_up
-                                                  : Icons.arrow_drop_down,
-                                              onTap: () {
-                                                _getContainerPositionRelativeToParent(_childKeys[0]);
-                                                _getContainerPositionRelativeToParent(_childKeys[1]);
-                                                _getContainerPositionRelativeToParent(_childKeys[2]);
-                                                // _getContainerPositionRelativeToParent(_childKeys[3]);
-                                                Provider.of<NodesProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .expandToggle(
-                                                        widget.nodeData.id);
-                                              },
-                                            ),
-                                          ],
-                                        )
+                                        ...videoNodeData.outputs
+                                            .asMap()
+                                            .entries
+                                            .map((entry) {
+                                          int index = entry.key;
+                                          var output = entry.value;
+                                          bool isLast = index ==
+                                              videoNodeData.outputs.length - 1;
+                                          return Column(
+                                            children: [
+                                              Row(
+                                                key: _childKeys[index],
+                                                children: [
+                                                  Expanded(
+                                                    child: NutriaTextfield(
+                                                      onTap: () {
+                                                        _getContainerPositionRelativeToParent(
+                                                            _childKeys,
+                                                            context.read<
+                                                                NodesProvider>(),
+                                                            widget.nodeData.id);
+                                                      },
+                                                      index: index + 1,
+                                                      text: (entry.value
+                                                              as VideoOutput)
+                                                          .outputText,
+                                                    ),
+                                                  ),
+                                                  if (isLast) ...[
+                                                    SizedBox(
+                                                      width:
+                                                          theme.dPanelPadding,
+                                                    ),
+                                                    NutriaButton.Icon(
+                                                      icon: videoNodeData
+                                                              .isExpanded
+                                                          ? Icons.arrow_drop_up
+                                                          : Icons
+                                                              .arrow_drop_down,
+                                                      onTap: () {
+                                                        setState(() {
+                                                          nodesProvider
+                                                              .expandToggle(
+                                                                  videoNodeData
+                                                                      .id);
+                                                        });
+                                                      },
+                                                    ),
+                                                  ],
+                                                ],
+                                              ),
+                                              if (!isLast)
+                                                SizedBox(
+                                                  height: theme.dPanelPadding,
+                                                ),
+                                            ],
+                                          );
+                                        }).toList(),
                                       ],
                                     ),
                                   ),
@@ -206,7 +227,7 @@ class _VideoNodeState extends State<VideoNode> {
                             height: theme.dPanelPadding,
                           ),
                           //expansion
-                          if (widget.nodeData.isExpanded)
+                          if (videoNodeData.isExpanded)
                             Container(
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(
@@ -241,12 +262,8 @@ class _VideoNodeState extends State<VideoNode> {
                                             cursor: SystemMouseCursors.click,
                                             child: GestureDetector(
                                               onTap: () {
-                                                Provider.of<NodesProvider>(
-                                                        context,
-                                                        listen: false)
-                                                    .setSwatch(
-                                                        widget.nodeData.id,
-                                                        index);
+                                                nodesProvider.setSwatch(
+                                                    videoNodeData.id, index);
                                               },
                                               child: Container(
                                                 height: itemWidth,
@@ -299,31 +316,59 @@ class _VideoNodeState extends State<VideoNode> {
                     ),
                   ),
                 ),
-                Knot(offset: widget.nodeData.inputOffsetFromTopLeft)
+                Knot(offset: videoNodeData.inputOffsetFromTopLeft),
+                // Knot(
+                //   offset: _getContainerPositionRelativeToParent(_childKeys[0]),
+                // ),
+                ...videoNodeData.outputs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var output = entry.value;
+                  bool isLast = index == videoNodeData.outputs.length - 1;
+                  // nodesProvider.updateOutputPosition(videoNodeData.id, index,
+                  //     _getContainerPositionRelativeToParent(_childKeys[index]));
+                  // _getContainerPositionRelativeToParent(_childKeys[index])
+                  if (!isLast) {
+                    return Knot(
+                      offset: output.outputOffsetFromTopLeft,
+                    );
+                  } else {
+                    return Container();
+                  }
+                }).toList(),
               ]),
             );
           });
     }
   }
 
-  void _getContainerPositionRelativeToParent(GlobalKey key) {
+  void _getContainerPositionRelativeToParent(
+      List<GlobalKey> keys, NodesProvider nodesProvider, String id) {
     // Get the RenderBox of the container (target widget)
-    final RenderBox containerRenderBox =
-        key.currentContext?.findRenderObject() as RenderBox;
-    final RenderBox parentRenderBox =
-        _parentKey.currentContext?.findRenderObject() as RenderBox;
+    keys.forEach((key) {
+      final RenderBox containerRenderBox =
+          key.currentContext?.findRenderObject() as RenderBox;
+      final RenderBox parentRenderBox =
+          _parentKey.currentContext?.findRenderObject() as RenderBox;
 
-    if (containerRenderBox != null && parentRenderBox != null) {
-      // Get the global position of the container
-      final containerGlobalPosition =
-          containerRenderBox.localToGlobal(Offset.zero);
-      // Get the global position of the parent (Positioned widget)
-      final parentGlobalPosition = parentRenderBox.localToGlobal(Offset.zero);
+      if (containerRenderBox != null && parentRenderBox != null) {
+        // Get the global position of the container
+        final containerGlobalPosition =
+            containerRenderBox.localToGlobal(Offset.zero);
+        // Get the global position of the parent (Positioned widget)
+        final parentGlobalPosition = parentRenderBox.localToGlobal(Offset.zero);
 
-      // Calculate the position relative to the parent by subtracting
-      final relativePosition = containerGlobalPosition - parentGlobalPosition;
+        final relativePosition = containerGlobalPosition -
+            parentGlobalPosition +
+            Offset(
+                (nodesProvider.getNodeById(id) as VideoNodeData).nodeWidth - 8,
+                50 / 2);
+        // Calculate the position relative to the parent by subtracting
 
-      print('Container Position Relative to Parent: $relativePosition');
-    }
+        final index = keys.indexOf(key);
+        nodesProvider.updateOutputPosition(id, index, relativePosition);
+      }
+    });
+    // List<Offset>
+    // return Offset.zero;
   }
 }

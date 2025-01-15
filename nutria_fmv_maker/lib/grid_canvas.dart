@@ -14,7 +14,7 @@ class GridCanvas extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final gridCanvasProvider = context.watch<GridCanvasProvider>();
-    final nodesProvider = context.watch<NodesProvider>();
+    final nodesProvider = context.read<NodesProvider>();
 
     return CallbackShortcuts(
       bindings: <ShortcutActivator, VoidCallback>{

@@ -99,7 +99,6 @@ class _NutriaButtonState extends State<NutriaButton> {
 
   @override
   Widget build(BuildContext context) {
-    print('build');
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     double positionX;
     double widgetWidth;

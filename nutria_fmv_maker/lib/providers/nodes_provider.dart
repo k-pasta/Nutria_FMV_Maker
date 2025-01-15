@@ -8,6 +8,12 @@ class NodesProvider extends ChangeNotifier {
       position: const Offset(0, 0),
       videoDataId: 'a',
       isExpanded: false,
+      outputs: <VideoOutput>[
+        VideoOutput(outputText: 'First text'),
+        VideoOutput(outputText: 'First text'),
+        VideoOutput(outputText: 'First text'),
+        VideoOutput(outputText: 'First text'),
+      ],
     ),
     VideoNodeData(
       id: 'bbb',
@@ -19,14 +25,41 @@ class NodesProvider extends ChangeNotifier {
       position: const Offset(150, 20),
       videoDataId: 'a',
     ),
+    VideoNodeData(
+      id: 'ddd',
+      position: const Offset(150, 20),
+      videoDataId: 'a',
+    ),
   ];
   get nodes => _nodes;
 
-  NodeData getNodeById(String id) {
-    return _nodes.firstWhere((n) => n.id == id,
-        orElse: () =>
-            throw Exception("Node not found")); //TOTO: handle exception
+  void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+    final node = _nodes[nodeIndex];
+    if (node is VideoNodeData) {
+      if (outputIndex < node.outputs.length) {
+        node.outputs[outputIndex].outputOffsetFromTopLeft = newPosition;
+
+        notifyListeners();
+      }
+    }
+    // print ('here');
   }
+
+
+  getNodeById(String id) {
+    return _nodes.firstWhere((n) => n.id == id,
+        orElse: () => throw Exception("Node not found"));
+  }
+
+    // T getNodeById<T extends NodeData>(String id) {
+  //   return _nodes.firstWhere((n) => n.id == id && n is T,
+  //       orElse: () => throw Exception("Node not found")) as T;
+  // }
 
   final List<VideoData> _videos = [
     VideoData(id: 'a', videoDataPath: 'test/test.test.test'),
@@ -45,23 +78,22 @@ class NodesProvider extends ChangeNotifier {
 
 // }
 
-  // List<String> getEffectiveOutputs(String id) {
-  //   final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+  int getEffectiveOutputs(String id) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
 
-  //   if (nodeIndex == -1) {
-  //     throw Exception("Node not found");
-  //   }
-  //   final node = _nodes[nodeIndex];
-  //   if (node is VideoNodeData) {
-  //     if (node.outputs.length > 2) {
-  //       return node.outputs.length;
-  //     }
-  //   }
-  //   else{
-  //      throw Exception("Node is not VideoNode");
-  //   }
-  //   return ['','']; // Default return value
-  // }
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+    final node = _nodes[nodeIndex];
+    if (node is VideoNodeData) {
+      if (node.outputs.length > 2) {
+        return node.outputs.length;
+      }
+    } else {
+      throw Exception("Node is not VideoNode");
+    }
+    return 2; // Default return value
+  }
 
   void addNode(NodeData node) {
     _nodes.add(node);
