@@ -50,8 +50,6 @@ class NodesProvider extends ChangeNotifier {
 
   String? activeNodeId;
 
-
-
   // Get a node by its ID
   NodeData getNodeById(String id) {
     return _nodes.firstWhere(
@@ -60,52 +58,55 @@ class NodesProvider extends ChangeNotifier {
     );
   }
 
-void updateNodeWidth(String id, double width) {
-  final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+  void updateNodeWidth(String id, double width) {
+    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
 
-  if (nodeIndex == -1) {
-    throw Exception("Node not found");
+    if (nodeIndex == -1) {
+      throw Exception("Node not found");
+    }
+
+    final node = _nodes[nodeIndex];
+    if (node is BaseNodeData) {
+      final updatedNode = node.copyWith(nodeWidth: width);
+      _nodes[nodeIndex] = updatedNode;
+      notifyListeners();
+    } else {
+      throw Exception("Node is not BaseNodeData");
+    }
   }
 
-  final node = _nodes[nodeIndex];
-  if (node is BaseNodeData) {
-    final updatedNode = node.copyWith(nodeWidth: width);
-    _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
-  } else {
-    throw Exception("Node is not BaseNodeData");
+  void initializeOutputs(String id) {
+    int index = _nodes.indexWhere((n) => n.id == id);
+    if (index == -1) throw Exception("Node not found");
+
+    // Get the node and ensure it's a VideoNodeData instance
+    VideoNodeData nodeData = _nodes[index] as VideoNodeData;
+
+    // Check if outputs are empty and initialize them
+    if (nodeData.outputs.isEmpty) {
+      nodeData = nodeData
+          .copyWith(outputs: [VideoOutput(), VideoOutput(), VideoOutput()]);
+      print('no error');
+    }
+
+    // Ensure outputs have at least 3 items
+    while (nodeData.outputs.length < 3) {
+      nodeData =
+          nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
+    }
+
+    // Add a new output if the last output has non-empty text
+    if (!(nodeData.outputs.last as VideoOutput).outputText.isEmpty) {
+      nodeData =
+          nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
+    }
+
+    // Replace the node in the list with the updated node
+    _nodes[index] = nodeData;
+
+    // Notify listeners to rebuild the UI
+    // notifyListeners();
   }
-}
-
-void initializeOutputs(String id) {
-  int index = _nodes.indexWhere((n) => n.id == id);
-  if (index == -1) throw Exception("Node not found");
-
-  // Get the node and ensure it's a VideoNodeData instance
-  VideoNodeData nodeData = _nodes[index] as VideoNodeData;
-
-  // Check if outputs are empty and initialize them
-  if (nodeData.outputs.isEmpty) {
-    nodeData = nodeData.copyWith(outputs: [VideoOutput(), VideoOutput(), VideoOutput()]);
-    print('no error');
-  }
-
-  // Ensure outputs have at least 3 items
-  while (nodeData.outputs.length < 3) {
-    nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
-  }
-
-  // Add a new output if the last output has non-empty text
-  if (!(nodeData.outputs.last as VideoOutput).outputText.isEmpty) {
-    nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
-  }
-
-  // Replace the node in the list with the updated node
-  _nodes[index] = nodeData;
-
-  // Notify listeners to rebuild the UI
-  // notifyListeners();
-}
 
   // Update output position for a specific node
   void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
@@ -128,7 +129,6 @@ void initializeOutputs(String id) {
       }
     }
   }
-
 
   // notifyListeners();
   // print('initialized');
@@ -205,6 +205,8 @@ void initializeOutputs(String id) {
     if (nodeIndex != _nodes.length - 1) {
       _nodes.removeAt(nodeIndex);
       _nodes.add(node);
+    } else {
+      return;
     }
 
     notifyListeners();
