@@ -3,12 +3,16 @@ import '../static_data/ui_static_properties.dart';
 import 'package:collection/collection.dart';
 
 abstract class NodeData {
-  Offset position;
+  final Offset position;
   final String id;
-  NodeData({
+
+  const NodeData({
     required this.position,
     required this.id,
   });
+
+  // Copy method to create a new instance with updated fields
+  NodeData copyWith({Offset? position});
 
 // @override
 // bool operator ==(Object other) {
@@ -24,21 +28,31 @@ abstract class NodeData {
 }
 
 abstract class BaseNodeData extends NodeData {
-  String? nodeName;
-  double nodeWidth;
-  bool isExpanded;
-  List<Output> outputs; //final?
-  int swatch;
-  Offset get inputOffsetFromTopLeft;
-  BaseNodeData(
-      {required super.position,
-      required super.id,
-      List<Output>? outputs,
-      this.nodeName,
-      this.isExpanded = false,
-      this.nodeWidth = UiStaticProperties.nodeDefaultWidth,
-      this.swatch = 0})
-      : outputs = outputs ?? <Output>[];
+  final String? nodeName;
+  final double nodeWidth;
+  final bool isExpanded;
+  final List<Output> outputs; // Must also be immutable
+  final int swatch;
+
+  const BaseNodeData({
+    required super.position,
+    required super.id,
+    this.nodeName,
+    this.nodeWidth = UiStaticProperties.nodeDefaultWidth,
+    this.isExpanded = false,
+    this.swatch = 0,
+    List<Output>? outputs,
+  }) : outputs = outputs ?? const <Output>[];
+
+  @override
+  BaseNodeData copyWith({
+    Offset? position,
+    String? nodeName,
+    double? nodeWidth,
+    bool? isExpanded,
+    List<Output>? outputs,
+    int? swatch,
+  });
 }
 
 class VideoNodeData extends BaseNodeData {
@@ -46,7 +60,7 @@ class VideoNodeData extends BaseNodeData {
   Map<String, dynamic> overrides;
 
   Offset get inputOffsetFromTopLeft => Offset(UiStaticProperties.nodePadding,
-      UiStaticProperties.nodePadding + nodeWidth * 9 / 16 + 10);
+      UiStaticProperties.nodePadding + UiStaticProperties.nodeDefaultWidth * 9 / 16 + 10);
 
   /// Set an override for a property
   void setOverride(String key, dynamic value) {
@@ -58,22 +72,7 @@ class VideoNodeData extends BaseNodeData {
     overrides.remove(key);
   }
 
-  void initializeOutputs() {
-    if (outputs.isEmpty) {
-      outputs.add(VideoOutput());
-      outputs.add(VideoOutput());
-      outputs.add(VideoOutput());
-      print('no error');
-    }
-    if (outputs.length < 3) {
-      while (outputs.length < 3) {
-        outputs.add(VideoOutput());
-      }
-    }
-    if (!(outputs[outputs.length - 1] as VideoOutput).outputText.isEmpty) {
-      outputs.add(VideoOutput());
-    }
-  }
+  
 
   /// Get the effective value of a property
 // dynamic getProperty(String key) {
@@ -95,32 +94,65 @@ class VideoNodeData extends BaseNodeData {
       super.isExpanded = false,
       super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
       super.swatch = 0});
+
+       @override
+  VideoNodeData copyWith({
+    Offset? position,
+    String? videoDataId,
+    Map<String, dynamic>? overrides,
+    String? nodeName,
+    double? nodeWidth,
+    bool? isExpanded,
+    int? swatch,
+    List<Output>? outputs,
+  }) {
+    return VideoNodeData(
+      position: position ?? this.position,
+      id: id,
+      videoDataId: videoDataId ?? this.videoDataId,
+      overrides: overrides ?? this.overrides,
+      nodeName: nodeName ?? this.nodeName,
+      nodeWidth: nodeWidth ?? this.nodeWidth,
+      isExpanded: isExpanded ?? this.isExpanded,
+      swatch: swatch ?? this.swatch,
+      outputs: outputs ?? this.outputs,
+    );
+  }
 }
 
 abstract class Output {
-  // double currentHeight;
-  // String optionText;
-  // GlobalKey? outputKey;
-  Offset outputOffsetFromTopLeft;
-  String? targetNodeId;
+  final Offset outputOffsetFromTopLeft;
+  final String? targetNodeId;
 
-  Output({
-    // required this.currentHeight,
-    // required this.optionText,
+  const Output({
     this.outputOffsetFromTopLeft = const Offset(0, 0),
     this.targetNodeId,
-    // this.outputKey,
   });
+
+  Output copyWith({Offset? outputOffsetFromTopLeft, String? targetNodeId});
 }
 
 class VideoOutput extends Output {
   final String outputText;
 
-  VideoOutput({
+  const VideoOutput({
     super.outputOffsetFromTopLeft,
-    this.outputText = '',
     super.targetNodeId,
+    this.outputText = '',
   });
+
+  @override
+  VideoOutput copyWith({
+    Offset? outputOffsetFromTopLeft,
+    String? targetNodeId,
+    String? outputText,
+  }) {
+    return VideoOutput(
+      outputOffsetFromTopLeft: outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
+      targetNodeId: targetNodeId ?? this.targetNodeId,
+      outputText: outputText ?? this.outputText,
+    );
+  }
 }
 
 class VideoData {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
 import 'package:nutria_fmv_maker/knot.dart';
+// import 'package:path/path.dart';
 import 'package:provider/provider.dart';
 
 import '../models/node_data.dart';
@@ -22,21 +23,25 @@ class VideoNode extends StatefulWidget {
 
 class _VideoNodeState extends State<VideoNode> {
   late Offset _dragPosition;
-  double _currentWidth = UiStaticProperties.nodeMinWidth;
+  double _currentWidth = UiStaticProperties.nodeDefaultWidth;
+  double _intendedWidth = UiStaticProperties.nodeDefaultWidth;
   GlobalKey _parentKey = GlobalKey(); // Key for the Positioned parent
   final List<GlobalKey> _childKeys = []; // Key for the Child
 
+  @override
   void initState() {
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      _getContainerPositionRelativeToParent(
-          _childKeys, context.read<NodesProvider>(), widget.nodeData.id);
+      setState(() {});
     });
     super.initState();
-    widget.nodeData.initializeOutputs();
-    int currentOutputs =
-        context.read<NodesProvider>().getEffectiveOutputs(widget.nodeData.id);
+
+    context.read<NodesProvider>().initializeOutputs(widget.nodeData.id);
+    _intendedWidth = widget.nodeData.nodeWidth;
+    // widget.nodeData.initializeOutputs();
+    // int currentOutputs =
+    //     context.read<NodesProvider>().getEffectiveOutputs(widget.nodeData.id);
     _dragPosition = widget.nodeData.position;
-    for (int i = 0; i < currentOutputs; i++) {
+    for (int i = 0; i < 10; i++) {
       _childKeys.add(GlobalKey());
     }
   }
@@ -44,15 +49,17 @@ class _VideoNodeState extends State<VideoNode> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-    final NodesProvider nodesProvider = context.read<NodesProvider>();
-    final VideoNodeData videoNodeData =
-        nodesProvider.getNodeById(widget.nodeData.id);
+
     {
       return Selector<NodesProvider, NodeData>(
-          selector: (context, provider) => nodesProvider
+          selector: (context, provider) => provider
               .getNodeById(widget.nodeData.id), // Only listen to this node
           builder: (context, node, child) {
             print('rebuilding ${widget.nodeData.id}');
+            // Important! these need to be within the selector to work properly
+            final NodesProvider nodesProvider = context.read<NodesProvider>();
+            final VideoNodeData videoNodeData =
+                nodesProvider.getNodeById(widget.nodeData.id) as VideoNodeData;
             return Positioned(
               key: _parentKey,
               top: _dragPosition.dy + (UiStaticProperties.topLeftToMiddle.dy),
@@ -63,8 +70,9 @@ class _VideoNodeState extends State<VideoNode> {
                 IgnorePointer(
                   child: SizedBox(
                     height: 1000,
-                    width: 500,
-                    // child: Container(color: Colors.black26),
+                    width: UiStaticProperties.nodeMaxWidth +
+                        UiStaticProperties.nodePadding * 2,
+                    child: Container(color: Colors.black26),
                   ),
                 ),
                 Positioned(
@@ -73,9 +81,9 @@ class _VideoNodeState extends State<VideoNode> {
                   child: GestureDetector(
                     // behavior: HitTestBehavior.translucent,
                     onPanUpdate: (details) {
-                      setState(() {
-                        _dragPosition += details.delta;
-                      });
+                      // setState(() {
+                      _dragPosition += details.delta;
+                      // });
                       nodesProvider.updateNodePosition(
                           videoNodeData.id, _dragPosition);
                     },
@@ -92,7 +100,9 @@ class _VideoNodeState extends State<VideoNode> {
                         children: [
                           //Swatch Strip on top
                           Container(
-                            height: theme.dSwatchHeight,
+                            padding: EdgeInsets.symmetric(
+                                vertical: theme.dSwatchHeight / 2,
+                                horizontal: theme.dPanelPadding + 8),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.only(
                                   topLeft:
@@ -100,6 +110,16 @@ class _VideoNodeState extends State<VideoNode> {
                                   topRight: Radius.circular(
                                       theme.dPanelBorderRadius)),
                               color: theme.cSwatches[videoNodeData.swatch],
+                            ),
+                            child: Container(
+                              alignment: Alignment.centerLeft,
+                              child: videoNodeData.nodeName != null
+                                  ? Text(
+                                      videoNodeData.nodeName!,
+                                      style:
+                                          TextStyle(color: theme.cBackground),
+                                    )
+                                  : Container(),
                             ),
                           ),
                           //Main node background
@@ -128,7 +148,7 @@ class _VideoNodeState extends State<VideoNode> {
                               children: [
                                 //thumbnail
                                 Container(
-                                  height: _currentWidth *
+                                  height: UiStaticProperties.nodeDefaultWidth *
                                       9 /
                                       16, //TODO allow for vertical aspect ratio
                                   child: Placeholder(
@@ -173,11 +193,14 @@ class _VideoNodeState extends State<VideoNode> {
                                                   Expanded(
                                                     child: NutriaTextfield(
                                                       onTap: () {
-                                                        _getContainerPositionRelativeToParent(
-                                                            _childKeys,
-                                                            context.read<
-                                                                NodesProvider>(),
-                                                            widget.nodeData.id);
+                                                        // setState(() {});
+                                                        WidgetsBinding.instance
+                                                            .addPostFrameCallback(
+                                                                (_) {
+                                                          setState(() {});
+                                                        });
+                                                        // nodesProvider.setActiveNode(videoNodeData.id);
+                                                        // print('tapped textfield');
                                                       },
                                                       index: index + 1,
                                                       text: (entry.value
@@ -197,12 +220,11 @@ class _VideoNodeState extends State<VideoNode> {
                                                           : Icons
                                                               .arrow_drop_down,
                                                       onTap: () {
-                                                        setState(() {
-                                                          nodesProvider
-                                                              .expandToggle(
-                                                                  videoNodeData
-                                                                      .id);
-                                                        });
+                                                        nodesProvider
+                                                            .expandToggle(
+                                                                videoNodeData
+                                                                    .id);
+                                                        // ;
                                                       },
                                                     ),
                                                   ],
@@ -266,7 +288,10 @@ class _VideoNodeState extends State<VideoNode> {
                                                     videoNodeData.id, index);
                                               },
                                               child: Container(
-                                                height: itemWidth,
+                                                height: itemWidth <
+                                                        theme.dButtonHeight
+                                                    ? itemWidth
+                                                    : theme.dButtonHeight,
                                                 width: itemWidth,
                                                 margin: EdgeInsets.zero,
                                                 decoration: BoxDecoration(
@@ -297,14 +322,14 @@ class _VideoNodeState extends State<VideoNode> {
                                       height: theme.dPanelPadding,
                                     ),
                                     Text(
-                                      'Node ID: ${widget.nodeData.id}',
+                                      'Node ID: ${videoNodeData.id}',
                                       style: TextStyle(color: theme.cText),
                                     ),
                                     SizedBox(
                                       height: theme.dPanelPadding,
                                     ),
                                     Text(
-                                      'Position: ${_dragPosition.toString()}',
+                                      'Position: ${videoNodeData.position.toString()}',
                                       style: TextStyle(color: theme.cText),
                                     ),
                                   ],
@@ -316,9 +341,67 @@ class _VideoNodeState extends State<VideoNode> {
                     ),
                   ),
                 ),
+                Positioned(
+                  top: UiStaticProperties.nodePadding,
+                  left: videoNodeData.nodeWidth +
+                      UiStaticProperties.nodePadding -
+                      theme.dPanelPadding,
+                  width: theme.dPanelPadding, //todo add value that makes sense
+                  height: 200, //todo add value that makes sense
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.resizeLeftRight,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        _currentWidth = _getWidthFromDrag(details.delta);
+
+                        nodesProvider.updateNodeWidth(
+                            videoNodeData.id, _currentWidth);
+                      },
+                      onPanEnd: (details) {
+                        _intendedWidth = _currentWidth;
+                      },
+                      child: Container(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+                //left resizer
+                Positioned(
+                  top: UiStaticProperties.nodePadding,
+                  left: UiStaticProperties.nodePadding,
+                  width: theme.dPanelPadding, //todo add value that makes sense
+                  height: 200, //todo add value that makes sense
+                  child: MouseRegion(
+                    cursor: SystemMouseCursors.resizeLeftRight,
+                    child: GestureDetector(
+                      onPanUpdate: (details) {
+                        double previousWidth = _currentWidth;
+
+                        // Update the width
+                        _currentWidth = _getWidthFromDrag(-details.delta);
+
+                        // Update the position to keep the box aligned correctly
+                        double widthDelta = _currentWidth - previousWidth;
+                        _dragPosition -= Offset(widthDelta, 0);
+                        nodesProvider.updateNodeWidth(
+                            videoNodeData.id, _currentWidth);
+                        nodesProvider.updateNodePosition(
+                            videoNodeData.id, _dragPosition);
+                      },
+                      onPanEnd: (details) {
+                        _intendedWidth = _currentWidth;
+                      },
+                      child: Container(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+
                 Knot(offset: videoNodeData.inputOffsetFromTopLeft),
                 // Knot(
-                //   offset: _getContainerPositionRelativeToParent(_childKeys[0]),
+                //   offset: _getContainerPwidgetositionRelativeToParent(_childKeys[0]),
                 // ),
                 ...videoNodeData.outputs.asMap().entries.map((entry) {
                   int index = entry.key;
@@ -329,7 +412,8 @@ class _VideoNodeState extends State<VideoNode> {
                   // _getContainerPositionRelativeToParent(_childKeys[index])
                   if (!isLast) {
                     return Knot(
-                      offset: output.outputOffsetFromTopLeft,
+                      offset: _getContainerPositionRelativeToParent(
+                          _childKeys[index]),
                     );
                   } else {
                     return Container();
@@ -341,34 +425,56 @@ class _VideoNodeState extends State<VideoNode> {
     }
   }
 
-  void _getContainerPositionRelativeToParent(
-      List<GlobalKey> keys, NodesProvider nodesProvider, String id) {
-    // Get the RenderBox of the container (target widget)
-    keys.forEach((key) {
-      final RenderBox containerRenderBox =
-          key.currentContext?.findRenderObject() as RenderBox;
-      final RenderBox parentRenderBox =
-          _parentKey.currentContext?.findRenderObject() as RenderBox;
+  double _getWidthFromDrag(Offset delta) {
+    _intendedWidth += delta.dx;
 
-      if (containerRenderBox != null && parentRenderBox != null) {
-        // Get the global position of the container
-        final containerGlobalPosition =
-            containerRenderBox.localToGlobal(Offset.zero);
-        // Get the global position of the parent (Positioned widget)
-        final parentGlobalPosition = parentRenderBox.localToGlobal(Offset.zero);
+    if (_intendedWidth < UiStaticProperties.nodeMinWidth) {
+      return UiStaticProperties.nodeMinWidth;
+    }
 
-        final relativePosition = containerGlobalPosition -
-            parentGlobalPosition +
-            Offset(
-                (nodesProvider.getNodeById(id) as VideoNodeData).nodeWidth - 8,
-                50 / 2);
-        // Calculate the position relative to the parent by subtracting
+    if (_intendedWidth > UiStaticProperties.nodeMaxWidth) {
+      return UiStaticProperties.nodeMaxWidth;
+    }
 
-        final index = keys.indexOf(key);
-        nodesProvider.updateOutputPosition(id, index, relativePosition);
-      }
-    });
-    // List<Offset>
-    // return Offset.zero;
+    if ((_intendedWidth - UiStaticProperties.nodeDefaultWidth).abs() <= 20) {
+      //TODO de-hardcode
+      return UiStaticProperties.nodeDefaultWidth;
+    }
+
+    return _intendedWidth;
+  }
+
+  Offset _getPositionOffsetFromDrag(Offset delta) {
+    _intendedWidth += delta.dx;
+
+    if (_intendedWidth < UiStaticProperties.nodeMinWidth) {
+      return Offset.zero;
+    }
+
+    if (_intendedWidth > UiStaticProperties.nodeMaxWidth) {
+      return Offset.zero;
+    }
+
+    // if ((_intendedWidth - UiStaticProperties.nodeDefaultWidth).abs() <= 20) { //TODO de-hardcode
+    //   return Offset.zero;
+    // }
+
+    return Offset(delta.dx, 0);
+  }
+
+  Offset _getContainerPositionRelativeToParent(GlobalKey key) {
+    final RenderBox? containerRenderBox =
+        key.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? parentRenderBox =
+        _parentKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (containerRenderBox != null && parentRenderBox != null) {
+      final containerGlobalPosition =
+          containerRenderBox.globalToLocal(Offset.zero);
+      final parentGlobalPosition = parentRenderBox.globalToLocal(Offset.zero);
+
+      return -(containerGlobalPosition - parentGlobalPosition);
+    }
+    return Offset.zero;
   }
 }
