@@ -15,7 +15,7 @@ class NodesProvider extends ChangeNotifier {
         VideoOutput(outputText: 'First text'),
         VideoOutput(outputText: 'First text'),
       ],
-      nodeName: 'First node',
+      nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
     ),
     VideoNodeData(
       id: 'bbb',

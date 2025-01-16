@@ -57,7 +57,8 @@ class _VideoNodeState extends State<VideoNode> {
           selector: (context, provider) => provider
               .getNodeById(widget.nodeData.id), // Only listen to this node
           builder: (context, node, child) {
-            print('rebuilding ${widget.nodeData.id}');
+            print(
+                'rebuilding ${widget.nodeData.id}'); //DEBUG to check when nodes rebuild
             // Important! these need to be within the selector to work properly
             final NodesProvider nodesProvider = context.read<NodesProvider>();
             final VideoNodeData videoNodeData =
@@ -83,9 +84,7 @@ class _VideoNodeState extends State<VideoNode> {
                   child: GestureDetector(
                     // behavior: HitTestBehavior.translucent,
                     onPanUpdate: (details) {
-                      // setState(() {
                       _dragPosition += details.delta;
-                      // });
                       nodesProvider.updateNodePosition(
                           videoNodeData.id, _dragPosition);
                     },
@@ -101,43 +100,11 @@ class _VideoNodeState extends State<VideoNode> {
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           //Swatch Strip on top
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                vertical: theme.dSwatchHeight / 2,
-                                horizontal: theme.dPanelPadding + 8),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.only(
-                                  topLeft:
-                                      Radius.circular(theme.dPanelBorderRadius),
-                                  topRight: Radius.circular(
-                                      theme.dPanelBorderRadius)),
-                              color: theme.cSwatches[videoNodeData.swatch],
-                            ),
-                            child: IgnorePointer(
-                              child: Container(
-                                alignment: Alignment.centerLeft,
-                                child: videoNodeData.nodeName != null
-                                    ? TextField(
-                                        controller: _nameTextEditingController
-                                          ..text = videoNodeData.nodeName!,
-                                        style: TextStyle(
-                                          color: theme.cText,
-                                          fontVariations: [
-                                            FontVariation('wght', 700)
-                                          ],
-                                        ),
-                                        decoration: InputDecoration(
-                                          isDense: true,
-                                          border: InputBorder.none,
-                                        ),
-                                        onSubmitted: (newValue) {
-                                          // nodesProvider.updateNodeName(videoNodeData.id, newValue);
-                                        },
-                                      )
-                                    : Container(),
-                              ),
-                            ),
-                          ),
+                          NodeSwatchStrip(
+                              theme: theme,
+                              videoNodeData: videoNodeData,
+                              nameTextEditingController:
+                                  _nameTextEditingController),
                           //Main node background
                           Container(
                             decoration: BoxDecoration(
@@ -163,15 +130,14 @@ class _VideoNodeState extends State<VideoNode> {
                             child: Column(
                               children: [
                                 //thumbnail
-                                Container(
-                                  height: UiStaticProperties.nodeDefaultWidth *
-                                      9 /
-                                      16, //TODO allow for vertical aspect ratio
-                                  child: Placeholder(
-                                    strokeWidth: 2,
-                                  ),
-                                ),
+                                NodeVideoThumbnail(),
                                 //under thumbnail
+                                //video file name
+                                NodeVideoFileNameText(
+                                    videoNodeData: videoNodeData,
+                                    nodesProvider: nodesProvider,
+                                    theme: theme),
+
                                 FocusScope(
                                   //this makes it so the tab key only cycles through the current node's inputs
                                   child: Container(
@@ -179,15 +145,6 @@ class _VideoNodeState extends State<VideoNode> {
                                         EdgeInsets.all(theme.dPanelPadding),
                                     child: Column(
                                       children: [
-                                        //video file name
-                                        Text(
-                                          videoNodeData
-                                              .getVideoData(
-                                                  nodesProvider.videos)!
-                                              .fileName, //TODO handle null
-                                          textAlign: TextAlign.center,
-                                          style: TextStyle(color: theme.cText),
-                                        ),
                                         //sizedbox for spacing
                                         SizedBox(
                                           height: theme.dPanelPadding,
@@ -368,6 +325,13 @@ class _VideoNodeState extends State<VideoNode> {
                                       'Position: ${videoNodeData.position.toString()}',
                                       style: TextStyle(color: theme.cText),
                                     ),
+                                    SizedBox(
+                                      height: theme.dPanelPadding,
+                                    ),
+                                    Text(
+                                      'Output Position: ${videoNodeData.outputs[0].outputOffsetFromTopLeft.toString()}',
+                                      style: TextStyle(color: theme.cText),
+                                    ),
                                   ],
                                 ],
                               ),
@@ -392,9 +356,9 @@ class _VideoNodeState extends State<VideoNode> {
 
                         nodesProvider.updateNodeWidth(
                             videoNodeData.id, _currentWidth);
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          setState(() {});
-                        });
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //   setState(() {});
+                        // });
                       },
                       onPanEnd: (details) {
                         _intendedWidth = _currentWidth;
@@ -429,9 +393,9 @@ class _VideoNodeState extends State<VideoNode> {
                         nodesProvider.updateNodePosition(
                             videoNodeData.id, _dragPosition);
                         setState(() {});
-                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                          setState(() {});
-                        });
+                        // WidgetsBinding.instance.addPostFrameCallback((_) {
+                        //   setState(() {});
+                        // });
                       },
                       onPanEnd: (details) {
                         _intendedWidth = _currentWidth;
@@ -522,5 +486,98 @@ class _VideoNodeState extends State<VideoNode> {
       return -(containerGlobalPosition - parentGlobalPosition);
     }
     return Offset.zero;
+  }
+}
+
+class NodeVideoFileNameText extends StatelessWidget {
+  const NodeVideoFileNameText({
+    super.key,
+    required this.videoNodeData,
+    required this.nodesProvider,
+    required this.theme,
+  });
+
+  final VideoNodeData videoNodeData;
+  final NodesProvider nodesProvider;
+  final AppTheme theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Text(
+      videoNodeData
+          .getVideoData(nodesProvider.videos)!
+          .fileName, //TODO handle null
+      textAlign: TextAlign.center,
+      style: TextStyle(color: theme.cText),
+    );
+  }
+}
+
+class NodeVideoThumbnail extends StatelessWidget {
+  const NodeVideoThumbnail({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: UiStaticProperties.nodeDefaultWidth *
+          9 /
+          16, //TODO allow for vertical aspect ratio
+      child: Placeholder(
+        strokeWidth: 2,
+      ),
+    );
+  }
+}
+
+class NodeSwatchStrip extends StatelessWidget {
+  const NodeSwatchStrip({
+    super.key,
+    required this.theme,
+    required this.videoNodeData,
+    required TextEditingController nameTextEditingController,
+  }) : _nameTextEditingController = nameTextEditingController;
+
+  final AppTheme theme;
+  final VideoNodeData videoNodeData;
+  final TextEditingController _nameTextEditingController;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(
+          vertical: theme.dSwatchHeight / 2,
+          horizontal: theme.dPanelPadding + 8),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(theme.dPanelBorderRadius),
+            topRight: Radius.circular(theme.dPanelBorderRadius)),
+        color: theme.cSwatches[videoNodeData.swatch],
+      ),
+      child: IgnorePointer(
+        child: Container(
+          alignment: Alignment.centerLeft,
+          child: videoNodeData.nodeName != null
+              ? TextField(
+                  controller: _nameTextEditingController
+                    ..text = videoNodeData.nodeName!,
+                  style: TextStyle(
+                    overflow: TextOverflow.ellipsis,
+                    color: theme.cText,
+                    fontVariations: [FontVariation('wght', 700)],
+                  ),
+                  decoration: InputDecoration(
+                    isDense: true,
+                    border: InputBorder.none,
+                  ),
+                  onSubmitted: (newValue) {
+                    // nodesProvider.updateNodeName(videoNodeData.id, newValue);
+                  },
+                )
+              : Container(),
+        ),
+      ),
+    );
   }
 }
