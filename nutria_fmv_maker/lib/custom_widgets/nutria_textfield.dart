@@ -6,9 +6,9 @@ import '../providers/theme_provider.dart';
 class NutriaTextfield extends StatefulWidget {
   final int index;
   final String? text;
-  final VoidCallback? onTap;
+  final VoidCallback? onChanged;
   const NutriaTextfield(
-      {super.key, this.index = 1, this.text, this.onTap}); //TODO de-hardcode
+      {super.key, this.index = 1, this.text, this.onChanged}); //TODO de-hardcode
 
   @override
   State<NutriaTextfield> createState() => _NutriaTextfieldState();
@@ -51,8 +51,8 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     return TextField(
       controller: myController,
       onChanged: (String currentText) {
-        if (widget.onTap != null) {
-          widget.onTap!();
+        if (widget.onChanged != null) {
+          widget.onChanged!();
         }
         setState(() {
           final RenderBox box =

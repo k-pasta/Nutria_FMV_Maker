@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import '../models/node_data.dart';
 
 class NodesProvider extends ChangeNotifier {
@@ -51,33 +52,46 @@ class NodesProvider extends ChangeNotifier {
   String? activeNodeId;
 
   // Get a node by its ID
-  NodeData getNodeById(String id) {
-    return _nodes.firstWhere(
+  T getNodeById<T extends NodeData>(String id) {
+    final node = _nodes.firstWhere(
       (n) => n.id == id,
       orElse: () => throw Exception("Node not found"),
     );
+
+    if (node is T) {
+      return node;
+    } else {
+      throw Exception("Node is not of type ${T.runtimeType}");
+    }
   }
 
-  void updateNodeWidth(String id, double width) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-    if (nodeIndex == -1) {
+  int getNodeIndexById(String id) {
+    final index = _nodes.indexWhere((n) => n.id == id);
+    if (index == -1) {
       throw Exception("Node not found");
     }
-
-    final node = _nodes[nodeIndex];
-    if (node is BaseNodeData) {
-      final updatedNode = node.copyWith(nodeWidth: width);
-      _nodes[nodeIndex] = updatedNode;
-      notifyListeners();
-    } else {
-      throw Exception("Node is not BaseNodeData");
-    }
+    return index;
   }
 
+  // void updateNodeWidth(String id, double width) {
+  //   final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+
+  //   if (nodeIndex == -1) {
+  //     throw Exception("Node not found");
+  //   }
+
+  //   final node = _nodes[nodeIndex];
+  //   if (node is BaseNodeData) {
+  //     final updatedNode = node.copyWith(nodeWidth: width);
+  //     _nodes[nodeIndex] = updatedNode;
+  //     notifyListeners();
+  //   } else {
+  //     throw Exception("Node is not BaseNodeData");
+  //   }
+  // }
+
   void initializeOutputs(String id) {
-    int index = _nodes.indexWhere((n) => n.id == id);
-    if (index == -1) throw Exception("Node not found");
+    int index = getNodeIndexById(id);
 
     // Get the node and ensure it's a VideoNodeData instance
     VideoNodeData nodeData = _nodes[index] as VideoNodeData;
@@ -86,21 +100,17 @@ class NodesProvider extends ChangeNotifier {
     if (nodeData.outputs.isEmpty) {
       nodeData = nodeData
           .copyWith(outputs: [VideoOutput(), VideoOutput(), VideoOutput()]);
-      print('no error');
     }
-
     // Ensure outputs have at least 3 items
     while (nodeData.outputs.length < 3) {
       nodeData =
           nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
     }
-
     // Add a new output if the last output has non-empty text
     if (!(nodeData.outputs.last as VideoOutput).outputText.isEmpty) {
       nodeData =
           nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
     }
-
     // Replace the node in the list with the updated node
     _nodes[index] = nodeData;
 
@@ -110,11 +120,7 @@ class NodesProvider extends ChangeNotifier {
 
   // Update output position for a specific node
   void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-    if (nodeIndex == -1) {
-      throw Exception("Node not found");
-    }
+    int nodeIndex = getNodeIndexById(id);
 
     final node = _nodes[nodeIndex];
     if (node is VideoNodeData) {
@@ -130,25 +136,6 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  // notifyListeners();
-  // print('initialized');
-
-//   // Get the effective number of outputs for a node
-  // int getEffectiveOutputs(String id) {
-  //   final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-  //   if (nodeIndex == -1) {
-  //     throw Exception("Node not found");
-  //   }
-
-  //   final node = _nodes[nodeIndex];
-  //   if (node is VideoNodeData) {
-  //     return node.outputs.length > 2 ? node.outputs.length : 2;
-  //   } else {
-  //     throw Exception("Node is not VideoNode");
-  //   }
-  // }
-
 //   // Add a new node to the provider
 //   void addNode(NodeData node) {
 //     _nodes.add(node);
@@ -158,30 +145,21 @@ class NodesProvider extends ChangeNotifier {
 
   // Toggle the 'expanded' state of a node
   void expandToggle(String id) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-    if (nodeIndex == -1) {
-      throw Exception("Node not found");
-    }
-
+    int nodeIndex = getNodeIndexById(id);
     final node = _nodes[nodeIndex];
+
     if (node is BaseNodeData) {
       final updatedNode = node.copyWith(isExpanded: !node.isExpanded);
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
-      print('expanded');
     }
   }
 
   // Set the 'swatch' property for a node
   void setSwatch(String id, int swatch) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-    if (nodeIndex == -1) {
-      throw Exception("Node not found");
-    }
-
+    int nodeIndex = getNodeIndexById(id);
     final node = _nodes[nodeIndex];
+
     if (node is BaseNodeData) {
       final updatedNode = node.copyWith(swatch: swatch);
       _nodes[nodeIndex] = updatedNode;
@@ -191,40 +169,127 @@ class NodesProvider extends ChangeNotifier {
 
   // Set the active node by its ID
   void setActiveNode(String id) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
-
-    if (nodeIndex == -1) {
-      throw Exception("Node not found");
-    }
-
-    activeNodeId = id;
-
+    int nodeIndex = getNodeIndexById(id);
     final node = _nodes[nodeIndex];
 
     // If the node is not already at the bottom of the list, move it
     if (nodeIndex != _nodes.length - 1) {
       _nodes.removeAt(nodeIndex);
       _nodes.add(node);
-    } else {
-      return;
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
-  // Update the position of a node
-  void updateNodePosition(String id, Offset newPosition) {
-    final nodeIndex = _nodes.indexWhere((n) => n.id == id);
+  // Update the position of a node. Out of use currently.
+  // void updateNodePosition(String id, Offset newPosition) {
+  //   int nodeIndex = getNodeIndexById(id);
+  //   final node = _nodes[nodeIndex];
 
-    if (nodeIndex == -1) {
-      throw Exception("Node not found");
+  //   final updatedNode = node.copyWith(position: newPosition);
+
+  //   _nodes[nodeIndex] = updatedNode;
+  //   notifyListeners();
+  // }
+
+  void offsetNodePosition(String id, Offset offset, {bool snapToGrid = false}) {
+    int nodeIndex = getNodeIndexById(id);
+    final node = _nodes[nodeIndex];
+
+    //Grid offset to make nodes snap to the corners of the dot pattern
+    final double gridOffset =
+        -UiStaticProperties.nodePadding - UiStaticProperties.topLeftToMiddle.dx;
+    // Hardcoded grid size (TODO expose)
+    const double gridSize = 50;
+
+    Offset? newPosition;
+    // Update intended position freely, without snapping
+    Offset newIntendedPosition = node.intendedPosition + offset;
+    // If snapping is enabled, snap the new intended position to the grid
+    if (snapToGrid) {
+      newPosition = Offset(
+        ((newIntendedPosition.dx - gridOffset) / gridSize).round() * gridSize +
+            gridOffset,
+        ((newIntendedPosition.dy - gridOffset) / gridSize).round() * gridSize +
+            gridOffset,
+      );
+    } else {
+      newPosition = newIntendedPosition;
     }
 
-    final node = _nodes[nodeIndex];
-    final updatedNode = node.copyWith(position: newPosition);
+    // Create the updated node
+    final updatedNode = node.copyWith(
+        intendedPosition: newIntendedPosition, position: newPosition);
 
+    //update the node list
     _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
+
+    // Only trigger UI changes if position changed
+    if (newPosition != node.position) {
+      notifyListeners();
+    }
+  }
+
+  void resizeNode(String id, Offset delta, bool isLeftSide) {
+    double _getWidthFromDrag(
+        double newIntendedNodeWidth, double widthSnappingAreaSize) {
+      if (newIntendedNodeWidth < UiStaticProperties.nodeMinWidth) {
+        return UiStaticProperties.nodeMinWidth;
+      }
+
+      if (newIntendedNodeWidth > UiStaticProperties.nodeMaxWidth) {
+        return UiStaticProperties.nodeMaxWidth;
+      }
+
+      if ((newIntendedNodeWidth - UiStaticProperties.nodeDefaultWidth).abs() <=
+          widthSnappingAreaSize) {
+        //TODO de-hardcode
+        return UiStaticProperties.nodeDefaultWidth;
+      }
+      return newIntendedNodeWidth;
+    }
+
+    // Offset _getPositionOffsetFromDrag(Offset delta) {
+    //   intendedWidth += delta.dx;
+
+    //   if (intendedWidth < UiStaticProperties.nodeMinWidth) {
+    //     return Offset.zero;
+    //   }
+
+    //   if (intendedWidth > UiStaticProperties.nodeMaxWidth) {
+    //     return Offset.zero;
+    //   }
+
+    //   // if ((_intendedWidth - UiStaticProperties.nodeDefaultWidth).abs() <= 20) { //TODO de-hardcode
+    //   //   return Offset.zero;
+    //   // }
+
+    //   return Offset(delta.dx, 0);
+    // }
+
+    int nodeIndex = getNodeIndexById(id);
+    BaseNodeData node = _nodes[nodeIndex] as BaseNodeData;
+
+    double defaultWidthSnappingAreaSize = 20;
+    double newIntendedNodeWidth = isLeftSide
+        ? node.intendedNodeWidth - delta.dx
+        : node.intendedNodeWidth + delta.dx;
+    double newNodeWidth =
+        _getWidthFromDrag(newIntendedNodeWidth, defaultWidthSnappingAreaSize);
+
+    // Create the updated node
+    final updatedNode = node.copyWith(
+        intendedNodeWidth: newIntendedNodeWidth, nodeWidth: newNodeWidth);
+
+    //update the node list
+    _nodes[nodeIndex] = updatedNode;
+
+    // Only trigger UI changes if width changed
+    if (newNodeWidth != node.nodeWidth) {
+      if (isLeftSide) {
+        offsetNodePosition(id, Offset(node.nodeWidth - newNodeWidth,0));
+      }
+      notifyListeners();
+    }
   }
 
   // Remove a node from the list
