@@ -6,11 +6,13 @@ abstract class NodeData {
   final Offset position;
   final String id;
   final Offset intendedPosition; // Always initialized and non-null
+  final bool isSelected;
 
   const NodeData({
     required this.position,
     required this.id,
     Offset? intendedPosition, // Nullable parameter
+    this.isSelected = false,
   }) : intendedPosition = intendedPosition ?? position;
 
   // Copy method to create a new instance with updated fields
@@ -67,12 +69,6 @@ class VideoNodeData extends BaseNodeData {
   final String videoDataId;
   Map<String, dynamic> overrides;
 
-  Offset get inputOffsetFromTopLeft => Offset(
-      UiStaticProperties.nodePadding,
-      UiStaticProperties.nodePadding +
-          UiStaticProperties.nodeDefaultWidth * 9 / 16 +
-          10);
-
   /// Set an override for a property
   void setOverride(String key, dynamic value) {
     overrides[key] = value;
@@ -82,11 +78,6 @@ class VideoNodeData extends BaseNodeData {
   void removeOverride(String key) {
     overrides.remove(key);
   }
-
-  /// Get the effective value of a property
-// dynamic getProperty(String key) {
-// return overrides.containsKey(key) ? overrides[key] : projectSettings.getDefault(key);
-// }
 
   ///Get the video data for this node
   VideoData? getVideoData(List<VideoData> videoList) {
@@ -109,7 +100,7 @@ class VideoNodeData extends BaseNodeData {
 @override
 VideoNodeData copyWith({
   Offset? position,
-  Offset? intendedPosition, // Add intendedPosition to the copyWith parameters
+  Offset? intendedPosition, 
   String? videoDataId,
   Map<String, dynamic>? overrides,
   String? nodeName,
@@ -120,53 +111,37 @@ VideoNodeData copyWith({
   List<Output>? outputs,
 }) {
   return VideoNodeData(
-    position: position ?? this.position, // Use provided position or fallback to current position
-    intendedPosition: intendedPosition ?? this.intendedPosition, // Use provided intendedPosition or fallback to current intendedPosition
-    id: id, // id is not optional, so we just pass the current id
-    videoDataId: videoDataId ?? this.videoDataId, // Use provided videoDataId or fallback to current videoDataId
-    overrides: overrides ?? this.overrides, // Use provided overrides or fallback to current overrides
-    nodeName: nodeName ?? this.nodeName, // Use provided nodeName or fallback to current nodeName
-    nodeWidth: nodeWidth ?? this.nodeWidth, // Use provided nodeWidth or fallback to current nodeWidth
-    intendedNodeWidth: intendedNodeWidth ?? this.intendedNodeWidth, // Use provided nodeWidth or fallback to current nodeWidth
-    isExpanded: isExpanded ?? this.isExpanded, // Use provided isExpanded or fallback to current isExpanded
-    swatch: swatch ?? this.swatch, // Use provided swatch or fallback to current swatch
-    outputs: outputs ?? this.outputs, // Use provided outputs or fallback to current outputs
+    position: position ?? this.position,
+    intendedPosition: intendedPosition ?? this.intendedPosition,
+    id: id,
+    videoDataId: videoDataId ?? this.videoDataId,
+    overrides: overrides ?? this.overrides,
+    nodeName: nodeName ?? this.nodeName,
+    nodeWidth: nodeWidth ?? this.nodeWidth,
+    intendedNodeWidth: intendedNodeWidth ?? this.intendedNodeWidth,
+    isExpanded: isExpanded ?? this.isExpanded,
+    swatch: swatch ?? this.swatch,
+    outputs: outputs ?? this.outputs,
   );
 }
 }
 
-abstract class Output {
+class Output {
   final Offset outputOffsetFromTopLeft;
   final String? targetNodeId;
+  final Object? outputData;
 
   const Output({
     this.outputOffsetFromTopLeft = const Offset(0, 0),
     this.targetNodeId,
+    this.outputData
   });
 
-  Output copyWith({Offset? outputOffsetFromTopLeft, String? targetNodeId});
-}
-
-class VideoOutput extends Output {
-  final String outputText;
-
-  const VideoOutput({
-    super.outputOffsetFromTopLeft,
-    super.targetNodeId,
-    this.outputText = '',
-  });
-
-  @override
-  VideoOutput copyWith({
-    Offset? outputOffsetFromTopLeft,
-    String? targetNodeId,
-    String? outputText,
-  }) {
-    return VideoOutput(
-      outputOffsetFromTopLeft:
-          outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
+  Output copyWith({Offset? outputOffsetFromTopLeft, String? targetNodeId, Object? outputData}) {
+    return Output(
+      outputOffsetFromTopLeft: outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
       targetNodeId: targetNodeId ?? this.targetNodeId,
-      outputText: outputText ?? this.outputText,
+      outputData: outputData ?? this.outputData,
     );
   }
 }

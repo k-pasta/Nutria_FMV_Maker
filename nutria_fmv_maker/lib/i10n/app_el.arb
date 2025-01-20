@@ -3,5 +3,6 @@
   "menuBarEdit": "Επεξεργασία",
   "menuBarFile": "Αρχείο",
   "menuBarHelp": "Βοήθεια",
-  "menuBarView": "Προβολή"
+  "menuBarView": "Προβολή",
+  "videoNodeChoice": "Επιλογή"
 }

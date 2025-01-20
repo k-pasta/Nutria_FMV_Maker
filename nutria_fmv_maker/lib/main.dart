@@ -82,13 +82,14 @@ class MyHomePage extends StatelessWidget {
       // ),
 
       body: GridCanvas(),
+            // body: const InternationalisationExample(),
       // body: ThumbnailExample()
     );
   }
 }
 
       // body: GridCanvas(),
-      // body: const InternationalisationExample(),
+
       // body: MyMenuBar()
       // body: CustomNodesExample()
       // body: SizedBox(

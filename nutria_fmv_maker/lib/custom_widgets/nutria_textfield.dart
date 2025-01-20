@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/theme_provider.dart';
 
 class NutriaTextfield extends StatefulWidget {
   final int index;
   final String? text;
-  final VoidCallback? onChanged;
+  final ValueChanged<String>? onChanged;
   const NutriaTextfield(
       {super.key, this.index = 1, this.text, this.onChanged}); //TODO de-hardcode
 
@@ -17,10 +18,11 @@ class NutriaTextfield extends StatefulWidget {
 class _NutriaTextfieldState extends State<NutriaTextfield> {
   late FocusNode _focusNode;
 
-  @override
-  final TextEditingController myController = TextEditingController();
-  int numLines = 1;
 
+  final TextEditingController myController = TextEditingController();
+  // int numLines = 1;
+
+  @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
@@ -52,15 +54,16 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
       controller: myController,
       onChanged: (String currentText) {
         if (widget.onChanged != null) {
-          widget.onChanged!();
+          widget.onChanged!(currentText);
         }
-        setState(() {
-          final RenderBox box =
-              context.findRenderObject() as RenderBox; //TODO expose to provider
-          // print(box.size.height);
-          // print(numLines);
-          numLines = '\n'.allMatches(currentText).length + 1;
-        });
+
+        // setState(() {
+        //   // final RenderBox box =
+        //   //     context.findRenderObject() as RenderBox; //TODO expose to provider
+        //   // print(box.size.height);
+        //   // print(numLines);
+        //   // numLines = '\n'.allMatches(currentText).length + 1;
+        // });
       },
       onTap: () {
         // print('tapped');
@@ -79,8 +82,8 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         contentPadding: EdgeInsets.symmetric(
             vertical: (theme.dButtonHeight - 16) / 2,
             horizontal: 8.0), // TODO de-hardcode
-        counterText: "", //disables max character counter
-        hintText: 'option ${widget.index} ...',
+        counterText: '', //disables max character counter
+        hintText: '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
         hintStyle:
             TextStyle(color: theme.cTextInactive, fontWeight: FontWeight.normal
                 // color: olors.red,

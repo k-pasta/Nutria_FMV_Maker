@@ -3,5 +3,6 @@
   "menuBarEdit": "Edition",
   "menuBarFile": "Fichier",
   "menuBarHelp": "Aide",
-  "menuBarView": "Afficage"
+  "menuBarView": "Afficage",
+  "videoNodeChoice": "Choix"
 }

@@ -1,9 +1,9 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'static_data/ui_static_properties.dart';
+import '../../static_data/ui_static_properties.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import '../../../providers/theme_provider.dart';
 
 class Knot extends StatefulWidget {
   final double _sizeLarge = UiStaticProperties.knotSizeLarge;

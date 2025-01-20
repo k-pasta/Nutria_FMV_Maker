@@ -38,9 +38,15 @@ class NodeResizeHandle extends StatelessWidget {
         child: GestureDetector(
           onPanUpdate: (details) {
             nodesProvider.resizeNode(nodeData.id, details.delta, isLeftSide);
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              context.read<NodesProvider>().rebuildNode(nodeData.id);
+            });
           },
-          onPanEnd: (details) {
-            //
+          onPanEnd: (_) {
+            nodesProvider.resetNodeIntendedValues(nodeData.id);
+          },
+          onPanCancel: () {
+            nodesProvider.resetNodeIntendedValues(nodeData.id);
           },
           child: Container(
             color: Colors.transparent, //needs this in order to detect gestures

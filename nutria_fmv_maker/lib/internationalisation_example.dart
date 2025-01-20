@@ -15,7 +15,7 @@ class InternationalisationExample extends StatelessWidget {
         child: Column(
           children: [
             // Display a localized string using AppLocalizations
-            Text(AppLocalizations.of(context)!.helloWorld),
+            Text(AppLocalizations.of(context)!.helloWorld, style: TextStyle(color: Colors.white),),
             // IconButton to change the locale when pressed
             IconButton(
               onPressed: () {

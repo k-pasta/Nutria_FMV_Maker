@@ -10,11 +10,11 @@ class NodesProvider extends ChangeNotifier {
       position: const Offset(0, 0),
       videoDataId: 'a',
       isExpanded: false,
-      outputs: <VideoOutput>[
-        VideoOutput(outputText: 'First text'),
-        VideoOutput(outputText: 'First text'),
-        VideoOutput(outputText: 'First text'),
-        VideoOutput(outputText: 'First text'),
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
       ],
       nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
     ),
@@ -22,23 +22,40 @@ class NodesProvider extends ChangeNotifier {
       id: 'bbb',
       position: const Offset(150, 250),
       videoDataId: 'a',
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+      ],
     ),
     VideoNodeData(
       id: 'ccc',
       position: const Offset(150, 20),
       videoDataId: 'a',
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+      ],
     ),
     VideoNodeData(
       id: 'ddd',
       position: const Offset(150, 20),
       videoDataId: 'a',
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+        Output(outputData: ''),
+        Output(outputData: ''),
+        Output(outputData: ''),
+        Output(outputData: ''),
+      ],
     ),
   ];
 
   // Getter for nodes (returns an immutable list)
   List<NodeData> get nodes => List.unmodifiable(_nodes);
 
-  // Getter for videos (returns an immutable list)
+  List<NodeData> get selectedNodes =>
+      _nodes.where((node) => node.isSelected).toList();
+
+// Getter for videos (returns an immutable list)
   final List<VideoData> _videos = [
     VideoData(id: 'a', videoDataPath: 'test/test.test.test'),
     VideoData(id: 'b', videoDataPath: ''),
@@ -92,30 +109,67 @@ class NodesProvider extends ChangeNotifier {
 
   void initializeOutputs(String id) {
     int index = getNodeIndexById(id);
-
-    // Get the node and ensure it's a VideoNodeData instance
     VideoNodeData nodeData = _nodes[index] as VideoNodeData;
 
     // Check if outputs are empty and initialize them
-    if (nodeData.outputs.isEmpty) {
-      nodeData = nodeData
-          .copyWith(outputs: [VideoOutput(), VideoOutput(), VideoOutput()]);
-    }
+    // if (nodeData.outputs.isEmpty) {
+    //   nodeData = nodeData.copyWith(outputs: [Output(), Output(), Output()]);
+    // }
     // Ensure outputs have at least 3 items
     while (nodeData.outputs.length < 3) {
-      nodeData =
-          nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
+      nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
+    }
+    // Ensure the last two outputs are not both empty recursively
+    while (nodeData.outputs.length > 3 &&
+        (nodeData.outputs[nodeData.outputs.length - 1].outputData ?? '') ==
+            '' &&
+        (nodeData.outputs[nodeData.outputs.length - 2].outputData ?? '') ==
+            '') {
+      nodeData = nodeData.copyWith(outputs: nodeData.outputs..removeLast());
     }
     // Add a new output if the last output has non-empty text
-    if (!(nodeData.outputs.last as VideoOutput).outputText.isEmpty) {
-      nodeData =
-          nodeData.copyWith(outputs: [...nodeData.outputs, VideoOutput()]);
+    if (!((nodeData.outputs.last.outputData ?? '') == '')) {
+      nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
     }
     // Replace the node in the list with the updated node
     _nodes[index] = nodeData;
 
     // Notify listeners to rebuild the UI
     // notifyListeners();
+  }
+
+  int getEffectiveOutputs(String id) {
+    int index = getNodeIndexById(id);
+    VideoNodeData nodeData = _nodes[index] as VideoNodeData;
+    if (nodeData.outputs.isEmpty) {
+      return 3;
+    } else if (nodeData.outputs.length <= 2) {
+      return 3;
+    } else {
+      return nodeData.outputs.length + 1;
+    }
+  }
+
+  void setVideoNodeOutputText(
+      {required String id, required String text, required int outputIndex}) {
+    int nodeIndex = getNodeIndexById(id);
+    VideoNodeData nodeData = _nodes[nodeIndex] as VideoNodeData;
+
+    if (nodeData.outputs.length == outputIndex + 1) {
+      nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
+    }
+    List<Output> newOutputs = nodeData.outputs;
+    newOutputs[outputIndex] =
+        newOutputs[outputIndex].copyWith(outputData: text);
+    _nodes[nodeIndex] = nodeData.copyWith(outputs: newOutputs);
+
+    for (int i = 0; i < newOutputs.length; i++) {
+      print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
+    }
+
+    if (text == '') {
+      initializeOutputs(id);
+    }
   }
 
   // Update output position for a specific node
@@ -248,24 +302,6 @@ class NodesProvider extends ChangeNotifier {
       return newIntendedNodeWidth;
     }
 
-    // Offset _getPositionOffsetFromDrag(Offset delta) {
-    //   intendedWidth += delta.dx;
-
-    //   if (intendedWidth < UiStaticProperties.nodeMinWidth) {
-    //     return Offset.zero;
-    //   }
-
-    //   if (intendedWidth > UiStaticProperties.nodeMaxWidth) {
-    //     return Offset.zero;
-    //   }
-
-    //   // if ((_intendedWidth - UiStaticProperties.nodeDefaultWidth).abs() <= 20) { //TODO de-hardcode
-    //   //   return Offset.zero;
-    //   // }
-
-    //   return Offset(delta.dx, 0);
-    // }
-
     int nodeIndex = getNodeIndexById(id);
     BaseNodeData node = _nodes[nodeIndex] as BaseNodeData;
 
@@ -286,10 +322,31 @@ class NodesProvider extends ChangeNotifier {
     // Only trigger UI changes if width changed
     if (newNodeWidth != node.nodeWidth) {
       if (isLeftSide) {
-        offsetNodePosition(id, Offset(node.nodeWidth - newNodeWidth,0));
+        offsetNodePosition(id, Offset(node.nodeWidth - newNodeWidth, 0));
       }
       notifyListeners();
     }
+  }
+
+  void resetNodeIntendedValues(String id) {
+    int nodeIndex = getNodeIndexById(id);
+    final node = _nodes[nodeIndex] as BaseNodeData;
+    BaseNodeData updatedNode = node.copyWith(
+        intendedPosition: node.position,
+        intendedNodeWidth: node
+            .nodeWidth); //the values should normally reset by themselves as set in model
+
+    _nodes[nodeIndex] = updatedNode;
+  }
+
+  void rebuildNode(String id) {
+    int nodeIndex = getNodeIndexById(id);
+    final node = _nodes[nodeIndex] as BaseNodeData;
+    BaseNodeData updatedNode = node
+        .copyWith(); //the values should normally reset by themselves as set in model
+
+    _nodes[nodeIndex] = updatedNode;
+    notifyListeners();
   }
 
   // Remove a node from the list
