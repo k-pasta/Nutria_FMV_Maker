@@ -7,28 +7,22 @@ abstract class NodeData {
   final String id;
   final Offset intendedPosition; // Always initialized and non-null
   final bool isSelected;
+  final bool isBeingHovered;
 
   const NodeData({
     required this.position,
     required this.id,
     Offset? intendedPosition, // Nullable parameter
     this.isSelected = false,
+    this.isBeingHovered = false,
   }) : intendedPosition = intendedPosition ?? position;
 
   // Copy method to create a new instance with updated fields
-  NodeData copyWith({Offset? position, Offset? intendedPosition});
-
-// @override
-// bool operator ==(Object other) {
-//   if (identical(this, other)) return true;
-
-//   return other is NodeData &&
-//       other.id == id &&
-//       other.position == position; // Add other properties if necessary.
-// }
-
-// @override
-// int get hashCode => id.hashCode ^ position.hashCode; //
+  NodeData copyWith(
+      {Offset? position,
+      Offset? intendedPosition,
+      bool? isSelected,
+      bool? isBeingHovered});
 }
 
 abstract class BaseNodeData extends NodeData {
@@ -49,6 +43,8 @@ abstract class BaseNodeData extends NodeData {
     this.swatch = 0,
     double? intendedNodeWidth,
     List<Output>? outputs,
+    super.isSelected = false,
+    super.isBeingHovered = false,
   })  : outputs = outputs ?? const <Output>[],
         intendedNodeWidth = intendedNodeWidth ?? nodeWidth;
 
@@ -62,11 +58,14 @@ abstract class BaseNodeData extends NodeData {
     List<Output>? outputs,
     int? swatch,
     double? intendedNodeWidth,
+    bool? isSelected,
+    bool? isBeingHovered,
   });
 }
 
 class VideoNodeData extends BaseNodeData {
   final String videoDataId;
+  final bool hasMaxedOutOutputs;
   Map<String, dynamic> overrides;
 
   /// Set an override for a property
@@ -84,46 +83,56 @@ class VideoNodeData extends BaseNodeData {
     return videoList.firstWhereOrNull((element) => element.id == videoDataId);
   }
 
-  VideoNodeData(
-      {required super.position,
-      super.intendedPosition,
-      required super.id,
-      required this.videoDataId,
-      this.overrides = const <String, dynamic>{},
-      super.outputs,
-      super.nodeName,
-      super.isExpanded = false,
-      super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
-      super.intendedNodeWidth,
-      super.swatch = 0});
+  VideoNodeData({
+    required super.position,
+    super.intendedPosition,
+    required super.id,
+    required this.videoDataId,
+    this.overrides = const <String, dynamic>{},
+    this.hasMaxedOutOutputs = false,
+    super.outputs,
+    super.nodeName,
+    super.isExpanded = false,
+    super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
+    super.intendedNodeWidth,
+    super.swatch = 0,
+    super.isSelected = false,
+    super.isBeingHovered = false,
+  });
 
-@override
-VideoNodeData copyWith({
-  Offset? position,
-  Offset? intendedPosition, 
-  String? videoDataId,
-  Map<String, dynamic>? overrides,
-  String? nodeName,
-  double? nodeWidth,
-  double? intendedNodeWidth,
-  bool? isExpanded,
-  int? swatch,
-  List<Output>? outputs,
-}) {
-  return VideoNodeData(
-    position: position ?? this.position,
-    intendedPosition: intendedPosition ?? this.intendedPosition,
-    id: id,
-    videoDataId: videoDataId ?? this.videoDataId,
-    overrides: overrides ?? this.overrides,
-    nodeName: nodeName ?? this.nodeName,
-    nodeWidth: nodeWidth ?? this.nodeWidth,
-    intendedNodeWidth: intendedNodeWidth ?? this.intendedNodeWidth,
-    isExpanded: isExpanded ?? this.isExpanded,
-    swatch: swatch ?? this.swatch,
-    outputs: outputs ?? this.outputs,
-  );
-}
+  @override
+  VideoNodeData copyWith({
+    Offset? position,
+    Offset? intendedPosition,
+    String? videoDataId,
+    Map<String, dynamic>? overrides,
+    bool? hasMaxedOutOutputs,
+    String? nodeName,
+    double? nodeWidth,
+    double? intendedNodeWidth,
+    bool? isExpanded,
+    int? swatch,
+    List<Output>? outputs,
+    bool? isSelected,
+    bool? isBeingHovered,
+  }) {
+    return VideoNodeData(
+      position: position ?? this.position,
+      intendedPosition: intendedPosition ?? this.intendedPosition,
+      id: id,
+      videoDataId: videoDataId ?? this.videoDataId,
+      hasMaxedOutOutputs: hasMaxedOutOutputs ?? this.hasMaxedOutOutputs,
+      overrides: overrides ?? this.overrides,
+      nodeName: nodeName ?? this.nodeName,
+      nodeWidth: nodeWidth ?? this.nodeWidth,
+      intendedNodeWidth: intendedNodeWidth ?? this.intendedNodeWidth,
+      isExpanded: isExpanded ?? this.isExpanded,
+      swatch: swatch ?? this.swatch,
+      outputs: outputs ?? this.outputs,
+      isBeingHovered: isBeingHovered ?? this.isBeingHovered,
+      isSelected: isSelected ?? this.isSelected,
+    );
+  }
 }
 
 class Output {
@@ -131,15 +140,18 @@ class Output {
   final String? targetNodeId;
   final Object? outputData;
 
-  const Output({
-    this.outputOffsetFromTopLeft = const Offset(0, 0),
-    this.targetNodeId,
-    this.outputData
-  });
+  const Output(
+      {this.outputOffsetFromTopLeft = const Offset(0, 0),
+      this.targetNodeId,
+      this.outputData});
 
-  Output copyWith({Offset? outputOffsetFromTopLeft, String? targetNodeId, Object? outputData}) {
+  Output copyWith(
+      {Offset? outputOffsetFromTopLeft,
+      String? targetNodeId,
+      Object? outputData}) {
     return Output(
-      outputOffsetFromTopLeft: outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
+      outputOffsetFromTopLeft:
+          outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
       targetNodeId: targetNodeId ?? this.targetNodeId,
       outputData: outputData ?? this.outputData,
     );

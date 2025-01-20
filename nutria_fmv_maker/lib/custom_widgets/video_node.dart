@@ -73,9 +73,11 @@ class _VideoNodeState extends State<VideoNode> {
                   (UiStaticProperties.topLeftToMiddle.dx),
               child: MouseRegion(
                 onEnter: (_) {
+                  nodesProvider.setCurrentUnderCursor(videoNodeData.id);
                   print('enter ${videoNodeData.id}');
                 },
                 onExit: (_) {
+                  nodesProvider.setCurrentUnderCursor(null);
                   print('exit ${videoNodeData.id}');
                 },
                 hitTestBehavior: HitTestBehavior.deferToChild,
@@ -193,6 +195,9 @@ class _VideoNodeState extends State<VideoNode> {
                   //left resizer
 
                   Knot(
+                    nodeData: videoNodeData,
+                    isInput: true,
+                    index: 0,
                       offset: Offset(
                           UiStaticProperties.nodePadding,
                           UiStaticProperties.nodePadding +
@@ -205,8 +210,11 @@ class _VideoNodeState extends State<VideoNode> {
                     bool isLast = index == videoNodeData.outputs.length - 1;
                     // nodesProvider.updateOutputPosition(videoNodeData.id, index,
                     //     _getContainerPositionRelativeToParent(_childKeys[index]));
-                    if (!isLast) {
+                    if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
                       return Knot(
+                        nodeData: videoNodeData,
+                        isInput: false,
+                        index: index,
                         offset: Offset(
                             videoNodeData.nodeWidth +
                                 UiStaticProperties.nodePadding,

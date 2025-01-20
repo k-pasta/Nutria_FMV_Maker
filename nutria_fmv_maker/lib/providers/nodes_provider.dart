@@ -66,6 +66,12 @@ class NodesProvider extends ChangeNotifier {
 
   List<VideoData> get videos => List.unmodifiable(_videos);
 
+  String? _currentNodeIdUnderCursor = null;
+
+  String? get currentNodeIdUnderCursor => _currentNodeIdUnderCursor;
+
+  bool _isUserDraggingOutput = false;
+
   String? activeNodeId;
 
   // Get a node by its ID
@@ -111,10 +117,6 @@ class NodesProvider extends ChangeNotifier {
     int index = getNodeIndexById(id);
     VideoNodeData nodeData = _nodes[index] as VideoNodeData;
 
-    // Check if outputs are empty and initialize them
-    // if (nodeData.outputs.isEmpty) {
-    //   nodeData = nodeData.copyWith(outputs: [Output(), Output(), Output()]);
-    // }
     // Ensure outputs have at least 3 items
     while (nodeData.outputs.length < 3) {
       nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
@@ -152,22 +154,37 @@ class NodesProvider extends ChangeNotifier {
 
   void setVideoNodeOutputText(
       {required String id, required String text, required int outputIndex}) {
+    // Get the index of the node by its ID
     int nodeIndex = getNodeIndexById(id);
+    // Cast the node to VideoNodeData
     VideoNodeData nodeData = _nodes[nodeIndex] as VideoNodeData;
 
-    if (nodeData.outputs.length == outputIndex + 1) {
+    // If the output index is the last one, add a new empty output
+    if (nodeData.outputs.length == outputIndex + 1 && outputIndex < 9) {
       nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
     }
+    if (outputIndex == 9) {
+      nodeData = nodeData.copyWith(hasMaxedOutOutputs: true);
+      notifyListeners();
+    }
+    // Create a new list of outputs with the updated text
     List<Output> newOutputs = nodeData.outputs;
     newOutputs[outputIndex] =
         newOutputs[outputIndex].copyWith(outputData: text);
+    // Update the node with the new outputs
     _nodes[nodeIndex] = nodeData.copyWith(outputs: newOutputs);
 
+    // Print the outputs for debugging
     for (int i = 0; i < newOutputs.length; i++) {
       print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
     }
 
+    // If the text is empty, initialize the outputs
     if (text == '') {
+      if (outputIndex == 9) {
+        _nodes[nodeIndex] = nodeData.copyWith(hasMaxedOutOutputs: false);
+        notifyListeners();
+      }
       initializeOutputs(id);
     }
   }
@@ -196,6 +213,51 @@ class NodesProvider extends ChangeNotifier {
 //     activeNodeId = node.id;
 //     notifyListeners();
 //   }
+
+  void setCurrentUnderCursor(String? id) {
+    // Set the current node ID under the cursor
+    _currentNodeIdUnderCursor = id;
+
+    // Check if the user is dragging an output
+    if (_isUserDraggingOutput) {
+      if (id != null) {
+        int nodeIndex = getNodeIndexById(id);
+        NodeData nodeData = _nodes[nodeIndex];
+        // Reset the 'isBeingHovered' state for all nodes
+        for (var node in _nodes) {
+          if (node.isBeingHovered) {
+            int index = getNodeIndexById(node.id);
+            _nodes[index] = node.copyWith(isBeingHovered: false);
+          }
+        }
+        // Set the 'isBeingHovered' state for the current node
+        _nodes[nodeIndex] = nodeData.copyWith(isBeingHovered: true);
+      }
+      if (id == null) {
+        // Reset the 'isBeingHovered' state for all nodes if no node is under the cursor
+        for (var node in _nodes) {
+          if (node.isBeingHovered) {
+            int index = getNodeIndexById(node.id);
+            _nodes[index] = node.copyWith(isBeingHovered: false);
+          }
+        }
+      }
+      notifyListeners();
+    }
+  }
+
+  void toggleIsDragging(bool isDragging) {
+    _isUserDraggingOutput = isDragging;
+    if (!isDragging) {
+      for (var node in _nodes) {
+        if (node.isBeingHovered) {
+          int index = getNodeIndexById(node.id);
+          _nodes[index] = node.copyWith(isBeingHovered: false);
+        }
+      }
+      notifyListeners();
+    }
+  }
 
   // Toggle the 'expanded' state of a node
   void expandToggle(String id) {
