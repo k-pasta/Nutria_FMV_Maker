@@ -1,4 +1,5 @@
 import 'package:menu_bar/menu_bar.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
@@ -47,6 +48,14 @@ class MyApp extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           title: 'Flutter Demo',
           theme: ThemeData(
+            splashFactory: NoSplash.splashFactory,
+            menuButtonTheme: MenuButtonThemeData(
+              style: ButtonStyle(
+                // splashFactory: null,
+                // backgroundColor: WidgetStatePropertyAll(Colors.red),
+                // overlayColor: WidgetStatePropertyAll(Colors.red)
+              ),
+            ),
             menuTheme: MenuThemeData(
               style: MenuStyle(
                   backgroundColor: WidgetStatePropertyAll(theme.cPanel),
@@ -92,9 +101,14 @@ class MyHomePage extends StatelessWidget {
       // appBar: AppBar(
       //   title: Text(apptitle),
       // ),
-      body: MyMenuBar(
-        child: ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+
+      body: NutriaMenuBar(
+        child: GridCanvas(),
       ),
+
+      // body: MyMenuBar(
+      //   child: ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+      // ),
     );
   }
 }

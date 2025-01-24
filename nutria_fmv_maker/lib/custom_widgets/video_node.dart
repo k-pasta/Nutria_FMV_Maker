@@ -88,7 +88,7 @@ class _VideoNodeState extends State<VideoNode> {
                           1000, //TODO De-Hardcode when it is possible to calculate max height
                       width: UiStaticProperties.nodeMaxWidth +
                           UiStaticProperties.nodePadding * 2,
-                      child: Container(color: Colors.black26),
+                      child: Container(color: Colors.transparent),
                     ),
                   ),
                   Positioned(
@@ -195,9 +195,9 @@ class _VideoNodeState extends State<VideoNode> {
                   //left resizer
 
                   Knot(
-                    nodeData: videoNodeData,
-                    isInput: true,
-                    index: 0,
+                      nodeData: videoNodeData,
+                      isInput: true,
+                      index: 0,
                       offset: Offset(
                           UiStaticProperties.nodePadding,
                           UiStaticProperties.nodePadding +
@@ -210,7 +210,8 @@ class _VideoNodeState extends State<VideoNode> {
                     bool isLast = index == videoNodeData.outputs.length - 1;
                     // nodesProvider.updateOutputPosition(videoNodeData.id, index,
                     //     _getContainerPositionRelativeToParent(_childKeys[index]));
-                    if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
+                    if (!isLast ||
+                        (isLast && videoNodeData.hasMaxedOutOutputs)) {
                       return Knot(
                         nodeData: videoNodeData,
                         isInput: false,
