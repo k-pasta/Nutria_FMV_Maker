@@ -1,6 +1,8 @@
+import 'package:menu_bar/menu_bar.dart';
+
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
-import './menu_bar.dart';
+import 'custom_widgets/menu_bar.dart';
 import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
@@ -35,6 +37,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Consumer<LocaleProvider>(
       builder: (context, localeProvider, child) {
         return MaterialApp(
@@ -44,6 +47,15 @@ class MyApp extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           title: 'Flutter Demo',
           theme: ThemeData(
+            menuTheme: MenuThemeData(
+              style: MenuStyle(
+                  backgroundColor: WidgetStatePropertyAll(theme.cPanel),
+                  shape: WidgetStatePropertyAll<OutlinedBorder>(
+                    RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  ),
+                  padding: WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 0, vertical: 16))),
+            ),
             fontFamily: 'SourceSans',
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
@@ -80,17 +92,16 @@ class MyHomePage extends StatelessWidget {
       // appBar: AppBar(
       //   title: Text(apptitle),
       // ),
-
-      body: GridCanvas(),
-            // body: const InternationalisationExample(),
-      // body: ThumbnailExample()
+      body: MyMenuBar(
+        child: ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+      ),
     );
   }
 }
 
       // body: GridCanvas(),
 
-      // body: MyMenuBar()
+
       // body: CustomNodesExample()
       // body: SizedBox(
       //     width: 1000,
