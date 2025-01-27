@@ -189,7 +189,8 @@ class _VideoNodeState extends State<VideoNode> {
                     nodeData: videoNodeData,
                     isLeftSide: true,
                     draggableAreaHeight:
-                        _getContainerPositionRelativeToParent(_bottomKey).dy -
+                        _getContainerPositionRelativeToParent(_bottomKey)
+                                .dy - //only call when necessary
                             UiStaticProperties.nodePadding,
                   ),
                   //left resizer
@@ -219,8 +220,8 @@ class _VideoNodeState extends State<VideoNode> {
                         offset: Offset(
                             videoNodeData.nodeWidth +
                                 UiStaticProperties.nodePadding,
-                            (_getContainerPositionRelativeToParent(
-                                    _childKeys[index]))
+                            (_getContainerPositionRelativeToParent(_childKeys[
+                                    index])) //only call when necessary
                                 .dy),
                       );
                     } else {
@@ -267,15 +268,13 @@ class NodeVideoOutputsList extends StatelessWidget {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
 
     return FocusScope(
-      //this makes it so the tab key only cycles through the current node's inputs
-      child: Container(
-        padding: EdgeInsets.all(theme.dPanelPadding),
-        child: Column(
-          children: [
-            //sizedbox for spacing
-            ...videoNodeData.outputs.asMap().entries.map((entry) {
-              int index = entry.key;
-              var output = entry.value;
+      child: FocusTraversalGroup(
+        policy: OrderedTraversalPolicy(),
+        //this makes it so the tab key only cycles through the current node's inputs
+        child: Container(
+          padding: EdgeInsets.all(theme.dPanelPadding),
+          child: Column(
+            children: List.generate(videoNodeData.outputs.length, (index) {
               bool isLast = index == videoNodeData.outputs.length - 1;
               return Column(
                 children: [
@@ -284,6 +283,7 @@ class NodeVideoOutputsList extends StatelessWidget {
                     children: [
                       Expanded(
                         child: NutriaTextfield(
+                          // focusNode: FocusNode(),
                           onChanged: (currentText) {
                             nodesProvider.setVideoNodeOutputText(
                                 text: currentText,
@@ -294,7 +294,8 @@ class NodeVideoOutputsList extends StatelessWidget {
                             });
                           },
                           index: index + 1,
-                          text: (entry.value.outputData ?? '').toString(),
+                          text: (videoNodeData.outputs[index].outputData ?? '')
+                              .toString(),
                         ),
                       ),
                       if (isLast) ...[
@@ -334,8 +335,70 @@ class NodeVideoOutputsList extends StatelessWidget {
                     ),
                 ],
               );
-            }).toList(),
-          ],
+            }),
+            //sizedbox for spacing
+            // ...videoNodeData.outputs.asMap().entries.map((entry) {
+            //   int index = entry.key;
+            //   bool isLast = index == videoNodeData.outputs.length - 1;
+            //   return Column(
+            //     children: [
+            //       Row(
+            //         crossAxisAlignment: CrossAxisAlignment.start,
+            //         children: [
+            //           Expanded(
+            //             child: NutriaTextfield(
+            //               onChanged: (currentText) {
+            //                 nodesProvider.setVideoNodeOutputText(
+            //                     text: currentText,
+            //                     id: videoNodeData.id,
+            //                     outputIndex: index);
+            //                 WidgetsBinding.instance.addPostFrameCallback((_) {
+            //                   nodesProvider.rebuildNode(videoNodeData.id);
+            //                 });
+            //               },
+            //               index: index + 1,
+            //               text: (entry.value.outputData ?? '').toString(),
+            //             ),
+            //           ),
+            //           if (isLast) ...[
+            //             SizedBox(
+            //               width: theme.dPanelPadding,
+            //             ),
+            //             NutriaButton.Icon(
+            //               icon: videoNodeData.isExpanded
+            //                   ? Icons.arrow_drop_up
+            //                   : Icons.arrow_drop_down,
+            //               onTap: () {
+            //                 nodesProvider.expandToggle(videoNodeData.id);
+            //                 WidgetsBinding.instance.addPostFrameCallback((_) {
+            //                   nodesProvider.rebuildNode(videoNodeData.id);
+            //                 });
+            //                 // ;
+            //               },
+            //             ),
+            //           ],
+            //           Column(
+            //             children: [
+            //               SizedBox(
+            //                 width: 0,
+            //                 height: theme.dButtonHeight / 2,
+            //               ),
+            //               SizedBox(
+            //                 width: 0,
+            //                 key: childKeys[index],
+            //               ),
+            //             ],
+            //           )
+            //         ],
+            //       ),
+            //       if (!isLast)
+            //         SizedBox(
+            //           height: theme.dPanelPadding,
+            //         ),
+            //     ],
+            //   );
+            // }).toList(),
+          ),
         ),
       ),
     );

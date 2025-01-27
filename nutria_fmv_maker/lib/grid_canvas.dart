@@ -23,6 +23,7 @@ class GridCanvas extends StatelessWidget {
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
           return CallbackShortcuts(
+            //TODO IMPORTANT disable if focused on node
             bindings: <ShortcutActivator, VoidCallback>{
               gridCanvasProvider.moveUp: () {
                 gridCanvasProvider.offsetPosition(

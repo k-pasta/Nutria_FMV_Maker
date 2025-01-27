@@ -9,7 +9,10 @@ class NutriaTextfield extends StatefulWidget {
   final String? text;
   final ValueChanged<String>? onChanged;
   const NutriaTextfield(
-      {super.key, this.index = 1, this.text, this.onChanged}); //TODO de-hardcode
+      {super.key,
+      this.index = 1,
+      this.text,
+      this.onChanged}); //TODO de-hardcode
 
   @override
   State<NutriaTextfield> createState() => _NutriaTextfieldState();
@@ -17,7 +20,6 @@ class NutriaTextfield extends StatefulWidget {
 
 class _NutriaTextfieldState extends State<NutriaTextfield> {
   late FocusNode _focusNode;
-
 
   final TextEditingController myController = TextEditingController();
   // int numLines = 1;
@@ -65,15 +67,22 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         //   // numLines = '\n'.allMatches(currentText).length + 1;
         // });
       },
+      onSubmitted: (_) {
+        // _focusNode.nextFocus();
+        // print(_focusNode.nearestScope);
+      },
+
       onTap: () {
         // print('tapped');
       },
+      textInputAction: TextInputAction.next,
       focusNode: _focusNode,
       cursorColor: theme.cText,
       style: TextStyle(
         color: textColor,
       ),
-      maxLines: null,
+      // maxLines: null,
+      maxLines: 1,
       maxLength: 500, //TODO De-hardcode and document
 
       decoration: InputDecoration(
@@ -83,7 +92,8 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
             vertical: (theme.dButtonHeight - 16) / 2,
             horizontal: 8.0), // TODO de-hardcode
         counterText: '', //disables max character counter
-        hintText: '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
+        hintText:
+            '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
         hintStyle:
             TextStyle(color: theme.cTextInactive, fontWeight: FontWeight.normal
                 // color: olors.red,
