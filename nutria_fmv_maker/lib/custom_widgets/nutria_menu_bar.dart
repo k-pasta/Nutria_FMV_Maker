@@ -64,11 +64,11 @@ class NutriaMenuBar extends StatelessWidget {
     final MenuStyle _menuStyle = MenuStyle(
       backgroundColor: WidgetStatePropertyAll(theme.cMenuBar),
       shape:
-          WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide.none)),
+          const WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide.none)),
     );
     final MenuStyle _submenuStyle = MenuStyle(
       backgroundColor: WidgetStatePropertyAll(theme.cPanel),
-      shape: WidgetStatePropertyAll<OutlinedBorder>(
+      shape: const WidgetStatePropertyAll<OutlinedBorder>(
         RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
       padding: WidgetStatePropertyAll(
@@ -85,7 +85,7 @@ class NutriaMenuBar extends StatelessWidget {
       overlayColor: WidgetStatePropertyAll(theme.cAccentButtonHovered),
       foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
       shape:
-          WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide.none)),
+          const WidgetStatePropertyAll(RoundedRectangleBorder(side: BorderSide.none)),
     );
     // Create a map for the shortcut actions
     final Map<ShortcutActivator, VoidCallback> shortcutActions = {
