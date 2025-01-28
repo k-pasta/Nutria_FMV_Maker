@@ -1,6 +1,10 @@
+import 'package:menu_bar/menu_bar.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
+import 'package:nutria_fmv_maker/focus_tests.dart';
+
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
-import './menu_bar.dart';
+import 'custom_widgets/menu_bar.dart';
 import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
@@ -35,6 +39,7 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Consumer<LocaleProvider>(
       builder: (context, localeProvider, child) {
         return MaterialApp(
@@ -44,6 +49,23 @@ class MyApp extends StatelessWidget {
           supportedLocales: AppLocalizations.supportedLocales,
           title: 'Flutter Demo',
           theme: ThemeData(
+            splashFactory: NoSplash.splashFactory,
+            menuButtonTheme: MenuButtonThemeData(
+              style: ButtonStyle(
+                // splashFactory: null,
+                // backgroundColor: WidgetStatePropertyAll(Colors.red),
+                // overlayColor: WidgetStatePropertyAll(Colors.red)
+              ),
+            ),
+            menuTheme: MenuThemeData(
+              style: MenuStyle(
+                  backgroundColor: WidgetStatePropertyAll(theme.cPanel),
+                  shape: WidgetStatePropertyAll<OutlinedBorder>(
+                    RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+                  ),
+                  padding: WidgetStatePropertyAll(
+                      EdgeInsets.symmetric(horizontal: 0, vertical: 16))),
+            ),
             fontFamily: 'SourceSans',
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true,
@@ -81,15 +103,21 @@ class MyHomePage extends StatelessWidget {
       //   title: Text(apptitle),
       // ),
 
-      body: GridCanvas(),
-      // body: ThumbnailExample()
+      // body: MyForm(),
+        // child: GridCanvas(),
+      //   child: 
+      // ),
+
+      body: NutriaMenuBar(
+        child: ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+      ),
     );
   }
 }
 
       // body: GridCanvas(),
-      // body: const InternationalisationExample(),
-      // body: MyMenuBar()
+
+
       // body: CustomNodesExample()
       // body: SizedBox(
       //     width: 1000,

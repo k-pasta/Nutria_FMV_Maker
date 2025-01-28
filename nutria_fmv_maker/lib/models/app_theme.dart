@@ -45,12 +45,12 @@ class AppTheme {
   final double dMenuBarHeight;
 
   final cSwatches = const <Color>[
-    Color(0xffff4d77),
+    Color(0xffff4e6a),
     Color(0xffff664d),
     Color(0xffffae4d),
     Color(0xff33d56a),
     Color(0xff4da5ff),
-    Color(0xff000000),
+    Color(0xffffffff),
   ];
 
   // Constructor

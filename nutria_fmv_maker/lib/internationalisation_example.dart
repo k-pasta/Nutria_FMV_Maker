@@ -14,8 +14,16 @@ class InternationalisationExample extends StatelessWidget {
       child: Center(
         child: Column(
           children: [
-            Text(AppLocalizations.of(context)!.helloWorld),
-            IconButton(onPressed: () {context.read<LocaleProvider>().changeLocale(const Locale('el'));}, icon: const Icon(Icons.language))
+            // Display a localized string using AppLocalizations
+            Text(AppLocalizations.of(context)!.helloWorld, style: TextStyle(color: Colors.white),),
+            // IconButton to change the locale when pressed
+            IconButton(
+              onPressed: () {
+                // Use the Provider package to read the LocaleProvider and change the locale to Greek
+                context.read<LocaleProvider>().changeLocale(const Locale('el'));
+              },
+              icon: const Icon(Icons.language),
+            ),
           ],
         ),
       ),

@@ -5,7 +5,7 @@ class UiStaticProperties {
   static const bool isDebug = true;
 
   //GridCanvas
-  static const double canvasSize = 2000;
+  static const double canvasSize = 2010;
   static Offset get topLeftToMiddle =>
       const Offset(canvasSize / 2, canvasSize / 2);
   static const double gridCanvasScaleFactor = 0.1; 
@@ -16,9 +16,9 @@ class UiStaticProperties {
 
   //Nodes
   //TODO Make precise
-  static const double nodeMinWidth = 230;
+  static const double nodeMinWidth = 160;
   static const double nodeDefaultWidth = 230;
-  static const double nodeMaxWidth = 500;
+  static const double nodeMaxWidth = 400;
   static const double nodePadding = 30;
 
   //Knots

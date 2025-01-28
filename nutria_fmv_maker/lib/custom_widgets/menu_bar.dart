@@ -1,39 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
+
+import '../models/app_theme.dart';
+import '../providers/theme_provider.dart';
 import 'package:menu_bar/menu_bar.dart';
 
 ///returns material app!
 
 class MyMenuBar extends StatefulWidget {
-  const MyMenuBar({super.key});
+  final Widget child;
+  const MyMenuBar({super.key, required this.child});
 
   @override
   State<MyMenuBar> createState() => _MyMenuBarState();
 }
 
 class _MyMenuBarState extends State<MyMenuBar> {
-   Color _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 0);
+  Color _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 0);
   List<BarButton> _menuBarButtons() {
     return [
       BarButton(
-        
-        text: MouseRegion(
-          onEnter: (pointerEnterEvent) {setState(() {
-            _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 1);
-          });},
-          onExit: (pointerExitEvent){setState(() {
-            _menuBarButtonColor = Color.fromRGBO(25, 25, 25, 0);
-          });},
-          child: Container(
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 25),
-            decoration: BoxDecoration(
-              color: _menuBarButtonColor
-            ),
-            child: const Text(
-              'File',
-              style: TextStyle(color: Colors.white),
-            ),
-          ),
+        text: const Text(
+          'File',
+          // style: TextStyle(color: Colors.white),
         ),
         submenu: SubMenu(
           menuItems: [
@@ -180,78 +170,71 @@ class _MyMenuBarState extends State<MyMenuBar> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      // Style the menus. Hover over [MenuStyle] for all the options
-      theme: ThemeData(
-        menuTheme: const MenuThemeData(
-          style: MenuStyle(
-            // visualDensity: VisualDensity(horizontal: 0, vertical: 0),
-            padding: MaterialStatePropertyAll(
-              EdgeInsets.symmetric(vertical: 16.0),
-            ),
-            // shape: WidgetStatePropertyAll<OutlinedBorder>(
-            //   RoundedRectangleBorder(
-            //     borderRadius: BorderRadius.zero, // Removes circular borders
-            //   ),
-            // ),
-          ),
-        ),
-      ),
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
-      home: MenuBarWidget(
+    // return MenuBar(children: [
+    //   MenuItemButton(
+    //     child: Text('hi'),
+    //   )
+    // ],);
+
+    return MenuBarWidget(
+
         // Add a list of [BarButton]. The buttons in this List are
         // displayed as the buttons on the bar itself
         barButtons: _menuBarButtons(),
 
         // Style the menu bar itself. Hover over [MenuStyle] for all the options
-        barStyle: const MenuStyle(
-          padding: MaterialStatePropertyAll(EdgeInsets.zero),
-          backgroundColor: MaterialStatePropertyAll(Color(0xFF2b2b2b)),
-          maximumSize: MaterialStatePropertyAll(Size(double.infinity, 28.0)),
-           shape: WidgetStatePropertyAll<OutlinedBorder>(
-              RoundedRectangleBorder(
-                borderRadius: BorderRadius.zero, // Removes circular borders
-              ),
+        barStyle: MenuStyle(
+          // surfaceTintColor: WidgetStatePropertyAll(Colors.amber),
+
+          padding: WidgetStatePropertyAll(EdgeInsets.zero),
+          backgroundColor: WidgetStatePropertyAll(theme.cMenuBar),
+          // backgroundColor: WidgetStatePropertyAll(Colors.white),
+          maximumSize: WidgetStatePropertyAll(
+              Size(double.infinity, theme.dMenuBarHeight)),
+          shape: WidgetStatePropertyAll<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero, // Removes circular borders
             ),
+          ),
         ),
 
         // Style the menu bar buttons. Hover over [ButtonStyle] for all the options
-        barButtonStyle: const ButtonStyle(
+        barButtonStyle: ButtonStyle(
+          minimumSize: WidgetStatePropertyAll(Size(0, theme.dMenuBarHeight)),
+          textStyle:
+              WidgetStatePropertyAll(TextStyle(color: theme.cMenuBarText)),
+          foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
+          // backgroundColor: WidgetStatePropertyAll(Colors.amberAccent),
+          overlayColor: WidgetStatePropertyAll(theme.cPanel),
+
           padding:
-              MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 6.0)),
-          minimumSize: MaterialStatePropertyAll(Size(0.0, 32.0)),
+              MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 20.0)),
+          // minimumSize: MaterialStatePropertyAll(Size(0.0, 0.0)),
+          // backgroundBuilder: (_,__,___){return Placeholder();}
         ),
 
         // Style the menu and submenu buttons. Hover over [ButtonStyle] for all the options
-        menuButtonStyle: const ButtonStyle(
-          overlayColor: WidgetStatePropertyAll(Color.fromRGBO(25, 25, 25, 1)),
+        menuButtonStyle: ButtonStyle(
+          shape: WidgetStatePropertyAll<OutlinedBorder>(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.zero, // Removes circular borders
+            ),
+          ),
+          // textStyle: WidgetStatePropertyAll(TextStyle(color: theme.cMenuBarText)),
+          foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
+          iconColor: WidgetStatePropertyAll(theme.cMenuBarText),
+          overlayColor: WidgetStatePropertyAll(theme.cAccentButtonHovered),
           minimumSize: MaterialStatePropertyAll(Size.fromHeight(36.0)),
-          padding: MaterialStatePropertyAll(
-              EdgeInsets.symmetric(horizontal: 12.0, vertical: 6.0)),
+          padding: WidgetStatePropertyAll(
+              EdgeInsets.symmetric(horizontal: 20.0, vertical: 6.0)),
         ),
 
         // Enable or disable the bar
         enabled: true,
 
         // Set the child, i.e. the application under the menu bar
-        child: Scaffold(
-          appBar: AppBar(
-            title: const Text('Menu Bar Example'),
-          ),
-          body: Center(
-            child: MouseRegion(
-              onHover: (_) {print("hovered");},
-              child: Text(
-                'My application',
-                style: TextStyle(
-                  fontSize: 32.0,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
+        child: widget.child);
   }
 }

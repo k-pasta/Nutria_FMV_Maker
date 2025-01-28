@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import '../providers/theme_provider.dart';
 
 class NutriaTextfield extends StatefulWidget {
   final int index;
   final String? text;
-  final VoidCallback? onTap;
+  final ValueChanged<String>? onChanged;
   const NutriaTextfield(
-      {super.key, this.index = 1, this.text, this.onTap}); //TODO de-hardcode
+      {super.key,
+      this.index = 1,
+      this.text,
+      this.onChanged}); //TODO de-hardcode
 
   @override
   State<NutriaTextfield> createState() => _NutriaTextfieldState();
@@ -17,10 +21,10 @@ class NutriaTextfield extends StatefulWidget {
 class _NutriaTextfieldState extends State<NutriaTextfield> {
   late FocusNode _focusNode;
 
-  @override
   final TextEditingController myController = TextEditingController();
-  int numLines = 1;
+  // int numLines = 1;
 
+  @override
   void initState() {
     super.initState();
     _focusNode = FocusNode();
@@ -51,26 +55,34 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     return TextField(
       controller: myController,
       onChanged: (String currentText) {
-        if (widget.onTap != null) {
-          widget.onTap!();
+        if (widget.onChanged != null) {
+          widget.onChanged!(currentText);
         }
-        setState(() {
-          final RenderBox box =
-              context.findRenderObject() as RenderBox; //TODO expose to provider
-          // print(box.size.height);
-          // print(numLines);
-          numLines = '\n'.allMatches(currentText).length + 1;
-        });
+
+        // setState(() {
+        //   // final RenderBox box =
+        //   //     context.findRenderObject() as RenderBox; //TODO expose to provider
+        //   // print(box.size.height);
+        //   // print(numLines);
+        //   // numLines = '\n'.allMatches(currentText).length + 1;
+        // });
       },
+      onSubmitted: (_) {
+        // _focusNode.nextFocus();
+        // print(_focusNode.nearestScope);
+      },
+
       onTap: () {
         // print('tapped');
       },
+      textInputAction: TextInputAction.next,
       focusNode: _focusNode,
       cursorColor: theme.cText,
       style: TextStyle(
         color: textColor,
       ),
-      maxLines: null,
+      // maxLines: null,
+      maxLines: 1,
       maxLength: 500, //TODO De-hardcode and document
 
       decoration: InputDecoration(
@@ -79,8 +91,9 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         contentPadding: EdgeInsets.symmetric(
             vertical: (theme.dButtonHeight - 16) / 2,
             horizontal: 8.0), // TODO de-hardcode
-        counterText: "", //disables max character counter
-        hintText: 'option ${widget.index} ...',
+        counterText: '', //disables max character counter
+        hintText:
+            '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
         hintStyle:
             TextStyle(color: theme.cTextInactive, fontWeight: FontWeight.normal
                 // color: olors.red,
