@@ -4,11 +4,13 @@ import 'package:nutria_fmv_maker/focus_tests.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
+import 'custom_menu_example.dart';
 import 'custom_widgets/menu_bar.dart';
 import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
+import 'providers/ui_state_provider.dart';
 import 'thumbnail_example.dart';
 import 'custom_widgets/nutria_button.dart';
 import 'custom_widgets/video_node.dart';
@@ -28,6 +30,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => GridCanvasProvider()),
       ChangeNotifierProvider(create: (context) => NodesProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
+      ChangeNotifierProvider(create: (context) => UiStateProvider()),
     ],
     child: const MyApp(),
   ));
@@ -52,10 +55,10 @@ class MyApp extends StatelessWidget {
             splashFactory: NoSplash.splashFactory,
             menuButtonTheme: MenuButtonThemeData(
               style: ButtonStyle(
-                // splashFactory: null,
-                // backgroundColor: WidgetStatePropertyAll(Colors.red),
-                // overlayColor: WidgetStatePropertyAll(Colors.red)
-              ),
+                  // splashFactory: null,
+                  // backgroundColor: WidgetStatePropertyAll(Colors.red),
+                  // overlayColor: WidgetStatePropertyAll(Colors.red)
+                  ),
             ),
             menuTheme: MenuThemeData(
               style: MenuStyle(
@@ -103,38 +106,53 @@ class MyHomePage extends StatelessWidget {
       //   title: Text(apptitle),
       // ),
 
-      // body: MyForm(),
-        // child: GridCanvas(),
-      //   child: 
-      // ),
+      // body: const MenuExample(),
 
       body: NutriaMenuBar(
-        child: ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+        child: Stack(
+          children: [
+            ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
+            Positioned.fill( //UI fader
+              child: Selector<UiStateProvider, bool>(
+                selector: (context, uiStateProvider) =>
+                    uiStateProvider.isModalOrMenuOpen,
+                builder: (context, isModalOrMenuOpen, child) {
+                  if (isModalOrMenuOpen) {
+                    return Container(
+                      color: Colors.black45, //TODO de-hardcode
+                    );
+                  } else {
+                    return Container();
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
 }
 
-      // body: GridCanvas(),
+// body: GridCanvas(),
 
-
-      // body: CustomNodesExample()
-      // body: SizedBox(
-      //     width: 1000,
-      //     height: 1000,
-      //     // color: Colors.red,
-      //     child: Stack(clipBehavior: Clip.none, children: [
-      //       Positioned.fill(
-      //           child: Container(
-      //         color: Colors.red,
-      //       )),
-      //       VideoNode(
-      //           nodeData: VideoNodeData(
-      //               position: Offset(0, 0),
-      //               id: 'aaa',
-      //               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
-      //       SizedBox(
-      //         width: 50,
-      //         height: 50,
-      //       ),
-      //     ]))
+// body: CustomNodesExample()
+// body: SizedBox(
+//     width: 1000,
+//     height: 1000,
+//     // color: Colors.red,
+//     child: Stack(clipBehavior: Clip.none, children: [
+//       Positioned.fill(
+//           child: Container(
+//         color: Colors.red,
+//       )),
+//       VideoNode(
+//           nodeData: VideoNodeData(
+//               position: Offset(0, 0),
+//               id: 'aaa',
+//               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
+//       SizedBox(
+//         width: 50,
+//         height: 50,
+//       ),
+//     ]))

@@ -16,12 +16,19 @@ class GridCanvas extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final gridCanvasProvider = context.watch<GridCanvasProvider>();
+    final gridCanvasProvider = context.read<GridCanvasProvider>();
     final nodesProvider = context.read<NodesProvider>();
 
     return Selector<NodesProvider, List<String>>(
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
+          print('full rebuilt');
+          final List<Widget> nodes = nodesProvider.nodes.map((node) {
+            return TestNode(
+              nodeData: node as VideoNodeData,
+              key: ValueKey(node.id),
+            );
+          }).toList();
           return CallbackShortcuts(
             //TODO IMPORTANT disable if focused on node
             bindings: <ShortcutActivator, VoidCallback>{
@@ -92,32 +99,12 @@ class GridCanvas extends StatelessWidget {
                                 context: context), // infinite dots grid
                           ),
                         ),
-
-                        SizedBox(
+                        const SizedBox(
                           height: UiStaticProperties.canvasSize,
                           width: UiStaticProperties.canvasSize,
-                          child: Container(
-                            // color: Colors.black12,
-                            // color: Colors.amber,
-                            child: Placeholder(),
-                          ),
+                          child: Placeholder(),
                         ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
-                        // Positioned(
-                        //   top: -(UiStaticProperties.canvasSize / 2),
-                        //   left: -(UiStaticProperties.canvasSize / 2),
-                        //   child: Container(
-                        //     width: 100,
-                        //     height: 100,
-                        //     color: Colors.red,
-                        //   ),
-                        // ),
-
-                        ...nodesProvider.nodes.map((node) {
-                          return VideoNode(
-                            nodeData: node as VideoNodeData,
-                            key: ValueKey(node.id),
-                          );
-                        }),
+                        ...nodes
                       ],
                     ),
                   ),

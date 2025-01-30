@@ -58,7 +58,7 @@ GridCanvasProvider(){
     _transformationController.value = translationMatrix * currentMatrix;
 
     // Notify listeners about the change
-    notifyListeners();
+    // notifyListeners();
   }
 
   void updateScaleAndMatrix(PointerScrollEvent event, BuildContext context) {
@@ -87,6 +87,6 @@ GridCanvasProvider(){
     _currentScale = newScale;
 //  print (newScale);
     // print('${positionOffset.dx} - dx, ${positionOffset.dy} - dy');
-    notifyListeners();
+    // notifyListeners();
   }
 }

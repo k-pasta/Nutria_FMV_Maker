@@ -59,13 +59,6 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           widget.onChanged!(currentText);
         }
 
-        // setState(() {
-        //   // final RenderBox box =
-        //   //     context.findRenderObject() as RenderBox; //TODO expose to provider
-        //   // print(box.size.height);
-        //   // print(numLines);
-        //   // numLines = '\n'.allMatches(currentText).length + 1;
-        // });
       },
       onSubmitted: (_) {
         // _focusNode.nextFocus();

@@ -431,9 +431,7 @@ class NodesProvider extends ChangeNotifier {
 //     notifyListeners();
 //   }
 
-  void setCurrentUnderCursor(String? id) {
-    // Set the current node ID under the cursor
-    _currentNodeIdUnderCursor = id;
+  void setCurrentUnderCursor({String? id, int? outputIndex}) {
 
     // Check if the user is dragging an output
     if (_isUserDraggingOutput) {
@@ -509,6 +507,7 @@ class NodesProvider extends ChangeNotifier {
     if (nodeIndex != _nodes.length - 1) {
       _nodes.removeAt(nodeIndex);
       _nodes.add(node);
+      print('set node ${node.id} as active and went from');
       notifyListeners();
     }
   }

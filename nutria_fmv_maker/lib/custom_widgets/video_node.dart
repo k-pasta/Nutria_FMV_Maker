@@ -17,6 +17,202 @@ import 'node_elements/node_swatches_picker.dart';
 import 'node_elements/node_video_filename_text.dart';
 import 'node_elements/node_video_thumbnail.dart';
 
+class TestNode extends StatelessWidget {
+  final VideoNodeData nodeData;
+  const TestNode({super.key, required this.nodeData});
+
+@override
+  StatelessElement createElement() {
+    // TODO: implement createElement
+    return super.createElement();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    //DEBUG to check when nodes rebuild
+    return Selector<NodesProvider, NodeData>(
+        selector: (context, provider) =>
+            provider.getNodeById(nodeData.id), // Only listen to this node
+        builder: (context, node, child) {
+          print(
+              'rebuilding ${nodeData.id}'); //DEBUG to check when nodes rebuild
+
+          context.read<NodesProvider>().initializeOutputs(nodeData.id);
+          // Important! these need to be within the selector to work properly
+          final NodesProvider nodesProvider = context.read<NodesProvider>();
+          final VideoNodeData videoNodeData =
+              nodesProvider.getNodeById(nodeData.id) as VideoNodeData;
+          return Positioned(
+            // key: _parentKey,
+            top: videoNodeData.position.dy +
+                (UiStaticProperties.topLeftToMiddle.dy),
+            left: videoNodeData.position.dx +
+                (UiStaticProperties.topLeftToMiddle.dx),
+            child: MouseRegion(
+              onEnter: (_) {
+                nodesProvider.setCurrentUnderCursor(id: videoNodeData.id);
+                // print('enter ${videoNodeData.id}');
+              },
+              onExit: (_) {
+                nodesProvider.setCurrentUnderCursor();
+                // print('exit ${videoNodeData.id}');
+              },
+              hitTestBehavior: HitTestBehavior.deferToChild,
+              child: Stack(clipBehavior: Clip.none, children: [
+                IgnorePointer(
+                  child: SizedBox(
+                    height:
+                        1000, //TODO De-Hardcode when it is possible to calculate max height
+                    width: UiStaticProperties.nodeMaxWidth +
+                        UiStaticProperties.nodePadding * 2,
+                    child: Container(color: Colors.transparent),
+                  ),
+                ),
+                Positioned(
+                  top: UiStaticProperties.nodePadding,
+                  left: UiStaticProperties.nodePadding,
+                  child: GestureDetector(
+                    // behavior: HitTestBehavior.translucent,
+                    onPanUpdate: (details) {
+                      nodesProvider.offsetNodePosition(
+                          videoNodeData.id, details.delta);
+                    },
+                    onPanStart: (details) {
+                      nodesProvider.setActiveNode(videoNodeData.id);
+                    },
+                    onPanEnd: (_) {
+                      nodesProvider.resetNodeIntendedValues(videoNodeData.id);
+                    },
+                    onPanCancel: () {
+                      nodesProvider.resetNodeIntendedValues(videoNodeData.id);
+                    },
+                    onTap: () {
+                      nodesProvider.setActiveNode(videoNodeData.id);
+                    },
+                    child: SizedBox(
+                      width: videoNodeData.nodeWidth,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          //Swatch Strip on top
+                          NodeSwatchStrip(
+                              nodeData: videoNodeData,
+                              nameTextEditingController: TextEditingController()
+                              // _nameTextEditingController
+                              ),
+                          //Main node background
+                          NodeMainContainer(
+                            nodeData: videoNodeData,
+                            children: [
+                              //thumbnail
+                              NodeVideoThumbnail(videoNodeData: videoNodeData),
+                              //video file name
+                              NodeVideoFileNameText(
+                                  videoNodeData: videoNodeData),
+
+                              NodeVideoOutputsList(
+                                  videoNodeData: videoNodeData,
+                                  childKeys: null),
+                            ],
+                          ),
+                          //expansion
+                          if (videoNodeData.isExpanded)
+                            //distance between main node and expansion
+                            SizedBox(
+                              height: theme.dPanelPadding,
+                            ),
+                          if (videoNodeData.isExpanded)
+                            Container(
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(
+                                    theme.dPanelBorderRadius),
+                                border: Border.all(
+                                    color: theme.cOutlines,
+                                    width: theme.dOutlinesWidth),
+                                color: theme.cPanelTransparent,
+                              ),
+                              padding: EdgeInsets.all(theme.dPanelPadding),
+                              child: Column(
+                                children: [
+                                  //swatches picker
+                                  NodeSwatchesPicker(
+                                    nodeData: videoNodeData,
+                                  ),
+
+                                  NodeDebugInfo(videoNodeData: videoNodeData),
+                                ],
+                              ),
+                            ),
+                          SizedBox(
+                            height: 5,
+                            // key: _bottomKey,
+                            // child: Container(
+                            //   color: Colors.red,
+                            // ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                NodeResizeHandle(
+                    nodeData: videoNodeData,
+                    isLeftSide: false,
+                    draggableAreaHeight: 200
+                    // _getContainerPositionRelativeToParent(_bottomKey).dy -
+                    //     UiStaticProperties.nodePadding,
+                    ),
+                NodeResizeHandle(
+                    nodeData: videoNodeData,
+                    isLeftSide: true,
+                    draggableAreaHeight: 200
+                    // _getContainerPositionRelativeToParent(_bottomKey)
+                    //         .dy - //only call when necessary
+                    //     UiStaticProperties.nodePadding,
+                    ),
+                //left resizer
+
+                Knot(
+                    nodeData: videoNodeData,
+                    isInput: true,
+                    index: 0,
+                    offset: Offset(
+                        UiStaticProperties.nodePadding,
+                        UiStaticProperties.nodePadding +
+                            theme.dSwatchHeight +
+                            UiStaticProperties.nodeDefaultWidth * 9 / 16)),
+
+                ...videoNodeData.outputs.asMap().entries.map((entry) {
+                  int index = entry.key;
+                  var output = entry.value;
+                  bool isLast = index == videoNodeData.outputs.length - 1;
+                  // nodesProvider.updateOutputPosition(videoNodeData.id, index,
+                  //     _getContainerPositionRelativeToParent(_childKeys[index]));
+                  if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
+                    return Knot(
+                      nodeData: videoNodeData,
+                      isInput: false,
+                      index: index,
+                      offset: const Offset(0, 0),
+                      // offset: Offset(
+                      //     videoNodeData.nodeWidth +
+                      //         UiStaticProperties.nodePadding,
+                      //     (_getContainerPositionRelativeToParent(
+                      //             _childKeys[index])) //only call when necessary
+                      //         .dy),
+                    );
+                  } else {
+                    return Container();
+                  }
+                }).toList(),
+              ]),
+            ),
+          );
+        });
+  }
+}
+
 class VideoNode extends StatefulWidget {
   final VideoNodeData nodeData;
   const VideoNode({super.key, required this.nodeData});
@@ -73,12 +269,12 @@ class _VideoNodeState extends State<VideoNode> {
                   (UiStaticProperties.topLeftToMiddle.dx),
               child: MouseRegion(
                 onEnter: (_) {
-                  nodesProvider.setCurrentUnderCursor(videoNodeData.id);
-                  print('enter ${videoNodeData.id}');
+                  nodesProvider.setCurrentUnderCursor(id: videoNodeData.id);
+                  // print('enter ${videoNodeData.id}');
                 },
                 onExit: (_) {
-                  nodesProvider.setCurrentUnderCursor(null);
-                  print('exit ${videoNodeData.id}');
+                  nodesProvider.setCurrentUnderCursor();
+                  // print('exit ${videoNodeData.id}');
                 },
                 hitTestBehavior: HitTestBehavior.deferToChild,
                 child: Stack(clipBehavior: Clip.none, children: [
@@ -112,7 +308,7 @@ class _VideoNodeState extends State<VideoNode> {
                       onTap: () {
                         nodesProvider.setActiveNode(videoNodeData.id);
                       },
-                      child: Container(
+                      child: SizedBox(
                         width: videoNodeData.nodeWidth,
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -256,10 +452,10 @@ class NodeVideoOutputsList extends StatelessWidget {
   const NodeVideoOutputsList({
     super.key,
     required this.videoNodeData,
-    required this.childKeys,
+    this.childKeys,
   });
 
-  final List<GlobalKey> childKeys;
+  final List<GlobalKey>? childKeys;
   final VideoNodeData videoNodeData;
 
   @override
@@ -283,7 +479,6 @@ class NodeVideoOutputsList extends StatelessWidget {
                     children: [
                       Expanded(
                         child: NutriaTextfield(
-                          // focusNode: FocusNode(),
                           onChanged: (currentText) {
                             nodesProvider.setVideoNodeOutputText(
                                 text: currentText,
@@ -323,7 +518,7 @@ class NodeVideoOutputsList extends StatelessWidget {
                           ),
                           SizedBox(
                             width: 0,
-                            key: childKeys[index],
+                            key: childKeys != null ? childKeys![index] : null,
                           ),
                         ],
                       )
@@ -336,68 +531,6 @@ class NodeVideoOutputsList extends StatelessWidget {
                 ],
               );
             }),
-            //sizedbox for spacing
-            // ...videoNodeData.outputs.asMap().entries.map((entry) {
-            //   int index = entry.key;
-            //   bool isLast = index == videoNodeData.outputs.length - 1;
-            //   return Column(
-            //     children: [
-            //       Row(
-            //         crossAxisAlignment: CrossAxisAlignment.start,
-            //         children: [
-            //           Expanded(
-            //             child: NutriaTextfield(
-            //               onChanged: (currentText) {
-            //                 nodesProvider.setVideoNodeOutputText(
-            //                     text: currentText,
-            //                     id: videoNodeData.id,
-            //                     outputIndex: index);
-            //                 WidgetsBinding.instance.addPostFrameCallback((_) {
-            //                   nodesProvider.rebuildNode(videoNodeData.id);
-            //                 });
-            //               },
-            //               index: index + 1,
-            //               text: (entry.value.outputData ?? '').toString(),
-            //             ),
-            //           ),
-            //           if (isLast) ...[
-            //             SizedBox(
-            //               width: theme.dPanelPadding,
-            //             ),
-            //             NutriaButton.Icon(
-            //               icon: videoNodeData.isExpanded
-            //                   ? Icons.arrow_drop_up
-            //                   : Icons.arrow_drop_down,
-            //               onTap: () {
-            //                 nodesProvider.expandToggle(videoNodeData.id);
-            //                 WidgetsBinding.instance.addPostFrameCallback((_) {
-            //                   nodesProvider.rebuildNode(videoNodeData.id);
-            //                 });
-            //                 // ;
-            //               },
-            //             ),
-            //           ],
-            //           Column(
-            //             children: [
-            //               SizedBox(
-            //                 width: 0,
-            //                 height: theme.dButtonHeight / 2,
-            //               ),
-            //               SizedBox(
-            //                 width: 0,
-            //                 key: childKeys[index],
-            //               ),
-            //             ],
-            //           )
-            //         ],
-            //       ),
-            //       if (!isLast)
-            //         SizedBox(
-            //           height: theme.dPanelPadding,
-            //         ),
-            //     ],
-            //   );
-            // }).toList(),
           ),
         ),
       ),
@@ -439,9 +572,9 @@ class NodeSwatchStrip extends StatelessWidget {
                   style: TextStyle(
                     overflow: TextOverflow.ellipsis,
                     color: theme.cText,
-                    fontVariations: [FontVariation('wght', 700)],
+                    fontVariations: const [FontVariation('wght', 700)],
                   ),
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                     isDense: true,
                     border: InputBorder.none,
                   ),
