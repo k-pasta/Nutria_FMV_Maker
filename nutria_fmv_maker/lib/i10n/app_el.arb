@@ -1,8 +1,27 @@
 {
+  "editPreferences": "Προτιμήσεις",
+  "editProjectSettings": "Ρυθμίσεις Πρότζεκτ",
+  "editRedo": "Επανάληψη",
+  "editUndo": "Αναίρεση",
+  "fileExit": "Έξοδος",
+  "fileLoadProject": "Άνοιγμα ",
+  "fileNewProject": "Νέο Πρότζεκτ",
+  "fileRecentProjects": "Πρόσφατα Πρότζεκτ",
+  "fileSaveProject": "Αποθήκευση Πρότζεκτ",
+  "fileSaveProjectAs": "Αποθήκευση Πρότζεκτ ως",
   "helloWorld": "Γεια σου κοσμε!",
+  "helpAbout": "Σχετικά με το Nutria FMV Maker",
+  "helpDocumentation": "Documentation",
+  "helpGithub": "Github",
   "menuBarEdit": "Επεξεργασία",
   "menuBarFile": "Αρχείο",
   "menuBarHelp": "Βοήθεια",
   "menuBarView": "Προβολή",
-  "videoNodeChoice": "Επιλογή"
+  "videoNodeChoice": "Επιλογή",
+  "viewCustomTheme": "Προσαρμοσμένο Θέμα",
+  "viewDarkTheme": "Σκούρο Θέμα",
+  "viewLanguage": "Γλώσσα",
+  "viewLightTheme": "Ανοιχτό Θέμα",
+  "viewProperties": "Στήλη Προτιμήσεων",
+  "viewVideoPlayer": "Στήλη Βίντεο"
 }

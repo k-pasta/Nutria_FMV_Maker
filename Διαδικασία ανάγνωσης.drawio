@@ -1,121 +1,121 @@
-<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.4 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.4" pages="2">
+<mxfile host="Electron" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/26.0.9 Chrome/128.0.6613.186 Electron/32.2.5 Safari/537.36" version="26.0.9" pages="2">
   <diagram name="Page-1" id="KIlJEDt48yhKsCNoSLyd">
     <mxGraphModel dx="1596" dy="884" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="oEEk8U3klNDm9o4gHErh-2" value="Παρατηρήτρια/ής" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-2" value="Παρατηρήτρια/ής" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="120" y="600" width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-3" value="Κείμενο" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-3" value="Κείμενο" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="320" y="400" width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-4" value="Χώρος /&amp;nbsp;&lt;div&gt;συγκυρία&lt;br&gt;ανάγνωσης&lt;br&gt;(reading context)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-4" value="Χώρος /&amp;nbsp;&lt;div&gt;συγκυρία&lt;br&gt;ανάγνωσης&lt;br&gt;(reading context)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="520" y="600" width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-6" value="Δημιουργός" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-6" value="Δημιουργός" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="320" y="180" width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-10" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-6" target="oEEk8U3klNDm9o4gHErh-3">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-10" value="" style="endArrow=classic;html=1;rounded=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-6" target="oEEk8U3klNDm9o4gHErh-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="350" y="300" as="sourcePoint" />
             <mxPoint x="460" y="450" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-11" value="Μορφή" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-10">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-11" value="Μορφή" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-10" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-2" target="oEEk8U3klNDm9o4gHErh-3">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-13" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-2" target="oEEk8U3klNDm9o4gHErh-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="330" y="550" as="sourcePoint" />
             <mxPoint x="330" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-14" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-13">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-14" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-13" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-19" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-3">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-19" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0;exitDx=0;exitDy=0;entryX=1;entryY=1;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-3" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="374" y="710" as="sourcePoint" />
             <mxPoint x="454" y="630" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-20" value="Πλαίσιο αναφοράς" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-19">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-20" value="Πλαίσιο αναφοράς" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-19" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-21" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-2" target="oEEk8U3klNDm9o4gHErh-4">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-21" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-2" target="oEEk8U3klNDm9o4gHErh-4" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="290" y="665" as="sourcePoint" />
             <mxPoint x="370" y="585" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-22" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-21">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-22" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-21" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-3" target="oEEk8U3klNDm9o4gHErh-2">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-23" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-3" target="oEEk8U3klNDm9o4gHErh-2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="190" y="570" as="sourcePoint" />
             <mxPoint x="130" y="530" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-24" value="Έναυσμα" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-23">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-24" value="Έναυσμα" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-23" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-25" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-34" target="oEEk8U3klNDm9o4gHErh-6">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-25" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-34" target="oEEk8U3klNDm9o4gHErh-6" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="540" y="350" as="sourcePoint" />
             <mxPoint x="490" y="410" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-26" value="Πρόθεση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-25">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-26" value="Πρόθεση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-25" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-29" value="" style="startArrow=classic;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-2">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-29" value="" style="startArrow=classic;endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="240" y="760" as="sourcePoint" />
             <mxPoint x="520" y="760" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-30" value="Προυπόθεση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-29">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-30" value="Προυπόθεση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-29" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-32" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-3" target="oEEk8U3klNDm9o4gHErh-4">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-32" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-3" target="oEEk8U3klNDm9o4gHErh-4" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="570" y="550" as="sourcePoint" />
             <mxPoint x="490" y="470" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-33" value="Σημείο αναφοράς" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-32">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-33" value="Σημείο αναφοράς" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-32" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-34" value="Χώρος /&lt;div&gt;συγκυρία&lt;/div&gt;&lt;div&gt;δημιουργίας&lt;/div&gt;&lt;div&gt;(authoring context)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" vertex="1" parent="1">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-34" value="Χώρος /&lt;div&gt;συγκυρία&lt;/div&gt;&lt;div&gt;δημιουργίας&lt;/div&gt;&lt;div&gt;(authoring context)&lt;/div&gt;" style="whiteSpace=wrap;html=1;aspect=fixed;" parent="1" vertex="1">
           <mxGeometry x="570" y="180" width="120" height="120" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-36" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-34" target="oEEk8U3klNDm9o4gHErh-6">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-36" value="" style="endArrow=classic;html=1;rounded=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-34" target="oEEk8U3klNDm9o4gHErh-6" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="530" y="330" as="sourcePoint" />
             <mxPoint x="440" y="330" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-37" value="Εργαλεία&lt;br&gt;δημιουργίας" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-36">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-37" value="Εργαλεία&lt;br&gt;δημιουργίας" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-36" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-39" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-6" target="oEEk8U3klNDm9o4gHErh-34">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-39" value="" style="endArrow=classic;html=1;rounded=0;exitX=1;exitY=0.25;exitDx=0;exitDy=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-6" target="oEEk8U3klNDm9o4gHErh-34" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="500" y="130" as="sourcePoint" />
             <mxPoint x="780" y="130" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-40" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-39">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-40" value="Νοηματοδότηση" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-39" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-41" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" edge="1" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-2">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-41" value="" style="endArrow=classic;html=1;rounded=0;exitX=0;exitY=0.75;exitDx=0;exitDy=0;entryX=1;entryY=0.75;entryDx=0;entryDy=0;" parent="1" source="oEEk8U3klNDm9o4gHErh-4" target="oEEk8U3klNDm9o4gHErh-2" edge="1">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="530" y="670" as="sourcePoint" />
             <mxPoint x="250" y="670" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="oEEk8U3klNDm9o4gHErh-42" value="Εργαλεία &lt;br&gt;Νοηματοδότησης" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" connectable="0" vertex="1" parent="oEEk8U3klNDm9o4gHErh-41">
+        <mxCell id="oEEk8U3klNDm9o4gHErh-42" value="Εργαλεία &lt;br&gt;Νοηματοδότησης" style="edgeLabel;resizable=0;html=1;;align=center;verticalAlign=middle;" parent="oEEk8U3klNDm9o4gHErh-41" connectable="0" vertex="1">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
       </root>

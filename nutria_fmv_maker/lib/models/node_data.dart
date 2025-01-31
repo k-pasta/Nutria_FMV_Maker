@@ -66,24 +66,24 @@ abstract class BaseNodeData extends NodeData {
 class VideoNodeData extends BaseNodeData {
   final String videoDataId;
   final bool hasMaxedOutOutputs;
-  Map<String, dynamic> overrides;
+  final Map<String, dynamic> overrides;
 
-  /// Set an override for a property
-  void setOverride(String key, dynamic value) {
-    overrides[key] = value;
-  }
+  // /// Set an override for a property
+  // void setOverride(String key, dynamic value) {
+  //   overrides[key] = value;
+  // }
 
-  /// Remove an override (revert to default)
-  void removeOverride(String key) {
-    overrides.remove(key);
-  }
+  // /// Remove an override (revert to default)
+  // void removeOverride(String key) {
+  //   overrides.remove(key);
+  // }
 
-  ///Get the video data for this node
-  VideoData? getVideoData(List<VideoData> videoList) {
-    return videoList.firstWhereOrNull((element) => element.id == videoDataId);
-  }
+  // ///Get the video data for this node
+  // VideoData? getVideoData(List<VideoData> videoList) {
+  //   return videoList.firstWhereOrNull((element) => element.id == videoDataId);
+  // }
 
-  VideoNodeData({
+  const VideoNodeData({
     required super.position,
     super.intendedPosition,
     required super.id,

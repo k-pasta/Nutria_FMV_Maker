@@ -8,11 +8,13 @@ class GridPainter extends CustomPainter {
   final TransformationController transformationController;
   final BuildContext context;
 
-  GridPainter({required this.transformationController, required this.context});
+  const GridPainter(
+      {required this.transformationController, required this.context});
 
   @override
   void paint(Canvas canvas, Size size) {
-    final AppTheme theme = Provider.of<ThemeProvider>(context, listen: false).currentAppTheme;
+    final AppTheme theme =
+        Provider.of<ThemeProvider>(context, listen: false).currentAppTheme;
 
     final Paint paint = Paint()
       ..color = theme.cBackgroundDots
@@ -28,7 +30,6 @@ class GridPainter extends CustomPainter {
     final translation = matrix.getTranslation();
     final double translationX = translation.x;
     final double translationY = translation.y;
-
     // Grid spacing (smaller for higher zoom levels)
 
     double nearestPowerOfTwo(double num) {
@@ -56,15 +57,18 @@ class GridPainter extends CustomPainter {
             ((-translationX) / scale) % gridSpacing -
             gridSpacing;
         x <
-            (-translationX + MediaQuery.of(context).size.width) / scale +
+            (-translationX + 5000 /* MediaQuery.of(context).size.width */) /
+                    scale +
                 gridSpacing;
         x += gridSpacing) {
       for (double y =
               (-translationY) / scale - ((-translationY) / scale) % gridSpacing;
-          y < (-translationY + MediaQuery.of(context).size.height) / scale;
+          y <
+              (-translationY + 5000 /* MediaQuery.of(context).size.height */) /
+                  scale;
           y += gridSpacing) {
         points.add(Offset(x, y)); // Add each point to the list
-      }
+      } //TODO de-hardcode. Changed from mediaquery to a number because mediaquery would cause the whole widget tree to rebuild
     }
     // Draw points on the canvas
     canvas.drawPoints(PointMode.points, points, paint);

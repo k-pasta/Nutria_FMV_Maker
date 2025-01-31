@@ -16,11 +16,13 @@ class NutriaSubmenuButton {
   final VoidCallback function;
   final MenuSerializableShortcut? shortcut;
   final IconData? icon;
+  final List<NutriaSubmenuButton>? submenuButtons;
 
   NutriaSubmenuButton({
     required this.text,
     required this.function,
     this.shortcut,
     this.icon,
+    this.submenuButtons,
   });
 }

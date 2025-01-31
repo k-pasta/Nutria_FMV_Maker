@@ -107,12 +107,28 @@ class MyHomePage extends StatelessWidget {
       // ),
 
       // body: const MenuExample(),
+      // body: const Stack(children: [ SizedBox(height: 2000, width: 2000,),
+      //   TestNode(
+      //       nodeData: VideoNodeData(
+      //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
+      // ]),
 
       body: NutriaMenuBar(
+        // child: ClipRRect(
+        //       clipBehavior: Clip.hardEdge,
+        //       child: GridCanvas(
+        //         key: ValueKey('GridCanvas'),
+        //       ),
         child: Stack(
           children: [
-            ClipRRect(clipBehavior: Clip.hardEdge, child: GridCanvas()),
-            Positioned.fill( //UI fader
+            const ClipRRect(
+              clipBehavior: Clip.hardEdge,
+              child: GridCanvas(
+                key: ValueKey('GridCanvas'),
+              ),
+            ),
+            Positioned.fill(
+              //UI fader
               child: Selector<UiStateProvider, bool>(
                 selector: (context, uiStateProvider) =>
                     uiStateProvider.isModalOrMenuOpen,
@@ -122,7 +138,7 @@ class MyHomePage extends StatelessWidget {
                       color: Colors.black45, //TODO de-hardcode
                     );
                   } else {
-                    return Container();
+                    return const SizedBox();
                   }
                 },
               ),

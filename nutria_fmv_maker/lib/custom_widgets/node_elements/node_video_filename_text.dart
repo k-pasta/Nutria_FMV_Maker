@@ -29,8 +29,7 @@ class NodeVideoFileNameText extends StatelessWidget {
       ),
       child: Text(
         videoNodeData
-            .getVideoData(nodesProvider.videos)!
-            .fileName, //TODO handle null
+            .videoDataId, //TODO handle null
         textAlign: TextAlign.center,
         style: TextStyle(color: theme.cText),
       ),

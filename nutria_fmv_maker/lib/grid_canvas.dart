@@ -10,7 +10,7 @@ import 'package:provider/provider.dart';
 import 'static_data/ui_static_properties.dart';
 
 class GridCanvas extends StatelessWidget {
-  GridCanvas({super.key});
+  const GridCanvas({super.key});
   final double keyboardMoveSensitivity =
       UiStaticProperties.gridCanvasArrowMoveSensitivity;
 

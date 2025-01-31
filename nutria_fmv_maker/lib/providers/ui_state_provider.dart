@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/scheduler.dart';
 
 class UiStateProvider extends ChangeNotifier {
   bool _isModalOrMenuOpen = false;
   bool get isModalOrMenuOpen => _isModalOrMenuOpen;
-  set isModalOrMenuOpen(bool value) {
+  void setModalOrMenuOpen(bool value) {
     _isModalOrMenuOpen = value;
-    notifyListeners();
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      notifyListeners();
+    });
   }
 }
