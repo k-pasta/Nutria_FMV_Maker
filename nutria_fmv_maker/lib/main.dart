@@ -1,15 +1,15 @@
 import 'package:menu_bar/menu_bar.dart';
+import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
-import 'package:nutria_fmv_maker/focus_tests.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
-import 'custom_menu_example.dart';
 import 'custom_widgets/menu_bar.dart';
 import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
+import 'multi_split_view_example.dart';
 import 'providers/ui_state_provider.dart';
 import 'thumbnail_example.dart';
 import 'custom_widgets/nutria_button.dart';
@@ -113,62 +113,77 @@ class MyHomePage extends StatelessWidget {
       //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
       // ]),
 
-      body: NutriaMenuBar(
+      // body: WindowsAppLayout(),
+      body: MultiSplitViewExample(),
+    );
+  }
+}
+
+class WindowsAppLayout extends StatelessWidget {
+  WindowsAppLayout({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final MultiSplitViewController controller =
+        MultiSplitViewController(areas: [
+      Area(
+          size: 50,
+          max: 500,
+          min: 140,
+          builder: (context, area) => Container(
+                color: theme.cPanel,
+              ),
+          data: 'blue'),
+      Area(flex: 1, builder: (context, area) => Container()),
+      Area(
+        size: 50,
+        max: 1000,
+        min: 140,
+        builder: (context, area) => Container(
+          color: theme.cPanel,
+        ),
+      )
+    ]);
+
+    return Column(
+      children: [
+        const NutriaMenuBar(),
         // child: ClipRRect(
         //       clipBehavior: Clip.hardEdge,
         //       child: GridCanvas(
         //         key: ValueKey('GridCanvas'),
         //       ),
-        child: Stack(
-          children: [
-            const ClipRRect(
-              clipBehavior: Clip.hardEdge,
-              child: GridCanvas(
-                key: ValueKey('GridCanvas'),
-              ),
+        Expanded(
+          child: ClipRect(
+            clipBehavior: Clip.hardEdge,
+            child: Stack(
+              children: [
+                const GridCanvas(),
+                MultiSplitView(controller: controller, pushDividers: true),
+                Positioned.fill(
+                  //UI fader
+                  child: Selector<UiStateProvider, bool>(
+                    selector: (context, uiStateProvider) =>
+                        uiStateProvider.isModalOrMenuOpen,
+                    builder: (context, isModalOrMenuOpen, child) {
+                      if (isModalOrMenuOpen) {
+                        return Container(
+                          color: Colors.black45, //TODO de-hardcode
+                        );
+                      } else {
+                        return const SizedBox();
+                      }
+                    },
+                  ),
+                ),
+              ],
             ),
-            Positioned.fill(
-              //UI fader
-              child: Selector<UiStateProvider, bool>(
-                selector: (context, uiStateProvider) =>
-                    uiStateProvider.isModalOrMenuOpen,
-                builder: (context, isModalOrMenuOpen, child) {
-                  if (isModalOrMenuOpen) {
-                    return Container(
-                      color: Colors.black45, //TODO de-hardcode
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-              ),
-            ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
-
-// body: GridCanvas(),
-
-// body: CustomNodesExample()
-// body: SizedBox(
-//     width: 1000,
-//     height: 1000,
-//     // color: Colors.red,
-//     child: Stack(clipBehavior: Clip.none, children: [
-//       Positioned.fill(
-//           child: Container(
-//         color: Colors.red,
-//       )),
-//       VideoNode(
-//           nodeData: VideoNodeData(
-//               position: Offset(0, 0),
-//               id: 'aaa',
-//               videoDataId: 'videoDataPath videoDataPath videoDataPath')),
-//       SizedBox(
-//         width: 50,
-//         height: 50,
-//       ),
-//     ]))

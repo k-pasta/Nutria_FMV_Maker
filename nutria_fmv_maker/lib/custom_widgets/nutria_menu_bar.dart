@@ -14,8 +14,8 @@ import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 
 class NutriaMenuBar extends StatelessWidget {
-  final Widget child;
-  const NutriaMenuBar({super.key, required this.child});
+  // final Widget child;
+  const NutriaMenuBar({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -29,7 +29,7 @@ class NutriaMenuBar extends StatelessWidget {
         for (var submenu in menu.submenuButtons)
           if (submenu.shortcut != null) submenu.shortcut!: submenu.function,
     };
-    
+
     return CallbackShortcuts(
       bindings: shortcutActions,
       child: Theme(
@@ -38,25 +38,29 @@ class NutriaMenuBar extends StatelessWidget {
             style: menuStyles.submenuStyle, // Apply _submenuStyle locally
           ),
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
+        child: /*
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [ */
             Focus(
-              autofocus: true,
-              child: MenuBar(
-                style: menuStyles.menuStyle, // Apply menu bar style
-                children: menuData.map((menu) {
-                  return _buildMenuButton(menu, uiStateProvider, menuStyles);
-                }).toList(),
-              ),
+          autofocus: true,
+          child: Container( width: double.infinity,
+            child: MenuBar(
+              style: menuStyles.menuStyle, // Apply menu bar style
+              children: menuData.map((menu) {
+                return _buildMenuButton(menu, uiStateProvider, menuStyles);
+              }).toList(),
             ),
-            Expanded(
-              child: ClipRRect(
-                child: child,
-              ),
-            ),
-          ],
+          ),
         ),
+        //     Expanded(
+        //       child: ClipRRect(
+        //         clipBehavior: Clip.hardEdge,
+        //         child: child,
+        //       ),
+        //     ),
+        //   ],
+        // ),
       ),
     );
   }
@@ -78,10 +82,10 @@ class NutriaMenuBar extends StatelessWidget {
         uiStateProvider.setModalOrMenuOpen(false);
       },
       style: menuStyles.buttonStyleBar, // Apply submenu button style
-      child: Text(menu.title),
       menuChildren: menu.submenuButtons.map((submenu) {
         return _buildSubmenuButton(submenu, uiStateProvider, menuStyles);
       }).toList(),
+      child: Text(menu.title),
     );
   }
 
@@ -94,16 +98,13 @@ class NutriaMenuBar extends StatelessWidget {
     if (submenu.submenuButtons != null && submenu.submenuButtons!.isNotEmpty) {
       // If there are nested submenu buttons, render another SubmenuButton
       return SubmenuButton(
-        // onOpen: () {
-        //   uiStateProvider.setModalOrMenuOpen(true);
-        // },
-        // onClose: () {
-        //   uiStateProvider.setModalOrMenuOpen(false);
-        // },
-        onFocusChange: (_) {
-          uiStateProvider.setModalOrMenuOpen(false);
-        },
         style: menuStyles.buttonStyleMenu, // Apply submenu button style
+
+        menuChildren: submenu.submenuButtons!.map((nestedSubmenu) {
+          return _buildSubmenuButton(
+              nestedSubmenu, uiStateProvider, menuStyles);
+        }).toList(),
+
         child: Row(
           children: [
             if (submenu.icon != null) Icon(submenu.icon, size: 16),
@@ -111,9 +112,6 @@ class NutriaMenuBar extends StatelessWidget {
             Text(submenu.text),
           ],
         ),
-        menuChildren: submenu.submenuButtons!.map((nestedSubmenu) {
-          return _buildSubmenuButton(nestedSubmenu, uiStateProvider, menuStyles);
-        }).toList(),
       );
     } else {
       // If there are no nested submenu buttons, render a MenuItemButton

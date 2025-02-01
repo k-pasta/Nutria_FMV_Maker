@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'nutria_menu_button.dart';
 import 'package:flutter/services.dart';
 import '../../providers/locale_provider.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 class MenuData {
   static List<NutriaMenuButton> menuData(BuildContext context) {
@@ -47,7 +49,9 @@ class MenuData {
           ),
           NutriaSubmenuButton(
             text: t.fileExit,
-            function: () => debugPrint("Save File selected"),
+            function: () {
+              exit(0);
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyQ, control: true),
             icon: Icons.close,
           ),
@@ -60,11 +64,14 @@ class MenuData {
           NutriaSubmenuButton(
             text: t.editUndo,
             function: () => debugPrint("Cut selected"),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyZ, control: true),
             icon: Icons.undo,
           ),
           NutriaSubmenuButton(
             text: t.editRedo,
             function: () => debugPrint("Copy selected"),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyZ,
+                control: true, shift: true),
             icon: Icons.redo,
           ),
           NutriaSubmenuButton(
@@ -84,31 +91,6 @@ class MenuData {
         title: t.menuBarView,
         submenuButtons: [
           NutriaSubmenuButton(
-            text: t.viewDarkTheme,
-            function: () => debugPrint("Copy selected"),
-            icon: Icons.dark_mode,
-          ),
-          NutriaSubmenuButton(
-            text: t.viewLightTheme,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.light_mode,
-          ),
-          NutriaSubmenuButton(
-            text: t.viewCustomTheme,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.question_mark,
-          ),
-          NutriaSubmenuButton(
-            text: t.viewProperties,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.tab,
-          ),
-          NutriaSubmenuButton(
-            text: t.viewVideoPlayer,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.tab,
-          ),
-          NutriaSubmenuButton(
               text: t.viewLanguage,
               function: () => debugPrint("Cut selected"),
               icon: Icons.language,
@@ -121,7 +103,8 @@ class MenuData {
                         .read<LocaleProvider>()
                         .changeLocale(const Locale('en'));
                   },
-                  icon: context.read<LocaleProvider>().locale == const Locale('en')
+                  icon: context.read<LocaleProvider>().locale ==
+                          const Locale('en')
                       ? Icons.check
                       : null,
                 ),
@@ -132,7 +115,8 @@ class MenuData {
                         .read<LocaleProvider>()
                         .changeLocale(const Locale('fr'));
                   },
-                  icon: context.read<LocaleProvider>().locale == const Locale('fr')
+                  icon: context.read<LocaleProvider>().locale ==
+                          const Locale('fr')
                       ? Icons.check
                       : null,
                 ),
@@ -143,11 +127,51 @@ class MenuData {
                         .read<LocaleProvider>()
                         .changeLocale(const Locale('el'));
                   },
-                  icon: context.read<LocaleProvider>().locale == const Locale('el')
+                  icon: context.read<LocaleProvider>().locale ==
+                          const Locale('el')
                       ? Icons.check
                       : null,
                 ),
               ]),
+          NutriaSubmenuButton(
+              text: t.viewTheme,
+              function: () => debugPrint("Copy selected"),
+              icon: Icons.brush,
+              submenuButtons: [
+                NutriaSubmenuButton(
+                  text: t.viewDarkTheme,
+                  function: () {
+                    context.read<ThemeProvider>().setTheme(ThemeType.dark);
+                  },
+                  icon: Icons.dark_mode,
+                ),
+                NutriaSubmenuButton(
+                  text: t.viewLightTheme,
+                  function: () {
+                    context.read<ThemeProvider>().setTheme(ThemeType.light);
+                  },
+                  icon: Icons.light_mode,
+                ),
+                NutriaSubmenuButton(
+                  text: t.viewCustomTheme,
+                  function: () {
+                    context.read<ThemeProvider>().setTheme(ThemeType.custom);
+                  },
+                  icon: Icons.question_mark,
+                ),
+              ]),
+          NutriaSubmenuButton(
+            text: t.viewProperties,
+            function: () => debugPrint("Paste selected"),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyT),
+            icon: Icons.tab,
+          ),
+          NutriaSubmenuButton(
+            text: t.viewVideoPlayer,
+            function: () => debugPrint("Paste selected"),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyN),
+            icon: Icons.tab,
+          ),
         ],
       ),
       NutriaMenuButton(
