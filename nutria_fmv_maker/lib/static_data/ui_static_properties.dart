@@ -24,4 +24,8 @@ class UiStaticProperties {
   //Knots
   static const double knotSizeLarge = 25;
   static const double knotSizeSmall = 17;
+
+  //Split View
+  static const double splitViewDragWidgetSize = 10;
+
 }

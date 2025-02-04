@@ -1,6 +1,7 @@
 import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
+import 'package:nutria_fmv_maker/nutria_split_view.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
@@ -31,6 +32,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => NodesProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ChangeNotifierProvider(create: (context) => UiStateProvider()),
+      ChangeNotifierProvider(create: (context) => SplitViewProvider()),
     ],
     child: const MyApp(),
   ));
@@ -114,7 +116,7 @@ class MyHomePage extends StatelessWidget {
       // ]),
 
       // body: WindowsAppLayout(),
-      body: MultiSplitViewExample(),
+      body: NutriaSplitView(),
     );
   }
 }
