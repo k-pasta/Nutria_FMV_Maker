@@ -43,8 +43,17 @@ class NutriaMenuBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [ */
             Focus(
-          autofocus: true,
-          child: Container( width: double.infinity,
+              focusNode: uiStateProvider.parentfocusNode,
+          onFocusChange: (gotFocus){
+            
+              if (gotFocus) {
+                  print('menu got focus');
+                } else {
+                  print('menu lost focus');
+                }
+
+          },
+          child: SizedBox( width: double.infinity,
             child: MenuBar(
               style: menuStyles.menuStyle, // Apply menu bar style
               children: menuData.map((menu) {

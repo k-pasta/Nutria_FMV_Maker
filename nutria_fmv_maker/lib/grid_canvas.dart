@@ -29,87 +29,86 @@ class GridCanvas extends StatelessWidget {
               key: ValueKey(node.id),
             );
           }).toList();
-          return CallbackShortcuts(
-            //TODO IMPORTANT disable if focused on node
-            bindings: <ShortcutActivator, VoidCallback>{
-              gridCanvasProvider.moveUp: () {
-                gridCanvasProvider.offsetPosition(
-                  Offset(0, keyboardMoveSensitivity),
-                  isScreenSpaceTransformation: true,
-                );
-              },
-              gridCanvasProvider.moveDown: () {
-                gridCanvasProvider.offsetPosition(
-                    Offset(0, -keyboardMoveSensitivity),
-                    isScreenSpaceTransformation: true);
-              },
-              gridCanvasProvider.moveLeft: () {
-                gridCanvasProvider.offsetPosition(
-                    Offset(keyboardMoveSensitivity, 0),
-                    isScreenSpaceTransformation: true);
-              },
-              gridCanvasProvider.moveRight: () {
-                gridCanvasProvider.offsetPosition(
-                    Offset(-keyboardMoveSensitivity, 0),
-                    isScreenSpaceTransformation: true);
-              },
+          //TODO move to top layer
+          // return CallbackShortcuts(
+          //   //TODO IMPORTANT disable if focused on node
+          //   bindings: <ShortcutActivator, VoidCallback>{
+          //     gridCanvasProvider.moveUp: () {
+          //       gridCanvasProvider.offsetPosition(
+          //         Offset(0, keyboardMoveSensitivity),
+          //         isScreenSpaceTransformation: true,
+          //       );
+          //     },
+          //     gridCanvasProvider.moveDown: () {
+          //       gridCanvasProvider.offsetPosition(
+          //           Offset(0, -keyboardMoveSensitivity),
+          //           isScreenSpaceTransformation: true);
+          //     },
+          //     gridCanvasProvider.moveLeft: () {
+          //       gridCanvasProvider.offsetPosition(
+          //           Offset(keyboardMoveSensitivity, 0),
+          //           isScreenSpaceTransformation: true);
+          //     },
+          //     gridCanvasProvider.moveRight: () {
+          //       gridCanvasProvider.offsetPosition(
+          //           Offset(-keyboardMoveSensitivity, 0),
+          //           isScreenSpaceTransformation: true);
+          //     },
+          //   },
+          //   child: Focus(
+          //     onFocusChange: (gotFocus) {
+          //       if (gotFocus) {
+          //         print('got focus');
+          //       } else {
+          //         print('lost focus');
+          //       }
+          //     },
+          // child:
+
+          return Listener(
+            onPointerSignal: (event) {
+              if (event is PointerScrollEvent) {
+                gridCanvasProvider.updateScaleAndMatrix(event, context);
+              }
             },
-            child: Focus(
-              onFocusChange: (gotFocus) {
-                if (gotFocus) {
-                  print('got focus');
-                } else {
-                  print('lost focus');
-                }
-              },
-              child: Listener(
-                onPointerSignal: (event) {
-                  if (event is PointerScrollEvent) {
-                    gridCanvasProvider.updateScaleAndMatrix(event, context);
-                  }
-                },
-                // child: DeferredPointerHandler(
-                child: Center(
-                  child: InteractiveViewer(
-                    onInteractionUpdate: (_) {},
-                    /*scale settings*/
-                    scaleEnabled: false, // handled separately
+            child: Center(
+              child: InteractiveViewer(
+                onInteractionUpdate: (_) {},
+                /*scale settings*/
+                scaleEnabled: false, // handled separately
 
-                    /*move settings*/
-                    interactionEndFrictionCoefficient:
-                        double.minPositive, //near zero slide after release
+                /*move settings*/
+                interactionEndFrictionCoefficient:
+                    double.minPositive, //near zero slide after release
 
-                    /*appearance & functionality settings*/
-                    transformationController: gridCanvasProvider
-                        .transformationController, //variable that allows acces to position
-                    boundaryMargin: const EdgeInsets.all(double
-                        .infinity), //creates infinite canvas by extending outwards.
-                    clipBehavior: Clip.none, // allows no clipping
-                    constrained: false, //panning glitches if not set to false
+                /*appearance & functionality settings*/
+                transformationController: gridCanvasProvider
+                    .transformationController, //variable that allows acces to position
+                boundaryMargin: const EdgeInsets.all(double
+                    .infinity), //creates infinite canvas by extending outwards.
+                clipBehavior: Clip.none, // allows no clipping
+                constrained: false, //panning glitches if not set to false
 
-                    child: Stack(
-                      clipBehavior: Clip.none, //allows no clipping
+                child: Stack(
+                  clipBehavior: Clip.none, //allows no clipping
 
-                      children: [
-                        Positioned.fill(
-                          child: CustomPaint(
-                            painter: GridPainter(
-                                transformationController:
-                                    gridCanvasProvider.transformationController,
-                                context: context), // infinite dots grid
-                          ),
-                        ),
-                        const SizedBox(
-                          height: UiStaticProperties.canvasSize,
-                          width: UiStaticProperties.canvasSize,
-                          child: Placeholder(),
-                        ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
-                        ...nodes
-                      ],
+                  children: [
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: GridPainter(
+                            transformationController:
+                                gridCanvasProvider.transformationController,
+                            context: context), // infinite dots grid
+                      ),
                     ),
-                  ),
+                    const SizedBox(
+                      height: UiStaticProperties.canvasSize,
+                      width: UiStaticProperties.canvasSize,
+                      child: Placeholder(),
+                    ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
+                    ...nodes
+                  ],
                 ),
-                // ),
               ),
             ),
           );

@@ -1,7 +1,7 @@
 import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
-import 'package:nutria_fmv_maker/nutria_split_view.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
@@ -32,7 +32,6 @@ void main() {
       ChangeNotifierProvider(create: (context) => NodesProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ChangeNotifierProvider(create: (context) => UiStateProvider()),
-      ChangeNotifierProvider(create: (context) => SplitViewProvider()),
     ],
     child: const MyApp(),
   ));
@@ -104,9 +103,6 @@ class MyHomePage extends StatelessWidget {
     return Scaffold(
       backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
-      // appBar: AppBar(
-      //   title: Text(apptitle),
-      // ),
 
       // body: const MenuExample(),
       // body: const Stack(children: [ SizedBox(height: 2000, width: 2000,),
@@ -115,8 +111,8 @@ class MyHomePage extends StatelessWidget {
       //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
       // ]),
 
-      // body: WindowsAppLayout(),
-      body: NutriaSplitView(),
+      body: WindowsAppLayout(),
+      // body: NutriaSplitView(),
     );
   }
 }
@@ -129,59 +125,45 @@ class WindowsAppLayout extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-    final MultiSplitViewController controller =
-        MultiSplitViewController(areas: [
-      Area(
-          size: 50,
-          max: 500,
-          min: 140,
-          builder: (context, area) => Container(
-                color: theme.cPanel,
-              ),
-          data: 'blue'),
-      Area(flex: 1, builder: (context, area) => Container()),
-      Area(
-        size: 50,
-        max: 1000,
-        min: 140,
-        builder: (context, area) => Container(
-          color: theme.cPanel,
-        ),
-      )
-    ]);
 
     return Column(
       children: [
         const NutriaMenuBar(),
-        // child: ClipRRect(
-        //       clipBehavior: Clip.hardEdge,
-        //       child: GridCanvas(
-        //         key: ValueKey('GridCanvas'),
-        //       ),
         Expanded(
           child: ClipRect(
             clipBehavior: Clip.hardEdge,
-            child: Stack(
-              children: [
-                const GridCanvas(),
-                MultiSplitView(controller: controller, pushDividers: true),
-                Positioned.fill(
-                  //UI fader
-                  child: Selector<UiStateProvider, bool>(
-                    selector: (context, uiStateProvider) =>
-                        uiStateProvider.isModalOrMenuOpen,
-                    builder: (context, isModalOrMenuOpen, child) {
-                      if (isModalOrMenuOpen) {
-                        return Container(
-                          color: Colors.black45, //TODO de-hardcode
-                        );
-                      } else {
-                        return const SizedBox();
-                      }
-                    },
+            child: Focus(
+              autofocus: true,
+              onFocusChange: (gotFocus) {
+                if (gotFocus) {
+                  print('got focus');
+                } else {
+                  print('lost focus');
+                }
+              },
+              parentNode: context.read<UiStateProvider>().parentfocusNode,
+              child: Stack(
+                children: [
+                  const GridCanvas(),
+                  NutriaSplitView(),
+                  Positioned.fill(
+                    //UI fader
+                    child: Selector<UiStateProvider, bool>(
+                      selector: (context, uiStateProvider) =>
+                          uiStateProvider.isModalOrMenuOpen,
+                      builder: (context, isModalOrMenuOpen, child) {
+                        if (isModalOrMenuOpen) {
+                          return Container(
+                            color: Colors.black45, //TODO de-hardcode
+                          );
+                        } else {
+                          return const SizedBox();
+                        }
+                      },
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

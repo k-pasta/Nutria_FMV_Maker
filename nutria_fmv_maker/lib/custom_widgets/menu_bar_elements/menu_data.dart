@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
+import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import 'nutria_menu_button.dart';
 import 'package:flutter/services.dart';
 import '../../providers/locale_provider.dart';
@@ -162,13 +163,23 @@ class MenuData {
               ]),
           NutriaSubmenuButton(
             text: t.viewProperties,
-            function: () => debugPrint("Paste selected"),
+           function: () {
+              print('tttttt');
+              context
+                  .read<UiStateProvider>()
+                  .toggleLeft(MediaQuery.of(context).size.width);
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyT),
             icon: Icons.tab,
           ),
           NutriaSubmenuButton(
             text: t.viewVideoPlayer,
-            function: () => debugPrint("Paste selected"),
+            function: () {
+              print('nnnn');
+              context
+                  .read<UiStateProvider>()
+                  .toggleRight(MediaQuery.of(context).size.width);
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyN),
             icon: Icons.tab,
           ),

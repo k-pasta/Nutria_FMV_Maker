@@ -35,8 +35,8 @@ class TestNode extends StatelessWidget {
         selector: (context, provider) =>
             provider.getNodeById(nodeData.id), // Only listen to this node
         builder: (context, node, child) {
-          print(
-              'rebuilding ${nodeData.id}'); //DEBUG to check when nodes rebuild
+          // print(
+          //     'rebuilding ${nodeData.id}'); //DEBUG to check when nodes rebuild
 
           context.read<NodesProvider>().initializeOutputs(nodeData.id);
           // Important! these need to be within the selector to work properly
@@ -464,6 +464,15 @@ class NodeVideoOutputsList extends StatelessWidget {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
 
     return FocusScope(
+      autofocus: false,
+      onFocusChange: (gotFocus) {
+
+        if (gotFocus) {
+                  print('node ${videoNodeData.id} got focus');
+                } else {
+                  print('node ${videoNodeData.id} lost focus');
+                }
+      },
       child: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         //this makes it so the tab key only cycles through the current node's inputs
