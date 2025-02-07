@@ -58,7 +58,7 @@ class UiStateProvider extends ChangeNotifier {
           //protect overflow
           leftSize = intendedLeftSize;
         }
-        if (intendedLeftSize + rightSize + effectiveHandleWidth >= totalWidth) {
+        if (intendedLeftSize + rightSize + effectiveHandleWidth > totalWidth) { //////
           if (rightSize - delta >= minRightSize) {
             //push over unless exceeds min
             rightSize -= delta;
@@ -66,6 +66,7 @@ class UiStateProvider extends ChangeNotifier {
             //toggle other if exceeds min
             closeRight();
           }
+          updateIntended(AreaSide.right);
         }
       }
       if (intendedLeftSize <= minLeftSize - closingThreshold && !isLeftClosed) {
@@ -78,7 +79,7 @@ class UiStateProvider extends ChangeNotifier {
         openLeft(totalWidth: totalWidth, shouldUpdateIntended: false);
       }
     } else if (area == AreaSide.right) {
-       print('intendedLeftSize: $intendedRightSize');
+      print('intendedLeftSize: $intendedRightSize');
       intendedRightSize -= delta;
       if (intendedRightSize >= minRightSize &&
           intendedRightSize <= maxRightSize &&
@@ -88,12 +89,13 @@ class UiStateProvider extends ChangeNotifier {
           //protect overflow
           rightSize = intendedRightSize;
         }
-        if (intendedRightSize + leftSize + effectiveHandleWidth >= totalWidth) {
+        if (intendedRightSize + leftSize + effectiveHandleWidth > totalWidth) {
           if (leftSize + delta >= minLeftSize) {
             leftSize += delta;
           } else {
             closeLeft();
           }
+          updateIntended(AreaSide.left);
         }
       }
       if (intendedRightSize <= minRightSize - closingThreshold &&
@@ -233,7 +235,7 @@ class UiStateProvider extends ChangeNotifier {
     print('updated');
     if (area == AreaSide.left) {
       intendedLeftSize = leftSize;
-      } else if (area == AreaSide.right) {
+    } else if (area == AreaSide.right) {
       intendedRightSize = rightSize;
     }
   }

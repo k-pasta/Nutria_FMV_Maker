@@ -15,6 +15,7 @@ class AppTheme {
   final Color cText;
   final Color cTextActive;
   final Color cTextInactive;
+  final double dTextHeight;
 
 //panels
   final Color cPanel;
@@ -50,7 +51,7 @@ class AppTheme {
     Color(0xffffae4d),
     Color(0xff33d56a),
     Color(0xff4da5ff),
-    Color(0xffffffff),
+    Color(0xff000000),
   ];
 
   // Constructor
@@ -64,9 +65,10 @@ class AppTheme {
     this.cText = const Color(0x91ffffff), //TODO make from transparent
     this.cTextActive = const Color(0xffffffff),
     this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
+    this.dTextHeight = 16,
     this.cPanel = const Color(0xff252525),
-    this.cPanelTransparent = const Color(0xff252525),
-    // this.cPanelTransparent = const Color(0xf1252525),
+    // this.cPanelTransparent = const Color(0xff252525),
+    this.cPanelTransparent = const Color(0xf1252525),
     this.cOutlines = const Color(0x75ffffff),
     this.cButton = const Color(0xff383838), //transparent
     this.cButtonHovered = const Color(0xff4a4a4a), //TODO remove

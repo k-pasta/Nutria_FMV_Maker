@@ -5,10 +5,7 @@ import 'package:provider/provider.dart';
 import '../models/app_theme.dart';
 import '../providers/theme_provider.dart';
 import '../providers/ui_state_provider.dart';
-import 'split_view_elements/test.dart';
-
-
-
+import 'split_view_elements/open_area_button.dart';
 
 class NutriaSplitView extends StatefulWidget {
   @override
@@ -69,13 +66,14 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
                 _buildResizableArea(context, AreaSide.left, provider.leftSize),
               // _buildOpen("left"),
               _buildDivider(
-                  context,  AreaSide.left, !provider.isLeftClosed, totalWidth),
+                  context, AreaSide.left, !provider.isLeftClosed, totalWidth),
               _buildCenterArea(),
               // _buildOpen("right"),
               _buildDivider(
-                  context,  AreaSide.right, !provider.isRightClosed, totalWidth),
+                  context, AreaSide.right, !provider.isRightClosed, totalWidth),
               if (!provider.isRightClosed)
-                _buildResizableArea(context, AreaSide.right, provider.rightSize),
+                _buildResizableArea(
+                    context, AreaSide.right, provider.rightSize),
             ],
           ),
           OpenAreaButton(
@@ -93,11 +91,12 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
 }
 
 Widget _buildResizableArea(BuildContext context, AreaSide area, double width) {
+  final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
   return IntrinsicWidth(
     child: Container(
       width: width,
-      color: Colors.blue[100],
-      child: Center(child: Text(area.toString().toUpperCase())),
+      color: theme.cPanel,
+      // child: Center(child: Text(area.toString().toUpperCase())),
     ),
   );
 }
@@ -105,13 +104,14 @@ Widget _buildResizableArea(BuildContext context, AreaSide area, double width) {
 Widget _buildCenterArea() {
   return Expanded(
       child: Container(
-    // color: Colors.grey[300],
-    // child: Center(child: Text("CENTER")),
-  ));
+          // color: Colors.grey[300],
+          // child: Center(child: Text("CENTER")),
+          ));
 }
 
 Widget _buildDivider(
     BuildContext context, AreaSide area, bool isOpen, double totalWidth) {
+  final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
   UiStateProvider uiProvider =
       Provider.of<UiStateProvider>(context, listen: false);
   return GestureDetector(
@@ -124,11 +124,28 @@ Widget _buildDivider(
     child: MouseRegion(
       cursor: SystemMouseCursors.resizeLeftRight,
       child: Container(
-        width: isOpen ? 10 : 0,
-        // width: 10,
-        color: Colors.green,
+        width: isOpen ? UiStaticProperties.splitViewDragWidgetSize : 0,
+        child: Container(
+          width: UiStaticProperties.splitViewDragWidgetSize,
+          decoration: BoxDecoration(
+            color: theme.cPanel,
+            border: Border(
+              left: area == AreaSide.right
+                  ? BorderSide(
+                      color: theme.cOutlines,
+                      width: theme.dOutlinesWidth,
+                    )
+                  : BorderSide.none,
+              right: area == AreaSide.left
+                  ? BorderSide(
+                      color: theme.cOutlines,
+                      width: theme.dOutlinesWidth,
+                    )
+                  : BorderSide.none,
+            ),
+          ),
+        ),
       ),
     ),
   );
 }
-

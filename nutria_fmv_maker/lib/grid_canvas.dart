@@ -27,6 +27,8 @@ class GridCanvas extends StatelessWidget {
             return TestNode(
               nodeData: node as VideoNodeData,
               key: ValueKey(node.id),
+              bottomKey: GlobalKey(),
+              parentKey: GlobalKey(),
             );
           }).toList();
           //TODO move to top layer

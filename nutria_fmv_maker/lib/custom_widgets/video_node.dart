@@ -13,15 +13,39 @@ import '../static_data/ui_static_properties.dart';
 import 'node_elements/node_debug_info.dart';
 import 'node_elements/node_main_container.dart';
 import 'node_elements/node_resize_handle.dart';
+import 'node_elements/node_swatch_strip.dart';
 import 'node_elements/node_swatches_picker.dart';
 import 'node_elements/node_video_filename_text.dart';
 import 'node_elements/node_video_thumbnail.dart';
 
 class TestNode extends StatelessWidget {
   final VideoNodeData nodeData;
-  const TestNode({super.key, required this.nodeData});
+  const TestNode(
+      {super.key,
+      required this.nodeData,
+      required this.parentKey,
+      required this.bottomKey});
 
-@override
+  final GlobalKey parentKey;
+  final GlobalKey bottomKey;
+
+  Offset _getContainerPositionRelativeToParent(GlobalKey key) {
+    final RenderBox? containerRenderBox =
+        key.currentContext?.findRenderObject() as RenderBox?;
+    final RenderBox? parentRenderBox =
+        parentKey.currentContext?.findRenderObject() as RenderBox?;
+
+    if (containerRenderBox != null && parentRenderBox != null) {
+      final containerGlobalPosition =
+          containerRenderBox.globalToLocal(Offset.zero);
+      final parentGlobalPosition = parentRenderBox.globalToLocal(Offset.zero);
+
+      return parentGlobalPosition - containerGlobalPosition;
+    }
+    return Offset.zero;
+  }
+
+  @override
   StatelessElement createElement() {
     // TODO: implement createElement
     return super.createElement();
@@ -97,10 +121,8 @@ class TestNode extends StatelessWidget {
                         children: [
                           //Swatch Strip on top
                           NodeSwatchStrip(
-                              nodeData: videoNodeData,
-                              nameTextEditingController: TextEditingController()
-                              // _nameTextEditingController
-                              ),
+                            nodeData: videoNodeData,
+                          ),
                           //Main node background
                           NodeMainContainer(
                             nodeData: videoNodeData,
@@ -144,7 +166,7 @@ class TestNode extends StatelessWidget {
                                 ],
                               ),
                             ),
-                          SizedBox(
+                          const SizedBox(
                             height: 5,
                             // key: _bottomKey,
                             // child: Container(
@@ -157,31 +179,26 @@ class TestNode extends StatelessWidget {
                   ),
                 ),
                 NodeResizeHandle(
-                    nodeData: videoNodeData,
-                    isLeftSide: false,
-                    draggableAreaHeight: 200
-                    // _getContainerPositionRelativeToParent(_bottomKey).dy -
-                    //     UiStaticProperties.nodePadding,
-                    ),
+                  nodeData: videoNodeData,
+                  isLeftSide: false,
+                  draggableAreaHeight: 200
+                      // _getContainerPositionRelativeToParent(bottomKey).dy -
+                      //     UiStaticProperties.nodePadding,
+                ),
                 NodeResizeHandle(
-                    nodeData: videoNodeData,
-                    isLeftSide: true,
-                    draggableAreaHeight: 200
-                    // _getContainerPositionRelativeToParent(_bottomKey)
-                    //         .dy - //only call when necessary
-                    //     UiStaticProperties.nodePadding,
-                    ),
+                  nodeData: videoNodeData,
+                  isLeftSide: true,
+                  draggableAreaHeight:
+                      _getContainerPositionRelativeToParent(bottomKey).dy -
+                          UiStaticProperties.nodePadding,
+                ),
                 //left resizer
 
                 Knot(
                     nodeData: videoNodeData,
                     isInput: true,
                     index: 0,
-                    offset: Offset(
-                        UiStaticProperties.nodePadding,
-                        UiStaticProperties.nodePadding +
-                            theme.dSwatchHeight +
-                            UiStaticProperties.nodeDefaultWidth * 9 / 16)),
+                    offset: inputOffset(nodeData, theme)),
 
                 ...videoNodeData.outputs.asMap().entries.map((entry) {
                   int index = entry.key;
@@ -194,7 +211,7 @@ class TestNode extends StatelessWidget {
                       nodeData: videoNodeData,
                       isInput: false,
                       index: index,
-                      offset: const Offset(0, 0),
+                      offset: outputOffset(nodeData, theme, index),
                       // offset: Offset(
                       //     videoNodeData.nodeWidth +
                       //         UiStaticProperties.nodePadding,
@@ -213,239 +230,100 @@ class TestNode extends StatelessWidget {
   }
 }
 
-class VideoNode extends StatefulWidget {
-  final VideoNodeData nodeData;
-  const VideoNode({super.key, required this.nodeData});
+// class VideoNode extends StatefulWidget {
+//   final VideoNodeData nodeData;
+//   const VideoNode({super.key, required this.nodeData});
 
-  @override
-  State<VideoNode> createState() => _VideoNodeState();
+//   @override
+//   State<VideoNode> createState() => _VideoNodeState();
+// }
+
+// class _VideoNodeState extends State<VideoNode> {
+//   final GlobalKey _parentKey = GlobalKey(); // Key for the Positioned parent
+//   final GlobalKey _bottomKey =
+//       GlobalKey(); // Key for the location of the bottom of the node
+//   final List<GlobalKey> _childKeys = []; // Key for the Child
+//   final TextEditingController _nameTextEditingController =
+//       TextEditingController();
+
+//   @override
+//   void initState() {
+//     WidgetsBinding.instance.addPostFrameCallback((_) {
+//       context.read<NodesProvider>().rebuildNode(widget.nodeData.id);
+//     });
+//     super.initState();
+
+//     context.read<NodesProvider>().initializeOutputs(widget.nodeData.id);
+//     // widget.nodeData.initializeOutputs();
+//     // int currentOutputs =
+//     context.read<NodesProvider>().getEffectiveOutputs(widget.nodeData.id);
+//     for (int i = 0; i < 10; i++) {
+//       //TODO de-hardcode
+//       _childKeys.add(GlobalKey());
+//     }
+//   }
+
+double getTextHeight(String text, TextStyle style) {
+  final TextPainter textPainter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    textDirection: TextDirection.ltr,
+    // maxLines: 1,
+  )..layout();
+
+  return textPainter.height;
 }
 
-class _VideoNodeState extends State<VideoNode> {
-  final GlobalKey _parentKey = GlobalKey(); // Key for the Positioned parent
-  final GlobalKey _bottomKey =
-      GlobalKey(); // Key for the location of the bottom of the node
-  final List<GlobalKey> _childKeys = []; // Key for the Child
-  final TextEditingController _nameTextEditingController =
-      TextEditingController();
+Offset inputOffset(BaseNodeData nodeData, AppTheme theme) {
+  TextStyle swatchTextStyle = TextStyle(
+      //TODO Move to theme as a getter
+      overflow: TextOverflow.ellipsis,
+      color: theme.cTextActive,
+      fontVariations: const [FontVariation('wght', 500)],
+      fontSize: theme.dTextHeight,
+      height: 1.0);
+  TextStyle filenameTextStyle = TextStyle(
+    color: theme.cText,
+    fontSize: theme.dTextHeight,
+    height: 1.0,
+  );
 
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      context.read<NodesProvider>().rebuildNode(widget.nodeData.id);
-    });
-    super.initState();
+  double x = UiStaticProperties.nodePadding;
+  double y = UiStaticProperties.nodePadding +
+      theme.dSwatchHeight +
+      (nodeData.nodeName != null
+          ? getTextHeight(nodeData.nodeName!, swatchTextStyle)
+          : 0) +
+      (UiStaticProperties.nodeDefaultWidth * 9 / 16);
+  return Offset(x, y);
+}
 
-    context.read<NodesProvider>().initializeOutputs(widget.nodeData.id);
-    // widget.nodeData.initializeOutputs();
-    // int currentOutputs =
-    context.read<NodesProvider>().getEffectiveOutputs(widget.nodeData.id);
-    for (int i = 0; i < 10; i++) {
-      //TODO de-hardcode
-      _childKeys.add(GlobalKey());
-    }
-  }
+Offset outputOffset(VideoNodeData nodeData, AppTheme theme, int index) {
+  TextStyle swatchTextStyle = TextStyle(
+    //TODO Move to theme as a getter
+    overflow: TextOverflow.ellipsis,
+    color: theme.cTextActive,
+    fontVariations: const [FontVariation('wght', 500)],
+    fontSize: theme.dTextHeight,
+    height: 1.0,
+  );
+  TextStyle filenameTextStyle = TextStyle(
+    color: theme.cText,
+    fontSize: theme.dTextHeight,
+    height: 1.0,
+  );
 
-  @override
-  Widget build(BuildContext context) {
-    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-
-    {
-      return Selector<NodesProvider, NodeData>(
-          selector: (context, provider) => provider
-              .getNodeById(widget.nodeData.id), // Only listen to this node
-          builder: (context, node, child) {
-            print(
-                'rebuilding ${widget.nodeData.id}'); //DEBUG to check when nodes rebuild
-            // Important! these need to be within the selector to work properly
-            final NodesProvider nodesProvider = context.read<NodesProvider>();
-            final VideoNodeData videoNodeData =
-                nodesProvider.getNodeById(widget.nodeData.id) as VideoNodeData;
-            return Positioned(
-              key: _parentKey,
-              top: videoNodeData.position.dy +
-                  (UiStaticProperties.topLeftToMiddle.dy),
-              left: videoNodeData.position.dx +
-                  (UiStaticProperties.topLeftToMiddle.dx),
-              child: MouseRegion(
-                onEnter: (_) {
-                  nodesProvider.setCurrentUnderCursor(id: videoNodeData.id);
-                  // print('enter ${videoNodeData.id}');
-                },
-                onExit: (_) {
-                  nodesProvider.setCurrentUnderCursor();
-                  // print('exit ${videoNodeData.id}');
-                },
-                hitTestBehavior: HitTestBehavior.deferToChild,
-                child: Stack(clipBehavior: Clip.none, children: [
-                  IgnorePointer(
-                    child: SizedBox(
-                      height:
-                          1000, //TODO De-Hardcode when it is possible to calculate max height
-                      width: UiStaticProperties.nodeMaxWidth +
-                          UiStaticProperties.nodePadding * 2,
-                      child: Container(color: Colors.transparent),
-                    ),
-                  ),
-                  Positioned(
-                    top: UiStaticProperties.nodePadding,
-                    left: UiStaticProperties.nodePadding,
-                    child: GestureDetector(
-                      // behavior: HitTestBehavior.translucent,
-                      onPanUpdate: (details) {
-                        nodesProvider.offsetNodePosition(
-                            videoNodeData.id, details.delta);
-                      },
-                      onPanStart: (details) {
-                        nodesProvider.setActiveNode(videoNodeData.id);
-                      },
-                      onPanEnd: (_) {
-                        nodesProvider.resetNodeIntendedValues(videoNodeData.id);
-                      },
-                      onPanCancel: () {
-                        nodesProvider.resetNodeIntendedValues(videoNodeData.id);
-                      },
-                      onTap: () {
-                        nodesProvider.setActiveNode(videoNodeData.id);
-                      },
-                      child: SizedBox(
-                        width: videoNodeData.nodeWidth,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            //Swatch Strip on top
-                            NodeSwatchStrip(
-                                nodeData: videoNodeData,
-                                nameTextEditingController:
-                                    _nameTextEditingController),
-                            //Main node background
-                            NodeMainContainer(
-                              nodeData: videoNodeData,
-                              children: [
-                                //thumbnail
-                                NodeVideoThumbnail(
-                                    videoNodeData: videoNodeData),
-                                //video file name
-                                NodeVideoFileNameText(
-                                    videoNodeData: videoNodeData),
-
-                                NodeVideoOutputsList(
-                                    videoNodeData: videoNodeData,
-                                    childKeys: _childKeys),
-                              ],
-                            ),
-                            //expansion
-                            if (videoNodeData.isExpanded)
-                              //distance between main node and expansion
-                              SizedBox(
-                                height: theme.dPanelPadding,
-                              ),
-                            if (videoNodeData.isExpanded)
-                              Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      theme.dPanelBorderRadius),
-                                  border: Border.all(
-                                      color: theme.cOutlines,
-                                      width: theme.dOutlinesWidth),
-                                  color: theme.cPanelTransparent,
-                                ),
-                                padding: EdgeInsets.all(theme.dPanelPadding),
-                                child: Column(
-                                  children: [
-                                    //swatches picker
-                                    NodeSwatchesPicker(
-                                      nodeData: videoNodeData,
-                                    ),
-
-                                    NodeDebugInfo(videoNodeData: videoNodeData),
-                                  ],
-                                ),
-                              ),
-                            SizedBox(
-                              height: 5,
-                              key: _bottomKey,
-                              // child: Container(
-                              //   color: Colors.red,
-                              // ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  NodeResizeHandle(
-                    nodeData: videoNodeData,
-                    isLeftSide: false,
-                    draggableAreaHeight:
-                        _getContainerPositionRelativeToParent(_bottomKey).dy -
-                            UiStaticProperties.nodePadding,
-                  ),
-                  NodeResizeHandle(
-                    nodeData: videoNodeData,
-                    isLeftSide: true,
-                    draggableAreaHeight:
-                        _getContainerPositionRelativeToParent(_bottomKey)
-                                .dy - //only call when necessary
-                            UiStaticProperties.nodePadding,
-                  ),
-                  //left resizer
-
-                  Knot(
-                      nodeData: videoNodeData,
-                      isInput: true,
-                      index: 0,
-                      offset: Offset(
-                          UiStaticProperties.nodePadding,
-                          UiStaticProperties.nodePadding +
-                              theme.dSwatchHeight +
-                              UiStaticProperties.nodeDefaultWidth * 9 / 16)),
-
-                  ...videoNodeData.outputs.asMap().entries.map((entry) {
-                    int index = entry.key;
-                    var output = entry.value;
-                    bool isLast = index == videoNodeData.outputs.length - 1;
-                    // nodesProvider.updateOutputPosition(videoNodeData.id, index,
-                    //     _getContainerPositionRelativeToParent(_childKeys[index]));
-                    if (!isLast ||
-                        (isLast && videoNodeData.hasMaxedOutOutputs)) {
-                      return Knot(
-                        nodeData: videoNodeData,
-                        isInput: false,
-                        index: index,
-                        offset: Offset(
-                            videoNodeData.nodeWidth +
-                                UiStaticProperties.nodePadding,
-                            (_getContainerPositionRelativeToParent(_childKeys[
-                                    index])) //only call when necessary
-                                .dy),
-                      );
-                    } else {
-                      return Container();
-                    }
-                  }).toList(),
-                ]),
-              ),
-            );
-          });
-    }
-  }
-
-  Offset _getContainerPositionRelativeToParent(GlobalKey key) {
-    final RenderBox? containerRenderBox =
-        key.currentContext?.findRenderObject() as RenderBox?;
-    final RenderBox? parentRenderBox =
-        _parentKey.currentContext?.findRenderObject() as RenderBox?;
-
-    if (containerRenderBox != null && parentRenderBox != null) {
-      final containerGlobalPosition =
-          containerRenderBox.globalToLocal(Offset.zero);
-      final parentGlobalPosition = parentRenderBox.globalToLocal(Offset.zero);
-
-      return parentGlobalPosition - containerGlobalPosition;
-    }
-    return Offset.zero;
-  }
+  double x = UiStaticProperties.nodePadding + nodeData.nodeWidth;
+  double baseY = UiStaticProperties.nodePadding +
+      theme.dSwatchHeight +
+      (nodeData.nodeName != null
+          ? getTextHeight(nodeData.nodeName!, swatchTextStyle)
+          : 0) +
+      (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
+      getTextHeight(nodeData.videoDataId, filenameTextStyle) +
+      (theme.dPanelPadding * 2) +
+      (theme.dButtonHeight / 2);
+  double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
+  return Offset(x, baseY + extraY);
 }
 
 class NodeVideoOutputsList extends StatelessWidget {
@@ -466,12 +344,11 @@ class NodeVideoOutputsList extends StatelessWidget {
     return FocusScope(
       autofocus: false,
       onFocusChange: (gotFocus) {
-
         if (gotFocus) {
-                  print('node ${videoNodeData.id} got focus');
-                } else {
-                  print('node ${videoNodeData.id} lost focus');
-                }
+          print('node ${videoNodeData.id} got focus');
+        } else {
+          print('node ${videoNodeData.id} lost focus');
+        }
       },
       child: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
@@ -541,57 +418,6 @@ class NodeVideoOutputsList extends StatelessWidget {
               );
             }),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class NodeSwatchStrip extends StatelessWidget {
-  const NodeSwatchStrip({
-    super.key,
-    required this.nodeData,
-    required this.nameTextEditingController,
-  });
-
-  final BaseNodeData nodeData;
-  final TextEditingController nameTextEditingController;
-
-  @override
-  Widget build(BuildContext context) {
-    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-
-    return Container(
-      padding: EdgeInsets.symmetric(
-          vertical: theme.dSwatchHeight / 2,
-          horizontal: theme.dPanelPadding + 8),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(theme.dPanelBorderRadius),
-            topRight: Radius.circular(theme.dPanelBorderRadius)),
-        color: theme.cSwatches[nodeData.swatch],
-      ),
-      child: IgnorePointer(
-        child: Container(
-          alignment: Alignment.centerLeft,
-          child: nodeData.nodeName != null
-              ? TextField(
-                  controller: nameTextEditingController
-                    ..text = nodeData.nodeName!,
-                  style: TextStyle(
-                    overflow: TextOverflow.ellipsis,
-                    color: theme.cText,
-                    fontVariations: const [FontVariation('wght', 700)],
-                  ),
-                  decoration: const InputDecoration(
-                    isDense: true,
-                    border: InputBorder.none,
-                  ),
-                  onSubmitted: (newValue) {
-                    // nodesProvider.updateNodeName(videoNodeData.id, newValue);
-                  },
-                )
-              : Container(),
         ),
       ),
     );

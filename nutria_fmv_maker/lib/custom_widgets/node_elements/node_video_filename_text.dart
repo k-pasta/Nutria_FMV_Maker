@@ -23,15 +23,18 @@ class NodeVideoFileNameText extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.only(
-        top: theme.dPanelBorderRadius,
-        left: theme.dPanelBorderRadius,
-        right: theme.dPanelBorderRadius,
+        top: theme.dPanelPadding,
+        left: theme.dPanelPadding,
+        right: theme.dPanelPadding,
       ),
       child: Text(
-        videoNodeData
-            .videoDataId, //TODO handle null
+        videoNodeData.videoDataId, //TODO handle null
         textAlign: TextAlign.center,
-        style: TextStyle(color: theme.cText),
+        style: TextStyle(
+          color: theme.cText,
+          fontSize: theme.dTextHeight,
+          height: 1.0,
+        ),
       ),
     );
   }

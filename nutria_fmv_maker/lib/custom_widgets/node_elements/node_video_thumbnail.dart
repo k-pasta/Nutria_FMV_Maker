@@ -20,7 +20,7 @@ class NodeVideoThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
-    return Container(
+    return const SizedBox(
       height: UiStaticProperties.nodeDefaultWidth *
           9 /
           16, //TODO allow for vertical aspect ratio

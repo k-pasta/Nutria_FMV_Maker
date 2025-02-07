@@ -45,13 +45,6 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
 
   // Called when focus state changes
   void _onFocusChange() {
-//  if (_focusNode.hasFocus) {
-//       // Disable shortcuts when the TextField is focused
-//       context.read<UiStateProvider>().parentfocusNode.unfocus();
-//     } else {
-//       // Enable shortcuts when the TextField is not focused
-//       _focusNode.requestFocus();
-//     }
     setState(() {}); // Rebuild the widget when focus state changes
   }
 
@@ -63,18 +56,22 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
 
     return Shortcuts(
-      shortcuts: {
-        LogicalKeySet(LogicalKeyboardKey.keyT): _doNothingIntent, //left panel toggle
-        LogicalKeySet(LogicalKeyboardKey.keyN): _doNothingIntent, //right panel toggle
-        LogicalKeySet(LogicalKeyboardKey.keyN): _doNothingIntent, //focus selected
-        LogicalKeySet(LogicalKeyboardKey.add): _doNothingIntent, //zoom in
-        LogicalKeySet(LogicalKeyboardKey.numpadAdd): _doNothingIntent, //zoomin
-        LogicalKeySet(LogicalKeyboardKey.minus): _doNothingIntent, //zoom out
-        LogicalKeySet(LogicalKeyboardKey.numpadSubtract): _doNothingIntent, //zoom out
-        LogicalKeySet(LogicalKeyboardKey.arrowLeft): _doNothingIntent, //navigation
-        LogicalKeySet(LogicalKeyboardKey.arrowRight): _doNothingIntent,
-        LogicalKeySet(LogicalKeyboardKey.arrowUp): _doNothingIntent,
-        LogicalKeySet(LogicalKeyboardKey.arrowDown): _doNothingIntent,
+      shortcuts: const {
+        SingleActivator(LogicalKeyboardKey.keyT):
+            _doNothingIntent, //left panel toggle
+        SingleActivator(LogicalKeyboardKey.keyN):
+            _doNothingIntent, //right panel toggle
+        SingleActivator(LogicalKeyboardKey.add): _doNothingIntent, //zoom in
+        SingleActivator(LogicalKeyboardKey.numpadAdd):
+            _doNothingIntent, //zoomin
+        SingleActivator(LogicalKeyboardKey.minus): _doNothingIntent, //zoom out
+        SingleActivator(LogicalKeyboardKey.numpadSubtract):
+            _doNothingIntent, //zoom out
+        SingleActivator(LogicalKeyboardKey.arrowLeft):
+            _doNothingIntent, //navigation
+        SingleActivator(LogicalKeyboardKey.arrowRight): _doNothingIntent,
+        SingleActivator(LogicalKeyboardKey.arrowUp): _doNothingIntent,
+        SingleActivator(LogicalKeyboardKey.arrowDown): _doNothingIntent,
       },
       child: TextField(
         controller: myController,
@@ -83,19 +80,16 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
             widget.onChanged!(currentText);
           }
         },
-        onSubmitted: (_) {
-          // _focusNode.nextFocus();
-          // print(_focusNode.nearestScope);
-        },
-
         onTap: () {
           // print('tapped');
         },
         textInputAction: TextInputAction.next,
         focusNode: _focusNode,
+
         cursorColor: theme.cText,
         style: TextStyle(
           color: textColor,
+          fontSize: theme.dTextHeight,
         ),
         // maxLines: null,
         maxLines: 1,
@@ -104,15 +98,15 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         decoration: InputDecoration(
           isDense:
               true, //allows custom height and overwrites min height of 48 px (flutter's default for accessibility)
+
           contentPadding: EdgeInsets.symmetric(
-              vertical: (theme.dButtonHeight - 16) / 2,
+              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2,
               horizontal: 8.0), // TODO de-hardcode
           counterText: '', //disables max character counter
           hintText:
               '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
           hintStyle: TextStyle(
               color: theme.cTextInactive, fontWeight: FontWeight.normal
-              // color: olors.red,
               ),
           border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
@@ -123,11 +117,11 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
-            borderSide: BorderSide(color: Colors.transparent),
+            borderSide: const  BorderSide(color: Colors.transparent),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
-            borderSide: BorderSide(color: Colors.transparent),
+            borderSide: const BorderSide(color: Colors.transparent),
           ),
           filled: true,
           fillColor: backgroundColor,

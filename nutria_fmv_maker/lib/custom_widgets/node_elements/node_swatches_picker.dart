@@ -20,7 +20,7 @@ class NodeSwatchesPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-
+    
     return LayoutBuilder(
       builder: (context, constraints) {
         final spacing = theme.dPanelPadding; // Spacing between items

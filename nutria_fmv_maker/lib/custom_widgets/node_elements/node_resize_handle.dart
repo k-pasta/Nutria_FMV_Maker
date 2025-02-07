@@ -49,7 +49,8 @@ class NodeResizeHandle extends StatelessWidget {
             nodesProvider.resetNodeIntendedValues(nodeData.id);
           },
           child: Container(
-            color: Colors.transparent, //needs this in order to detect gestures
+            // color: Colors.transparent, //needs this in order to detect gestures
+            color: Colors.red, //needs this in order to detect gestures
           ),
         ),
       ),
