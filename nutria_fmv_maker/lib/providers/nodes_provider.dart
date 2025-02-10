@@ -1,5 +1,8 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
+import '../custom_widgets/video_node.dart';
 import '../models/node_data.dart';
 
 class NodesProvider extends ChangeNotifier {
@@ -227,47 +230,13 @@ class NodesProvider extends ChangeNotifier {
         Output(outputData: ''),
       ],
     ),
-    VideoNodeData(
-      id: 'xeaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xawa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xqaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    
   ];
 
   // Getter for nodes (returns an immutable list)
   List<NodeData> get nodes => List.unmodifiable(_nodes);
+
+  List<String> get iDs =>
+      List.unmodifiable(_nodes.map((node) => node.id).toList());
 
   List<NodeData> get selectedNodes =>
       _nodes.where((node) => node.isSelected).toList();
@@ -277,17 +246,17 @@ class NodesProvider extends ChangeNotifier {
     VideoData(id: 'a', videoDataPath: 'test/test.test.test'),
     VideoData(id: 'b', videoDataPath: ''),
   ];
-
-  List<String> get iDs =>
-      List.unmodifiable(_nodes.map((node) => node.id).toList());
-
   List<VideoData> get videos => List.unmodifiable(_videos);
 
-  String? _currentNodeIdUnderCursor = null;
+  // String? _currentNodeIdUnderCursor = null;
 
-  String? get currentNodeIdUnderCursor => _currentNodeIdUnderCursor;
+  // String? get currentNodeIdUnderCursor => _currentNodeIdUnderCursor;
 
   bool _isUserDraggingOutput = false;
+
+  NoodleDragIntent? _currentDragIntent = null;
+
+  NoodleDragOutcome _currentDragOutcome = NoodleDragOutcome(null, null);
 
   String? activeNodeId;
 
@@ -344,7 +313,8 @@ class NodesProvider extends ChangeNotifier {
             '' &&
         (nodeData.outputs[nodeData.outputs.length - 2].outputData ?? '') ==
             '') {
-      nodeData = nodeData.copyWith(outputs: nodeData.outputs..removeLast());
+      nodeData = nodeData.copyWith(
+          outputs: nodeData.outputs..removeLast()); //where i get error
     }
     // Add a new output if the last output has non-empty text
     if (!((nodeData.outputs.last.outputData ?? '') == '')) {
@@ -407,22 +377,22 @@ class NodesProvider extends ChangeNotifier {
   }
 
   // Update output position for a specific node
-  void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
-    int nodeIndex = getNodeIndexById(id);
+  // void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
+  //   int nodeIndex = getNodeIndexById(id);
 
-    final node = _nodes[nodeIndex];
-    if (node is VideoNodeData) {
-      if (outputIndex < node.outputs.length) {
-        final updatedOutputs = List<Output>.from(node.outputs)
-          ..[outputIndex] = node.outputs[outputIndex].copyWith(
-            outputOffsetFromTopLeft: newPosition,
-          );
+  //   final node = _nodes[nodeIndex];
+  //   if (node is VideoNodeData) {
+  //     if (outputIndex < node.outputs.length) {
+  //       final updatedOutputs = List<Output>.from(node.outputs)
+  //         ..[outputIndex] = node.outputs[outputIndex].copyWith(
+  //           outputOffsetFromTopLeft: newPosition,
+  //         );
 
-        _nodes[nodeIndex] = node.copyWith(outputs: updatedOutputs);
-        notifyListeners();
-      }
-    }
-  }
+  //       _nodes[nodeIndex] = node.copyWith(outputs: updatedOutputs);
+  //       notifyListeners();
+  //     }
+  //   }
+  // }
 
 //   // Add a new node to the provider
 //   void addNode(NodeData node) {
@@ -432,7 +402,10 @@ class NodesProvider extends ChangeNotifier {
 //   }
 
   void setCurrentUnderCursor({String? id, int? outputIndex}) {
+    // if (_currentDragIntent != null && _currentDragIntent) {
 
+    // }
+    _currentDragOutcome = NoodleDragOutcome(id, outputIndex);
     // Check if the user is dragging an output
     if (_isUserDraggingOutput) {
       if (id != null) {
@@ -441,8 +414,7 @@ class NodesProvider extends ChangeNotifier {
         // Reset the 'isBeingHovered' state for all nodes
         for (var node in _nodes) {
           if (node.isBeingHovered) {
-            int index = getNodeIndexById(node.id);
-            _nodes[index] = node.copyWith(isBeingHovered: false);
+            node = node.copyWith(isBeingHovered: false);
           }
         }
         // Set the 'isBeingHovered' state for the current node
@@ -461,16 +433,51 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  void toggleIsDragging(bool isDragging) {
-    _isUserDraggingOutput = isDragging;
-    if (!isDragging) {
-      for (var node in _nodes) {
-        if (node.isBeingHovered) {
-          int index = getNodeIndexById(node.id);
-          _nodes[index] = node.copyWith(isBeingHovered: false);
-        }
+  void beginDragging(NoodleDragIntent dragIntent) {
+    _isUserDraggingOutput = true;
+    _currentDragIntent = dragIntent;
+  }
+
+  void endDragging() {
+    // Reset the 'isBeingHovered' state for all nodes
+    for (var node in _nodes) {
+      if (node.isBeingHovered) {
+        int index = getNodeIndexById(node.id);
+        _nodes[index] = node.copyWith(isBeingHovered: false);
       }
-      notifyListeners();
+    }
+
+    if (_currentDragOutcome.nodeId != null) {
+      attemptConnection(_currentDragOutcome!);
+    }
+    else {
+      print('No drag outcome');
+    }
+
+    _isUserDraggingOutput = false;
+    _currentDragIntent = null;
+    notifyListeners();
+  }
+
+  void attemptConnection(NoodleDragOutcome dragOutcome) {
+    if (_currentDragIntent != null) {
+      if (_currentDragIntent!.isOutput) {
+        //if the drag ends at an input node
+        if (dragOutcome.nodeId != null && dragOutcome.outputIndex == null) {
+          BaseNodeData node = getNodeById(dragOutcome.nodeId!);
+          dynamic newNode = node.copyWith(
+            outputs: [
+              for (int i = 0; i < node.outputs.length; i++)
+                if (i == _currentDragIntent!.outputIndex)
+                  node.outputs[i].copyWith(targetNodeId: dragOutcome.nodeId)
+                else
+                  node.outputs[i]
+            ],
+          );
+          print('here');
+        }
+
+      } else if (!_currentDragIntent!.isOutput) {}
     }
   }
 
@@ -507,21 +514,9 @@ class NodesProvider extends ChangeNotifier {
     if (nodeIndex != _nodes.length - 1) {
       _nodes.removeAt(nodeIndex);
       _nodes.add(node);
-      print('set node ${node.id} as active and went from');
       notifyListeners();
     }
   }
-
-  // Update the position of a node. Out of use currently.
-  // void updateNodePosition(String id, Offset newPosition) {
-  //   int nodeIndex = getNodeIndexById(id);
-  //   final node = _nodes[nodeIndex];
-
-  //   final updatedNode = node.copyWith(position: newPosition);
-
-  //   _nodes[nodeIndex] = updatedNode;
-  //   notifyListeners();
-  // }
 
   void offsetNodePosition(String id, Offset offset, {bool snapToGrid = false}) {
     int nodeIndex = getNodeIndexById(id);

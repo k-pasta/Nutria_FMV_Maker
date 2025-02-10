@@ -2,10 +2,10 @@ import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
+import 'package:nutria_fmv_maker/stack_update_test.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
-import 'custom_widgets/menu_bar.dart';
 import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
@@ -111,8 +111,8 @@ class MyHomePage extends StatelessWidget {
       //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
       // ]),
 
+      // body: StackUpdateTest(),
       body: WindowsAppLayout(),
-      // body: NutriaSplitView(),
     );
   }
 }

@@ -31,6 +31,7 @@ abstract class BaseNodeData extends NodeData {
   final double intendedNodeWidth; //Used by functions like snap to default size
   final bool isExpanded;
   final List<Output> outputs; // Must also be immutable
+  final Input input;
   final int swatch;
 
   const BaseNodeData({
@@ -43,6 +44,7 @@ abstract class BaseNodeData extends NodeData {
     this.swatch = 0,
     double? intendedNodeWidth,
     List<Output>? outputs,
+    this.input = const Input(),
     super.isSelected = false,
     super.isBeingHovered = false,
   })  : outputs = outputs ?? const <Output>[],
@@ -56,6 +58,7 @@ abstract class BaseNodeData extends NodeData {
     double? nodeWidth,
     bool? isExpanded,
     List<Output>? outputs,
+    Input? input,
     int? swatch,
     double? intendedNodeWidth,
     bool? isSelected,
@@ -91,6 +94,7 @@ class VideoNodeData extends BaseNodeData {
     this.overrides = const <String, dynamic>{},
     this.hasMaxedOutOutputs = false,
     super.outputs,
+    super.input,
     super.nodeName,
     super.isExpanded = false,
     super.nodeWidth = UiStaticProperties.nodeDefaultWidth,
@@ -113,6 +117,7 @@ class VideoNodeData extends BaseNodeData {
     bool? isExpanded,
     int? swatch,
     List<Output>? outputs,
+    Input? input,
     bool? isSelected,
     bool? isBeingHovered,
   }) {
@@ -129,6 +134,7 @@ class VideoNodeData extends BaseNodeData {
       isExpanded: isExpanded ?? this.isExpanded,
       swatch: swatch ?? this.swatch,
       outputs: outputs ?? this.outputs,
+      input: input ?? this.input,
       isBeingHovered: isBeingHovered ?? this.isBeingHovered,
       isSelected: isSelected ?? this.isSelected,
     );
@@ -136,26 +142,35 @@ class VideoNodeData extends BaseNodeData {
 }
 
 class Output {
-  final Offset outputOffsetFromTopLeft;
   final String? targetNodeId;
   final Object? outputData;
+  final bool isBeingTargeted;
 
-  const Output(
-      {this.outputOffsetFromTopLeft = const Offset(0, 0),
-      this.targetNodeId,
-      this.outputData});
+  const Output({
+    this.targetNodeId,
+    this.outputData,
+    this.isBeingTargeted = false,
+  });
 
-  Output copyWith(
-      {Offset? outputOffsetFromTopLeft,
-      String? targetNodeId,
-      Object? outputData}) {
+  Output copyWith({
+    String? targetNodeId,
+    Object? outputData,
+    bool? isBeingTargeted,
+  }) {
     return Output(
-      outputOffsetFromTopLeft:
-          outputOffsetFromTopLeft ?? this.outputOffsetFromTopLeft,
       targetNodeId: targetNodeId ?? this.targetNodeId,
       outputData: outputData ?? this.outputData,
+      isBeingTargeted: isBeingTargeted ?? this.isBeingTargeted,
     );
   }
+}
+
+class Input {
+  final bool isBeingTargeted;
+  
+  const Input({
+    this.isBeingTargeted = false,
+  });
 }
 
 class VideoData {

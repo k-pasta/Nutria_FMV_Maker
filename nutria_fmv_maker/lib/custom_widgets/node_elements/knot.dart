@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/action_models.dart';
 import '../../models/node_data.dart';
 import '../../static_data/ui_static_properties.dart';
 import '../../models/app_theme.dart';
@@ -12,14 +13,14 @@ class Knot extends StatefulWidget {
   final double _sizeLarge = UiStaticProperties.knotSizeLarge;
   final double _sizeSmall = UiStaticProperties.knotSizeSmall;
   final Offset offset;
-  final int index;
-  final NodeData nodeData;
+  final int? index;
+  final BaseNodeData nodeData;
   final bool isInput;
 
   const Knot(
       {super.key,
       required this.offset,
-      required this.index,
+      this.index,
       required this.nodeData,
       this.isInput = false});
 
@@ -34,6 +35,7 @@ class Knot extends StatefulWidget {
 class _KnotState extends State<Knot> {
   bool hovered = false;
   bool dragging = false;
+  bool isBeingTargeted = false;
 
   @override
   Widget build(BuildContext context) {
@@ -42,6 +44,13 @@ class _KnotState extends State<Knot> {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final double boxSize = widget._sizeLarge * sqrt2;
 
+if (widget.index != null){ //if is output
+  isBeingTargeted = widget.nodeData.outputs[widget.index!].isBeingTargeted;
+}else if (widget.index == null){ //if is input
+  isBeingTargeted = widget.nodeData.input.isBeingTargeted;
+}
+
+// isBeingTargeted
     return Positioned(
       top: widget.offset.dy - boxSize / 2,
       left: widget.offset.dx - boxSize / 2,
@@ -60,13 +69,14 @@ class _KnotState extends State<Knot> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onPanStart: (details) {
-            nodesProvider.toggleIsDragging(true);
+            nodesProvider.beginDragging(
+                NoodleDragIntent.output(widget.nodeData.id, widget.index));
             dragging = true;
             print('start triggered');
           },
           // onPanUpdate: widget.onPanUpdate,
           onPanEnd: (details) {
-            nodesProvider.toggleIsDragging(false);
+            nodesProvider.endDragging();
             print('end triggered');
             setState(() {
               hovered = false;

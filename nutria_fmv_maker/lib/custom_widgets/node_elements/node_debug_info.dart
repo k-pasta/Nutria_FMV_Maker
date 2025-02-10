@@ -48,13 +48,6 @@ class NodeDebugInfo extends StatelessWidget {
           height: theme.dPanelPadding,
         ),
         Text(
-          'Output Position: ${videoNodeData.outputs[0].outputOffsetFromTopLeft.toString()}',
-          style: TextStyle(color: theme.cText),
-        ),
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
-        Text(
           'Node Width: ${videoNodeData.nodeWidth.toStringAsFixed(0)}',
           style: TextStyle(color: theme.cText),
         ),

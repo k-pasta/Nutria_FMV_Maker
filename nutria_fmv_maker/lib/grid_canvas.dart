@@ -1,3 +1,4 @@
+import 'package:nutria_fmv_maker/custom_widgets/video_node_tests.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
 
 import 'custom_widgets/video_node.dart';
@@ -9,10 +10,28 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'static_data/ui_static_properties.dart';
 
-class GridCanvas extends StatelessWidget {
+class GridCanvas extends StatefulWidget {
   const GridCanvas({super.key});
+
+  @override
+  State<GridCanvas> createState() => _GridCanvasState();
+}
+
+class _GridCanvasState extends State<GridCanvas> {
   final double keyboardMoveSensitivity =
       UiStaticProperties.gridCanvasArrowMoveSensitivity;
+
+  late List<Widget> nodes;
+  @override
+  void initState() {
+    nodes = context.read<NodesProvider>().nodes.map((node) {
+      return TestNode(
+        nodeData: node as VideoNodeData,
+        key: ValueKey(node.id),
+      );
+    }).toList();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -23,49 +42,17 @@ class GridCanvas extends StatelessWidget {
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
           print('full rebuilt');
-          final List<Widget> nodes = nodesProvider.nodes.map((node) {
-            return TestNode(
-              nodeData: node as VideoNodeData,
-              key: ValueKey(node.id),
-              bottomKey: GlobalKey(),
-              parentKey: GlobalKey(),
-            );
-          }).toList();
-          //TODO move to top layer
-          // return CallbackShortcuts(
-          //   //TODO IMPORTANT disable if focused on node
-          //   bindings: <ShortcutActivator, VoidCallback>{
-          //     gridCanvasProvider.moveUp: () {
-          //       gridCanvasProvider.offsetPosition(
-          //         Offset(0, keyboardMoveSensitivity),
-          //         isScreenSpaceTransformation: true,
-          //       );
-          //     },
-          //     gridCanvasProvider.moveDown: () {
-          //       gridCanvasProvider.offsetPosition(
-          //           Offset(0, -keyboardMoveSensitivity),
-          //           isScreenSpaceTransformation: true);
-          //     },
-          //     gridCanvasProvider.moveLeft: () {
-          //       gridCanvasProvider.offsetPosition(
-          //           Offset(keyboardMoveSensitivity, 0),
-          //           isScreenSpaceTransformation: true);
-          //     },
-          //     gridCanvasProvider.moveRight: () {
-          //       gridCanvasProvider.offsetPosition(
-          //           Offset(-keyboardMoveSensitivity, 0),
-          //           isScreenSpaceTransformation: true);
-          //     },
-          //   },
-          //   child: Focus(
-          //     onFocusChange: (gotFocus) {
-          //       if (gotFocus) {
-          //         print('got focus');
-          //       } else {
-          //         print('lost focus');
-          //       }
-          //     },
-          // child:
+            nodes.sort((a, b) {
+            final aId = (a.key as ValueKey).value as String;
+            final bId = (b.key as ValueKey).value as String;
+            return iDs.indexOf(aId).compareTo(iDs.indexOf(bId));
+            });
+          // final List<Widget> nodes = nodesProvider.nodes.map((node) {
+          //   return TestNode(
+          //     nodeData: node as VideoNodeData,
+          //     key: ValueKey(node.id),
+          //   );
+          // }).toList();
 
           return Listener(
             onPointerSignal: (event) {

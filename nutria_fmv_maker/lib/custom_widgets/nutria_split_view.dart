@@ -39,8 +39,8 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
 
   @override
   void didChangeMetrics() {
-    print('ch m');
-    print(View.of(context).physicalSize);
+    // print('ch m');
+    // print(View.of(context).physicalSize);
     Size _currentSize = View.of(context).physicalSize;
     UiStateProvider splitViewProvider =
         Provider.of<UiStateProvider>(context, listen: false);

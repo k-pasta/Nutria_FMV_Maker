@@ -87,4 +87,20 @@ class AppTheme {
     this.cMenuBarText = const Color(0xffffffff),
     this.dMenuBarHeight = 67,
   });
+
+  //getters
+  //TODO document hardcoding
+    TextStyle get swatchTextStyle => TextStyle(
+    overflow: TextOverflow.ellipsis,
+    color: cTextActive,
+    fontVariations: const [FontVariation('wght', 500)], 
+    fontSize: dTextHeight,
+    height: 1.0,
+  );
+
+  TextStyle get filenameTextStyle => TextStyle(
+    color: cText,
+    fontSize: dTextHeight,
+    height: 1.0,
+  );
 }
