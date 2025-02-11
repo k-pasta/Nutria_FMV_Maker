@@ -43,193 +43,193 @@ class NodesProvider extends ChangeNotifier {
       position: const Offset(150, 20),
       videoDataId: 'a',
       outputs: <Output>[
-        Output(outputData: 'First text'),
+        Output(outputData: 'First text', targetNodeId: 'aaa'),
         Output(outputData: ''),
         Output(outputData: ''),
         Output(outputData: ''),
         Output(outputData: ''),
       ],
     ),
-    VideoNodeData(
-      id: 'x',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xjaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xaha',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xfaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xada',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xasa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xaaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xapa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xaoa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xiaa',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xaua',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xaya',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xata',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
-    VideoNodeData(
-      id: 'xara',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
+    // VideoNodeData(
+    //   id: 'x',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xjaa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xaha',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xfaa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xada',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xasa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xaaa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xapa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xaoa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xiaa',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xaua',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xaya',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xata',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'xara',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
   ];
 
   // Getter for nodes (returns an immutable list)
@@ -252,9 +252,9 @@ class NodesProvider extends ChangeNotifier {
 
   // String? get currentNodeIdUnderCursor => _currentNodeIdUnderCursor;
 
-  bool _isUserDraggingOutput = false;
+  // bool _isUserDraggingOutput = false;
 
-  NoodleDragIntent? _currentDragIntent = null;
+  NoodleDragIntent? _currentDragIntent;
 
   NoodleDragOutcome _currentDragOutcome = NoodleDragOutcome(null, null);
 
@@ -376,110 +376,169 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  // Update output position for a specific node
-  // void updateOutputPosition(String id, int outputIndex, Offset newPosition) {
-  //   int nodeIndex = getNodeIndexById(id);
+  void resetHoveredAndTargeted() {
+    for (var node in _nodes) {
+      if (node is BaseNodeData) {
+        int index = getNodeIndexById(node.id);
+        _nodes[index] = node.copyWith(
+          isBeingHovered: false,
+          input: node.input.copyWith(isBeingTargeted: false),
+          outputs: node.outputs
+              .map((output) => output.copyWith(isBeingTargeted: false))
+              .toList(),
+        );
+      }
+    }
+  }
 
-  //   final node = _nodes[nodeIndex];
-  //   if (node is VideoNodeData) {
-  //     if (outputIndex < node.outputs.length) {
-  //       final updatedOutputs = List<Output>.from(node.outputs)
-  //         ..[outputIndex] = node.outputs[outputIndex].copyWith(
-  //           outputOffsetFromTopLeft: newPosition,
-  //         );
+  void resetDragged() {
+    for (var node in _nodes) {
+      if (node is BaseNodeData) {
+        int index = getNodeIndexById(node.id);
+        _nodes[index] = node.copyWith(
+          input: node.input.copyWith(isBeingDragged: false),
+          outputs: node.outputs
+              .map((output) => output.copyWith(isBeingDragged: false))
+              .toList(),
+        );
+      }
+    }
+  }
 
-  //       _nodes[nodeIndex] = node.copyWith(outputs: updatedOutputs);
-  //       notifyListeners();
-  //     }
-  //   }
-  // }
+  bool get isDraggingNoodle {
+    if (_currentDragIntent != null) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 
-//   // Add a new node to the provider
-//   void addNode(NodeData node) {
-//     _nodes.add(node);
-//     activeNodeId = node.id;
-//     notifyListeners();
-//   }
+  void setCurrentNodeIdUnderCursor(String? nodeId) {
+    // _currentNodeIdUnderCursor = nodeId;
+    notifyListeners();
+  }
 
-  void setCurrentUnderCursor({String? id, int? outputIndex}) {
-    // if (_currentDragIntent != null && _currentDragIntent) {
+  void setCurrentUnderCursor({String? targetId, int? targetOutputIndex}) {
+    _currentDragOutcome = NoodleDragOutcome(targetId, targetOutputIndex);
 
-    // }
-    _currentDragOutcome = NoodleDragOutcome(id, outputIndex);
     // Check if the user is dragging an output
-    if (_isUserDraggingOutput) {
-      if (id != null) {
-        int nodeIndex = getNodeIndexById(id);
-        NodeData nodeData = _nodes[nodeIndex];
-        // Reset the 'isBeingHovered' state for all nodes
-        for (var node in _nodes) {
-          if (node.isBeingHovered) {
-            node = node.copyWith(isBeingHovered: false);
+    if (_currentDragIntent != null) {
+      // Reset the 'isBeingHovered' state for all nodes
+      resetHoveredAndTargeted();
+
+ 
+      //check if over a node and not itself
+      if (_currentDragOutcome.nodeId != null &&
+          targetId != _currentDragIntent!.nodeId) {
+        int targetNodeIndex = getNodeIndexById(_currentDragOutcome.nodeId!);
+        BaseNodeData targetNodeData = getNodeById(_currentDragOutcome.nodeId!);
+
+        //if starting from output and targeting input or node
+        if (_currentDragIntent!.outputIndex >= 0 &&
+            (_currentDragOutcome.outputIndex == null ||
+                _currentDragOutcome.outputIndex == -1)) {
+          _nodes[targetNodeIndex] = targetNodeData.copyWith(
+              isBeingHovered: true, input: Input(isBeingTargeted: true));
+
+          print(targetNodeData.isBeingHovered);
+
+          //if starting from input and targeting node
+        } else if (_currentDragIntent!.outputIndex == -1 &&
+            _currentDragOutcome.outputIndex == null) {
+          for (int i = 0; i < targetNodeData.outputs.length; i++) {
+            if (targetNodeData.outputs[i].targetNodeId == null) {
+              _nodes[targetNodeIndex] = targetNodeData.copyWith(
+                isBeingHovered: true,
+                outputs: [
+                  for (int j = 0; j < targetNodeData.outputs.length; j++)
+                    if (i == j)
+                      targetNodeData.outputs[j].copyWith(isBeingTargeted: true)
+                    else
+                      targetNodeData.outputs[j]
+                ],
+              );
+              break;
+            }
           }
+
+          // if starting from input and targeting output
+        } else if (_currentDragIntent!.outputIndex == -1 &&
+            _currentDragOutcome.outputIndex != null &&
+            _currentDragOutcome.outputIndex! >= 0) {
+          _nodes[targetNodeIndex] = targetNodeData.copyWith(
+            isBeingHovered: true,
+            outputs: [
+              for (int i = 0; i < targetNodeData.outputs.length; i++)
+                if (_currentDragOutcome.outputIndex == i)
+                  targetNodeData.outputs[i].copyWith(isBeingTargeted: true)
+                else
+                  targetNodeData.outputs[i]
+            ],
+          );
         }
-        // Set the 'isBeingHovered' state for the current node
-        _nodes[nodeIndex] = nodeData.copyWith(isBeingHovered: true);
       }
-      if (id == null) {
-        // Reset the 'isBeingHovered' state for all nodes if no node is under the cursor
-        for (var node in _nodes) {
-          if (node.isBeingHovered) {
-            int index = getNodeIndexById(node.id);
-            _nodes[index] = node.copyWith(isBeingHovered: false);
-          }
-        }
-      }
+      if (targetId == null) {}
       notifyListeners();
     }
   }
 
-  void beginDragging(NoodleDragIntent dragIntent) {
-    _isUserDraggingOutput = true;
+  void beginDragging(NoodleDragIntent? dragIntent) {
+    // _isUserDraggingOutput = true;
     _currentDragIntent = dragIntent;
+
+         int draggedNodeIndex = getNodeIndexById(_currentDragIntent!.nodeId);
+      BaseNodeData draggedNodeData = getNodeById(_currentDragIntent!.nodeId);
+
+      _nodes[draggedNodeIndex] = draggedNodeData.copyWith(
+          input: Input(isBeingDragged: _currentDragIntent!.outputIndex == -1),
+          outputs: [
+            for (int i = 0; i < draggedNodeData.outputs.length; i++)
+              if (_currentDragIntent!.outputIndex == i)
+                draggedNodeData.outputs[i].copyWith(isBeingDragged: true)
+              else
+                draggedNodeData.outputs[i]
+          ]);
+    notifyListeners();
   }
 
   void endDragging() {
     // Reset the 'isBeingHovered' state for all nodes
-    for (var node in _nodes) {
-      if (node.isBeingHovered) {
-        int index = getNodeIndexById(node.id);
-        _nodes[index] = node.copyWith(isBeingHovered: false);
-      }
-    }
+    resetHoveredAndTargeted();
+    resetDragged();
+    // attemptConnection();
 
-    if (_currentDragOutcome.nodeId != null) {
-      attemptConnection(_currentDragOutcome!);
-    }
-    else {
-      print('No drag outcome');
-    }
-
-    _isUserDraggingOutput = false;
+    // _isUserDraggingOutput = false;
     _currentDragIntent = null;
     notifyListeners();
   }
 
-  void attemptConnection(NoodleDragOutcome dragOutcome) {
-    if (_currentDragIntent != null) {
-      if (_currentDragIntent!.isOutput) {
-        //if the drag ends at an input node
-        if (dragOutcome.nodeId != null && dragOutcome.outputIndex == null) {
-          BaseNodeData node = getNodeById(dragOutcome.nodeId!);
-          dynamic newNode = node.copyWith(
-            outputs: [
-              for (int i = 0; i < node.outputs.length; i++)
-                if (i == _currentDragIntent!.outputIndex)
-                  node.outputs[i].copyWith(targetNodeId: dragOutcome.nodeId)
-                else
-                  node.outputs[i]
-            ],
-          );
-          print('here');
-        }
+  void attemptConnection() {
+    int indexOfNodeToEdit;
+    int indexOfOutputToEdit;
 
-      } else if (!_currentDragIntent!.isOutput) {}
-    }
+    if (_currentDragIntent!.outputIndex >= 0) //if starting from output
+    {
+      indexOfNodeToEdit = getNodeIndexById(_currentDragIntent!.nodeId!);
+      indexOfOutputToEdit = _currentDragIntent!.outputIndex;
+
+      if (_currentDragOutcome.nodeId != null) {
+        //if the drag ends at a node
+
+        if (_currentDragOutcome.outputIndex == null ||
+            _currentDragOutcome.outputIndex == -1) //if drag targets an input
+        {
+          setOutput(indexOfNodeToEdit, indexOfOutputToEdit,
+              _currentDragOutcome.nodeId!);
+        }
+      } else {
+        //if the drag ends at nothing
+        setOutput(indexOfNodeToEdit, indexOfOutputToEdit, null);
+      }
+    } else if (_currentDragIntent!.outputIndex == -1) {}
   }
+
+  void setOutput(
+      int indexOfNodeToEdit, int indexOfOutputToEdit, String? targetId) {}
 
   // Toggle the 'expanded' state of a node
   void expandToggle(String id) {
@@ -628,3 +687,10 @@ class NodesProvider extends ChangeNotifier {
     notifyListeners();
   }
 }
+
+//   // Add a new node to the provider
+//   void addNode(NodeData node) {
+//     _nodes.add(node);
+//     activeNodeId = node.id;
+//     notifyListeners();
+//   }

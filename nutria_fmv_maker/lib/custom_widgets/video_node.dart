@@ -76,7 +76,7 @@ class TestNode extends StatelessWidget {
                   },
                   child: MouseRegion(
                     onEnter: (_) {
-                      nodesProvider.setCurrentUnderCursor(id: videoNodeData.id);
+                      nodesProvider.setCurrentUnderCursor(targetId: videoNodeData.id);
                       // print('enter ${videoNodeData.id}');
                     },
                     onExit: (_) {
@@ -161,7 +161,7 @@ class TestNode extends StatelessWidget {
               Knot(
                   nodeData: videoNodeData,
                   isInput: true,
-                  index: null,
+                  index: -1, // = input know
                   offset: inputOffset(nodeData, theme)),
               ...videoNodeData.outputs.asMap().entries.map((entry) {
                 int index = entry.key;

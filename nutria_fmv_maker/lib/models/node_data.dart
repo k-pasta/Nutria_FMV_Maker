@@ -145,32 +145,48 @@ class Output {
   final String? targetNodeId;
   final Object? outputData;
   final bool isBeingTargeted;
+  final bool isBeingDragged;
 
   const Output({
     this.targetNodeId,
     this.outputData,
     this.isBeingTargeted = false,
+    this.isBeingDragged = false,
   });
 
   Output copyWith({
     String? targetNodeId,
     Object? outputData,
     bool? isBeingTargeted,
+    bool? isBeingDragged,
   }) {
     return Output(
       targetNodeId: targetNodeId ?? this.targetNodeId,
       outputData: outputData ?? this.outputData,
       isBeingTargeted: isBeingTargeted ?? this.isBeingTargeted,
+      isBeingDragged: isBeingDragged ?? this.isBeingDragged,
     );
   }
 }
 
 class Input {
   final bool isBeingTargeted;
+  final bool isBeingDragged;
   
   const Input({
     this.isBeingTargeted = false,
+    this.isBeingDragged = false,
   });
+
+  Input copyWith({
+    bool? isBeingTargeted,
+    bool? isBeingDragged,
+  }) {
+    return Input(
+      isBeingTargeted: isBeingTargeted ?? this.isBeingTargeted,
+      isBeingDragged: isBeingDragged ?? this.isBeingDragged,
+    );
+  }
 }
 
 class VideoData {

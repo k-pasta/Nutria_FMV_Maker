@@ -13,14 +13,14 @@ class Knot extends StatefulWidget {
   final double _sizeLarge = UiStaticProperties.knotSizeLarge;
   final double _sizeSmall = UiStaticProperties.knotSizeSmall;
   final Offset offset;
-  final int? index;
+  final int index;
   final BaseNodeData nodeData;
   final bool isInput;
 
   const Knot(
       {super.key,
       required this.offset,
-      this.index,
+      required this.index,
       required this.nodeData,
       this.isInput = false});
 
@@ -34,8 +34,10 @@ class Knot extends StatefulWidget {
 
 class _KnotState extends State<Knot> {
   bool hovered = false;
-  bool dragging = false;
+  // bool dragging = false;
   bool isBeingTargeted = false;
+  bool isBeingDragged = false;
+  NoodleDragIntent? nextIntent;
 
   @override
   Widget build(BuildContext context) {
@@ -44,11 +46,22 @@ class _KnotState extends State<Knot> {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final double boxSize = widget._sizeLarge * sqrt2;
 
-if (widget.index != null){ //if is output
-  isBeingTargeted = widget.nodeData.outputs[widget.index!].isBeingTargeted;
-}else if (widget.index == null){ //if is input
-  isBeingTargeted = widget.nodeData.input.isBeingTargeted;
-}
+    if (widget.index != -1) {
+      //if is output
+      isBeingTargeted = widget.nodeData.outputs[widget.index].isBeingTargeted;
+      isBeingDragged = widget.nodeData.outputs[widget.index].isBeingDragged;
+      if (widget.nodeData.outputs[widget.index].targetNodeId != null) {
+        nextIntent = NoodleDragIntent.input(
+            widget.nodeData.outputs[widget.index].targetNodeId!);
+      } else {
+        nextIntent = NoodleDragIntent.output(widget.nodeData.id, widget.index);
+      }
+    } else if (widget.index == -1) {
+      //if is input
+      isBeingTargeted = widget.nodeData.input.isBeingTargeted;
+      isBeingDragged = widget.nodeData.input.isBeingDragged;
+      nextIntent = NoodleDragIntent.input(widget.nodeData.id);
+    }
 
 // isBeingTargeted
     return Positioned(
@@ -56,12 +69,16 @@ if (widget.index != null){ //if is output
       left: widget.offset.dx - boxSize / 2,
       child: MouseRegion(
         onEnter: (_) {
+          nodesProvider.setCurrentUnderCursor(
+              targetId: widget.nodeData.id, targetOutputIndex: widget.index);
+          if (nodesProvider.isDraggingNoodle) return;
           setState(() {
             hovered = true;
           });
         },
         onExit: (_) {
-          if (dragging) return;
+          nodesProvider.setCurrentUnderCursor();
+          // if (dragging) return;
           setState(() {
             hovered = false;
           });
@@ -69,19 +86,14 @@ if (widget.index != null){ //if is output
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onPanStart: (details) {
-            nodesProvider.beginDragging(
-                NoodleDragIntent.output(widget.nodeData.id, widget.index));
-            dragging = true;
-            print('start triggered');
+            nodesProvider.beginDragging(nextIntent);
+            // dragging = true;
+            // print('start triggered, nextIntent: $nextIntent');
           },
           // onPanUpdate: widget.onPanUpdate,
           onPanEnd: (details) {
             nodesProvider.endDragging();
             print('end triggered');
-            setState(() {
-              hovered = false;
-              dragging = false;
-            });
           },
 
           child: SizedBox(
@@ -89,12 +101,10 @@ if (widget.index != null){ //if is output
             height: boxSize,
             child: Center(
               child: SizedBox(
-                width: hovered ||
-                        (widget.nodeData.isBeingHovered && widget.isInput)
+                width: isBeingDragged || isBeingTargeted || hovered
                     ? widget._sizeLarge
                     : widget._sizeSmall, // Scale up on hover
-                height: hovered ||
-                        (widget.nodeData.isBeingHovered && widget.isInput)
+                height: isBeingDragged || isBeingTargeted || hovered
                     ? widget._sizeLarge
                     : widget._sizeSmall,
                 child: Transform.rotate(

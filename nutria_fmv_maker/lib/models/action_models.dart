@@ -17,18 +17,16 @@ class Action {
 /// whether the drag started at an output or input node, and the associated node ID
 /// and output index.
 ///
-/// If the drag starts at an input knot, [outputIndex] will be `null`.
+/// If the drag starts at an input knot, [outputIndex] will be `-1`.
 /// 
-/// bool isOutput, String nodeId, int? outputIndex
+/// String nodeId, int outputIndex
 class NoodleDragIntent {
-  final bool isOutput;
   final String nodeId;
-  final int? outputIndex;
+  final int outputIndex;
 
-  NoodleDragIntent.output(this.nodeId, this.outputIndex) : isOutput = true;
+  NoodleDragIntent.output(this.nodeId, this.outputIndex);
   NoodleDragIntent.input(this.nodeId)
-      : outputIndex = null,
-        isOutput = false;
+      : outputIndex = -1;
 }
 
 /// Represents the outcome of a drag action involving a noodle (connection) in the UI.
@@ -37,7 +35,8 @@ class NoodleDragIntent {
 /// whether the drag ended at an output or input node, and the associated node ID
 /// and output index.
 ///
-/// If the drag ends at an input knot, [outputIndex] will be `null`.
+/// If the drag ends on a node, [outputIndex] will be `null`.
+/// If the drag ends at an input knot, [outputIndex] will be `-1`.
 /// 
 /// String? nodeId, int? outputIndex
 class NoodleDragOutcome {
