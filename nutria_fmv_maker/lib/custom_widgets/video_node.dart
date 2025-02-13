@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
+import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
@@ -18,25 +19,27 @@ import 'node_elements/node_video_outputs_list.dart';
 import 'node_elements/node_video_thumbnail.dart';
 
 class TestNode extends StatelessWidget {
-  final VideoNodeData nodeData;
+  // final VideoNodeData nodeData;
+  final String nodeId;
   const TestNode({
     super.key,
-    required this.nodeData,
+    required this.nodeId,
   });
 
   @override
   Widget build(BuildContext context) {
-    // print('rebuilding ${nodeData.id}');    //DEBUG to check when nodes rebuild
+    print('rebuilding ${nodeId}');    //DEBUG to check when nodes rebuild
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     return Selector<NodesProvider, NodeData>(
         selector: (context, provider) =>
-            provider.getNodeById(nodeData.id), // Only listen to this node
+            provider.getNodeById(nodeId), // Only listen to this node
         builder: (context, node, child) {
 
           final NodesProvider nodesProvider = context.read<NodesProvider>();
+
+          nodesProvider.initializeOutputs(nodeId);
           final VideoNodeData videoNodeData =
-              nodesProvider.getNodeById(nodeData.id) as VideoNodeData;
-          nodesProvider.initializeOutputs(nodeData.id);
+              nodesProvider.getNodeById(nodeId) as VideoNodeData;
 
           return Positioned(
             top: videoNodeData.position.dy +
@@ -76,11 +79,11 @@ class TestNode extends StatelessWidget {
                   },
                   child: MouseRegion(
                     onEnter: (_) {
-                      nodesProvider.setCurrentUnderCursor(targetId: videoNodeData.id);
+                      nodesProvider.setCurrentUnderCursor(NoodleDragOutcome.node(videoNodeData.id));
                       // print('enter ${videoNodeData.id}');
                     },
                     onExit: (_) {
-                      nodesProvider.setCurrentUnderCursor();
+                      nodesProvider.setCurrentUnderCursor(NoodleDragOutcome.empty());
                       // print('exit ${videoNodeData.id}');
                     },
                     hitTestBehavior: HitTestBehavior.deferToChild,
@@ -158,11 +161,10 @@ class TestNode extends StatelessWidget {
                     theme.dPanelPadding +
                     (theme.dButtonHeight / 2),
               ),
-              Knot(
+              Knot.input(
                   nodeData: videoNodeData,
-                  isInput: true,
                   index: -1, // = input know
-                  offset: inputOffset(nodeData, theme)),
+                  offset: inputOffset(videoNodeData, theme)),
               ...videoNodeData.outputs.asMap().entries.map((entry) {
                 int index = entry.key;
                 var output = entry.value;
@@ -170,9 +172,8 @@ class TestNode extends StatelessWidget {
                 // nodesProvider.updateOutputPosition(videoNodeData.id, index,
                 //     _getContainerPositionRelativeToParent(_childKeys[index]));
                 if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
-                  return Knot(
+                  return Knot.output(
                     nodeData: videoNodeData,
-                    isInput: false,
                     index: index,
                     offset: outputOffset(videoNodeData, theme, index),
                   );
@@ -186,40 +187,4 @@ class TestNode extends StatelessWidget {
   }
 }
 
-double getTextHeight(String text, TextStyle style) {
-  final TextPainter textPainter = TextPainter(
-    text: TextSpan(text: text, style: style),
-    textDirection: TextDirection.ltr,
-    // maxLines: 1,
-  )..layout();
 
-  return textPainter.height;
-}
-
-Offset get paddingOffset {
-  return Offset(UiStaticProperties.nodePadding, UiStaticProperties.nodePadding);
-}
-
-Offset inputOffset(BaseNodeData nodeData, AppTheme theme) {
-  double x = 0;
-  double y = theme.dSwatchHeight +
-      (nodeData.nodeName != null
-          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
-          : 0) +
-      (UiStaticProperties.nodeDefaultWidth * 9 / 16);
-  return Offset(x, y) + paddingOffset;
-}
-
-Offset outputOffset(VideoNodeData nodeData, AppTheme theme, int index) {
-  double x = nodeData.nodeWidth;
-  double baseY = theme.dSwatchHeight +
-      (nodeData.nodeName != null
-          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
-          : 0) +
-      (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
-      getTextHeight(nodeData.videoDataId, theme.filenameTextStyle) +
-      (theme.dPanelPadding * 2) +
-      (theme.dButtonHeight / 2);
-  double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
-  return Offset(x, baseY + extraY) + paddingOffset;
-}

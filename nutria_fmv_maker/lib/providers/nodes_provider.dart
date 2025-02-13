@@ -2,7 +2,9 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
+import 'package:path/path.dart';
 import '../custom_widgets/video_node.dart';
+import '../models/app_theme.dart';
 import '../models/node_data.dart';
 
 class NodesProvider extends ChangeNotifier {
@@ -238,8 +240,34 @@ class NodesProvider extends ChangeNotifier {
   List<String> get iDs =>
       List.unmodifiable(_nodes.map((node) => node.id).toList());
 
+  List<Offset> get positions =>
+      List.unmodifiable(_nodes.map((node) => node.position).toList());
+
   List<NodeData> get selectedNodes =>
       _nodes.where((node) => node.isSelected).toList();
+
+  List<Map<Offset, Offset>> get noodlesStartAndEndPoints {
+    List<Map<Offset, Offset>> noodles = [];
+
+    for (var node in _nodes) {
+      if (node is BaseNodeData) {
+        for (var output in node.outputs) {
+          if (output.targetNodeId != null) {
+            try {
+              final targetNode =
+                  getNodeById<BaseNodeData>(output.targetNodeId!);
+              noodles.add({node.position: targetNode.position});
+            } catch (e) {
+              // Handle the case where the target node is not found
+              print('Target node not found: ${output.targetNodeId}');
+            }
+          }
+        }
+      }
+    }
+
+    return noodles;
+  }
 
 // Getter for videos (returns an immutable list)
   final List<VideoData> _videos = [
@@ -256,7 +284,11 @@ class NodesProvider extends ChangeNotifier {
 
   NoodleDragIntent? _currentDragIntent;
 
-  NoodleDragOutcome _currentDragOutcome = NoodleDragOutcome(null, null);
+  NoodleDragIntent? _toClearIfNothing;
+
+  NoodleDragOutcome _currentDragOutcome = NoodleDragOutcome.empty();
+
+  NoodleDragOutcome? _currentPotentialConnection;
 
   String? activeNodeId;
 
@@ -305,7 +337,8 @@ class NodesProvider extends ChangeNotifier {
 
     // Ensure outputs have at least 3 items
     while (nodeData.outputs.length < 3) {
-      nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
+      nodeData =
+          nodeData.copyWith(outputs: [...nodeData.outputs, const Output()]);
     }
     // Ensure the last two outputs are not both empty recursively
     while (nodeData.outputs.length > 3 &&
@@ -317,8 +350,11 @@ class NodesProvider extends ChangeNotifier {
           outputs: nodeData.outputs..removeLast()); //where i get error
     }
     // Add a new output if the last output has non-empty text
-    if (!((nodeData.outputs.last.outputData ?? '') == '')) {
-      nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
+    if (!((nodeData.outputs.last.outputData ?? '') == '') &&
+        !nodeData.hasMaxedOutOutputs) {
+      nodeData =
+          nodeData.copyWith(outputs: [...nodeData.outputs, const Output()]);
+      print('from here');
     }
     // Replace the node in the list with the updated node
     _nodes[index] = nodeData;
@@ -349,6 +385,7 @@ class NodesProvider extends ChangeNotifier {
     // If the output index is the last one, add a new empty output
     if (nodeData.outputs.length == outputIndex + 1 && outputIndex < 9) {
       nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
+      print('Added new output');
     }
     if (outputIndex == 9) {
       nodeData = nodeData.copyWith(hasMaxedOutOutputs: true);
@@ -356,14 +393,15 @@ class NodesProvider extends ChangeNotifier {
     }
     // Create a new list of outputs with the updated text
     List<Output> newOutputs = nodeData.outputs;
-    newOutputs[outputIndex] =
-        newOutputs[outputIndex].copyWith(outputData: text);
+    newOutputs[outputIndex] = newOutputs[outputIndex].copyWith(outputData: () {
+      return text;
+    });
     // Update the node with the new outputs
     _nodes[nodeIndex] = nodeData.copyWith(outputs: newOutputs);
 
     // Print the outputs for debugging
     for (int i = 0; i < newOutputs.length; i++) {
-      print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
+      // print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
     }
 
     // If the text is empty, initialize the outputs
@@ -413,128 +451,201 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  void setCurrentNodeIdUnderCursor(String? nodeId) {
-    // _currentNodeIdUnderCursor = nodeId;
-    notifyListeners();
-  }
+  // void setCurrentNodeIdUnderCursor(String? nodeId) {
+  //   // _currentNodeIdUnderCursor = nodeId;
+  //   notifyListeners();
+  // }
 
-  void setCurrentUnderCursor({String? targetId, int? targetOutputIndex}) {
-    _currentDragOutcome = NoodleDragOutcome(targetId, targetOutputIndex);
+  void setCurrentUnderCursor(NoodleDragOutcome noodleDragOutcome) {
+    _currentDragOutcome = noodleDragOutcome;
 
     // Check if the user is dragging an output
     if (_currentDragIntent != null) {
       // Reset the 'isBeingHovered' state for all nodes
       resetHoveredAndTargeted();
 
- 
       //check if over a node and not itself
-      if (_currentDragOutcome.nodeId != null &&
-          targetId != _currentDragIntent!.nodeId) {
-        int targetNodeIndex = getNodeIndexById(_currentDragOutcome.nodeId!);
-        BaseNodeData targetNodeData = getNodeById(_currentDragOutcome.nodeId!);
+      if (_currentDragOutcome.outcome != PossibleOutcome.empty &&
+          _currentDragOutcome.nodeId != _currentDragIntent!.nodeId) {
+        int targetNodeIndex = getNodeIndexById(_currentDragOutcome.nodeId);
+        BaseNodeData targetNodeData = getNodeById(_currentDragOutcome.nodeId);
 
-        //if starting from output and targeting input or node
-        if (_currentDragIntent!.outputIndex >= 0 &&
-            (_currentDragOutcome.outputIndex == null ||
-                _currentDragOutcome.outputIndex == -1)) {
+        // Case 1 : if starting from output and targeting input or node
+        if (_currentDragIntent!.isOutput &&
+            (_currentDragOutcome.outcome == PossibleOutcome.node ||
+                _currentDragOutcome.outcome == PossibleOutcome.input)) {
+          //set the target node as hovered and input knot as targeted
           _nodes[targetNodeIndex] = targetNodeData.copyWith(
-              isBeingHovered: true, input: Input(isBeingTargeted: true));
+              isBeingHovered: true, input: const Input(isBeingTargeted: true));
+          //set potential connection
+          _currentPotentialConnection =
+              NoodleDragOutcome.input(targetNodeData.id);
 
-          print(targetNodeData.isBeingHovered);
-
-          //if starting from input and targeting node
-        } else if (_currentDragIntent!.outputIndex == -1 &&
-            _currentDragOutcome.outputIndex == null) {
-          for (int i = 0; i < targetNodeData.outputs.length; i++) {
+          // Case 2 : if starting from input and targeting node
+        } else if (!_currentDragIntent!.isOutput &&
+            _currentDragOutcome.outcome == PossibleOutcome.node) {
+          // For each knot in the target node
+          for (int i = 0; i < targetNodeData.outputs.length - 1; i++) {
+            // If available knots exist
             if (targetNodeData.outputs[i].targetNodeId == null) {
+              //target the first one and set node as being hovered
               _nodes[targetNodeIndex] = targetNodeData.copyWith(
                 isBeingHovered: true,
                 outputs: [
-                  for (int j = 0; j < targetNodeData.outputs.length; j++)
+                  for (int j = 0;
+                      j < targetNodeData.outputs.length;
+                      j++) //subtracting 1 to exclude unexposed output (final)
                     if (i == j)
                       targetNodeData.outputs[j].copyWith(isBeingTargeted: true)
                     else
                       targetNodeData.outputs[j]
                 ],
               );
+              //set potential connection
+              _currentPotentialConnection =
+                  NoodleDragOutcome.output(targetNodeData.id, i);
               break;
             }
           }
 
-          // if starting from input and targeting output
-        } else if (_currentDragIntent!.outputIndex == -1 &&
-            _currentDragOutcome.outputIndex != null &&
-            _currentDragOutcome.outputIndex! >= 0) {
+          // Case 3 : if starting from input and targeting output
+        } else if (!_currentDragIntent!.isOutput &&
+            _currentDragOutcome.outcome == PossibleOutcome.output) {
+          //target regardless of empty or not
           _nodes[targetNodeIndex] = targetNodeData.copyWith(
             isBeingHovered: true,
             outputs: [
               for (int i = 0; i < targetNodeData.outputs.length; i++)
-                if (_currentDragOutcome.outputIndex == i)
+                if (_currentDragOutcome.index == i)
                   targetNodeData.outputs[i].copyWith(isBeingTargeted: true)
                 else
                   targetNodeData.outputs[i]
             ],
           );
+          //set potential connection
+          _currentPotentialConnection = NoodleDragOutcome.output(
+              targetNodeData.id, _currentDragOutcome.index);
         }
       }
-      if (targetId == null) {}
+      if (_currentDragOutcome.outcome == PossibleOutcome.empty) {
+        //delete potential connection
+        _currentPotentialConnection = null;
+      }
       notifyListeners();
     }
   }
 
-  void beginDragging(NoodleDragIntent? dragIntent) {
-    // _isUserDraggingOutput = true;
+  void beginDragging(NoodleDragIntent dragIntent,
+      {NoodleDragIntent? toClearIfNothing}) {
+    // Set Drag intent
     _currentDragIntent = dragIntent;
-
-         int draggedNodeIndex = getNodeIndexById(_currentDragIntent!.nodeId);
-      BaseNodeData draggedNodeData = getNodeById(_currentDragIntent!.nodeId);
-
-      _nodes[draggedNodeIndex] = draggedNodeData.copyWith(
-          input: Input(isBeingDragged: _currentDragIntent!.outputIndex == -1),
-          outputs: [
-            for (int i = 0; i < draggedNodeData.outputs.length; i++)
-              if (_currentDragIntent!.outputIndex == i)
-                draggedNodeData.outputs[i].copyWith(isBeingDragged: true)
-              else
-                draggedNodeData.outputs[i]
-          ]);
+    _toClearIfNothing = toClearIfNothing;
+    // Get intended node's data
+    int draggedNodeIndex = getNodeIndexById(dragIntent.nodeId);
+    BaseNodeData draggedNodeData = getNodeById(dragIntent.nodeId);
+    // Set intended node's knot state as isBeingDragged (to render thick)
+    _nodes[draggedNodeIndex] = draggedNodeData.copyWith(
+        input: dragIntent.isOutput
+            ? draggedNodeData.input
+            : const Input(isBeingDragged: true),
+        outputs: dragIntent.isOutput
+            ? [
+                for (int i = 0; i < draggedNodeData.outputs.length; i++)
+                  if (_currentDragIntent!.index == i)
+                    draggedNodeData.outputs[i].copyWith(isBeingDragged: true)
+                  else
+                    draggedNodeData.outputs[i]
+              ]
+            : draggedNodeData.outputs);
     notifyListeners();
   }
 
   void endDragging() {
     // Reset the 'isBeingHovered' state for all nodes
     resetHoveredAndTargeted();
+    // Reset the dragged node's
     resetDragged();
-    // attemptConnection();
+    // Attempt to connect nodes based on current Drag intent and Drag output
+    attemptConnection();
 
-    // _isUserDraggingOutput = false;
+    //  Reset the drag intent. No need to reset the output. this gets set each time a user hovers a node or knot
     _currentDragIntent = null;
+    _currentPotentialConnection = null;
+    _toClearIfNothing = null;
     notifyListeners();
   }
 
   void attemptConnection() {
-    int indexOfNodeToEdit;
-    int indexOfOutputToEdit;
+    if (_currentPotentialConnection != null) {
+      if (_currentPotentialConnection!.outcome == PossibleOutcome.input &&
+          _currentDragIntent!.isOutput) {
+        int toChangeNodeIndex = getNodeIndexById(_currentDragIntent!.nodeId);
+        BaseNodeData toChangeNodeData = getNodeById(_currentDragIntent!.nodeId);
 
-    if (_currentDragIntent!.outputIndex >= 0) //if starting from output
-    {
-      indexOfNodeToEdit = getNodeIndexById(_currentDragIntent!.nodeId!);
-      indexOfOutputToEdit = _currentDragIntent!.outputIndex;
+        _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
+          for (int i = 0; i < toChangeNodeData.outputs.length; i++)
+            if (_currentDragIntent!.index == i)
+              toChangeNodeData.outputs[i].copyWith(targetNodeId: () {
+                return _currentPotentialConnection!.nodeId;
+              })
+            else
+              toChangeNodeData.outputs[i]
+        ]);
+      } else if (_currentPotentialConnection!.outcome ==
+              PossibleOutcome.output &&
+          !_currentDragIntent!.isOutput) {
+        int toChangeNodeIndex =
+            getNodeIndexById(_currentPotentialConnection!.nodeId);
+        BaseNodeData toChangeNodeData =
+            getNodeById(_currentPotentialConnection!.nodeId);
 
-      if (_currentDragOutcome.nodeId != null) {
-        //if the drag ends at a node
-
-        if (_currentDragOutcome.outputIndex == null ||
-            _currentDragOutcome.outputIndex == -1) //if drag targets an input
-        {
-          setOutput(indexOfNodeToEdit, indexOfOutputToEdit,
-              _currentDragOutcome.nodeId!);
-        }
-      } else {
-        //if the drag ends at nothing
-        setOutput(indexOfNodeToEdit, indexOfOutputToEdit, null);
+        _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
+          for (int i = 0; i < toChangeNodeData.outputs.length; i++)
+            if (_currentPotentialConnection!.index == i)
+              toChangeNodeData.outputs[i].copyWith(targetNodeId: () {
+                return _currentDragIntent!.nodeId;
+              })
+            else
+              toChangeNodeData.outputs[i]
+        ]);
       }
-    } else if (_currentDragIntent!.outputIndex == -1) {}
+    } else if (_currentPotentialConnection == null) {
+      // print('no potential connection');
+      if (_currentDragIntent!.isOutput) {
+        int toChangeNodeIndex = getNodeIndexById(_currentDragIntent!.nodeId);
+        BaseNodeData toChangeNodeData = getNodeById(_currentDragIntent!.nodeId);
+
+        _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
+          for (int i = 0; i < toChangeNodeData.outputs.length; i++)
+            if (_currentDragIntent!.index == i)
+              toChangeNodeData.outputs[i].copyWith(targetNodeId: () => null)
+            else
+              toChangeNodeData.outputs[i]
+        ]);
+      } else if (!_currentDragIntent!.isOutput) {
+        if (_toClearIfNothing != null) {
+          int toChangeNodeIndex = getNodeIndexById(_toClearIfNothing!.nodeId);
+          BaseNodeData toChangeNodeData =
+              getNodeById(_toClearIfNothing!.nodeId);
+
+          print(
+              '${(_nodes[toChangeNodeIndex] as BaseNodeData).outputs[_toClearIfNothing!.index].targetNodeId} is target node. _toClearIfNothing is ${_toClearIfNothing!.nodeId}, ${_toClearIfNothing!.index}');
+
+          _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
+            for (int i = 0; i < toChangeNodeData.outputs.length; i++)
+              if (_toClearIfNothing!.index == i)
+                toChangeNodeData.outputs[i].copyWith(targetNodeId: () => null)
+              else
+                toChangeNodeData.outputs[i]
+          ]);
+
+          print((_nodes[toChangeNodeIndex] as BaseNodeData)
+              .outputs[_toClearIfNothing!.index]
+              .targetNodeId);
+        }
+        // do nothing
+      }
+    }
   }
 
   void setOutput(
@@ -686,6 +797,44 @@ class NodesProvider extends ChangeNotifier {
     _nodes.removeWhere((n) => n.id == id);
     notifyListeners();
   }
+}
+
+double getTextHeight(String text, TextStyle style) {
+  final TextPainter textPainter = TextPainter(
+    text: TextSpan(text: text, style: style),
+    textDirection: TextDirection.ltr,
+    // maxLines: 1,
+  )..layout();
+
+  return textPainter.height;
+}
+
+Offset get paddingOffset {
+  return Offset(UiStaticProperties.nodePadding, UiStaticProperties.nodePadding);
+}
+
+Offset inputOffset(BaseNodeData nodeData, AppTheme theme) {
+  double x = 0;
+  double y = theme.dSwatchHeight +
+      (nodeData.nodeName != null
+          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
+          : 0) +
+      (UiStaticProperties.nodeDefaultWidth * 9 / 16);
+  return Offset(x, y) + paddingOffset;
+}
+
+Offset outputOffset(VideoNodeData nodeData, AppTheme theme, int index) {
+  double x = nodeData.nodeWidth;
+  double baseY = theme.dSwatchHeight +
+      (nodeData.nodeName != null
+          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
+          : 0) +
+      (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
+      getTextHeight(nodeData.videoDataId, theme.filenameTextStyle) +
+      (theme.dPanelPadding * 2) +
+      (theme.dButtonHeight / 2);
+  double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
+  return Offset(x, baseY + extraY) + paddingOffset;
 }
 
 //   // Add a new node to the provider

@@ -1,5 +1,6 @@
 import 'package:nutria_fmv_maker/custom_widgets/video_node_tests.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/noodle_painter.dart';
 
 import 'custom_widgets/video_node.dart';
 import './providers/grid_canvas_provider.dart';
@@ -24,10 +25,11 @@ class _GridCanvasState extends State<GridCanvas> {
   late List<Widget> nodes;
   @override
   void initState() {
-    nodes = context.read<NodesProvider>().nodes.map((node) {
+    print(context.read<NodesProvider>().iDs);
+    nodes = context.read<NodesProvider>().iDs.map((id) {
       return TestNode(
-        nodeData: node as VideoNodeData,
-        key: ValueKey(node.id),
+        nodeId: id,
+        key: ValueKey(id),
       );
     }).toList();
     super.initState();
@@ -42,11 +44,11 @@ class _GridCanvasState extends State<GridCanvas> {
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
           print('full rebuilt');
-            nodes.sort((a, b) {
+          nodes.sort((a, b) {
             final aId = (a.key as ValueKey).value as String;
             final bId = (b.key as ValueKey).value as String;
             return iDs.indexOf(aId).compareTo(iDs.indexOf(bId));
-            });
+          });
           // final List<Widget> nodes = nodesProvider.nodes.map((node) {
           //   return TestNode(
           //     nodeData: node as VideoNodeData,
@@ -82,19 +84,36 @@ class _GridCanvasState extends State<GridCanvas> {
                   clipBehavior: Clip.none, //allows no clipping
 
                   children: [
-                    Positioned.fill(
-                      child: CustomPaint(
-                        painter: GridPainter(
-                            transformationController:
-                                gridCanvasProvider.transformationController,
-                            context: context), // infinite dots grid
-                      ),
-                    ),
                     const SizedBox(
                       height: UiStaticProperties.canvasSize,
                       width: UiStaticProperties.canvasSize,
                       child: Placeholder(),
                     ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
+
+                    // Positioned.fill(
+                    //   child: CustomPaint(
+                    //     painter: GridPainter(
+                    //         transformationController:
+                    //             gridCanvasProvider.transformationController,
+                    //         context: context), // infinite dots grid
+                    //   ),
+                    // ),
+
+                    Selector(
+                      selector: (_, NodesProvider provider) =>
+                          provider.positions,
+                      builder: (context, positions, child) => Positioned.fill(
+                        child: CustomPaint(
+                          painter: NoodlePainter(
+                              transformationController:
+                                  gridCanvasProvider.transformationController,
+                              context: context,
+                              startAndEndPoints: nodesProvider
+                                  .noodlesStartAndEndPoints), // infinite dots grid
+                        ),
+                      ),
+                    ),
+
                     ...nodes
                   ],
                 ),

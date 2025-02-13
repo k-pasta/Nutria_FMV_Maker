@@ -155,14 +155,14 @@ class Output {
   });
 
   Output copyWith({
-    String? targetNodeId,
-    Object? outputData,
+    String? Function()? targetNodeId,
+    Object? Function()? outputData,
     bool? isBeingTargeted,
     bool? isBeingDragged,
   }) {
     return Output(
-      targetNodeId: targetNodeId ?? this.targetNodeId,
-      outputData: outputData ?? this.outputData,
+      targetNodeId: targetNodeId != null ? targetNodeId() : this.targetNodeId,
+      outputData: outputData != null ? outputData() : this.outputData,
       isBeingTargeted: isBeingTargeted ?? this.isBeingTargeted,
       isBeingDragged: isBeingDragged ?? this.isBeingDragged,
     );
