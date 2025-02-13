@@ -26,7 +26,7 @@ class NoodlePainter extends CustomPainter {
       ..strokeCap = StrokeCap.round
       ..style = PaintingStyle.stroke
       // ..strokeWidth = 5.0 / transformationController.value.getMaxScaleOnAxis();
-      ..strokeWidth = 5.0;
+      ..strokeWidth = UiStaticProperties.noodleWidth;
 
     final Matrix4 matrix = transformationController.value;
     final double scale = matrix.getMaxScaleOnAxis();
@@ -38,8 +38,17 @@ class NoodlePainter extends CustomPainter {
       pointPair.forEach((start, end) {
         final Offset transformedStart = start + Offset(UiStaticProperties.topLeftToMiddle.dx, UiStaticProperties.topLeftToMiddle.dy);
         final Offset transformedEnd = end + Offset(UiStaticProperties.topLeftToMiddle.dx, UiStaticProperties.topLeftToMiddle.dy);
-        canvas.drawLine(transformedStart, transformedEnd, paint);
-        print('$translationY, $translationX');
+
+        // Step 1: Calculate intermediate points for the 3-segment line
+        final Offset firstSegmentEnd = transformedStart + const Offset(UiStaticProperties.noodleConnectedSpacing, 0); 
+        final Offset secondSegmentStart = firstSegmentEnd;
+        final Offset secondSegmentEnd = transformedEnd - const Offset(UiStaticProperties.noodleConnectedSpacing, 0); 
+        final Offset thirdSegmentStart = secondSegmentEnd;
+
+        // Step 2: Draw the 3 segments
+        canvas.drawLine(transformedStart, firstSegmentEnd, paint); // First segment
+        canvas.drawLine(secondSegmentStart, secondSegmentEnd, paint); // Second segment
+        canvas.drawLine(thirdSegmentStart, transformedEnd, paint); // Third segment
       });
     }
   }

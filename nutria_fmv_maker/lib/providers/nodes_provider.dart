@@ -1,8 +1,10 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/static_data/input_output_offset_calculator.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:path/path.dart';
+import 'package:tuple/tuple.dart';
 import '../custom_widgets/video_node.dart';
 import '../models/app_theme.dart';
 import '../models/node_data.dart';
@@ -243,20 +245,38 @@ class NodesProvider extends ChangeNotifier {
   List<Offset> get positions =>
       List.unmodifiable(_nodes.map((node) => node.position).toList());
 
+  List<Output> get outputs => List.unmodifiable(
+      _nodes.whereType<BaseNodeData>().expand((node) => node.outputs).toList());
+
+//tuple for the noodle drawer to listen to
+  Tuple2<List<Offset>, List<Output>> get positionsAndOutputs {
+    return Tuple2(positions, outputs);
+  }
+
   List<NodeData> get selectedNodes =>
       _nodes.where((node) => node.isSelected).toList();
 
-  List<Map<Offset, Offset>> get noodlesStartAndEndPoints {
+  List<Map<Offset, Offset>> noodlesStartAndEndPoints(AppTheme currentTheme) {
     List<Map<Offset, Offset>> noodles = [];
 
     for (var node in _nodes) {
       if (node is BaseNodeData) {
-        for (var output in node.outputs) {
+        for (var i = 0; i < node.outputs.length; i++) {
+          var output = node.outputs[i];
           if (output.targetNodeId != null) {
             try {
               final targetNode =
                   getNodeById<BaseNodeData>(output.targetNodeId!);
-              noodles.add({node.position: targetNode.position});
+              if (node is VideoNodeData && targetNode is VideoNodeData) {
+                //TODO update code for other nodes
+                noodles.add({
+                  node.position +
+                      InputOutputOffsetCalculator.outputOffset(
+                          node, currentTheme, i): targetNode.position +
+                      InputOutputOffsetCalculator.inputOffset(
+                          targetNode, currentTheme)
+                });
+              }
             } catch (e) {
               // Handle the case where the target node is not found
               print('Target node not found: ${output.targetNodeId}');
@@ -276,15 +296,9 @@ class NodesProvider extends ChangeNotifier {
   ];
   List<VideoData> get videos => List.unmodifiable(_videos);
 
-  // String? _currentNodeIdUnderCursor = null;
-
-  // String? get currentNodeIdUnderCursor => _currentNodeIdUnderCursor;
-
-  // bool _isUserDraggingOutput = false;
-
   NoodleDragIntent? _currentDragIntent;
 
-  NoodleDragIntent? _toClearIfNothing;
+  // NoodleDragIntent? _toClearIfNothing;
 
   NoodleDragOutcome _currentDragOutcome = NoodleDragOutcome.empty();
 
@@ -535,11 +549,12 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  void beginDragging(NoodleDragIntent dragIntent,
-      {NoodleDragIntent? toClearIfNothing}) {
+  void beginDragging(NoodleDragIntent dragIntent) {
     // Set Drag intent
     _currentDragIntent = dragIntent;
-    _toClearIfNothing = toClearIfNothing;
+
+    // _toClearIfNothing = toClearIfNothing;
+
     // Get intended node's data
     int draggedNodeIndex = getNodeIndexById(dragIntent.nodeId);
     BaseNodeData draggedNodeData = getNodeById(dragIntent.nodeId);
@@ -571,7 +586,7 @@ class NodesProvider extends ChangeNotifier {
     //  Reset the drag intent. No need to reset the output. this gets set each time a user hovers a node or knot
     _currentDragIntent = null;
     _currentPotentialConnection = null;
-    _toClearIfNothing = null;
+    // _toClearIfNothing = null;
     notifyListeners();
   }
 
@@ -608,6 +623,8 @@ class NodesProvider extends ChangeNotifier {
             else
               toChangeNodeData.outputs[i]
         ]);
+
+//also clear if changing from output to output
       }
     } else if (_currentPotentialConnection == null) {
       // print('no potential connection');
@@ -622,30 +639,21 @@ class NodesProvider extends ChangeNotifier {
             else
               toChangeNodeData.outputs[i]
         ]);
-      } else if (!_currentDragIntent!.isOutput) {
-        if (_toClearIfNothing != null) {
-          int toChangeNodeIndex = getNodeIndexById(_toClearIfNothing!.nodeId);
-          BaseNodeData toChangeNodeData =
-              getNodeById(_toClearIfNothing!.nodeId);
-
-          print(
-              '${(_nodes[toChangeNodeIndex] as BaseNodeData).outputs[_toClearIfNothing!.index].targetNodeId} is target node. _toClearIfNothing is ${_toClearIfNothing!.nodeId}, ${_toClearIfNothing!.index}');
-
-          _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
-            for (int i = 0; i < toChangeNodeData.outputs.length; i++)
-              if (_toClearIfNothing!.index == i)
-                toChangeNodeData.outputs[i].copyWith(targetNodeId: () => null)
-              else
-                toChangeNodeData.outputs[i]
-          ]);
-
-          print((_nodes[toChangeNodeIndex] as BaseNodeData)
-              .outputs[_toClearIfNothing!.index]
-              .targetNodeId);
-        }
-        // do nothing
-      }
+      } else if (!_currentDragIntent!.isOutput) {}
     }
+  }
+
+  void clearOutput(NoodleDragIntent toclear) {
+    int toChangeNodeIndex = getNodeIndexById(toclear.nodeId);
+    BaseNodeData toChangeNodeData = getNodeById(toclear.nodeId);
+
+    _nodes[toChangeNodeIndex] = toChangeNodeData.copyWith(outputs: [
+      for (int i = 0; i < toChangeNodeData.outputs.length; i++)
+        if (toclear.index == i)
+          toChangeNodeData.outputs[i].copyWith(targetNodeId: () => null)
+        else
+          toChangeNodeData.outputs[i]
+    ]);
   }
 
   void setOutput(
@@ -799,43 +807,7 @@ class NodesProvider extends ChangeNotifier {
   }
 }
 
-double getTextHeight(String text, TextStyle style) {
-  final TextPainter textPainter = TextPainter(
-    text: TextSpan(text: text, style: style),
-    textDirection: TextDirection.ltr,
-    // maxLines: 1,
-  )..layout();
 
-  return textPainter.height;
-}
-
-Offset get paddingOffset {
-  return Offset(UiStaticProperties.nodePadding, UiStaticProperties.nodePadding);
-}
-
-Offset inputOffset(BaseNodeData nodeData, AppTheme theme) {
-  double x = 0;
-  double y = theme.dSwatchHeight +
-      (nodeData.nodeName != null
-          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
-          : 0) +
-      (UiStaticProperties.nodeDefaultWidth * 9 / 16);
-  return Offset(x, y) + paddingOffset;
-}
-
-Offset outputOffset(VideoNodeData nodeData, AppTheme theme, int index) {
-  double x = nodeData.nodeWidth;
-  double baseY = theme.dSwatchHeight +
-      (nodeData.nodeName != null
-          ? getTextHeight(nodeData.nodeName!, theme.swatchTextStyle)
-          : 0) +
-      (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
-      getTextHeight(nodeData.videoDataId, theme.filenameTextStyle) +
-      (theme.dPanelPadding * 2) +
-      (theme.dButtonHeight / 2);
-  double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
-  return Offset(x, baseY + extraY) + paddingOffset;
-}
 
 //   // Add a new node to the provider
 //   void addNode(NodeData node) {

@@ -1,4 +1,4 @@
-import 'package:nutria_fmv_maker/custom_widgets/video_node_tests.dart';
+import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
 import 'package:nutria_fmv_maker/noodle_painter.dart';
 
@@ -9,6 +9,7 @@ import './grid_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'providers/theme_provider.dart';
 import 'static_data/ui_static_properties.dart';
 
 class GridCanvas extends StatefulWidget {
@@ -23,9 +24,10 @@ class _GridCanvasState extends State<GridCanvas> {
       UiStaticProperties.gridCanvasArrowMoveSensitivity;
 
   late List<Widget> nodes;
+
   @override
   void initState() {
-    print(context.read<NodesProvider>().iDs);
+    // print(context.read<NodesProvider>().iDs);
     nodes = context.read<NodesProvider>().iDs.map((id) {
       return TestNode(
         nodeId: id,
@@ -37,6 +39,7 @@ class _GridCanvasState extends State<GridCanvas> {
 
   @override
   Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final gridCanvasProvider = context.read<GridCanvasProvider>();
     final nodesProvider = context.read<NodesProvider>();
 
@@ -101,15 +104,15 @@ class _GridCanvasState extends State<GridCanvas> {
 
                     Selector(
                       selector: (_, NodesProvider provider) =>
-                          provider.positions,
-                      builder: (context, positions, child) => Positioned.fill(
+                          provider.positionsAndOutputs,
+                      builder: (context, positionsAndOutputs, child) => Positioned.fill(
                         child: CustomPaint(
                           painter: NoodlePainter(
                               transformationController:
                                   gridCanvasProvider.transformationController,
                               context: context,
                               startAndEndPoints: nodesProvider
-                                  .noodlesStartAndEndPoints), // infinite dots grid
+                                  .noodlesStartAndEndPoints(theme)), // infinite dots grid
                         ),
                       ),
                     ),

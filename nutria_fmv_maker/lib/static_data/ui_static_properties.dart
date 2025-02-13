@@ -25,6 +25,10 @@ class UiStaticProperties {
   static const double knotSizeLarge = 25;
   static const double knotSizeSmall = 17;
 
+  //Noodles
+  static const double noodleWidth = 5;
+  static const double noodleConnectedSpacing = 25;
+
   //Split View
   static const double splitViewDragWidgetSize = 10;
 

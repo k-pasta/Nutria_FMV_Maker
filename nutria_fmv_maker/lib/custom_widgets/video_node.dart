@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/static_data/input_output_offset_calculator.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
@@ -154,7 +155,7 @@ class TestNode extends StatelessWidget {
               NodeResizeHandle(
                 nodeData: videoNodeData,
                 isLeftSide: true,
-                draggableAreaHeight: outputOffset(videoNodeData, theme,
+                draggableAreaHeight: InputOutputOffsetCalculator.outputOffset(videoNodeData, theme,
                             videoNodeData.outputs.length - 1)
                         .dy -
                     UiStaticProperties.nodePadding +
@@ -164,7 +165,7 @@ class TestNode extends StatelessWidget {
               Knot.input(
                   nodeData: videoNodeData,
                   index: -1, // = input know
-                  offset: inputOffset(videoNodeData, theme)),
+                  offset: InputOutputOffsetCalculator.inputOffset(videoNodeData, theme)),
               ...videoNodeData.outputs.asMap().entries.map((entry) {
                 int index = entry.key;
                 var output = entry.value;
@@ -175,7 +176,7 @@ class TestNode extends StatelessWidget {
                   return Knot.output(
                     nodeData: videoNodeData,
                     index: index,
-                    offset: outputOffset(videoNodeData, theme, index),
+                    offset: InputOutputOffsetCalculator.outputOffset(videoNodeData, theme, index),
                   );
                 } else {
                   return Container();
@@ -186,5 +187,3 @@ class TestNode extends StatelessWidget {
         });
   }
 }
-
-

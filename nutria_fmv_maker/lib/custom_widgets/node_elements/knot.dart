@@ -97,7 +97,10 @@ class _KnotState extends State<Knot> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onPanStart: (details) {
-            nodesProvider.beginDragging(nextIntent!, toClearIfNothing: selfIntent);
+            nodesProvider.beginDragging(nextIntent!);
+            if (selfIntent != null) {
+              nodesProvider.clearOutput(selfIntent!);
+            }
             // dragging = true;
             // print('start triggered, nextIntent: $nextIntent');
           },
