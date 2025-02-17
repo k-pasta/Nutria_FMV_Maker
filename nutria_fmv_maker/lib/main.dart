@@ -2,6 +2,7 @@ import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
+import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/stack_update_test.dart';
 
 import './custom_widgets/nutria_textfield.dart';
@@ -32,6 +33,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => NodesProvider()),
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ChangeNotifierProvider(create: (context) => UiStateProvider()),
+      ChangeNotifierProvider(create: (context) => AppSettingsProvider()),
     ],
     child: const MyApp(),
   ));

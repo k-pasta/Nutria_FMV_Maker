@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class AppSettingsProvider extends ChangeNotifier {
   static const SnapSettings defaultSnapSettings =
       SnapSettings(gridSnapping: true);
+      
   SnapSettings _snapSettings = defaultSnapSettings;
   SnapSettings get snapSettings => _snapSettings;
+
   void toggleSnapping() {
     _snapSettings = SnapSettings(gridSnapping: !_snapSettings.gridSnapping);
   }

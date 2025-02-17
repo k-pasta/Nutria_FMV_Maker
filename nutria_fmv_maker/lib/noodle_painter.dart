@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'dart:ui';
 import 'package:provider/provider.dart';
@@ -8,12 +9,12 @@ import 'models/app_theme.dart';
 class NoodlePainter extends CustomPainter {
   final TransformationController transformationController;
   final BuildContext context;
-  final List<Map<Offset, Offset>> startAndEndPoints;
+  final List<NoodleData> noodles;
 
   const NoodlePainter({
     required this.transformationController,
     required this.context,
-    required this.startAndEndPoints,
+    required this.noodles,
   });
 
   @override
@@ -34,22 +35,28 @@ class NoodlePainter extends CustomPainter {
     final double translationX = translation.x;
     final double translationY = translation.y;
 
-    for (var pointPair in startAndEndPoints) {
-      pointPair.forEach((start, end) {
-        final Offset transformedStart = start + Offset(UiStaticProperties.topLeftToMiddle.dx, UiStaticProperties.topLeftToMiddle.dy);
-        final Offset transformedEnd = end + Offset(UiStaticProperties.topLeftToMiddle.dx, UiStaticProperties.topLeftToMiddle.dy);
+    for (var noodle in noodles) {
+      Offset start = noodle.startPosition + UiStaticProperties.topLeftToMiddle;
+      Offset end = noodle.endPosition + UiStaticProperties.topLeftToMiddle;
 
-        // Step 1: Calculate intermediate points for the 3-segment line
-        final Offset firstSegmentEnd = transformedStart + const Offset(UiStaticProperties.noodleConnectedSpacing, 0); 
-        final Offset secondSegmentStart = firstSegmentEnd;
-        final Offset secondSegmentEnd = transformedEnd - const Offset(UiStaticProperties.noodleConnectedSpacing, 0); 
-        final Offset thirdSegmentStart = secondSegmentEnd;
+      // If start is locked, draw the initial horizontal segment and move the start position
+      if (noodle.startLocked) {
+        Offset firstSegmentEnd =
+            start + const Offset(UiStaticProperties.noodleConnectedSpacing, 0);
+        canvas.drawLine(start, firstSegmentEnd, paint);
+        start = firstSegmentEnd;
+      }
 
-        // Step 2: Draw the 3 segments
-        canvas.drawLine(transformedStart, firstSegmentEnd, paint); // First segment
-        canvas.drawLine(secondSegmentStart, secondSegmentEnd, paint); // Second segment
-        canvas.drawLine(thirdSegmentStart, transformedEnd, paint); // Third segment
-      });
+      // If end is locked, draw the final horizontal segment and move the end position
+      if (noodle.endLocked) {
+        Offset secondSegmentStart =
+            end - const Offset(UiStaticProperties.noodleConnectedSpacing, 0);
+        canvas.drawLine(secondSegmentStart, end, paint);
+        end = secondSegmentStart;
+      }
+
+      // Draw the main connecting segment
+      canvas.drawLine(start, end, paint);
     }
   }
 

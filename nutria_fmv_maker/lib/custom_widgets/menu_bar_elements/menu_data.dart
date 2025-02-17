@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import 'nutria_menu_button.dart';
@@ -74,6 +75,15 @@ class MenuData {
             shortcut: SingleActivator(LogicalKeyboardKey.keyZ,
                 control: true, shift: true),
             icon: Icons.redo,
+          ),
+          NutriaSubmenuButton(
+            text: 'toggle grid snapping',
+            function: () { context
+                        .read<AppSettingsProvider>()
+                        .toggleSnapping();},
+            shortcut: const SingleActivator(LogicalKeyboardKey.keyG,
+                alt: true),
+            icon: Icons.grid_on_rounded,
           ),
           NutriaSubmenuButton(
             text: t.editProjectSettings,
@@ -163,7 +173,7 @@ class MenuData {
               ]),
           NutriaSubmenuButton(
             text: t.viewProperties,
-           function: () {
+            function: () {
               print('tttttt');
               context
                   .read<UiStateProvider>()

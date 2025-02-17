@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
-import 'package:nutria_fmv_maker/static_data/input_output_offset_calculator.dart';
+import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
@@ -29,13 +29,14 @@ class TestNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuilding ${nodeId}');    //DEBUG to check when nodes rebuild
+    print('rebuilding ${nodeId}'); //DEBUG to check when nodes rebuild
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppSettingsProvider appSettingsProvider =
+        context.read<AppSettingsProvider>();
     return Selector<NodesProvider, NodeData>(
         selector: (context, provider) =>
             provider.getNodeById(nodeId), // Only listen to this node
         builder: (context, node, child) {
-
           final NodesProvider nodesProvider = context.read<NodesProvider>();
 
           nodesProvider.initializeOutputs(nodeId);
@@ -64,7 +65,9 @@ class TestNode extends StatelessWidget {
                   //where node starts really
                   onPanUpdate: (details) {
                     nodesProvider.offsetNodePosition(
-                        videoNodeData.id, details.delta);
+                        videoNodeData.id, details.delta,
+                        snapToGrid:
+                            appSettingsProvider.snapSettings.gridSnapping);
                   },
                   onPanStart: (details) {
                     nodesProvider.setActiveNode(videoNodeData.id);
@@ -80,11 +83,13 @@ class TestNode extends StatelessWidget {
                   },
                   child: MouseRegion(
                     onEnter: (_) {
-                      nodesProvider.setCurrentUnderCursor(NoodleDragOutcome.node(videoNodeData.id));
+                      nodesProvider.setCurrentUnderCursor(
+                          LogicalPosition.node(videoNodeData.id));
                       // print('enter ${videoNodeData.id}');
                     },
                     onExit: (_) {
-                      nodesProvider.setCurrentUnderCursor(NoodleDragOutcome.empty());
+                      nodesProvider
+                          .setCurrentUnderCursor(LogicalPosition.empty());
                       // print('exit ${videoNodeData.id}');
                     },
                     hitTestBehavior: HitTestBehavior.deferToChild,
@@ -146,37 +151,29 @@ class TestNode extends StatelessWidget {
                 ),
               ),
               NodeResizeHandle(
-                  nodeData: videoNodeData,
-                  isLeftSide: false,
-                  draggableAreaHeight: 200
-                  // _getContainerPositionRelativeToParent(bottomKey).dy -
-                  //     UiStaticProperties.nodePadding,
-                  ),
+                nodeData: videoNodeData,
+                isLeftSide: false,
+                draggableAreaHeight: videoNodeData.nodeHeight(theme),
+              ),
               NodeResizeHandle(
                 nodeData: videoNodeData,
                 isLeftSide: true,
-                draggableAreaHeight: InputOutputOffsetCalculator.outputOffset(videoNodeData, theme,
-                            videoNodeData.outputs.length - 1)
-                        .dy -
-                    UiStaticProperties.nodePadding +
-                    theme.dPanelPadding +
-                    (theme.dButtonHeight / 2),
+                draggableAreaHeight: videoNodeData.nodeHeight(theme),
               ),
               Knot.input(
                   nodeData: videoNodeData,
                   index: -1, // = input know
-                  offset: InputOutputOffsetCalculator.inputOffset(videoNodeData, theme)),
+                  offset: videoNodeData.inputPosition(theme)),
               ...videoNodeData.outputs.asMap().entries.map((entry) {
                 int index = entry.key;
                 var output = entry.value;
                 bool isLast = index == videoNodeData.outputs.length - 1;
-                // nodesProvider.updateOutputPosition(videoNodeData.id, index,
-                //     _getContainerPositionRelativeToParent(_childKeys[index]));
+
                 if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
                   return Knot.output(
                     nodeData: videoNodeData,
                     index: index,
-                    offset: InputOutputOffsetCalculator.outputOffset(videoNodeData, theme, index),
+                    offset: videoNodeData.outputPosition(theme, index),
                   );
                 } else {
                   return Container();

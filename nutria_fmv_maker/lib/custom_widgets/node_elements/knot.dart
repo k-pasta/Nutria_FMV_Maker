@@ -44,8 +44,8 @@ class _KnotState extends State<Knot> {
   // bool dragging = false;
   bool isBeingTargeted = false;
   bool isBeingDragged = false;
-  NoodleDragIntent? nextIntent;
-  NoodleDragIntent? selfIntent;
+  LogicalPosition? nextIntent;
+  LogicalPosition? selfIntent;
   @override
   Widget build(BuildContext context) {
     // print ('Knot build');
@@ -60,17 +60,17 @@ class _KnotState extends State<Knot> {
       isBeingDragged = widget.nodeData.outputs[widget.index].isBeingDragged;
 
       if (widget.nodeData.outputs[widget.index].targetNodeId != null) {
-        nextIntent = NoodleDragIntent.input(
+        nextIntent = LogicalPosition.input(
             widget.nodeData.outputs[widget.index].targetNodeId!);
-        selfIntent = NoodleDragIntent.output(widget.nodeData.id, widget.index);
+        selfIntent = LogicalPosition.output(widget.nodeData.id, widget.index);
       } else {
-        nextIntent = NoodleDragIntent.output(widget.nodeData.id, widget.index);
+        nextIntent = LogicalPosition.output(widget.nodeData.id, widget.index);
       }
     } else if (!widget.isOutput) {
       //if is input
       isBeingTargeted = widget.nodeData.input.isBeingTargeted;
       isBeingDragged = widget.nodeData.input.isBeingDragged;
-      nextIntent = NoodleDragIntent.input(widget.nodeData.id);
+      nextIntent = LogicalPosition.input(widget.nodeData.id);
     }
 
 // isBeingTargeted
@@ -80,15 +80,15 @@ class _KnotState extends State<Knot> {
       child: MouseRegion(
         onEnter: (_) {
           nodesProvider.setCurrentUnderCursor(widget.isOutput
-              ? NoodleDragOutcome.output(widget.nodeData.id, widget.index)
-              : NoodleDragOutcome.input(widget.nodeData.id));
+              ? LogicalPosition.output(widget.nodeData.id, widget.index)
+              : LogicalPosition.input(widget.nodeData.id));
           if (nodesProvider.isDraggingNoodle) return;
           setState(() {
             hovered = true;
           });
         },
         onExit: (_) {
-          nodesProvider.setCurrentUnderCursor(NoodleDragOutcome.empty());
+          nodesProvider.setCurrentUnderCursor(LogicalPosition.empty());
           // if (dragging) return;
           setState(() {
             hovered = false;
@@ -98,13 +98,32 @@ class _KnotState extends State<Knot> {
           behavior: HitTestBehavior.opaque,
           onPanStart: (details) {
             nodesProvider.beginDragging(nextIntent!);
-            if (selfIntent != null) {
+
+            if (selfIntent == null) {
+              nodesProvider.beginNoodle(
+                currentLogicalPosition: nextIntent!,
+                currentLogicalStartPosition: nextIntent!,
+                currentTheme: theme,
+                hitPosition: details.localPosition,
+              );
+            } else {
+              nodesProvider.beginNoodle(
+                currentLogicalPosition: selfIntent!,
+                currentLogicalStartPosition: nextIntent!,
+                currentTheme: theme,
+                hitPosition: details.localPosition,
+              );
               nodesProvider.clearOutput(selfIntent!);
             }
-            // dragging = true;
-            // print('start triggered, nextIntent: $nextIntent');
+
           },
-          // onPanUpdate: widget.onPanUpdate,
+          onPanUpdate: (details) {
+            nodesProvider.setDraggedNoodle(
+                details.localPosition, details.delta);
+
+            // print('true update');
+            // print('update triggered');
+          },
           onPanEnd: (details) {
             nodesProvider.endDragging();
             print('end triggered');

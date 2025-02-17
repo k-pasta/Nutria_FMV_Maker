@@ -1,6 +1,8 @@
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
 import 'package:nutria_fmv_maker/noodle_painter.dart';
+// import 'package:nutria_fmv_maker/noodle_painter_current.dart';
+import 'package:path/path.dart' as p;
 
 import 'custom_widgets/video_node.dart';
 import './providers/grid_canvas_provider.dart';
@@ -42,6 +44,7 @@ class _GridCanvasState extends State<GridCanvas> {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final gridCanvasProvider = context.read<GridCanvasProvider>();
     final nodesProvider = context.read<NodesProvider>();
+    Offset mousePosition = Offset.zero;
 
     return Selector<NodesProvider, List<String>>(
         selector: (_, nodesProvider) => nodesProvider.iDs,
@@ -87,32 +90,58 @@ class _GridCanvasState extends State<GridCanvas> {
                   clipBehavior: Clip.none, //allows no clipping
 
                   children: [
-                    const SizedBox(
-                      height: UiStaticProperties.canvasSize,
-                      width: UiStaticProperties.canvasSize,
-                      child: Placeholder(),
+                    MouseRegion(
+                      onHover: (event) {
+                        mousePosition = event
+                            .localPosition; // Get mouse position inside the widget
+                      },
+                      child: const SizedBox(
+                        height: UiStaticProperties.canvasSize,
+                        width: UiStaticProperties.canvasSize,
+                        child: Placeholder(),
+                      ),
                     ), //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
 
-                    // Positioned.fill(
-                    //   child: CustomPaint(
-                    //     painter: GridPainter(
-                    //         transformationController:
-                    //             gridCanvasProvider.transformationController,
-                    //         context: context), // infinite dots grid
-                    //   ),
-                    // ),
+                    Positioned.fill(
+                      child: CustomPaint(
+                        painter: GridPainter(
+                            transformationController:
+                                gridCanvasProvider.transformationController,
+                            context: context), // infinite dots grid
+                      ),
+                    ),
+
+                    Selector(
+                        selector: (_, NodesProvider provider) =>
+                            provider.currentNoodle,
+                        builder: (context, currentNoodle, child) {
+                          if (currentNoodle != null) {
+                            return Positioned.fill(
+                              child: CustomPaint(
+                                painter: NoodlePainter(
+                                    transformationController: gridCanvasProvider
+                                        .transformationController,
+                                    context: context,
+                                    noodles: [currentNoodle]), // noodles
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        }),
 
                     Selector(
                       selector: (_, NodesProvider provider) =>
                           provider.positionsAndOutputs,
-                      builder: (context, positionsAndOutputs, child) => Positioned.fill(
+                      builder: (context, positionsAndOutputs, child) =>
+                          Positioned.fill(
                         child: CustomPaint(
                           painter: NoodlePainter(
                               transformationController:
                                   gridCanvasProvider.transformationController,
                               context: context,
-                              startAndEndPoints: nodesProvider
-                                  .noodlesStartAndEndPoints(theme)), // infinite dots grid
+                              noodles: nodesProvider
+                                  .noodlesStartAndEndPoints(theme)), // noodles
                         ),
                       ),
                     ),

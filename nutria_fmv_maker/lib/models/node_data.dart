@@ -1,6 +1,10 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../static_data/ui_static_properties.dart';
 import 'package:collection/collection.dart';
+
+import 'app_theme.dart';
 
 abstract class NodeData {
   final Offset position;
@@ -8,6 +12,21 @@ abstract class NodeData {
   final Offset intendedPosition; // Always initialized and non-null
   final bool isSelected;
   final bool isBeingHovered;
+
+  double _getTextHeight(String text, TextStyle style) {
+    final TextPainter textPainter = TextPainter(
+      text: TextSpan(text: text, style: style),
+      textDirection: TextDirection.ltr,
+      // maxLines: 1,
+    )..layout();
+
+    return textPainter.height;
+  }
+
+  Offset get _paddingOffset {
+    return const Offset(
+        UiStaticProperties.nodePadding, UiStaticProperties.nodePadding);
+  }
 
   const NodeData({
     required this.position,
@@ -33,6 +52,10 @@ abstract class BaseNodeData extends NodeData {
   final List<Output> outputs; // Must also be immutable
   final Input input;
   final int swatch;
+
+  Offset inputPosition(AppTheme theme);
+  Offset outputPosition(AppTheme theme, int index);
+  double nodeHeight(AppTheme theme);
 
   const BaseNodeData({
     required super.position,
@@ -139,6 +162,45 @@ class VideoNodeData extends BaseNodeData {
       isSelected: isSelected ?? this.isSelected,
     );
   }
+
+  @override
+  Offset outputPosition(AppTheme theme, int index) {
+    double x = nodeWidth;
+    double baseY = theme.dSwatchHeight +
+        (nodeName != null
+            ? _getTextHeight(nodeName!, theme.swatchTextStyle)
+            : 0) +
+        (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
+        _getTextHeight(videoDataId, theme.filenameTextStyle) +
+        (theme.dPanelPadding * 2) +
+        (theme.dButtonHeight / 2);
+    double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
+    return Offset(x, baseY + extraY) + _paddingOffset;
+  }
+
+  @override
+  Offset inputPosition(AppTheme theme) {
+    double x = 0;
+    double y = theme.dSwatchHeight +
+        (nodeName != null
+            ? _getTextHeight(nodeName!, theme.swatchTextStyle)
+            : 0) +
+        (UiStaticProperties.nodeDefaultWidth * 9 / 16);
+    return Offset(x, y) + _paddingOffset;
+  }
+
+  @override
+  double nodeHeight(AppTheme theme) {
+    double height = theme.dSwatchHeight +
+        (nodeName != null
+            ? _getTextHeight(nodeName!, theme.swatchTextStyle)
+            : 0) +
+        (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
+        _getTextHeight(videoDataId, theme.filenameTextStyle) +
+        (theme.dPanelPadding * (2 + outputs.length)) +
+        (theme.dButtonHeight * outputs.length);
+    return height;
+  }
 }
 
 class Output {
@@ -172,7 +234,7 @@ class Output {
 class Input {
   final bool isBeingTargeted;
   final bool isBeingDragged;
-  
+
   const Input({
     this.isBeingTargeted = false,
     this.isBeingDragged = false,
