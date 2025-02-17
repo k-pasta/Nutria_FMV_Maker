@@ -1,3 +1,4 @@
+import 'package:media_kit/media_kit.dart';
 import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
@@ -11,6 +12,7 @@ import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
+import 'media_kit_example.dart';
 import 'multi_split_view_example.dart';
 import 'providers/ui_state_provider.dart';
 import 'thumbnail_example.dart';
@@ -26,6 +28,11 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
+
+  WidgetsFlutterBinding.ensureInitialized();
+  // Necessary initialization for package:media_kit.
+  MediaKit.ensureInitialized();
+
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider(create: (context) => LocaleProvider()),
@@ -114,7 +121,7 @@ class MyHomePage extends StatelessWidget {
       // ]),
 
       // body: StackUpdateTest(),
-      body: WindowsAppLayout(),
+      body: const MyScreen(),
     );
   }
 }
