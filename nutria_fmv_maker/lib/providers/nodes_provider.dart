@@ -292,11 +292,22 @@ class NodesProvider extends ChangeNotifier {
 
 // Getter for videos (returns an immutable list)
   final List<VideoData> _videos = [
-    VideoData(id: 'a', videoDataPath: 'test/test.test.test'),
+    VideoData(
+        id: 'a',
+        videoDataPath: 'c:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
+        thumbnailPath: 'C:/Users/cgbook/Desktop/cats.jpg'),
     VideoData(id: 'b', videoDataPath: ''),
   ];
   List<VideoData> get videos => List.unmodifiable(_videos);
 
+// Function to get VideoData by its ID
+  VideoData getVideoDataById(String videoDataId) {
+    return _videos.firstWhere(
+      (video) => video.id == videoDataId,
+      orElse: () => throw Exception("VideoData not found"),
+    );
+  }
+  
   // NoodleDragIntent get currentDragIntent => _currentDragIntent!;
 
   // NoodleDragIntent? _toClearIfNothing;
@@ -624,7 +635,8 @@ class NodesProvider extends ChangeNotifier {
           ? currentNodeData.inputPosition(currentTheme)
           : currentNodeData.outputPosition(
               currentTheme, currentLogicalPosition.index);
-      start = currentFreePosition + knotPosition -
+      start = currentFreePosition +
+          knotPosition -
           const Offset(UiStaticProperties.knotSizeLarge * sqrt2 / 2,
               UiStaticProperties.knotSizeLarge * sqrt2 / 2);
 

@@ -209,7 +209,7 @@ class _NutriaButtonState extends State<NutriaButton> {
 
               Center(
                   child: Icon(widget.icon,
-                      size: theme.dButtonHeight,
+                      size: theme.dButtonHeight*0.65,
                       color: buttonState.buttonStateType ==
                               ButtonStateType.normal
                           ? theme.cPanel
@@ -235,30 +235,3 @@ class ButtonState {
 }
 
 enum ButtonStateType { hovered, pressed, normal }
-
-// Stack(
-//               children: [
-//                 widget._isLeftRight
-//                     ? Row(
-//                         children: [
-//                           Expanded(
-//                             child: GestureDetector(
-//                               behavior: HitTestBehavior.translucent,
-//                               onTap: widget.onTapLeft,
-//                             ),
-//                           ),
-//                           Expanded(
-//                             child: GestureDetector(
-//                               behavior: HitTestBehavior.translucent,
-//                               onTap: widget.onTapRight,
-//                             ),
-//                           )
-//                         ],
-//                       )
-//                     : GestureDetector(),
-//                 widget.child ??
-//                     GestureDetector(
-//                       behavior: HitTestBehavior.translucent,
-//                     ),
-//               ],
-//             ),

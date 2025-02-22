@@ -107,7 +107,7 @@ class TestNode extends StatelessWidget {
                             nodeData: videoNodeData,
                             children: [
                               //thumbnail
-                              NodeVideoThumbnail(videoNodeData: videoNodeData),
+                              NodeVideoThumbnail(videoDataId: videoNodeData.videoDataId),
                               //video file name
                               NodeVideoFileNameText(
                                   videoNodeData: videoNodeData),

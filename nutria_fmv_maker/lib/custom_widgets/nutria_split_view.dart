@@ -8,6 +8,11 @@ import '../providers/ui_state_provider.dart';
 import 'split_view_elements/open_area_button.dart';
 
 class NutriaSplitView extends StatefulWidget {
+  final Widget? leftChild;
+  final Widget? rightChild;
+
+  const NutriaSplitView({super.key, this.leftChild, this.rightChild});
+
   @override
   State<NutriaSplitView> createState() => _NutriaSplitViewState();
 }
@@ -62,18 +67,23 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
         return Stack(children: [
           Row(
             children: [
-              if (!provider.isLeftClosed)
-                _buildResizableArea(context, AreaSide.left, provider.leftSize),
-              // _buildOpen("left"),
+              Offstage(
+                offstage: provider.isLeftClosed,
+                child: _buildResizableArea(
+                    context, AreaSide.left, provider.leftSize,
+                    child: widget.leftChild),
+              ),
               _buildDivider(
                   context, AreaSide.left, !provider.isLeftClosed, totalWidth),
               _buildCenterArea(),
-              // _buildOpen("right"),
               _buildDivider(
                   context, AreaSide.right, !provider.isRightClosed, totalWidth),
-              if (!provider.isRightClosed)
-                _buildResizableArea(
-                    context, AreaSide.right, provider.rightSize),
+              Offstage(
+                offstage: provider.isRightClosed,
+                child: _buildResizableArea(
+                    context, AreaSide.right, provider.rightSize,
+                    child: widget.rightChild),
+              ),
             ],
           ),
           OpenAreaButton(
@@ -90,14 +100,15 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
   }
 }
 
-Widget _buildResizableArea(BuildContext context, AreaSide area, double width) {
+Widget _buildResizableArea(BuildContext context, AreaSide area, double width,
+    {Widget? child}) {
   final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
   return IntrinsicWidth(
     child: Container(
-      width: width,
-      color: theme.cPanel,
-      // child: Center(child: Text(area.toString().toUpperCase())),
-    ),
+        width: width,
+        height: double.infinity,
+        color: theme.cPanel,
+        child: child),
   );
 }
 

@@ -1,6 +1,7 @@
 import 'package:media_kit/media_kit.dart';
 import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
+import 'package:nutria_fmv_maker/context_menu_example.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
@@ -28,7 +29,6 @@ import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
-
   WidgetsFlutterBinding.ensureInitialized();
   // Necessary initialization for package:media_kit.
   MediaKit.ensureInitialized();
@@ -121,13 +121,15 @@ class MyHomePage extends StatelessWidget {
       // ]),
 
       // body: StackUpdateTest(),
-      body: const MyScreen(),
+      // body: const MyScreen(),
+      body:  RightClickMenuExample(),
+      
     );
   }
 }
 
 class WindowsAppLayout extends StatelessWidget {
-  WindowsAppLayout({
+  const WindowsAppLayout({
     super.key,
   });
 
@@ -154,7 +156,9 @@ class WindowsAppLayout extends StatelessWidget {
               child: Stack(
                 children: [
                   const GridCanvas(),
-                  NutriaSplitView(),
+                  const NutriaSplitView(
+                    rightChild: MyScreen(),
+                  ),
                   Positioned.fill(
                     //UI fader
                     child: Selector<UiStateProvider, bool>(

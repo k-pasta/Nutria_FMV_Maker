@@ -8,6 +8,26 @@ import 'dart:math';
 enum AreaSide { left, right }
 
 class UiStateProvider extends ChangeNotifier {
+ //context menu
+
+  bool _isContextMenuOpen = false;
+
+  bool get isContextMenuOpen => _isContextMenuOpen;
+
+  bool _isOpaque = true;
+
+  bool get isOpaque => _isOpaque;
+
+  set isOpaque(bool value) {
+    _isOpaque = value;
+    notifyListeners();
+  }
+
+  void setContextMenuOpen(bool isOpen) {
+    _isContextMenuOpen = isOpen;
+    notifyListeners();
+  }
+ 
   bool _isModalOrMenuOpen = false;
   bool get isModalOrMenuOpen => _isModalOrMenuOpen;
 
