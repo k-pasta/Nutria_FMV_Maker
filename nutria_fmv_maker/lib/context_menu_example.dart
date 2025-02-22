@@ -90,7 +90,19 @@ class _RightClickMenuExampleState extends State<RightClickMenuExample> {
                       child: Text('Option 2'),
                     ),
                     MenuItemButton(
-                      leadingIcon: Icon(Icons.multiple_stop),
+                      leadingIcon: Icon(Icons.equalizer),
+                      style: buttonstyle,
+                      onPressed: () => _onMenuItemPressed(context, 'Option 3'),
+                      child: Text('Option 3'),
+                    ),
+                    MenuItemButton(
+                      leadingIcon: Icon(Icons.calculate),
+                      style: buttonstyle,
+                      onPressed: () => _onMenuItemPressed(context, 'Option 3'),
+                      child: Text('Option 3'),
+                    ),
+                    MenuItemButton(
+                      leadingIcon: Icon(Icons.check_box_rounded),
                       style: buttonstyle,
                       onPressed: () => _onMenuItemPressed(context, 'Option 3'),
                       child: Text('Option 3'),
