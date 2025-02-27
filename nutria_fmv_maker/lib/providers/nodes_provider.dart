@@ -884,13 +884,14 @@ class NodesProvider extends ChangeNotifier {
     _nodes.removeWhere((n) => n.id == id);
     notifyListeners();
   }
+
+    // Add a new node to the provider
+  void addNode(NodeData node) {
+    _nodes.add(node);
+    notifyListeners();
+  }
+
 }
 
 
 
-//   // Add a new node to the provider
-//   void addNode(NodeData node) {
-//     _nodes.add(node);
-//     activeNodeId = node.id;
-//     notifyListeners();
-//   }

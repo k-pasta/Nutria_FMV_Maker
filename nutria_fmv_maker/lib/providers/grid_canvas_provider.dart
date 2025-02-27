@@ -4,21 +4,28 @@ import 'package:flutter/services.dart';
 import '../static_data/ui_static_properties.dart';
 
 class GridCanvasProvider extends ChangeNotifier {
-TransformationController _transformationController = TransformationController();
+  TransformationController _transformationController =
+      TransformationController();
 
-GridCanvasProvider(){
- _transformationController = TransformationController();
-  offsetPosition(-UiStaticProperties.topLeftToMiddle); //move view to the middle
-}
+  GridCanvasProvider() {
+    // Initialize the transformation controller
+    _transformationController = TransformationController();
 
-  final double _scaleFactor = UiStaticProperties.gridCanvasScaleFactor; 
+    // Move the view to the middle by offsetting the position
+    offsetPosition(-UiStaticProperties.topLeftToMiddle);
+  }
+
+  final double _scaleFactor = UiStaticProperties.gridCanvasScaleFactor;
   final double _minScale = UiStaticProperties.gridCanvasMinScale;
   final double _maxScale = UiStaticProperties.gridCanvasMaxScale;
 
   final ShortcutActivator _moveUp = LogicalKeySet(LogicalKeyboardKey.arrowUp);
-  final ShortcutActivator _moveLeft = LogicalKeySet(LogicalKeyboardKey.arrowLeft);
-  final ShortcutActivator _moveRight = LogicalKeySet(LogicalKeyboardKey.arrowRight);
-  final ShortcutActivator _moveDown = LogicalKeySet(LogicalKeyboardKey.arrowDown);
+  final ShortcutActivator _moveLeft =
+      LogicalKeySet(LogicalKeyboardKey.arrowLeft);
+  final ShortcutActivator _moveRight =
+      LogicalKeySet(LogicalKeyboardKey.arrowRight);
+  final ShortcutActivator _moveDown =
+      LogicalKeySet(LogicalKeyboardKey.arrowDown);
 
   ShortcutActivator get moveUp => _moveUp;
   ShortcutActivator get moveLeft => _moveLeft;
@@ -33,13 +40,13 @@ GridCanvasProvider(){
 
   double _currentScale = 1.0;
 
-
   double get currentScale => _currentScale;
   TransformationController get transformationController =>
       _transformationController;
 
+  Matrix4 get currentMatrix => _transformationController.value;
+
   void offsetPosition(offset, {bool isScreenSpaceTransformation = false}) {
-   
     if (!isScreenSpaceTransformation) {
       offset = Offset(
         offset.dx * _currentScale,

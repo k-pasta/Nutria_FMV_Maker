@@ -8,7 +8,7 @@ import 'dart:math';
 enum AreaSide { left, right }
 
 class UiStateProvider extends ChangeNotifier {
- //context menu
+  //context menu
 
   bool _isContextMenuOpen = false;
 
@@ -27,15 +27,21 @@ class UiStateProvider extends ChangeNotifier {
     _isContextMenuOpen = isOpen;
     notifyListeners();
   }
- 
+
   bool _isModalOrMenuOpen = false;
   bool get isModalOrMenuOpen => _isModalOrMenuOpen;
 
   void setModalOrMenuOpen(bool value) {
     _isModalOrMenuOpen = value;
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      notifyListeners();
-    });
+    if (value == true) {
+      print('open provider');
+    } else {
+      print('close provider');
+    }
+    notifyListeners();
+    // SchedulerBinding.instance.addPostFrameCallback((_) {
+    //   notifyListeners();
+    // });
   }
 
 //menu
@@ -78,7 +84,8 @@ class UiStateProvider extends ChangeNotifier {
           //protect overflow
           leftSize = intendedLeftSize;
         }
-        if (intendedLeftSize + rightSize + effectiveHandleWidth > totalWidth) { //////
+        if (intendedLeftSize + rightSize + effectiveHandleWidth > totalWidth) {
+          //////
           if (rightSize - delta >= minRightSize) {
             //push over unless exceeds min
             rightSize -= delta;

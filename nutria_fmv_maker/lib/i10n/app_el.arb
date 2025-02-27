@@ -1,4 +1,9 @@
 {
+  "contextBranchingVideoNode": "Βιντεο Πολλαπλών Επιλογών",
+  "contextCompareNode": "Σύγκριση Τιμής",
+  "contextMathNode": "Μαθηματικά",
+  "contextSetNode": "Ορισμός Τιμής",
+  "contextSimpleVideoNode": "Απλό Βίντεο",
   "editPreferences": "Προτιμήσεις",
   "editProjectSettings": "Ρυθμίσεις Πρότζεκτ",
   "editRedo": "Επανάληψη",

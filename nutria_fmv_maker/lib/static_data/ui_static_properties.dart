@@ -32,4 +32,6 @@ class UiStaticProperties {
   //Split View
   static const double splitViewDragWidgetSize = 10;
 
+//Context menu
+static const double contextMenuWidth = 150;
 }

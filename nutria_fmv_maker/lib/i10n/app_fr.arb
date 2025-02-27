@@ -1,4 +1,9 @@
 {
+  "contextBranchingVideoNode": "Vidéo Ramifié",
+  "contextCompareNode": "Comparaison de Valeur",
+  "contextMathNode": "Mathématique",
+  "contextSetNode": "Définition de Valeur",
+  "contextSimpleVideoNode": "Vidéo Simple",
   "editPreferences": "Préférences",
   "editProjectSettings": "Paramètres du projet",
   "editRedo": "Rétablir",

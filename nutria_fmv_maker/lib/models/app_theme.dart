@@ -69,7 +69,7 @@ class AppTheme {
     this.cPanel = const Color(0xff252525),
     // this.cPanelTransparent = const Color(0xff252525),
     this.cPanelTransparent = const Color(0xf1252525),
-    this.cOutlines = const Color(0x75ffffff),
+    this.cOutlines = const Color(0x45ffffff),
     this.cButton = const Color(0xff383838), //transparent
     this.cButtonHovered = const Color(0xff4a4a4a), //TODO remove
     this.cButtonPressed = const Color(0xff555555), //TODO remove

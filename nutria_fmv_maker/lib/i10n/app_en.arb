@@ -1,4 +1,9 @@
 {
+  "contextBranchingVideoNode": "Branching Video",
+  "contextCompareNode": "Compare Value",
+  "contextMathNode": "Math",
+  "contextSetNode": "Set Value",
+  "contextSimpleVideoNode": "Simple Video",
   "editPreferences": "Preferences",
   "editProjectSettings": "Project Settings",
   "editRedo": "Redo",

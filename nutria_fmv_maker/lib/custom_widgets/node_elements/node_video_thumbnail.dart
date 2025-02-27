@@ -22,7 +22,7 @@ class NodeVideoThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-    
+
     VideoData videoData = nodesProvider.getVideoDataById(videoDataId);
     return ClipRRect(
       child: SizedBox(
@@ -30,9 +30,11 @@ class NodeVideoThumbnail extends StatelessWidget {
         height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
         child: FittedBox(
           fit: BoxFit.cover, // Ensures larger side fills the container
-          child: videoData.thumbnailPath!.startsWith('http')
-              ? Image.network(videoData.thumbnailPath!)
-              : Image.file(File(videoData.thumbnailPath!)),
+          child: videoData.thumbnailPath == null
+              ? Placeholder() //todo implement missing 
+              : videoData.thumbnailPath!.startsWith('http')
+                  ? Image.network(videoData.thumbnailPath!)
+                  : Image.file(File(videoData.thumbnailPath!)),
         ),
       ),
     );

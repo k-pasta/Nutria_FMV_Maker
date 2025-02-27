@@ -67,11 +67,11 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         SingleActivator(LogicalKeyboardKey.minus): _doNothingIntent, //zoom out
         SingleActivator(LogicalKeyboardKey.numpadSubtract):
             _doNothingIntent, //zoom out
-        SingleActivator(LogicalKeyboardKey.arrowLeft):
-            _doNothingIntent, //navigation
-        SingleActivator(LogicalKeyboardKey.arrowRight): _doNothingIntent,
-        SingleActivator(LogicalKeyboardKey.arrowUp): _doNothingIntent,
-        SingleActivator(LogicalKeyboardKey.arrowDown): _doNothingIntent,
+        // SingleActivator(LogicalKeyboardKey.arrowLeft):
+        //     _doNothingIntent, //navigation
+        // SingleActivator(LogicalKeyboardKey.arrowRight): _doNothingIntent,
+        // SingleActivator(LogicalKeyboardKey.arrowUp): _doNothingIntent,
+        // SingleActivator(LogicalKeyboardKey.arrowDown): _doNothingIntent,
       },
       child: TextField(
         controller: myController,

@@ -1,7 +1,7 @@
 import 'package:media_kit/media_kit.dart';
 import 'package:menu_bar/menu_bar.dart';
 import 'package:multi_split_view/multi_split_view.dart';
-import 'package:nutria_fmv_maker/context_menu_example.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
@@ -13,6 +13,7 @@ import './models/node_data.dart';
 import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
+import 'custom_widgets/video_collection.dart';
 import 'media_kit_example.dart';
 import 'multi_split_view_example.dart';
 import 'providers/ui_state_provider.dart';
@@ -122,7 +123,7 @@ class MyHomePage extends StatelessWidget {
 
       // body: StackUpdateTest(),
       // body: const MyScreen(),
-      body:  RightClickMenuExample(),
+      body:  const WindowsAppLayout(),
       
     );
   }
@@ -156,8 +157,9 @@ class WindowsAppLayout extends StatelessWidget {
               child: Stack(
                 children: [
                   const GridCanvas(),
-                  const NutriaSplitView(
+                   NutriaSplitView(
                     rightChild: MyScreen(),
+                    leftChild: VideoCollection(),
                   ),
                   Positioned.fill(
                     //UI fader
@@ -166,6 +168,7 @@ class WindowsAppLayout extends StatelessWidget {
                           uiStateProvider.isModalOrMenuOpen,
                       builder: (context, isModalOrMenuOpen, child) {
                         if (isModalOrMenuOpen) {
+                          print('open main, build');
                           return Container(
                             color: Colors.black45, //TODO de-hardcode
                           );

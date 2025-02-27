@@ -82,7 +82,7 @@ class MenuData {
                         .read<AppSettingsProvider>()
                         .toggleSnapping();},
             shortcut: const SingleActivator(LogicalKeyboardKey.keyG,
-                alt: true),
+                control: true),
             icon: Icons.grid_on_rounded,
           ),
           NutriaSubmenuButton(

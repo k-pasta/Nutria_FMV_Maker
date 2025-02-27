@@ -43,17 +43,16 @@ class NutriaMenuBar extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [ */
             Focus(
-              focusNode: uiStateProvider.parentfocusNode,
-          onFocusChange: (gotFocus){
-            
-              if (gotFocus) {
-                  print('menu got focus');
-                } else {
-                  print('menu lost focus');
-                }
-
+          focusNode: uiStateProvider.parentfocusNode,
+          onFocusChange: (gotFocus) {
+            if (gotFocus) {
+              print('menu got focus');
+            } else {
+              print('menu lost focus');
+            }
           },
-          child: SizedBox( width: double.infinity,
+          child: SizedBox(
+            width: double.infinity,
             child: MenuBar(
               style: menuStyles.menuStyle, // Apply menu bar style
               children: menuData.map((menu) {
@@ -82,14 +81,17 @@ class NutriaMenuBar extends StatelessWidget {
   ) {
     return SubmenuButton(
       onOpen: () {
+        print('click open');
         uiStateProvider.setModalOrMenuOpen(true);
       },
       onClose: () {
         uiStateProvider.setModalOrMenuOpen(false);
+                print('click close');
       },
-      onFocusChange: (_) {
-        uiStateProvider.setModalOrMenuOpen(false);
-      },
+      // onFocusChange: (_) {
+      //   uiStateProvider.setModalOrMenuOpen(false);
+      //           print('click focus change');
+      // },
       style: menuStyles.buttonStyleBar, // Apply submenu button style
       menuChildren: menu.submenuButtons.map((submenu) {
         return _buildSubmenuButton(submenu, uiStateProvider, menuStyles);
