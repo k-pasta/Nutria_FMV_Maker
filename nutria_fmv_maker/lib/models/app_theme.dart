@@ -27,6 +27,9 @@ class AppTheme {
   final double dOutlinesWidth;
   final double dSwatchHeight;
 
+//menus
+  final double dMenuPadding;
+
 //button 3 states
   final Color cButton;
   final Color cButtonHovered;
@@ -35,6 +38,8 @@ class AppTheme {
   final double dButtonBorderRadius;
 
   final double dScrollbarWidth;
+  final Color cButtonOutlines;
+  final double dButtonOutlinesWidth;
 
 //textfields
   final Color cTextField;
@@ -60,8 +65,8 @@ class AppTheme {
     this.cBackgroundDots = const Color(0xff212121),
     this.cAccent = const Color(0xffff4e6a),
     this.cAccentButton = const Color(0xff842b37),
-    this.cAccentButtonHovered = const Color.fromARGB(255, 199, 64, 82), 
-    this.cAccentButtonPressed = const Color.fromARGB(255, 224, 74, 94), 
+    this.cAccentButtonHovered = const Color.fromARGB(255, 199, 64, 82),
+    this.cAccentButtonPressed = const Color.fromARGB(255, 224, 74, 94),
     this.cText = const Color(0x91ffffff), //TODO make from transparent
     this.cTextActive = const Color(0xffffffff),
     this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
@@ -70,6 +75,10 @@ class AppTheme {
     // this.cPanelTransparent = const Color(0xff252525),
     this.cPanelTransparent = const Color(0xf1252525),
     this.cOutlines = const Color(0x45ffffff),
+    this.dMenuPadding = 10,
+    this.dOutlinesWidth = 1,
+    this.cButtonOutlines = const Color(0xf1252525),
+    this.dButtonOutlinesWidth = 1,
     this.cButton = const Color(0xff383838), //transparent
     this.cButtonHovered = const Color(0xff4a4a4a), //TODO remove
     this.cButtonPressed = const Color(0xff555555), //TODO remove
@@ -78,10 +87,9 @@ class AppTheme {
     this.dPanelPadding = 7,
     this.dPanelRowDistance = 7,
     this.dPanelBorderRadius = 7,
-    this.dOutlinesWidth = 1,
-    this.dSwatchHeight= 10,
+    this.dSwatchHeight = 10,
     this.dButtonHeight = 45,
-    this.dButtonBorderRadius =  5,
+    this.dButtonBorderRadius = 5,
     this.dScrollbarWidth = 11,
     this.cMenuBar = const Color(0xff000000),
     this.cMenuBarText = const Color(0xffffffff),
@@ -90,17 +98,17 @@ class AppTheme {
 
   //getters
   //TODO document hardcoding
-    TextStyle get swatchTextStyle => TextStyle(
-    overflow: TextOverflow.ellipsis,
-    color: cTextActive,
-    fontVariations: const [FontVariation('wght', 500)], 
-    fontSize: dTextHeight,
-    height: 1.0,
-  );
+  TextStyle get swatchTextStyle => TextStyle(
+        overflow: TextOverflow.ellipsis,
+        color: cTextActive,
+        fontVariations: const [FontVariation('wght', 500)],
+        fontSize: dTextHeight,
+        height: 1.0,
+      );
 
   TextStyle get filenameTextStyle => TextStyle(
-    color: cText,
-    fontSize: dTextHeight,
-    height: 1.0,
-  );
+        color: cText,
+        fontSize: dTextHeight,
+        height: 1.0,
+      );
 }
