@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
 
@@ -103,12 +105,19 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
 Widget _buildResizableArea(BuildContext context, AreaSide area, double width,
     {Widget? child}) {
   final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+  final NodesProvider nodesProvider = context.read<NodesProvider>();
   return IntrinsicWidth(
-    child: Container(
-        width: width,
-        height: double.infinity,
-        color: theme.cPanel,
-        child: child),
+    child: MouseRegion(
+      onEnter: (_) {nodesProvider.setCurrentUnderCursor(LogicalPosition.menu());
+      print('enter menu');},
+      onExit: (_) {nodesProvider.setCurrentUnderCursor(LogicalPosition.empty());
+      print('exit menu');},
+      child: Container(
+          width: width,
+          height: double.infinity,
+          color: theme.cPanel,
+          child: child),
+    ),
   );
 }
 

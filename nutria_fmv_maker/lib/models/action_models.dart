@@ -20,29 +20,44 @@ class LogicalPosition {
   final String nodeId;
   final int index;
   final LogicalPositionType type;
+  final String videoFileId;
 
   LogicalPosition.node(this.nodeId)
       : index = 0,
-        type = LogicalPositionType.node;
+        type = LogicalPositionType.node,
+        videoFileId = '';
   LogicalPosition.output(this.nodeId, this.index)
-      : type = LogicalPositionType.output;
+      : type = LogicalPositionType.output,
+        videoFileId = '';
   LogicalPosition.input(this.nodeId)
       : index = 0,
-        type = LogicalPositionType.input;
+        type = LogicalPositionType.input,
+        videoFileId = '';
   LogicalPosition.empty()
       : nodeId = '',
         index = 0,
-        type = LogicalPositionType.empty;
+        type = LogicalPositionType.empty,
+        videoFileId = '';
+  LogicalPosition.videoFile(this.videoFileId)
+      : nodeId = '',
+        index = 0,
+        type = LogicalPositionType.videoFile;
+  LogicalPosition.menu()
+      : nodeId = '',
+        index = 0,
+        type = LogicalPositionType.menu,
+        videoFileId = '';
 }
 
 extension LogicalPositionExtensions on LogicalPosition {
   bool get isInput => type == LogicalPositionType.input;
   bool get isOutput => type == LogicalPositionType.output;
   bool get isNode => type == LogicalPositionType.node;
+  bool get isVideoFile => type == LogicalPositionType.videoFile;
   bool get isEmpty => type == LogicalPositionType.empty;
 }
 
-enum LogicalPositionType { output, input, node, empty }
+enum LogicalPositionType { output, input, node, videoFile, menu, empty }
 
 // /// Represents the intent of a drag action involving a noodle (connection) in the UI.
 // ///

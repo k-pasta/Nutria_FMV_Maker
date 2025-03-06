@@ -145,6 +145,7 @@ class _GridCanvasState extends State<GridCanvas> {
                                   .localPosition; // Correct local position during drag
                               print('aaa ${mousePosition}');
                             },
+                            onPointerHover: (event){print('${event.localPosition}');},
                             child: MouseRegion(
                               child: NutriaContextMenu(
                                 child: SizedBox(

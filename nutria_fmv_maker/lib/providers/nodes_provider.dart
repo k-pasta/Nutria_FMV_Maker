@@ -307,7 +307,7 @@ class NodesProvider extends ChangeNotifier {
       orElse: () => throw Exception("VideoData not found"),
     );
   }
-  
+
   // NoodleDragIntent get currentDragIntent => _currentDragIntent!;
 
   // NoodleDragIntent? _toClearIfNothing;
@@ -493,7 +493,7 @@ class NodesProvider extends ChangeNotifier {
     _currentDragOutcome = hoveredLogicalPosition;
 
     // Check if the user is dragging an output
-    if (!_currentDragIntent.isEmpty) {
+    if (_currentDragIntent.isInput || _currentDragIntent.isOutput) {
       // Reset the 'isBeingHovered' state for all nodes
       resetHoveredAndTargeted();
 
@@ -560,34 +560,46 @@ class NodesProvider extends ChangeNotifier {
         //delete potential connection
         _currentPotentialConnection = LogicalPosition.empty();
       }
+    } else if (_currentDragIntent.isVideoFile) {
+      if (_currentDragOutcome.isEmpty) {
+        print('possibly creating');
+      }
+      if (_currentDragOutcome.isNode) {
+        int targetNodeIndex = getNodeIndexById(_currentDragOutcome.nodeId);
+        BaseNodeData targetNodeData = getNodeById(_currentDragOutcome.nodeId);
+
+        print('possibly swapping');
+      }
     }
 
     notifyListeners();
   }
 
   void beginDragging(LogicalPosition knotToConnect) {
-    // Get intended node's data
-    int draggedNodeIndex = getNodeIndexById(knotToConnect.nodeId);
-    BaseNodeData draggedNodeData = getNodeById(knotToConnect.nodeId);
-
     // Set Drag intent
     _currentDragIntent = knotToConnect;
 
-    // Set intended node's knot state as isBeingDragged (to render thick)
-    _nodes[draggedNodeIndex] = draggedNodeData.copyWith(
-        input: _currentDragIntent.type == LogicalPositionType.input
-            ? const Input(isBeingDragged: true)
-            : draggedNodeData.input,
-        outputs: _currentDragIntent.type == LogicalPositionType.output
-            ? [
-                for (int i = 0; i < draggedNodeData.outputs.length; i++)
-                  if (_currentDragIntent.index == i)
-                    draggedNodeData.outputs[i].copyWith(isBeingDragged: true)
-                  else
-                    draggedNodeData.outputs[i]
-              ]
-            : draggedNodeData.outputs);
-    notifyListeners();
+    if (_currentDragIntent.isInput || _currentDragIntent.isOutput) {
+      // Get intended node's data
+      int draggedNodeIndex = getNodeIndexById(_currentDragIntent.nodeId);
+      BaseNodeData draggedNodeData = getNodeById(_currentDragIntent.nodeId);
+
+      // Set intended node's knot state as isBeingDragged (to render thick)
+      _nodes[draggedNodeIndex] = draggedNodeData.copyWith(
+          input: _currentDragIntent.type == LogicalPositionType.input
+              ? const Input(isBeingDragged: true)
+              : draggedNodeData.input,
+          outputs: _currentDragIntent.type == LogicalPositionType.output
+              ? [
+                  for (int i = 0; i < draggedNodeData.outputs.length; i++)
+                    if (_currentDragIntent.index == i)
+                      draggedNodeData.outputs[i].copyWith(isBeingDragged: true)
+                    else
+                      draggedNodeData.outputs[i]
+                ]
+              : draggedNodeData.outputs);
+      notifyListeners();
+    }
   }
 
   void beginNoodle({
@@ -665,8 +677,9 @@ class NodesProvider extends ChangeNotifier {
   }
 
   void endDragging() {
-    //reset the dragged noodle position
 
+if (_currentDragIntent.isInput || _currentDragIntent.isOutput) {
+  //reset the dragged noodle position
     _currentNoodle = null;
 
     // Reset the 'isBeingHovered' state for all nodes
@@ -675,6 +688,12 @@ class NodesProvider extends ChangeNotifier {
     resetDragged();
     // Attempt to connect nodes based on current Drag intent and Drag output
     attemptConnection();
+} else if (_currentDragIntent.isVideoFile) {
+if(_currentDragOutcome.isEmpty){
+  // addNode(VideoNodeData(position: position, id: 'a', videoDataId: _currentDragIntent.videoFileId));
+}
+}
+  
 
     //  Reset the drag intent. No need to reset the output. this gets set each time a user hovers a node or knot
     _currentDragIntent = LogicalPosition.empty();
@@ -885,13 +904,9 @@ class NodesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-    // Add a new node to the provider
+  // Add a new node to the provider
   void addNode(NodeData node) {
     _nodes.add(node);
     notifyListeners();
   }
-
 }
-
-
-
