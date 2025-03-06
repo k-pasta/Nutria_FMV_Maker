@@ -72,8 +72,6 @@ class _GridCanvasState extends State<GridCanvas> {
           videoDataId: videoId));
     }
 
-    ;
-
     return Selector<NodesProvider, List<String>>(
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
@@ -120,18 +118,11 @@ class _GridCanvasState extends State<GridCanvas> {
                         onAcceptWithDetails: (details) {
                           final RenderBox box = gridCanvasKey.currentContext!
                               .findRenderObject() as RenderBox;
-// Get the full transformation matrix from GridCanvas to the global root
-                          final Matrix4 fullTransform =
-                              box.getTransformTo(null);
-// Invert the transformation to map global → local
-                          final Matrix4 inverseTransform =
-                              Matrix4.inverted(fullTransform);
-// Transform the global drop position to the correct local coordinate
-                          Offset localPosition = MatrixUtils.transformPoint(
-                              inverseTransform, details.offset);
 
-                          print(
-                              'global position was: ${details.offset}, local position turned out to be: ${localPosition}');
+                          Offset localPosition = box.globalToLocal(details
+                                  .offset +
+                              Offset(50,
+                                  56)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
 
                           addNodeFromDrag(details.data, localPosition);
 

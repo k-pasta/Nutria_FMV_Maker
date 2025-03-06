@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
@@ -5,6 +7,7 @@ import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
 
+import '../models/node_data.dart';
 import '../providers/nodes_provider.dart';
 
 class VideoCollection extends StatelessWidget {
@@ -377,9 +380,12 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final NodesProvider nodesProvider = context.read<NodesProvider>();
+    VideoData videoData = nodesProvider.getVideoDataById(widget.videoDataId);
 
     return Draggable<String>(
       data: widget.videoDataId,
+
       dragAnchorStrategy: (draggable, context, position) {
         return Offset(100 / 2, 100 * 9 / 16); //TODO move to uiStaticProperties
       },
@@ -439,9 +445,17 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
                 SizedBox(
                   height: 100 * 9 / 16, //TODO move to ui
                   width: 100,
-                  child: Container(
-                    color: Colors.black,
-                    child: Placeholder(),
+                  child: ClipRect(
+                    child: FittedBox(
+                      // color: Colors.black,
+                    
+                      fit: BoxFit.cover,
+                      child: videoData.thumbnailPath == null
+                          ? Placeholder() //todo implement missing
+                          : videoData.thumbnailPath!.startsWith('http')
+                              ? Image.network(videoData.thumbnailPath!)
+                              : Image.file(File(videoData.thumbnailPath!)),
+                    ),
                   ),
                 ),
                 SizedBox(

@@ -858,6 +858,19 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
+void setVideo({required String nodeId, required String videoId}) {
+  int nodeIndex = getNodeIndexById(nodeId);
+  final node = _nodes[nodeIndex];
+
+  if (node is VideoNodeData) {
+    final updatedNode = node.copyWith(videoDataId: videoId);
+    _nodes[nodeIndex] = updatedNode;
+    notifyListeners();
+  } else {
+    throw Exception("Node is not of type VideoNodeData");
+  }
+}
+
   void resetNodeIntendedValues(String id) {
     int nodeIndex = getNodeIndexById(id);
     final node = _nodes[nodeIndex] as BaseNodeData;

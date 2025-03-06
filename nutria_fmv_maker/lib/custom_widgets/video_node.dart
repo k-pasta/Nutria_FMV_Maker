@@ -61,94 +61,105 @@ class TestNode extends StatelessWidget {
               Positioned(
                 top: UiStaticProperties.nodePadding,
                 left: UiStaticProperties.nodePadding,
-                child: GestureDetector(
-                  //where node starts really
-                  onPanUpdate: (details) {
-                    nodesProvider.offsetNodePosition(
-                        videoNodeData.id, details.delta,
-                        snapToGrid:
-                            appSettingsProvider.snapSettings.gridSnapping);
-                  },
-                  onPanStart: (details) {
-                    nodesProvider.setActiveNode(videoNodeData.id);
-                  },
-                  onPanEnd: (_) {
-                    nodesProvider.resetNodeIntendedValues(videoNodeData.id);
-                  },
-                  onPanCancel: () {
-                    nodesProvider.resetNodeIntendedValues(videoNodeData.id);
-                  },
-                  onTap: () {
-                    nodesProvider.setActiveNode(videoNodeData.id);
-                  },
-                  child: MouseRegion(
-                    onEnter: (_) {
-                      nodesProvider.setCurrentUnderCursor(
-                          LogicalPosition.node(videoNodeData.id));
-                      // print('enter ${videoNodeData.id}');
+                child: DragTarget<String>(
+                    onAcceptWithDetails: (details) {
+                      nodesProvider.setVideo(nodeId: nodeId , videoId:details.data);
                     },
-                    onExit: (_) {
-                      nodesProvider
-                          .setCurrentUnderCursor(LogicalPosition.empty());
-                      // print('exit ${videoNodeData.id}');
-                    },
-                    hitTestBehavior: HitTestBehavior.deferToChild,
-                    child: SizedBox(
-                      width: videoNodeData.nodeWidth,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          //Swatch Strip on top
-                          NodeSwatchStrip(
-                            nodeData: videoNodeData,
-                          ),
-                          //Main node background
-                          NodeMainContainer(
-                            nodeData: videoNodeData,
-                            children: [
-                              //thumbnail
-                              NodeVideoThumbnail(videoDataId: videoNodeData.videoDataId),
-                              //video file name
-                              NodeVideoFileNameText(
-                                  videoNodeData: videoNodeData),
+                    builder: (context, candidateData, rejectedData) {
+                      return GestureDetector(
+                        //where node starts really
+                        onPanUpdate: (details) {
+                          nodesProvider.offsetNodePosition(
+                              videoNodeData.id, details.delta,
+                              snapToGrid: appSettingsProvider
+                                  .snapSettings.gridSnapping);
+                        },
+                        onPanStart: (details) {
+                          nodesProvider.setActiveNode(videoNodeData.id);
+                        },
+                        onPanEnd: (_) {
+                          nodesProvider
+                              .resetNodeIntendedValues(videoNodeData.id);
+                        },
+                        onPanCancel: () {
+                          nodesProvider
+                              .resetNodeIntendedValues(videoNodeData.id);
+                        },
+                        onTap: () {
+                          nodesProvider.setActiveNode(videoNodeData.id);
+                        },
+                        child: MouseRegion(
+                          onEnter: (_) {
+                            nodesProvider.setCurrentUnderCursor(
+                                LogicalPosition.node(videoNodeData.id));
+                            // print('enter ${videoNodeData.id}');
+                          },
+                          onExit: (_) {
+                            nodesProvider
+                                .setCurrentUnderCursor(LogicalPosition.empty());
+                            // print('exit ${videoNodeData.id}');
+                          },
+                          hitTestBehavior: HitTestBehavior.deferToChild,
+                          child: SizedBox(
+                            width: videoNodeData.nodeWidth,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                              children: [
+                                //Swatch Strip on top
+                                NodeSwatchStrip(
+                                  nodeData: videoNodeData,
+                                ),
+                                //Main node background
+                                NodeMainContainer(
+                                  nodeData: videoNodeData,
+                                  children: [
+                                    //thumbnail
+                                    NodeVideoThumbnail(
+                                        videoDataId: videoNodeData.videoDataId),
+                                    //video file name
+                                    NodeVideoFileNameText(
+                                        videoNodeData: videoNodeData),
 
-                              NodeVideoOutputsList(
-                                videoNodeData: videoNodeData,
-                              ),
-                            ],
-                          ),
-                          //expansion
-                          if (videoNodeData.isExpanded)
-                            //distance between main node and expansion
-                            SizedBox(
-                              height: theme.dPanelPadding,
-                            ),
-                          if (videoNodeData.isExpanded)
-                            Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    theme.dPanelBorderRadius),
-                                border: Border.all(
-                                    color: theme.cOutlines,
-                                    width: theme.dOutlinesWidth),
-                                color: theme.cPanelTransparent,
-                              ),
-                              padding: EdgeInsets.all(theme.dPanelPadding),
-                              child: Column(
-                                children: [
-                                  //swatches picker
-                                  NodeSwatchesPicker(
-                                    nodeData: videoNodeData,
+                                    NodeVideoOutputsList(
+                                      videoNodeData: videoNodeData,
+                                    ),
+                                  ],
+                                ),
+                                //expansion
+                                if (videoNodeData.isExpanded)
+                                  //distance between main node and expansion
+                                  SizedBox(
+                                    height: theme.dPanelPadding,
                                   ),
-                                  NodeDebugInfo(videoNodeData: videoNodeData),
-                                ],
-                              ),
+                                if (videoNodeData.isExpanded)
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                          theme.dPanelBorderRadius),
+                                      border: Border.all(
+                                          color: theme.cOutlines,
+                                          width: theme.dOutlinesWidth),
+                                      color: theme.cPanelTransparent,
+                                    ),
+                                    padding:
+                                        EdgeInsets.all(theme.dPanelPadding),
+                                    child: Column(
+                                      children: [
+                                        //swatches picker
+                                        NodeSwatchesPicker(
+                                          nodeData: videoNodeData,
+                                        ),
+                                        NodeDebugInfo(
+                                            videoNodeData: videoNodeData),
+                                      ],
+                                    ),
+                                  ),
+                              ],
                             ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
+                          ),
+                        ),
+                      );
+                    }),
               ),
               NodeResizeHandle(
                 nodeData: videoNodeData,
