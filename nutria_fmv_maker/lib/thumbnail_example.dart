@@ -133,6 +133,7 @@ class _ThumbnailExampleState extends State<ThumbnailExample> {
       var src = await openFile();
       if (src == null) return;
       srcPath = src.path;
+      print(srcPath);
 
       // Clear previous tasks
       setState(() {

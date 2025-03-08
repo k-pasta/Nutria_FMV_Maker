@@ -9,7 +9,44 @@ import '../models/app_theme.dart';
 import '../models/node_data.dart';
 import 'dart:math';
 
+import '../utilities/thumbnail_generator.dart';
+
 class NodesProvider extends ChangeNotifier {
+  NodesProvider() {
+    _generateThumbnails();
+  }
+
+  Future<void> _generateThumbnails() async {
+    // Iterate over each video in the list
+    for (var video in _videos) {
+      // Create a Task for each VideoData
+      var task = Task(
+        name: 'Generate Thumbnail for ${video.videoDataPath}',
+        srcFile: video.videoDataPath,
+        width: UiStaticProperties.thumbnailSize, // You can adjust the size here
+        height:
+            UiStaticProperties.thumbnailSize, // Adjust the size here as well
+        isSrcUri: false, // Depending on your scenario, adjust this
+      );
+
+      // Run the task
+      await task.run();
+
+      // Once the task is done, update the thumbnail path
+      if (task.destFile != null) {
+        var updatedVideo = video.copyWith(thumbnailPath: task.destFile);
+        _videos[_videos.indexOf(video)] = updatedVideo;
+        print('Thumbnail created for ${video.videoDataPath}: ${task.destFile}');
+      } else {
+        print(
+            'Error creating thumbnail for ${video.videoDataPath}: ${task.error}');
+      }
+
+      // Placeholder to indicate that the task is done
+      print('Task done for ${video.videoDataPath}');
+    }
+  }
+
   // Immutable list of nodes
   final List<NodeData> _nodes = [
     VideoNodeData(
@@ -54,186 +91,6 @@ class NodesProvider extends ChangeNotifier {
         Output(outputData: ''),
       ],
     ),
-    // VideoNodeData(
-    //   id: 'x',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xjaa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xaha',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xfaa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xada',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xasa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xaaa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xapa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xaoa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xiaa',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xaua',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xaya',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xata',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
-    // VideoNodeData(
-    //   id: 'xara',
-    //   position: const Offset(150, 20),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //     Output(outputData: ''),
-    //   ],
-    // ),
   ];
 
   // Getter for nodes (returns an immutable list)
@@ -293,10 +150,22 @@ class NodesProvider extends ChangeNotifier {
 // Getter for videos (returns an immutable list)
   final List<VideoData> _videos = [
     VideoData(
-        id: 'a',
-        videoDataPath: 'c:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
-        thumbnailPath: 'C:/Users/cgbook/Desktop/cats.jpg'),
-    VideoData(id: 'b', videoDataPath: ''),
+      id: 'a',
+      videoDataPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
+    ),
+
+    VideoData(
+      id: 'b',
+      videoDataPath:
+          'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
+    ),
+
+    VideoData(
+      id: 'c',
+      videoDataPath:
+          'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
+    ),
+
   ];
   List<VideoData> get videos => List.unmodifiable(_videos);
 
@@ -307,7 +176,7 @@ class NodesProvider extends ChangeNotifier {
       orElse: () => throw Exception("VideoData not found"),
     );
   }
-  
+
   // NoodleDragIntent get currentDragIntent => _currentDragIntent!;
 
   // NoodleDragIntent? _toClearIfNothing;
@@ -858,18 +727,18 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-void setVideo({required String nodeId, required String videoId}) {
-  int nodeIndex = getNodeIndexById(nodeId);
-  final node = _nodes[nodeIndex];
+  void setVideo({required String nodeId, required String videoId}) {
+    int nodeIndex = getNodeIndexById(nodeId);
+    final node = _nodes[nodeIndex];
 
-  if (node is VideoNodeData) {
-    final updatedNode = node.copyWith(videoDataId: videoId);
-    _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
-  } else {
-    throw Exception("Node is not of type VideoNodeData");
+    if (node is VideoNodeData) {
+      final updatedNode = node.copyWith(videoDataId: videoId);
+      _nodes[nodeIndex] = updatedNode;
+      notifyListeners();
+    } else {
+      throw Exception("Node is not of type VideoNodeData");
+    }
   }
-}
 
   void resetNodeIntendedValues(String id) {
     int nodeIndex = getNodeIndexById(id);
@@ -898,13 +767,9 @@ void setVideo({required String nodeId, required String videoId}) {
     notifyListeners();
   }
 
-    // Add a new node to the provider
+  // Add a new node to the provider
   void addNode(NodeData node) {
     _nodes.add(node);
     notifyListeners();
   }
-
 }
-
-
-

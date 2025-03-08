@@ -8,35 +8,39 @@ import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playl
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_slider.dart';
+import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
 import 'package:provider/provider.dart';
 
 import 'models/app_theme.dart';
 import 'providers/theme_provider.dart'; // Provides [VideoController] & [Video] etc.
 
-class MyScreen extends StatefulWidget {
-  const MyScreen({super.key});
+class VideoSection extends StatefulWidget {
+  const VideoSection({super.key});
   @override
-  State<MyScreen> createState() => MyScreenState();
+  State<VideoSection> createState() => VideoSectionState();
 }
 
-class MyScreenState extends State<MyScreen> {
+class VideoSectionState extends State<VideoSection> {
   late final Player player;
   late final VideoController controller;
-  double? _draggingPosition; // Used for preview while dragging
+  double? _draggingPosition; // Used for preview while dragging timeline
 
   static const int fps = 30; // Frames per second TODO: Get from video metadata
 
   @override
   void initState() {
+    VideoPlayerProvider videoPlayerProvider =
+        context.read<VideoPlayerProvider>();
     super.initState();
-    player = Player();
-    controller = VideoController(player);
+    player = videoPlayerProvider.player;
+    //Player();
+    controller = videoPlayerProvider.videoController;
 
     // Load video
-    player.open(Media('c:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4'));
+    // player.open(Media('c:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4'));
 
     // Set initial volume
-    player.setVolume(50);
+    // player.setVolume(50);
   }
 
   @override
@@ -89,77 +93,86 @@ class MyScreenState extends State<MyScreen> {
               ),
             ),
 
-            // Seek Bar (Fixed)
+            // Seek Bar 
             StreamBuilder<Duration>(
-              stream: player.stream.position,
-              builder: (context, snapshot) {
-                final position = snapshot.data ?? Duration.zero;
-                final duration = player.state.duration;
-
+              stream: player.stream.position, // Listen for position updates
+              builder: (context, positionSnapshot) {
+                final position = positionSnapshot.data ?? Duration.zero;
                 final currentValue =
                     _draggingPosition ?? position.inMilliseconds.toDouble();
-
-                return Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    SizedBox(
-                      width: 90,
-                      child: Text(
-                          textAlign: TextAlign.center,
-                          formatTime(Duration(
-                              milliseconds: _draggingPosition?.toInt() ??
-                                  position.inMilliseconds)),
-                          style: TextStyle(color: theme.cText)),
-                    ),
-                    Flexible(
-                      fit: FlexFit.tight,
-                      child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 500),
-                        child: SliderTheme(
-                          data: SliderTheme.of(context).copyWith(
-                            thumbShape: SliderComponentShape
-                                .noThumb, // Disable the ball
-                            overlayShape: SliderComponentShape
-                                .noOverlay, // Disable the overlay shadow
-                            trackHeight: 5,
-                          ),
-                          child: Slider(
-                            min: 0,
-                            value: currentValue.clamp(
-                                0, duration.inMilliseconds.toDouble()),
-                            max: duration.inMilliseconds.toDouble(),
-                            onChanged: (value) {
-                              setState(() {
-                                _draggingPosition =
-                                    value; // Preview dragging position
-                              });
-                            },
-                            onChangeEnd: (value) {
-                              player
-                                  .seek(Duration(milliseconds: value.toInt()))
-                                  .then((_) {
-                                print(
-                                    'Seek completed at: ${player.state.position}');
-                                setState(() {
-                                  _draggingPosition = null; // Reset preview
-                                });
-                              }); // Seek after release
-                            },
-                            activeColor: theme.cAccent,
-                            inactiveColor: theme.cButton,
+            
+                return StreamBuilder<Duration>(
+                  stream:
+                      player.stream.duration, // Listen for duration updates
+                  builder: (context, durationSnapshot) {
+                    final duration = durationSnapshot.data ?? Duration.zero;
+            
+                    return Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        SizedBox(
+                          width: 90,
+                          child: Text(
+                            textAlign: TextAlign.center,
+                            formatTime(Duration(
+                                milliseconds: _draggingPosition?.toInt() ??
+                                    position.inMilliseconds)),
+                            style: TextStyle(color: theme.cText),
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 90,
-                      child: Text(
-                        formatTime(duration),
-                        style: TextStyle(color: theme.cText),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
+                        Flexible(
+                          fit: FlexFit.tight,
+                          child: ConstrainedBox(
+                            constraints:
+                                const BoxConstraints(maxWidth: 500),
+                            child: SliderTheme(
+                              data: SliderTheme.of(context).copyWith(
+                                thumbShape: SliderComponentShape.noThumb,
+                                overlayShape:
+                                    SliderComponentShape.noOverlay,
+                                trackHeight: 5,
+                              ),
+                              child: Slider(
+                                min: 0,
+                                value: currentValue.clamp(
+                                    0, duration.inMilliseconds.toDouble()),
+                                max: duration.inMilliseconds.toDouble(),
+                                onChanged: (value) {
+                                  setState(() {
+                                    _draggingPosition =
+                                        value; // Preview dragging position
+                                  });
+                                },
+                                onChangeEnd: (value) {
+                                  player
+                                      .seek(Duration(
+                                          milliseconds: value.toInt()))
+                                      .then((_) {
+                                    print(
+                                        'Seek completed at: ${player.state.position}');
+                                    setState(() {
+                                      _draggingPosition =
+                                          null; // Reset preview
+                                    });
+                                  });
+                                },
+                                activeColor: theme.cAccent,
+                                inactiveColor: theme.cButton,
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(
+                          width: 90,
+                          child: Text(
+                            formatTime(duration),
+                            style: TextStyle(color: theme.cText),
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             ),
@@ -181,8 +194,6 @@ class MyScreenState extends State<MyScreen> {
                     final isPlaying = snapshot.data ?? false;
                     return NutriaButton.Icon(
                       icon: isPlaying ? Icons.pause : Icons.play_arrow,
-                      // color: Colors.white,
-                      // ),
                       onTap: () => player.playOrPause(),
                     );
                   },
@@ -213,7 +224,7 @@ class MyScreenState extends State<MyScreen> {
                     child: StreamBuilder<double>(
                       stream: player.stream.volume,
                       builder: (context, snapshot) {
-                        final volume = snapshot.data ?? 50.0;
+                        final volume = snapshot.data ?? 100.0;
                         return SliderTheme(
                           data: SliderTheme.of(context).copyWith(
                             thumbShape: SliderComponentShape

@@ -256,11 +256,23 @@ class VideoData {
   final String videoDataPath;
   final String? thumbnailPath;
   String get fileName => videoDataPath.split('/').last;
-  Duration get duration =>
-      const Duration(seconds: 10); //TODO make work with videoplayer plugin
+  // Duration get duration =>
+  //     const Duration(seconds: 10); //TODO make work with videoplayer plugin
   VideoData({
     required this.videoDataPath,
     required this.id,
     this.thumbnailPath,
   });
+
+  VideoData copyWith({
+    String? id,
+    String? videoDataPath,
+    String? thumbnailPath,
+  }) {
+    return VideoData(
+      id: id ?? this.id,
+      videoDataPath: videoDataPath ?? this.videoDataPath,
+      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+    );
+  }
 }

@@ -5,6 +5,7 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
+import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
 import 'package:nutria_fmv_maker/stack_update_test.dart';
 
 import './custom_widgets/nutria_textfield.dart';
@@ -14,7 +15,7 @@ import './providers/locale_provider.dart';
 import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
 import 'custom_widgets/video_collection.dart';
-import 'media_kit_example.dart';
+import 'video_section.dart';
 import 'multi_split_view_example.dart';
 import 'providers/ui_state_provider.dart';
 import 'thumbnail_example.dart';
@@ -42,6 +43,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ChangeNotifierProvider(create: (context) => UiStateProvider()),
       ChangeNotifierProvider(create: (context) => AppSettingsProvider()),
+      ChangeNotifierProvider(create: (context) => VideoPlayerProvider()),
     ],
     child: const MyApp(),
   ));
@@ -121,9 +123,8 @@ class MyHomePage extends StatelessWidget {
       //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
       // ]),
 
-      // body: StackUpdateTest(),
-      // body: const MyScreen(),
       body:  const WindowsAppLayout(),
+      // body:  const ThumbnailExample(),
       
     );
   }
@@ -158,7 +159,7 @@ class WindowsAppLayout extends StatelessWidget {
                 children: [
                   const GridCanvas(),
                    NutriaSplitView(
-                    rightChild: MyScreen(),
+                    rightChild: VideoSection(),
                     leftChild: VideoCollection(),
                   ),
                   Positioned.fill(
