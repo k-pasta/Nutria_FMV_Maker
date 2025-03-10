@@ -30,7 +30,8 @@ class Task {
   Future<void> run() async {
     try {
       var plugin = FcNativeVideoThumbnail();
-      final destFile = tmpPath() + p.extension(srcFile);
+      // final destFile = tmpPath() + p.extension(srcFile);
+      final destFile = tmpPath() + '.jpg';
       await plugin.getVideoThumbnail(
         srcFile: srcFile,
         destFile: destFile,
@@ -153,6 +154,7 @@ class _ThumbnailExampleState extends State<ThumbnailExample> {
       // Run the tasks
       await Future.forEach(_tasks, (Task task) async {
         await task.run();
+        print('Thumbnail created for ${srcPath}: ${task.destFile}');
         setState(() {});
       });
     } catch (err) {

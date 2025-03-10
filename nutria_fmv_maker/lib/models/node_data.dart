@@ -13,7 +13,7 @@ abstract class NodeData {
   final bool isSelected;
   final bool isBeingHovered;
 
-  double _getTextHeight(String text, TextStyle style) {
+  double _getTextHeight(String text, TextStyle style) { //todo allow for multiple lines
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -172,7 +172,7 @@ class VideoNodeData extends BaseNodeData {
             : 0) +
         (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
         _getTextHeight(videoDataId, theme.filenameTextStyle) +
-        (theme.dPanelPadding * 2) +
+        (theme.dPanelPadding * 4) +
         (theme.dButtonHeight / 2);
     double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
     return Offset(x, baseY + extraY) + _paddingOffset;

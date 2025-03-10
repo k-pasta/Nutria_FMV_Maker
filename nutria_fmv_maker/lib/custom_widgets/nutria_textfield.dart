@@ -81,7 +81,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           }
         },
         onTap: () {
-          // print('tapped');
+          // TODO: Set active Widget
         },
         textInputAction: TextInputAction.next,
         focusNode: _focusNode,
@@ -101,7 +101,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
 
           contentPadding: EdgeInsets.symmetric(
               vertical: (theme.dButtonHeight - theme.dTextHeight) / 2,
-              horizontal: 8.0), // TODO de-hardcode
+              horizontal: theme.dTextfieldPadding), // TODO de-hardcode
           counterText: '', //disables max character counter
           hintText:
               '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',

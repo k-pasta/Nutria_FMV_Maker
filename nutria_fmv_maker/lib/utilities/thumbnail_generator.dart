@@ -30,7 +30,7 @@ class Task {
   Future<void> run() async {
   try {
     srcFile = formatPathForWindows(srcFile);
-    print(srcFile);
+    // print(srcFile);
 
     // Check if file exists before proceeding
     if (!File(srcFile).existsSync()) {

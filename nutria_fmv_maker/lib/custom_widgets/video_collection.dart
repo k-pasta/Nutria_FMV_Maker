@@ -24,7 +24,7 @@ class VideoCollection extends StatelessWidget {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: theme.dSectionPadding),
+      padding: EdgeInsets.only(top: theme.dSectionPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -69,7 +69,7 @@ class VideoCollection extends StatelessWidget {
                     ScrollConfiguration.of(context).copyWith(scrollbars: false),
                 child: Padding(
                   padding:
-                      EdgeInsets.symmetric(horizontal: theme.dPanelPadding),
+                      EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
                   child: SingleChildScrollView(
                     clipBehavior: Clip.hardEdge,
                     controller: scrollController,

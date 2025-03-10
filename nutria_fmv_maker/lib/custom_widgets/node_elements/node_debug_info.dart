@@ -20,38 +20,39 @@ class NodeDebugInfo extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-
-    return Column(
-      children: [
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
-        Text(
-          'Debug Info:',
-          style: TextStyle(color: theme.cText),
-        ),
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
-        Text(
-          'Node ID: ${videoNodeData.id}',
-          style: TextStyle(color: theme.cText),
-        ),
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
-        Text(
-          'Position: ${videoNodeData.position.toString()}',
-          style: TextStyle(color: theme.cText),
-        ),
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
-        Text(
-          'Node Width: ${videoNodeData.nodeWidth.toStringAsFixed(0)}',
-          style: TextStyle(color: theme.cText),
-        ),
-      ],
-    );
+    if (UiStaticProperties.isDebug) {
+      return Column(
+        children: [
+          SizedBox(
+            height: theme.dPanelPadding,
+          ),
+          Text(
+            'Debug Info:',
+            style: TextStyle(color: theme.cText),
+          ),
+          SizedBox(
+            height: theme.dPanelPadding,
+          ),
+          Text(
+            'Node ID: ${videoNodeData.id}',
+            style: TextStyle(color: theme.cText),
+          ),
+          SizedBox(
+            height: theme.dPanelPadding,
+          ),
+          Text(
+            'Position: ${videoNodeData.position.toString()}',
+            style: TextStyle(color: theme.cText),
+          ),
+          SizedBox(
+            height: theme.dPanelPadding,
+          ),
+          Text(
+            'Node Width: ${videoNodeData.nodeWidth.toStringAsFixed(0)}',
+            style: TextStyle(color: theme.cText),
+          ),
+        ],
+      );
+    } else {return (Container());}
   }
 }

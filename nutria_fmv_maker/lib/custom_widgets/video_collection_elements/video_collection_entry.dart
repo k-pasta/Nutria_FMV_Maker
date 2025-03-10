@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import '../../models/app_theme.dart';
 import '../../providers/nodes_provider.dart';
 import '../../providers/theme_provider.dart';
@@ -41,7 +42,7 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
     return Draggable<String>(
       data: widget.videoDataId,
       dragAnchorStrategy: (draggable, context, position) {
-        return Offset(100 / 2, 100 * 9 / 16); //TODO move to uiStaticProperties
+        return Offset(UiStaticProperties.videoCollectionEntryWidth / 2, UiStaticProperties.videoCollectionEntryWidth * 9 / 16);
       },
       feedback: VideoThumbnail(videoData: videoData),
       child: MouseRegion(
@@ -89,9 +90,11 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
               children: [
                 VideoThumbnail(videoData: videoData),
                 SizedBox(
-                  width: 100,
+                  width: UiStaticProperties.videoCollectionEntryWidth,
                   child: Text(
                     videoData.fileName,
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
                     style: TextStyle(color: theme.cText),
                   ),

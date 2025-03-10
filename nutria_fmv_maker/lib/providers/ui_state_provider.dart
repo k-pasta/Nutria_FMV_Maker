@@ -33,15 +33,7 @@ class UiStateProvider extends ChangeNotifier {
 
   void setModalOrMenuOpen(bool value) {
     _isModalOrMenuOpen = value;
-    if (value == true) {
-      print('open provider');
-    } else {
-      print('close provider');
-    }
     notifyListeners();
-    // SchedulerBinding.instance.addPostFrameCallback((_) {
-    //   notifyListeners();
-    // });
   }
 
 //menu
@@ -75,7 +67,6 @@ class UiStateProvider extends ChangeNotifier {
   void updateSize(AreaSide area, double delta, double totalWidth) {
     if (area == AreaSide.left) {
       intendedLeftSize += delta;
-      print('intendedLeftSize: $intendedLeftSize');
       if (intendedLeftSize >= minLeftSize &&
           intendedLeftSize <= maxLeftSize &&
           !isLeftClosed) {
@@ -102,11 +93,9 @@ class UiStateProvider extends ChangeNotifier {
       }
       if (intendedLeftSize > minLeftSize - closingThreshold && isLeftClosed) {
         //passed threshold, open panel
-        // print('here');
         openLeft(totalWidth: totalWidth, shouldUpdateIntended: false);
       }
     } else if (area == AreaSide.right) {
-      print('intendedLeftSize: $intendedRightSize');
       intendedRightSize -= delta;
       if (intendedRightSize >= minRightSize &&
           intendedRightSize <= maxRightSize &&
@@ -147,18 +136,15 @@ class UiStateProvider extends ChangeNotifier {
     if (max(intendedLeftSize, minLeftSize) + rightSize + effectiveHandleWidth <
         totalWidth) {
       //if fits
-      print('fits. intended left: $intendedLeftSize, min left: $minLeftSize');
       leftSize = max(intendedLeftSize, minLeftSize);
     } else if (minLeftSize + minRightSize + effectiveHandleWidth < totalWidth) {
       //if mins fit
-      print('mins fit');
       leftSize =
           max(totalWidth - (rightSize + effectiveHandleWidth), minLeftSize);
       rightSize = totalWidth - (leftSize + effectiveHandleWidth);
       updateIntended(AreaSide.right);
     } else if (minLeftSize + effectiveHandleWidth < totalWidth) {
       //if its own min fits
-      print('own mins fit');
       leftSize = min(max(intendedLeftSize, minLeftSize),
           totalWidth - effectiveHandleWidth);
       closeRight();
@@ -178,19 +164,15 @@ class UiStateProvider extends ChangeNotifier {
     if (max(intendedRightSize, minRightSize) + leftSize + effectiveHandleWidth <
         totalWidth) {
       //if fits
-      print(
-          'fits. intended right: $intendedRightSize, min right: $minRightSize');
       rightSize = max(intendedRightSize, minRightSize);
     } else if (minRightSize + minLeftSize + effectiveHandleWidth < totalWidth) {
       //if mins fit
-      print('mins fit');
       rightSize =
           max(totalWidth - (leftSize + effectiveHandleWidth), minRightSize);
       leftSize = totalWidth - (rightSize + effectiveHandleWidth);
       updateIntended(AreaSide.left);
     } else if (minRightSize + effectiveHandleWidth < totalWidth) {
       //if its own min fits
-      print('own mins fit');
       rightSize = min(max(intendedRightSize, minRightSize),
           totalWidth - effectiveHandleWidth);
       closeLeft();
@@ -199,7 +181,6 @@ class UiStateProvider extends ChangeNotifier {
     }
     if (shouldUpdateIntended) {
       updateIntended(AreaSide.right);
-      print(intendedRightSize);
     }
     notifyListeners();
   }
@@ -259,7 +240,6 @@ class UiStateProvider extends ChangeNotifier {
   }
 
   void updateIntended(AreaSide area) {
-    print('updated');
     if (area == AreaSide.left) {
       intendedLeftSize = leftSize;
     } else if (area == AreaSide.right) {

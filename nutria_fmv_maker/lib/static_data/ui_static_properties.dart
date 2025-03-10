@@ -2,7 +2,7 @@ import 'dart:ui';
 
 class UiStaticProperties {
 //overall
-  static const bool isDebug = true;
+  static const bool isDebug = false;
 
   //GridCanvas
   static const double canvasSize = 2010;
@@ -36,5 +36,9 @@ class UiStaticProperties {
 
   //Context menu
   static const double contextMenuWidth = 150;
-  
+
+  //Files Picker
+  static const double videoCollectionEntryWidth = 120;
+
+  static const int animationDurationsInMs = 150; //TODO move to uiprefs or theme
 }

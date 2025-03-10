@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import '../../models/node_data.dart';
+import '../../static_data/ui_static_properties.dart';
 
 class VideoThumbnail extends StatelessWidget {
   const VideoThumbnail({
@@ -14,8 +15,8 @@ class VideoThumbnail extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 100 * 9 / 16, //TODO move to ui
-      width: 100,
+      height: UiStaticProperties.videoCollectionEntryWidth * 9 / 16, 
+      width: UiStaticProperties.videoCollectionEntryWidth,
       child: ClipRect(
         child: FittedBox(
           // color: Colors.black,

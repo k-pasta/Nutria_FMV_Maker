@@ -16,6 +16,7 @@ class AppTheme {
   final Color cTextActive;
   final Color cTextInactive;
   final double dTextHeight;
+  final double dTextfieldPadding;
 
 //panels
   final Color cPanel;
@@ -71,11 +72,12 @@ class AppTheme {
     this.cTextActive = const Color(0xffffffff),
     this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
     this.dTextHeight = 16,
+    this.dTextfieldPadding = 7,
     this.cPanel = const Color(0xff252525),
     // this.cPanelTransparent = const Color(0xff252525),
     this.cPanelTransparent = const Color(0xf1252525),
     this.cOutlines = const Color(0x45ffffff),
-    this.dSectionPadding = 60,
+    this.dSectionPadding = 10,
     this.dOutlinesWidth = 1,
     this.cButtonOutlines = const Color(0xf1252525),
     this.dButtonOutlinesWidth = 1,

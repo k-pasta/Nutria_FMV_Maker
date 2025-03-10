@@ -1,5 +1,11 @@
+import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/app_theme.dart';
+import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
+import 'package:provider/provider.dart';
+
+import '../../providers/theme_provider.dart';
 
 class DropdownOption {
   final IconData icon;
@@ -41,7 +47,7 @@ class _NutriaMenuDropdownState extends State<NutriaMenuDropdown>
     selectedIndex = widget.initialIndex;
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 200), //TODO UIStaticPorperties
+      duration: const Duration(milliseconds: UiStaticProperties.animationDurationsInMs), //TODO UIStaticPorperties
     );
     _animation = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
   }
@@ -131,8 +137,12 @@ class _DropdownItem extends StatelessWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {//TODO theme
-    final backgroundColor = isHovered ? Colors.grey[700] : Colors.grey[800];
+  Widget build(BuildContext context) {
+    //TODO theme
+
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+
+    final backgroundColor = isHovered ? theme.cButtonHovered : theme.cButton;
     return Container(
       decoration: BoxDecoration(
         color: backgroundColor,
@@ -140,18 +150,19 @@ class _DropdownItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Icon(option.icon, color: Colors.white),
+          Icon(option.icon, color: theme.cTextActive),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
-              option.text,  
-              style: const TextStyle(color: Colors.white),
+              option.text,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(color: theme.cTextActive),
             ),
           ),
           if (showArrow)
             Icon(
               isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-              color: Colors.white,
+              color: theme.cTextActive,
             ),
         ],
       ),

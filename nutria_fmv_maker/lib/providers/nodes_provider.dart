@@ -12,6 +12,7 @@ import 'dart:math';
 import '../utilities/thumbnail_generator.dart';
 
 class NodesProvider extends ChangeNotifier {
+
   NodesProvider() {
     _generateThumbnails();
   }
@@ -256,7 +257,6 @@ class NodesProvider extends ChangeNotifier {
         !nodeData.hasMaxedOutOutputs) {
       nodeData =
           nodeData.copyWith(outputs: [...nodeData.outputs, const Output()]);
-      print('from here');
     }
     // Replace the node in the list with the updated node
     _nodes[index] = nodeData;
@@ -287,7 +287,6 @@ class NodesProvider extends ChangeNotifier {
     // If the output index is the last one, add a new empty output
     if (nodeData.outputs.length == outputIndex + 1 && outputIndex < 9) {
       nodeData = nodeData.copyWith(outputs: [...nodeData.outputs, Output()]);
-      print('Added new output');
     }
     if (outputIndex == 9) {
       nodeData = nodeData.copyWith(hasMaxedOutOutputs: true);
@@ -302,9 +301,9 @@ class NodesProvider extends ChangeNotifier {
     _nodes[nodeIndex] = nodeData.copyWith(outputs: newOutputs);
 
     // Print the outputs for debugging
-    for (int i = 0; i < newOutputs.length; i++) {
+    // for (int i = 0; i < newOutputs.length; i++) {
       // print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
-    }
+    // }
 
     // If the text is empty, initialize the outputs
     if (text == '') {

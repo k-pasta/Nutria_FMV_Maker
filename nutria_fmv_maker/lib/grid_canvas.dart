@@ -32,7 +32,6 @@ class _GridCanvasState extends State<GridCanvas> {
 
   @override
   void initState() {
-    // print(context.read<NodesProvider>().iDs);
     nodes = context.read<NodesProvider>().iDs.map((id) {
       return TestNode(
         nodeId: id,
@@ -60,7 +59,6 @@ class _GridCanvasState extends State<GridCanvas> {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final gridCanvasProvider = context.read<GridCanvasProvider>();
     final nodesProvider = context.read<NodesProvider>();
-    Offset mousePosition = Offset.zero;
 
     void addNodeFromDrag(String videoId, Offset widgetLocalOffset) {
       nodesProvider.addNode(VideoNodeData(
@@ -75,7 +73,7 @@ class _GridCanvasState extends State<GridCanvas> {
     return Selector<NodesProvider, List<String>>(
         selector: (_, nodesProvider) => nodesProvider.iDs,
         builder: (context, iDs, child) {
-          print('full rebuilt');
+          print('full rebuild');
 
           _updateNodes(iDs);
 
@@ -121,30 +119,21 @@ class _GridCanvasState extends State<GridCanvas> {
 
                           Offset localPosition = box.globalToLocal(details
                                   .offset +
-                              Offset(50,
-                                  56)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
+                              Offset(UiStaticProperties.videoCollectionEntryWidth / 2,
+                                  UiStaticProperties.videoCollectionEntryWidth/2 + theme.dPanelPadding)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
 
                           addNodeFromDrag(details.data, localPosition);
-
-                          // print(localPosition);
                         },
                         builder: (context, candidateData, rejectedData) {
                           int hoverCounter = 0;
-                          return Listener(
-                            onPointerUp: (event) {
-                              mousePosition = event
-                                  .localPosition; // Correct local position during drag
-                              print('aaa ${mousePosition}');
-                            },
-                            child: MouseRegion(
-                              child: NutriaContextMenu(
-                                child: SizedBox(
-                                  height: UiStaticProperties.canvasSize,
-                                  width: UiStaticProperties.canvasSize,
-                                  child: Container(
-                                    color: theme.cBackground,
-                                    child: const Placeholder(),
-                                  ),
+                          return MouseRegion(
+                            child: NutriaContextMenu(
+                              child: SizedBox(
+                                height: UiStaticProperties.canvasSize,
+                                width: UiStaticProperties.canvasSize,
+                                child: Container(
+                                  color: theme.cBackground,
+                                  child: const Placeholder(),
                                 ),
                               ),
                             ),

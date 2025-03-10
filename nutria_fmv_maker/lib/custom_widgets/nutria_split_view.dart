@@ -30,7 +30,6 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // print(_lastSize- View.of(context).physicalSize);
     // // [View.of] exposes the view from `WidgetsBinding.instance.platformDispatcher.views`
     // // into which this widget is drawn.
     _lastSize = View.of(context).physicalSize;
@@ -44,8 +43,6 @@ class _NutriaSplitViewState extends State<NutriaSplitView>
 
   @override
   void didChangeMetrics() {
-    // print('ch m');
-    // print(View.of(context).physicalSize);
     Size _currentSize = View.of(context).physicalSize;
     UiStateProvider splitViewProvider =
         Provider.of<UiStateProvider>(context, listen: false);
@@ -115,8 +112,6 @@ Widget _buildResizableArea(BuildContext context, AreaSide area, double width,
 Widget _buildCenterArea() {
   return Expanded(
       child: Container(
-          // color: Colors.grey[300],
-          // child: Center(child: Text("CENTER")),
           ));
 }
 

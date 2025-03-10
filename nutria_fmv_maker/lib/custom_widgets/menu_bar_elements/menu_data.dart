@@ -174,7 +174,6 @@ class MenuData {
           NutriaSubmenuButton(
             text: t.viewProperties,
             function: () {
-              print('tttttt');
               context
                   .read<UiStateProvider>()
                   .toggleLeft(MediaQuery.of(context).size.width);
@@ -185,7 +184,6 @@ class MenuData {
           NutriaSubmenuButton(
             text: t.viewVideoPlayer,
             function: () {
-              print('nnnn');
               context
                   .read<UiStateProvider>()
                   .toggleRight(MediaQuery.of(context).size.width);

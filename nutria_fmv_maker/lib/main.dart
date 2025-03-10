@@ -6,7 +6,6 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
-import 'package:nutria_fmv_maker/stack_update_test.dart';
 
 import './custom_widgets/nutria_textfield.dart';
 import './internationalisation_example.dart';
@@ -16,7 +15,6 @@ import './providers/theme_provider.dart';
 import './providers/nodes_provider.dart';
 import 'custom_widgets/video_collection.dart';
 import 'video_section.dart';
-import 'multi_split_view_example.dart';
 import 'providers/ui_state_provider.dart';
 import 'thumbnail_example.dart';
 import 'custom_widgets/nutria_button.dart';
@@ -116,15 +114,8 @@ class MyHomePage extends StatelessWidget {
       backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
 
-      // body: const MenuExample(),
-      // body: const Stack(children: [ SizedBox(height: 2000, width: 2000,),
-      //   TestNode(
-      //       nodeData: VideoNodeData(
-      //           id: 'x', position: Offset(0, 0), videoDataId: 'a'))
-      // ]),
-
-      body:  const WindowsAppLayout(),
-      // body:  const ThumbnailExample(),
+      // body:  const WindowsAppLayout(),
+      body:  const ThumbnailExample(),
       
     );
   }
@@ -169,7 +160,6 @@ class WindowsAppLayout extends StatelessWidget {
                           uiStateProvider.isModalOrMenuOpen,
                       builder: (context, isModalOrMenuOpen, child) {
                         if (isModalOrMenuOpen) {
-                          print('open main, build');
                           return Container(
                             color: Colors.black45, //TODO de-hardcode
                           );

@@ -25,33 +25,25 @@ class NodeVideoThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-    final VideoPlayerProvider videoPlayerProvider =
-        context.read<VideoPlayerProvider>();
+   
 
     VideoData videoData = nodesProvider.getVideoDataById(videoDataId);
     return Stack(children: [
-      GestureDetector(
-        onTapDown: (_) {
-          videoPlayerProvider.loadVideo(
-              path: videoData.videoDataPath, NodeId: videoNodeData.id);
-          print('tappped downnn');
-        },
-        child: ClipRRect(
-          child: SizedBox(
-            width: double.infinity, // Ensures it fills horizontally
-            height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
-            child: FittedBox(
-              fit: BoxFit.cover, // Ensures larger side fills the container
-              child: videoData.thumbnailPath == null
-                  ? Placeholder(
-                      child: Container(
-                        color: Colors.black12,
-                      ),
-                    ) //todo implement missing
-                  : videoData.thumbnailPath!.startsWith('http')
-                      ? Image.network(videoData.thumbnailPath!)
-                      : Image.file(File(videoData.thumbnailPath!)),
-            ),
+      ClipRRect(
+        child: SizedBox(
+          width: double.infinity, // Ensures it fills horizontally
+          height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
+          child: FittedBox(
+            fit: BoxFit.cover, // Ensures larger side fills the container
+            child: videoData.thumbnailPath == null
+                ? Placeholder(
+                    child: Container(
+                      color: Colors.black12,
+                    ),
+                  ) //todo implement missing
+                : videoData.thumbnailPath!.startsWith('http')
+                    ? Image.network(videoData.thumbnailPath!)
+                    : Image.file(File(videoData.thumbnailPath!)),
           ),
         ),
       ),
