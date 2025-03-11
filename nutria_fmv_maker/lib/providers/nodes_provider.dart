@@ -18,7 +18,7 @@ class NodesProvider extends ChangeNotifier {
   }
 
   Uuid uuid = Uuid();
-  
+
   Future<void> _generateThumbnails() async {
     for (var video in _videos) {
       try {
@@ -55,7 +55,7 @@ class NodesProvider extends ChangeNotifier {
   }
 
   // Immutable list of nodes
-  final List<NodeData> _nodes = [
+  final List<NodeData> _nodes =  [
     VideoNodeData(
       id: 'aaa',
       position: const Offset(0, 0),
@@ -66,9 +66,12 @@ class NodesProvider extends ChangeNotifier {
         Output(outputData: 'First text'),
         Output(outputData: 'First text'),
         Output(outputData: 'First text'),
-        
       ],
-      overrides: {'SelectionTime': const Duration(seconds: 10), 'PauseOnEnd': false, 'ShowTimer': true},
+      overrides: {
+        'SelectionTime': const Duration(seconds: 10),
+        'PauseOnEnd': false,
+        'ShowTimer': true
+      },
       nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
     ),
     VideoNodeData(
@@ -102,50 +105,50 @@ class NodesProvider extends ChangeNotifier {
     ),
   ];
 
-void removeOverride(String nodeId, String key) {
-  int nodeIndex = getNodeIndexById(nodeId);
-  final node = _nodes[nodeIndex];
+  void removeOverride(String nodeId, String key) {
+    int nodeIndex = getNodeIndexById(nodeId);
+    final node = _nodes[nodeIndex];
 
-  if (node is VideoNodeData) {
-    final updatedOverrides = Map<String, dynamic>.from(node.overrides);
-    updatedOverrides.remove(key);
+    if (node is VideoNodeData) {
+      final updatedOverrides = Map<String, dynamic>.from(node.overrides);
+      updatedOverrides.remove(key);
 
-    final updatedNode = node.copyWith(overrides: updatedOverrides);
-    _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
-  } else {
-    throw Exception("Node is not of type VideoNodeData");
+      final updatedNode = node.copyWith(overrides: updatedOverrides);
+      _nodes[nodeIndex] = updatedNode;
+      notifyListeners();
+    } else {
+      throw Exception("Node is not of type VideoNodeData");
+    }
   }
-}
 
-void removeAllOverrides(String nodeId) {
-  int nodeIndex = getNodeIndexById(nodeId);
-  final node = _nodes[nodeIndex];
+  void removeAllOverrides(String nodeId) {
+    int nodeIndex = getNodeIndexById(nodeId);
+    final node = _nodes[nodeIndex];
 
-  if (node is VideoNodeData) {
-    final updatedNode = node.copyWith(overrides: {});
-    _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
-  } else {
-    throw Exception("Node is not of type VideoNodeData");
+    if (node is VideoNodeData) {
+      final updatedNode = node.copyWith(overrides: {});
+      _nodes[nodeIndex] = updatedNode;
+      notifyListeners();
+    } else {
+      throw Exception("Node is not of type VideoNodeData");
+    }
   }
-}
 
-void addOverride(String nodeId, String key, dynamic value) {
-  int nodeIndex = getNodeIndexById(nodeId);
-  final node = _nodes[nodeIndex];
+  void addOverride(String nodeId, String key, dynamic value) {
+    int nodeIndex = getNodeIndexById(nodeId);
+    final node = _nodes[nodeIndex];
 
-  if (node is VideoNodeData) {
-    final updatedOverrides = Map<String, dynamic>.from(node.overrides);
-    updatedOverrides[key] = value;
+    if (node is VideoNodeData) {
+      final updatedOverrides = Map<String, dynamic>.from(node.overrides);
+      updatedOverrides[key] = value;
 
-    final updatedNode = node.copyWith(overrides: updatedOverrides);
-    _nodes[nodeIndex] = updatedNode;
-    notifyListeners();
-  } else {
-    throw Exception("Node is not of type VideoNodeData");
+      final updatedNode = node.copyWith(overrides: updatedOverrides);
+      _nodes[nodeIndex] = updatedNode;
+      notifyListeners();
+    } else {
+      throw Exception("Node is not of type VideoNodeData");
+    }
   }
-}
 
   // Getter for nodes (returns an immutable list)
   List<NodeData> get nodes => List.unmodifiable(_nodes);
@@ -247,6 +250,7 @@ void addOverride(String nodeId, String key, dynamic value) {
   NoodleData? get currentNoodle {
     return _currentNoodle;
   }
+
   // Get a node by its ID
   T getNodeById<T extends NodeData>(String id) {
     final node = _nodes.firstWhere(
@@ -260,8 +264,6 @@ void addOverride(String nodeId, String key, dynamic value) {
       throw Exception("Node is not of type ${T.runtimeType}");
     }
   }
-
-
 
   int getNodeIndexById(String id) {
     final index = _nodes.indexWhere((n) => n.id == id);

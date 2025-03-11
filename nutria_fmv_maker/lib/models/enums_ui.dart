@@ -1,6 +1,7 @@
 //script for all enums concerning the UI state
 
 enum ButtonStateType { hovered, pressed, normal }
+enum ButtonHoverSide { left, right, none }
 
 enum NutriaTextState { normal, accented, inactive }
 enum NutriaTextStyle { normal, bold, italic, boldItalic }

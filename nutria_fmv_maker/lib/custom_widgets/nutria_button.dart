@@ -12,10 +12,9 @@ class NutriaButton extends StatefulWidget {
   final VoidCallback onTapRight;
   final VoidCallback onTapLeft;
   final IconData? icon;
-
+  final double iconScalingFactor;
   final bool _isLeftRight;
-  static void _defaultOnTap() {
-  }
+  static void _defaultOnTap() {}
 
   const NutriaButton({
     super.key,
@@ -26,7 +25,8 @@ class NutriaButton extends StatefulWidget {
   })  : onTapLeft = _defaultOnTap,
         onTapRight = _defaultOnTap,
         _isLeftRight = false,
-        icon = null;
+        icon = null,
+        iconScalingFactor = 0.65;
 
   const NutriaButton.leftRight({
     super.key,
@@ -37,7 +37,8 @@ class NutriaButton extends StatefulWidget {
     this.isActive = true,
   })  : onTap = _defaultOnTap,
         _isLeftRight = true,
-        icon = null;
+        icon = null,
+        iconScalingFactor = 0.65;
 
   const NutriaButton.Icon({
     super.key,
@@ -45,6 +46,7 @@ class NutriaButton extends StatefulWidget {
     required this.icon,
     this.isAccented = false,
     this.isActive = true,
+    this.iconScalingFactor = 0.65,
   })  : onTapLeft = _defaultOnTap,
         onTapRight = _defaultOnTap,
         child = null,
@@ -62,9 +64,9 @@ class _NutriaButtonState extends State<NutriaButton> {
     super.initState();
     // Initialize buttonColor based on the current widget state
     buttonState = ButtonState(
-        isAccented: widget.isAccented,
-        isActive: widget.isActive,
-        buttonStateType: ButtonStateType.normal);
+      isAccented: widget.isAccented,
+      isActive: widget.isActive,
+    );
   }
 
   Color getColor(ButtonState buttonState, AppTheme theme) {
@@ -79,8 +81,6 @@ class _NutriaButtonState extends State<NutriaButton> {
             : theme.cButtonPressed;
       case ButtonStateType.normal:
         return buttonState.isAccented ? theme.cAccentButton : theme.cButton;
-      // default: theme.cButton;
-      // return theme.cButton;
     }
   }
 
@@ -109,10 +109,17 @@ class _NutriaButtonState extends State<NutriaButton> {
         positionX = details.localPosition.dx;
         if (positionX < widgetWidth / 2) {
           // Hover is on the left half
-          // widget.onTapLeft();
+          if (buttonState.buttonHoverSide != ButtonHoverSide.left) {
+            setState(() {
+              buttonState.buttonHoverSide = ButtonHoverSide.left;
+            });
+          }
         } else {
-          // Hover is on the right half
-          // widget.onTapRight();
+          if (buttonState.buttonHoverSide != ButtonHoverSide.right) {
+            setState(() {
+              buttonState.buttonHoverSide = ButtonHoverSide.right;
+            });
+          }
         }
       },
       hitTestBehavior: HitTestBehavior
@@ -125,6 +132,7 @@ class _NutriaButtonState extends State<NutriaButton> {
       onExit: (_) {
         setState(() {
           buttonState.buttonStateType = ButtonStateType.normal;
+          buttonState.buttonHoverSide = ButtonHoverSide.none;
         });
       },
       cursor: buttonState.isActive
@@ -159,7 +167,6 @@ class _NutriaButtonState extends State<NutriaButton> {
         },
         onTap: widget.isActive
             ? () {
-                // context.read<ThemeProvider>().toggleThemeMode(); //Todo remove
                 widget.onTap();
               }
             : () {},
@@ -171,7 +178,9 @@ class _NutriaButtonState extends State<NutriaButton> {
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(
-                color: buttonState.isAccented ? theme.cAccentButtonHovered : theme.cOutlines,
+                color: buttonState.isAccented
+                    ? theme.cAccentButtonHovered
+                    : theme.cOutlines,
                 width: theme.dOutlinesWidth,
               ),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
@@ -186,10 +195,13 @@ class _NutriaButtonState extends State<NutriaButton> {
                       left: -theme.dButtonHeight / 5,
                       child: Icon(Icons.arrow_left,
                           size: theme.dButtonHeight,
-                          color: buttonState.buttonStateType ==
-                                  ButtonStateType.normal
-                              ? theme.cPanel
-                              : theme.cText),
+                          color: buttonState.buttonHoverSide ==
+                                  ButtonHoverSide.left
+                              ? theme.cText
+                              : buttonState.buttonHoverSide ==
+                                      ButtonHoverSide.right
+                                  ? theme.cTextInactive
+                                  : theme.cPanel),
                     )
                   : Container(),
               widget._isLeftRight
@@ -199,17 +211,21 @@ class _NutriaButtonState extends State<NutriaButton> {
                       right: -theme.dButtonHeight / 5,
                       child: Icon(Icons.arrow_right,
                           size: theme.dButtonHeight,
-                          color: buttonState.buttonStateType ==
-                                  ButtonStateType.normal
-                              ? theme.cPanel
-                              : theme.cText),
+                          color: buttonState.buttonHoverSide ==
+                                  ButtonHoverSide.right
+                              ? theme.cText
+                              : buttonState.buttonHoverSide ==
+                                      ButtonHoverSide.left
+                                  ? theme.cTextInactive
+                                  : theme.cPanel),
                     )
                   : Container(),
-              Center(child: widget.child), //TODO figure why this is not centered
+              Center(
+                  child: widget.child), //TODO figure why this is not centered
 
               Center(
                   child: Icon(widget.icon,
-                      size: theme.dButtonHeight*0.65,
+                      size: theme.dButtonHeight * widget.iconScalingFactor,
                       color: buttonState.buttonStateType ==
                               ButtonStateType.normal
                           ? theme.cPanel
@@ -227,10 +243,11 @@ class ButtonState {
   bool isAccented;
   bool isActive;
   ButtonStateType buttonStateType;
+  ButtonHoverSide buttonHoverSide;
   ButtonState({
     required this.isAccented,
     required this.isActive,
-    required this.buttonStateType,
+    this.buttonStateType = ButtonStateType.normal,
+    this.buttonHoverSide = ButtonHoverSide.none,
   });
 }
-
