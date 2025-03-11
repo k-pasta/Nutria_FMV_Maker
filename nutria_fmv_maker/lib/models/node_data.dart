@@ -89,11 +89,6 @@ abstract class BaseNodeData extends NodeData {
   });
 }
 
-class VideoNodeData extends BaseNodeData {
-  final String videoDataId;
-  final bool hasMaxedOutOutputs;
-  final Map<String, dynamic> overrides;
-
   // /// Set an override for a property
   // void setOverride(String key, dynamic value) {
   //   overrides[key] = value;
@@ -108,6 +103,11 @@ class VideoNodeData extends BaseNodeData {
   // VideoData? getVideoData(List<VideoData> videoList) {
   //   return videoList.firstWhereOrNull((element) => element.id == videoDataId);
   // }
+
+class VideoNodeData extends BaseNodeData {
+  final String videoDataId;
+  final bool hasMaxedOutOutputs;
+  final Map<String, dynamic> overrides;
 
   const VideoNodeData({
     required super.position,
@@ -255,7 +255,7 @@ class VideoData {
   final String id;
   final String videoDataPath;
   final String? thumbnailPath;
-  String get fileName => videoDataPath.split('/').last;
+  String get fileName => '${Uri.file(videoDataPath).pathSegments.last}';
   // Duration get duration =>
   //     const Duration(seconds: 10); //TODO make work with videoplayer plugin
   VideoData({

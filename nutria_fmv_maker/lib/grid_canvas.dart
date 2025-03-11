@@ -106,7 +106,7 @@ class _GridCanvasState extends State<GridCanvas> {
                     .infinity), //creates infinite canvas by extending outwards.
                 clipBehavior: Clip.none, // allows no clipping
                 constrained: false, //panning glitches if not set to false
-
+                
                 child: Stack(
                   clipBehavior: Clip.none, //allows no clipping
 
@@ -117,10 +117,14 @@ class _GridCanvasState extends State<GridCanvas> {
                           final RenderBox box = gridCanvasKey.currentContext!
                               .findRenderObject() as RenderBox;
 
-                          Offset localPosition = box.globalToLocal(details
-                                  .offset +
-                              Offset(UiStaticProperties.videoCollectionEntryWidth / 2,
-                                  UiStaticProperties.videoCollectionEntryWidth/2 + theme.dPanelPadding)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
+                          Offset localPosition = box.globalToLocal(details.offset +
+                              Offset(
+                                  UiStaticProperties.videoCollectionEntryWidth /
+                                      2,
+                                  UiStaticProperties.videoCollectionEntryWidth /
+                                          2 +
+                                      theme
+                                          .dPanelPadding)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
 
                           addNodeFromDrag(details.data, localPosition);
                         },

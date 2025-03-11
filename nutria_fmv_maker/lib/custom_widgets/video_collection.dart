@@ -1,7 +1,9 @@
 import 'dart:io';
 
+import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/video_collection_elements/video_thumbnail.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
@@ -17,6 +19,25 @@ import 'video_collection_elements/video_collection_entry.dart';
 class VideoCollection extends StatelessWidget {
   VideoCollection({super.key});
   final scrollController = ScrollController();
+
+  Future<List<String>?> _selectVideo() async {
+    try {
+      // Open the file selector to pick multiple video files
+      var files = await openFiles(
+        acceptedTypeGroups: [
+          XTypeGroup(
+            label: 'videos',
+            extensions: ['mp4', 'avi', 'mov', 'mkv'],
+          ),
+        ],
+      );
+      if (files.isEmpty) return null;
+      return files.map((file) => file.path).toList();
+    } catch (err) {
+      print('Error: $err');
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,45 +77,65 @@ class VideoCollection extends StatelessWidget {
             height: theme.dPanelPadding,
           ),
           Expanded(
-            child: RawScrollbar(
-              controller: scrollController,
-              thumbVisibility: true,
-              scrollbarOrientation: ScrollbarOrientation.right,
-              radius: Radius.circular(theme.dButtonBorderRadius),
-              thumbColor: theme.cButtonPressed,
-              trackColor: theme.cButton,
-              trackVisibility: true,
-              child: ScrollConfiguration(
-                behavior:
-                    ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            child: Stack(children: [
+              SizedBox(
+                width: double.infinity,
                 child: Padding(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
-                  child: SingleChildScrollView(
-                    clipBehavior: Clip.hardEdge,
+                  padding: EdgeInsets.only(bottom: theme.dButtonHeight + theme.dSectionPadding + theme.dPanelPadding),
+                  child: RawScrollbar(
                     controller: scrollController,
-                    child: Wrap(
-                        children: nodesProvider.videos
-                            .map((video) =>
-                                VideoCollectionEntry(videoDataId: video.id))
-                            .toList()
-
-                        // children: List.generate(
-                        //   25,
-                        //   (index) => const VideoCollectionEntry(),
-                        // ),
+                    thumbVisibility: true,
+                    scrollbarOrientation: ScrollbarOrientation.right,
+                    radius: Radius.circular(theme.dButtonBorderRadius),
+                    thumbColor: theme.cButtonPressed,
+                    trackColor: theme.cButton,
+                    trackVisibility: true,
+                    child: ScrollConfiguration(
+                      behavior: ScrollConfiguration.of(context)
+                          .copyWith(scrollbars: false),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(
+                            horizontal: theme.dSectionPadding),
+                        child: SingleChildScrollView(
+                          clipBehavior: Clip.hardEdge,
+                          controller: scrollController,
+                          child: Selector<NodesProvider, List<String>>(
+                            selector: (context, provider) =>
+                                provider.videoDataIds,
+                            builder:
+                                (BuildContext context, value, Widget? child) {
+                              return Wrap(
+                                  children: nodesProvider.videos
+                                      .map((video) => VideoCollectionEntry(
+                                          videoDataId: video.id))
+                                      .toList());
+                            },
+                          ),
                         ),
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+              Positioned(
+                  child: NutriaButton.Icon(
+                    onTap: () {
+                      _selectVideo().then((paths) {
+                        if (paths == null) return;
+
+                        for (var path in paths) {
+                          nodesProvider.addVideo(path);
+                        }
+                      });
+                    },
+                    icon: Icons.add, isAccented: true,
+                  ),
+                  right: 0,
+                  bottom: theme.dSectionPadding),
+            ]),
           ),
         ],
       ),
     );
   }
 }
-
-
-
-

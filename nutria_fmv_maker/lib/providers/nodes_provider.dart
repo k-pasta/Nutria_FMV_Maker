@@ -5,6 +5,7 @@ import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
+import 'package:uuid/uuid.dart';
 import '../models/app_theme.dart';
 import '../models/node_data.dart';
 import 'dart:math';
@@ -12,39 +13,44 @@ import 'dart:math';
 import '../utilities/thumbnail_generator.dart';
 
 class NodesProvider extends ChangeNotifier {
-
   NodesProvider() {
     _generateThumbnails();
   }
 
+  Uuid uuid = Uuid();
+  
   Future<void> _generateThumbnails() async {
-    // Iterate over each video in the list
     for (var video in _videos) {
-      // Create a Task for each VideoData
-      var task = Task(
-        name: 'Generate Thumbnail for ${video.videoDataPath}',
-        srcFile: video.videoDataPath,
-        width: UiStaticProperties.thumbnailSize, // You can adjust the size here
-        height:
-            UiStaticProperties.thumbnailSize, // Adjust the size here as well
-        isSrcUri: false, // Depending on your scenario, adjust this
-      );
-
-      // Run the task
-      await task.run();
-
-      // Once the task is done, update the thumbnail path
-      if (task.destFile != null) {
-        var updatedVideo = video.copyWith(thumbnailPath: task.destFile);
+      try {
+        var thumbnailPath = await _generateSingleThumbnail(video.videoDataPath);
+        var updatedVideo = video.copyWith(thumbnailPath: thumbnailPath);
         _videos[_videos.indexOf(video)] = updatedVideo;
-        print('Thumbnail created for ${video.videoDataPath}: ${task.destFile}');
-      } else {
-        print(
-            'Error creating thumbnail for ${video.videoDataPath}: ${task.error}');
+      } catch (e) {
+        print(e);
       }
+    }
+  }
 
-      // Placeholder to indicate that the task is done
-      print('Task done for ${video.videoDataPath}');
+  Future<String> _generateSingleThumbnail(String videoPath) async {
+    // Create a Task for the VideoData
+    var task = Task(
+      name: 'Generate Thumbnail for $videoPath',
+      srcFile: videoPath,
+      width: UiStaticProperties.thumbnailSize, // Adjust the size here
+      height: UiStaticProperties.thumbnailSize, // Adjust the size here as well
+      isSrcUri: false, // Depending on your scenario, adjust this
+    );
+
+    // Run the task
+    await task.run();
+
+    // Return the thumbnail path if the task is successful
+    if (task.destFile != null) {
+      print('Thumbnail created for $videoPath: ${task.destFile}');
+      return task.destFile!;
+    } else {
+      print('Error creating thumbnail for $videoPath: ${task.error}');
+      throw Exception('Error creating thumbnail for $videoPath: ${task.error}');
     }
   }
 
@@ -60,7 +66,9 @@ class NodesProvider extends ChangeNotifier {
         Output(outputData: 'First text'),
         Output(outputData: 'First text'),
         Output(outputData: 'First text'),
+        
       ],
+      overrides: {'SelectionTime': const Duration(seconds: 10), 'PauseOnEnd': false, 'ShowTimer': true},
       nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
     ),
     VideoNodeData(
@@ -94,11 +102,59 @@ class NodesProvider extends ChangeNotifier {
     ),
   ];
 
+void removeOverride(String nodeId, String key) {
+  int nodeIndex = getNodeIndexById(nodeId);
+  final node = _nodes[nodeIndex];
+
+  if (node is VideoNodeData) {
+    final updatedOverrides = Map<String, dynamic>.from(node.overrides);
+    updatedOverrides.remove(key);
+
+    final updatedNode = node.copyWith(overrides: updatedOverrides);
+    _nodes[nodeIndex] = updatedNode;
+    notifyListeners();
+  } else {
+    throw Exception("Node is not of type VideoNodeData");
+  }
+}
+
+void removeAllOverrides(String nodeId) {
+  int nodeIndex = getNodeIndexById(nodeId);
+  final node = _nodes[nodeIndex];
+
+  if (node is VideoNodeData) {
+    final updatedNode = node.copyWith(overrides: {});
+    _nodes[nodeIndex] = updatedNode;
+    notifyListeners();
+  } else {
+    throw Exception("Node is not of type VideoNodeData");
+  }
+}
+
+void addOverride(String nodeId, String key, dynamic value) {
+  int nodeIndex = getNodeIndexById(nodeId);
+  final node = _nodes[nodeIndex];
+
+  if (node is VideoNodeData) {
+    final updatedOverrides = Map<String, dynamic>.from(node.overrides);
+    updatedOverrides[key] = value;
+
+    final updatedNode = node.copyWith(overrides: updatedOverrides);
+    _nodes[nodeIndex] = updatedNode;
+    notifyListeners();
+  } else {
+    throw Exception("Node is not of type VideoNodeData");
+  }
+}
+
   // Getter for nodes (returns an immutable list)
   List<NodeData> get nodes => List.unmodifiable(_nodes);
 
   List<String> get iDs =>
       List.unmodifiable(_nodes.map((node) => node.id).toList());
+
+  List<String> get videoDataIds =>
+      List.unmodifiable(_videos.map((video) => video.id).toList());
 
   List<Offset> get positions =>
       List.unmodifiable(_nodes.map((node) => node.position).toList());
@@ -154,19 +210,16 @@ class NodesProvider extends ChangeNotifier {
       id: 'a',
       videoDataPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
     ),
-
     VideoData(
       id: 'b',
       videoDataPath:
           'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
     ),
-
     VideoData(
       id: 'c',
       videoDataPath:
           'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
     ),
-
   ];
   List<VideoData> get videos => List.unmodifiable(_videos);
 
@@ -194,7 +247,6 @@ class NodesProvider extends ChangeNotifier {
   NoodleData? get currentNoodle {
     return _currentNoodle;
   }
-
   // Get a node by its ID
   T getNodeById<T extends NodeData>(String id) {
     final node = _nodes.firstWhere(
@@ -208,6 +260,8 @@ class NodesProvider extends ChangeNotifier {
       throw Exception("Node is not of type ${T.runtimeType}");
     }
   }
+
+
 
   int getNodeIndexById(String id) {
     final index = _nodes.indexWhere((n) => n.id == id);
@@ -302,7 +356,7 @@ class NodesProvider extends ChangeNotifier {
 
     // Print the outputs for debugging
     // for (int i = 0; i < newOutputs.length; i++) {
-      // print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
+    // print('Index: $i, Output: ${newOutputs[i].outputData.toString()}');
     // }
 
     // If the text is empty, initialize the outputs
@@ -770,5 +824,31 @@ class NodesProvider extends ChangeNotifier {
   void addNode(NodeData node) {
     _nodes.add(node);
     notifyListeners();
+  }
+
+  void addVideo(String path) {
+    if (_videos.any((video) => video.videoDataPath == path)) {
+      //TODO also notify user it already exists
+      return;
+    }
+
+    // Create a new VideoData with an empty thumbnail path
+    var newVideo = VideoData(
+      id: uuid.v1(),
+      videoDataPath: path,
+      thumbnailPath: null,
+    );
+
+    // Add the new video to the list and notify listeners
+    _videos.add(newVideo);
+    notifyListeners();
+
+    // Generate the thumbnail and update the video
+
+    _generateSingleThumbnail(path).then((thumbnailPath) {
+      var updatedVideo = newVideo.copyWith(thumbnailPath: thumbnailPath);
+      _videos[_videos.indexOf(newVideo)] = updatedVideo;
+      notifyListeners();
+    });
   }
 }

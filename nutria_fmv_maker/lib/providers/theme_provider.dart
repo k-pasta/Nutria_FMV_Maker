@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../models/app_theme.dart';
+import '../models/enums_ui.dart';
 
 class ThemeProvider extends ChangeNotifier {
   static const AppTheme _appThemeDark = AppTheme();
@@ -48,10 +49,4 @@ void setTheme(ThemeType themeType) {
     _isThemeDark = !_isThemeDark;
     notifyListeners();
   }
-}
-
-enum ThemeType {
-  dark,
-  light,
-  custom,
 }

@@ -2,14 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import '../../models/app_theme.dart';
+import '../../models/enums_ui.dart';
 import '../../providers/nodes_provider.dart';
 import '../../providers/theme_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../providers/video_player_provider.dart';
 import 'video_thumbnail.dart';
-
-enum VideoFileState { none, hovered, selected, active }
 
 class VideoCollectionEntry extends StatefulWidget {
   final String videoDataId;
@@ -42,7 +41,8 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
     return Draggable<String>(
       data: widget.videoDataId,
       dragAnchorStrategy: (draggable, context, position) {
-        return Offset(UiStaticProperties.videoCollectionEntryWidth / 2, UiStaticProperties.videoCollectionEntryWidth * 9 / 16);
+        return Offset(UiStaticProperties.videoCollectionEntryWidth / 2,
+            UiStaticProperties.videoCollectionEntryWidth * 9 / 16);
       },
       feedback: VideoThumbnail(videoData: videoData),
       child: MouseRegion(
@@ -89,6 +89,7 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
             child: Column(
               children: [
                 VideoThumbnail(videoData: videoData),
+                SizedBox(height: theme.dPanelPadding),
                 SizedBox(
                   width: UiStaticProperties.videoCollectionEntryWidth,
                   child: Text(

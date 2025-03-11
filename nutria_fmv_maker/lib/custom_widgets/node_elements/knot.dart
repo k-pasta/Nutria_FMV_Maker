@@ -120,9 +120,6 @@ class _KnotState extends State<Knot> {
           onPanUpdate: (details) {
             nodesProvider.setDraggedNoodle(
                 details.localPosition, details.delta);
-
-            // print('true update');
-            // print('update triggered');
           },
           onPanEnd: (details) {
             nodesProvider.endDragging();

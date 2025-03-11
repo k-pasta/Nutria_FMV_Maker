@@ -3,6 +3,7 @@ import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
 
 import '../models/app_theme.dart';
+import '../models/enums_ui.dart';
 import '../providers/theme_provider.dart';
 import '../providers/ui_state_provider.dart';
 import 'split_view_elements/open_area_button.dart';

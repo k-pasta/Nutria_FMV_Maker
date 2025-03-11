@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_theme.dart';
+import '../../models/enums_ui.dart';
 import '../../providers/ui_state_provider.dart';
 import '../../providers/theme_provider.dart';
 

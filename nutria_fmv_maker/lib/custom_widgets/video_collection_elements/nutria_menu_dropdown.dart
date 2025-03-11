@@ -138,7 +138,6 @@ class _DropdownItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //TODO theme
 
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
@@ -150,13 +149,13 @@ class _DropdownItem extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
       child: Row(
         children: [
-          Icon(option.icon, color: theme.cTextActive),
+          Icon(option.icon, color: showArrow || isHovered ? theme.cTextActive : theme.cText),
           const SizedBox(width: 8),
           Expanded(
             child: Text(
               option.text,
               overflow: TextOverflow.ellipsis,
-              style: TextStyle(color: theme.cTextActive),
+              style: TextStyle(color: showArrow || isHovered ? theme.cTextActive : theme.cText),
             ),
           ),
           if (showArrow)

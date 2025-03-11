@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 
+import '../models/enums_ui.dart';
 import '../static_data/ui_static_properties.dart';
 
 import 'dart:math';
 
-enum AreaSide { left, right }
+
 
 class UiStateProvider extends ChangeNotifier {
   //context menu

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:provider/provider.dart';
+import '../models/enums_ui.dart';
 import '../providers/theme_provider.dart';
 
 class NutriaButton extends StatefulWidget {
@@ -14,7 +15,6 @@ class NutriaButton extends StatefulWidget {
 
   final bool _isLeftRight;
   static void _defaultOnTap() {
-    print('default');
   }
 
   const NutriaButton({
@@ -171,7 +171,7 @@ class _NutriaButtonState extends State<NutriaButton> {
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(
-                color: buttonState.isAccented ? theme.cAccent : theme.cOutlines,
+                color: buttonState.isAccented ? theme.cAccentButtonHovered : theme.cOutlines,
                 width: theme.dOutlinesWidth,
               ),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius)),
@@ -205,7 +205,7 @@ class _NutriaButtonState extends State<NutriaButton> {
                               : theme.cText),
                     )
                   : Container(),
-              // Center(child: widget.child), //TODO figure why this is not centered
+              Center(child: widget.child), //TODO figure why this is not centered
 
               Center(
                   child: Icon(widget.icon,
@@ -234,4 +234,3 @@ class ButtonState {
   });
 }
 
-enum ButtonStateType { hovered, pressed, normal }

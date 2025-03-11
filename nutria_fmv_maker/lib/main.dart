@@ -1,31 +1,22 @@
 import 'package:media_kit/media_kit.dart';
-import 'package:menu_bar/menu_bar.dart';
-import 'package:multi_split_view/multi_split_view.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_context_menu.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_menu_bar.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_split_view.dart';
-import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
-import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
 
-import './custom_widgets/nutria_textfield.dart';
-import './internationalisation_example.dart';
-import './models/node_data.dart';
-import './providers/locale_provider.dart';
-import './providers/theme_provider.dart';
-import './providers/nodes_provider.dart';
+import 'custom_widgets/nutria_menu_bar.dart';
+import 'custom_widgets/nutria_split_view.dart';
 import 'custom_widgets/video_collection.dart';
+import 'providers/app_settings_provider.dart';
+import 'providers/video_player_provider.dart';
+
+import 'providers/locale_provider.dart';
+import 'providers/theme_provider.dart';
+import 'providers/nodes_provider.dart';
 import 'video_section.dart';
 import 'providers/ui_state_provider.dart';
-import 'thumbnail_example.dart';
-import 'custom_widgets/nutria_button.dart';
-import 'custom_widgets/video_node.dart';
 import 'models/app_theme.dart';
-import './providers/grid_canvas_provider.dart';
-import './grid_canvas.dart';
+import 'providers/grid_canvas_provider.dart';
+import 'grid_canvas.dart';
 
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-// import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 void main() {
@@ -114,8 +105,7 @@ class MyHomePage extends StatelessWidget {
       backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
 
-      // body:  const WindowsAppLayout(),
-      body:  const ThumbnailExample(),
+      body:  const WindowsAppLayout(),
       
     );
   }
@@ -149,9 +139,9 @@ class WindowsAppLayout extends StatelessWidget {
               child: Stack(
                 children: [
                   const GridCanvas(),
-                   NutriaSplitView(
-                    rightChild: VideoSection(),
-                    leftChild: VideoCollection(),
+                    NutriaSplitView(
+                    rightChild:  VideoSection(),
+                    leftChild:  VideoCollection(),
                   ),
                   Positioned.fill(
                     //UI fader

@@ -45,11 +45,6 @@ class NutriaMenuBar extends StatelessWidget {
             Focus(
           focusNode: uiStateProvider.parentfocusNode,
           onFocusChange: (gotFocus) {
-            if (gotFocus) {
-              print('menu got focus');
-            } else {
-              print('menu lost focus');
-            }
           },
           child: SizedBox(
             width: double.infinity,
