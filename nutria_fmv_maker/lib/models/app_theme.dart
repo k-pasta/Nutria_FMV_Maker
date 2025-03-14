@@ -63,7 +63,7 @@ class AppTheme {
   // Constructor
   const AppTheme({
     this.cBackground = const Color(0xff121212),
-    this.cBackgroundDots = const Color(0xff212121),
+    this.cBackgroundDots = const Color(0xff282828),
     this.cAccent = const Color(0xffff4e6a),
     this.cAccentButton = const Color(0xaaff4e6a),
     this.cAccentButtonHovered = const Color(0xccff4e6a),

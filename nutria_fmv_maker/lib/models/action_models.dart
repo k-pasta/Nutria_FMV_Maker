@@ -1,3 +1,5 @@
+import 'enums_data.dart';
+
 class Action {
   final void Function() doAction;
   final String actionName;
@@ -42,7 +44,7 @@ extension LogicalPositionExtensions on LogicalPosition {
   bool get isEmpty => type == LogicalPositionType.empty;
 }
 
-enum LogicalPositionType { output, input, node, empty }
+
 
 // /// Represents the intent of a drag action involving a noodle (connection) in the UI.
 // ///

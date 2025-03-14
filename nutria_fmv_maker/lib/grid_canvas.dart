@@ -137,7 +137,7 @@ class _GridCanvasState extends State<GridCanvas> {
                                 width: UiStaticProperties.canvasSize,
                                 child: Container(
                                   color: theme.cBackground,
-                                  child: const Placeholder(),
+                                  // child: const Placeholder(),
                                 ),
                               ),
                             ),

@@ -90,3 +90,7 @@ String _getDefaultSelectionMethodString(DefaultSelectionMethod method) {
 enum VideoFit { fit, fitwidth, fitheight, fill, fillWidth, fillHeight, stretch }
 
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
+
+enum LogicalPositionType { output, input, node, empty }
+
+enum MediaFileSource { videoFile, node, audioFile }

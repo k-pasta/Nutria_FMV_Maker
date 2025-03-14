@@ -7,6 +7,7 @@ import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 import '../models/app_theme.dart';
+import '../models/enums_data.dart';
 import '../models/node_data.dart';
 import 'dart:math';
 
@@ -56,53 +57,53 @@ class NodesProvider extends ChangeNotifier {
 
   // Immutable list of nodes
   final List<NodeData> _nodes =  [
-    VideoNodeData(
-      id: 'aaa',
-      position: const Offset(0, 0),
-      videoDataId: 'a',
-      isExpanded: false,
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-      ],
-      overrides: {
-        'SelectionTime': const Duration(seconds: 10),
-        'PauseOnEnd': false,
-        'ShowTimer': true
-      },
-      nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
-    ),
-    VideoNodeData(
-      id: 'bbb',
-      position: const Offset(150, 250),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-      ],
-    ),
-    VideoNodeData(
-      id: 'ccc',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-      ],
-    ),
-    VideoNodeData(
-      id: 'ddd',
-      position: const Offset(150, 20),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text', targetNodeId: 'aaa'),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-        Output(outputData: ''),
-      ],
-    ),
+    // VideoNodeData(
+    //   id: 'aaa',
+    //   position: const Offset(0, 0),
+    //   videoDataId: 'a',
+    //   isExpanded: false,
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //   ],
+    //   overrides: {
+    //     'SelectionTime': const Duration(seconds: 10),
+    //     'PauseOnEnd': false,
+    //     'ShowTimer': true
+    //   },
+    //   nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
+    // ),
+    // VideoNodeData(
+    //   id: 'bbb',
+    //   position: const Offset(150, 250),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'ccc',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //   ],
+    // ),
+    // VideoNodeData(
+    //   id: 'ddd',
+    //   position: const Offset(150, 20),
+    //   videoDataId: 'a',
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text', targetNodeId: 'aaa'),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //     Output(outputData: ''),
+    //   ],
+    // ),
   ];
 
   void removeOverride(String nodeId, String key) {
@@ -207,23 +208,25 @@ class NodesProvider extends ChangeNotifier {
     return noodles;
   }
 
-// Getter for videos (returns an immutable list)
+
   final List<VideoData> _videos = [
-    VideoData(
-      id: 'a',
-      videoDataPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
-    ),
-    VideoData(
-      id: 'b',
-      videoDataPath:
-          'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
-    ),
-    VideoData(
-      id: 'c',
-      videoDataPath:
-          'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
-    ),
+    // VideoData(
+    //   id: 'a',
+    //   videoDataPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
+    // ),
+    // VideoData(
+    //   id: 'b',
+    //   videoDataPath:
+    //       'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
+    // ),
+    // VideoData(
+    //   id: 'c',
+    //   videoDataPath:
+    //       'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
+    // ),
   ];
+
+  // Getter for videos (returns an immutable list)
   List<VideoData> get videos => List.unmodifiable(_videos);
 
 // Function to get VideoData by its ID

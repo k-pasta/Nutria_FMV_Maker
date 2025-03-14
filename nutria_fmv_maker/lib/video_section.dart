@@ -36,12 +36,6 @@ class VideoSectionState extends State<VideoSection> {
     player = videoPlayerProvider.player;
     //Player();
     controller = videoPlayerProvider.videoController;
-
-    // Load video
-    // player.open(Media('c:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4'));
-
-    // Set initial volume
-    // player.setVolume(50);
   }
 
   @override

@@ -1,4 +1,5 @@
 import 'package:media_kit/media_kit.dart';
+import 'package:nutria_fmv_maker/fvp_example.dart';
 
 import 'custom_widgets/nutria_menu_bar.dart';
 import 'custom_widgets/nutria_split_view.dart';
@@ -105,8 +106,8 @@ class MyHomePage extends StatelessWidget {
       backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
 
-      body:  const WindowsAppLayout(),
-      
+// body: VideoMetadataWidget(videoFilePath: "C:\\Users\\cgbook\\Desktop\\Eykolo_anoigma_roughcut_4.mp4",),
+      body: const WindowsAppLayout(),
     );
   }
 }
@@ -139,9 +140,9 @@ class WindowsAppLayout extends StatelessWidget {
               child: Stack(
                 children: [
                   const GridCanvas(),
-                    NutriaSplitView(
-                    rightChild:  VideoSection(),
-                    leftChild:  VideoCollection(),
+                  NutriaSplitView(
+                    rightChild: VideoSection(),
+                    leftChild: VideoCollection(),
                   ),
                   Positioned.fill(
                     //UI fader

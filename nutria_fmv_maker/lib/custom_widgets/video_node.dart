@@ -98,7 +98,7 @@ class TestNode extends StatelessWidget {
                   onTap: () {
                     nodesProvider.setActiveNode(videoNodeData.id);
                     videoPlayerProvider.loadVideo(
-                        path: videoData.videoDataPath);
+                        path: videoData.videoDataPath, nodeId: videoNodeData.id);
                   },
                   child: MouseRegion(
                     onEnter: (_) {
