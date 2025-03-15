@@ -54,7 +54,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
     Color backgroundColor =
         _focusNode.hasFocus ? theme.cTextFieldActive : theme.cTextField;
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
-
+    final AppLocalizations t = AppLocalizations.of(context)!;
     return Shortcuts(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.keyT):
@@ -104,10 +104,9 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
               horizontal: theme.dTextfieldPadding), // TODO de-hardcode
           counterText: '', //disables max character counter
           hintText:
-              '${AppLocalizations.of(context)!.videoNodeChoice} ${widget.index} ...',
+              '${t.videoNodeChoice} ${widget.index} ...',
           hintStyle: TextStyle(
-              color: theme.cTextInactive, fontWeight: FontWeight.normal
-              ),
+              color: theme.cTextInactive, fontWeight: FontWeight.normal),
           border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -117,7 +116,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
-            borderSide: const  BorderSide(color: Colors.transparent),
+            borderSide: const BorderSide(color: Colors.transparent),
           ),
           disabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),

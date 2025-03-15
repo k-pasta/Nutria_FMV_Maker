@@ -10,6 +10,7 @@
   "editUndo": "Αναίρεση",
   "fileExit": "Έξοδος",
   "fileLoadProject": "Άνοιγμα ",
+  "filename": "File Name",
   "fileNewProject": "Νέο Πρότζεκτ",
   "fileRecentProjects": "Πρόσφατα Πρότζεκτ",
   "fileSaveProject": "Αποθήκευση Πρότζεκτ",
@@ -22,6 +23,7 @@
   "menuBarFile": "Αρχείο",
   "menuBarHelp": "Βοήθεια",
   "menuBarView": "Προβολή",
+  "videoMetadataDateCreated": "Ημερομηνία Τροποποίησης",
   "videoNodeChoice": "Επιλογή",
   "viewCustomTheme": "Προσαρμοσμένο Θέμα",
   "viewDarkTheme": "Σκούρο Θέμα",
@@ -29,5 +31,6 @@
   "viewLightTheme": "Ανοιχτό Θέμα",
   "viewProperties": "Στήλη Προτιμήσεων",
   "viewTheme": "Θέμα",
-  "viewVideoPlayer": "Στήλη Βίντεο"
+  "viewVideoPlayer": "Στήλη Βίντεο",
+  "z": "z"
 }

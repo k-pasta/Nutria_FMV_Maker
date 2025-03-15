@@ -12,7 +12,7 @@ import 'dart:io';
 
 class MenuData {
   static List<NutriaMenuButton> menuData(BuildContext context) {
-    var t = AppLocalizations.of(context)!;
+    AppLocalizations t = AppLocalizations.of(context)!;
     return [
       NutriaMenuButton(
         //File

@@ -10,6 +10,7 @@
   "editUndo": "Annuler",
   "fileExit": "Quitter",
   "fileLoadProject": "Charger un projet",
+  "filename": "Nom du fichier",
   "fileNewProject": "Nouveau projet",
   "fileRecentProjects": "Projets récents",
   "fileSaveProject": "Enregistrer le projet",
@@ -22,12 +23,14 @@
   "menuBarFile": "Fichier",
   "menuBarHelp": "Aide",
   "menuBarView": "Afficage",
+  "videoMetadataDateCreated": "Date de creation",
   "videoNodeChoice": "Choix",
   "viewCustomTheme": "Thème personnalisé",
   "viewDarkTheme": "Thème sombre",
   "viewLanguage": "Langue",
   "viewLightTheme": "Thème clair",
-  "viewProperties": "Section Propriétés ",
+  "viewProperties": "Section Propriétés",
   "viewTheme": "Thème",
-  "viewVideoPlayer": "Section Lecteur Vidéo"
+  "viewVideoPlayer": "Section Lecteur Vidéo",
+  "z": "z"
 }

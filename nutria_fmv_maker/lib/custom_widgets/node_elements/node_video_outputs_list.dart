@@ -26,11 +26,11 @@ class NodeVideoOutputsList extends StatelessWidget {
     return FocusScope(
       autofocus: false,
       onFocusChange: (gotFocus) {
-        if (gotFocus) {
-          print('node ${videoNodeData.id} got focus');
-        } else {
-          print('node ${videoNodeData.id} lost focus');
-        }
+        // if (gotFocus) {
+        //   print('node ${videoNodeData.id} got focus');
+        // } else {
+        //   print('node ${videoNodeData.id} lost focus');
+        // }
       },
       child: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),

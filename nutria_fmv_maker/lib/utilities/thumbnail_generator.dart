@@ -7,7 +7,7 @@ import 'package:file_selector/file_selector.dart';
 import 'package:tmp_path/tmp_path.dart';
 
 // Task class to manage thumbnail generation
-class Task {
+class GenerateThumbnailTask {
   final String name;
   String srcFile;
   final int width;
@@ -18,7 +18,7 @@ class Task {
   String? destImgSize;
   String? error;
 
-  Task({
+  GenerateThumbnailTask({
     required this.name,
     required this.srcFile,
     required this.width,

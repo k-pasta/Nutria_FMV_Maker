@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
+import 'package:nutria_fmv_maker/utilities/file_metadata_retriever.dart';
 import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -34,7 +35,7 @@ class NodesProvider extends ChangeNotifier {
 
   Future<String> _generateSingleThumbnail(String videoPath) async {
     // Create a Task for the VideoData
-    var task = Task(
+    var task = GenerateThumbnailTask(
       name: 'Generate Thumbnail for $videoPath',
       srcFile: videoPath,
       width: UiStaticProperties.thumbnailSize, // Adjust the size here
@@ -854,6 +855,8 @@ class NodesProvider extends ChangeNotifier {
       var updatedVideo = newVideo.copyWith(thumbnailPath: thumbnailPath);
       _videos[_videos.indexOf(newVideo)] = updatedVideo;
       notifyListeners();
+
+      print(getFileMetadata(path));
     });
   }
 }

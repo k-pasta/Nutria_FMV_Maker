@@ -66,7 +66,7 @@ class _VideoMetadataWidgetState extends State<VideoMetadataWidget> {
         Text(
             'aspect ratio : ${findValueForKey(info, 'display_aspect_ratio') ?? 'Unknown'}'),
         SelectableText(
-            'Bitrate: ${_mediaInformation!.getAllProperties() ?? 'Unknown'}'),
+            '${_mediaInformation!.getAllProperties() ?? 'Unknown'}'),
 
         // You can add more fields here if MediaInformation includes additional parameters.
       ],

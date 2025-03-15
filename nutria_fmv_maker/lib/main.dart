@@ -106,8 +106,8 @@ class MyHomePage extends StatelessWidget {
       backgroundColor: theme.cBackground,
 // backgroundColor: Colors.white,
 
-// body: VideoMetadataWidget(videoFilePath: "C:\\Users\\cgbook\\Desktop\\Eykolo_anoigma_roughcut_4.mp4",),
-      body: const WindowsAppLayout(),
+body: VideoMetadataWidget(videoFilePath: "C:\\Users\\cgbook\\Desktop\\Eykolo_anoigma_roughcut_4.mp4",),
+      // body: const WindowsAppLayout(),
     );
   }
 }
