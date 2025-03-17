@@ -55,7 +55,7 @@ class NodesProvider extends ChangeNotifier {
     } else {
       // print('Error creating thumbnail for $videoPath: ${task.error}');
       // throw Exception('Error creating thumbnail for $videoPath: ${task.error}');
-      return null;
+      return 'error';
     }
   }
 

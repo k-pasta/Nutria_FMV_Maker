@@ -267,14 +267,32 @@ class VideoSectionState extends State<VideoSection> {
               Selector<VideoPlayerProvider, VideoData?>(
                 selector: (_, provider) => provider.currentVideoData,
                 builder: (_, videoData, __) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      if (videoData != null && videoData.metadata != null)
-                        ...videoData.metadata!
-                            .map((entry) => MetaDataDisplayBox(metaData: entry))
-                            .toList(),
-                    ],
+                  return LayoutBuilder(
+                    builder: (context, constraints) {
+                      double maxWidth = constraints.maxWidth;
+                      int columnCount = 1;
+
+                      if (maxWidth > 600)
+                        columnCount = 2; //TODO move to uistaticproperties
+                      if (maxWidth > 900)
+                        columnCount = 3; //TODO move to uistaticproperties
+
+                      double itemWidth =
+                          (maxWidth / columnCount); // Adjusting for spacing
+
+                      return Wrap(
+                        children: [
+                          if (videoData != null && videoData.metadata != null)
+                            ...videoData.metadata!
+                                .map((entry) => SizedBox(
+                                      width: itemWidth,
+                                      child:
+                                          MetaDataDisplayBox(metaData: entry),
+                                    ))
+                                .toList(),
+                        ],
+                      );
+                    },
                   );
                 },
               )
@@ -294,31 +312,36 @@ class MetaDataDisplayBox extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final AppLocalizations t = AppLocalizations.of(context)!;
-    return Row(
-      children: [
-        SizedBox(
-          width: 100,
-          height: theme.dButtonHeight,
-          child: NutriaText(
-            text: '${metaData.metadataTitle(t)}:',
-            maxLines: 1,
-            state: NutriaTextState.inactive,
-            textStyle: NutriaTextStyle.italic,
-          ),
-        ),
-        Flexible(
-          flex: 3,
-          fit: FlexFit.tight,
-          child: SizedBox(
-            height: theme.dButtonHeight,
+    final double verticalPadding =
+        (theme.dButtonHeight - theme.dTextHeight) / 2;
+    return Padding(
+      padding: EdgeInsets.only(
+        top: verticalPadding,
+        bottom: verticalPadding,
+        left: theme.dTextfieldPadding,
+        right: theme.dTextfieldPadding,
+      ),
+      child: Row(
+        children: [
+          SizedBox(
+            width: 100, //TODO move to uistaticproperties
             child: NutriaText(
-              text: metaData.metadataValue(t),
-              maxLines: 1,
+              text: '${metaData.metadataTitle(t)}:',
+              maxLines: 4,
+              state: NutriaTextState.inactive,
               textStyle: NutriaTextStyle.italic,
             ),
           ),
-        )
-      ],
+          Flexible(
+            fit: FlexFit.tight,
+            child: NutriaText(
+              text: metaData.metadataValue(t),
+              maxLines: 4,
+              textStyle: NutriaTextStyle.italic,
+            ),
+          )
+        ],
+      ),
     );
   }
 }
