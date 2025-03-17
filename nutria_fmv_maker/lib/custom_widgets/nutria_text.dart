@@ -11,12 +11,14 @@ class NutriaText extends StatelessWidget {
   final NutriaTextStyle textStyle;
   final int maxLines;
   final TextAlign textAlign;
+  final bool selectable;
   const NutriaText(
       {required this.text,
       this.state = NutriaTextState.normal,
       this.textStyle = NutriaTextStyle.normal,
       this.maxLines = 1,
       this.textAlign = TextAlign.left,
+      this.selectable = false,
       super.key});
 
   @override
@@ -27,7 +29,11 @@ class NutriaText extends StatelessWidget {
       textAlign: textAlign,
       style: TextStyle(
         height: 1.0,
-        color: theme.cText,
+        color: state == NutriaTextState.accented
+            ? theme.cTextActive
+            : state == NutriaTextState.inactive
+          ? theme.cTextInactive
+          : theme.cText,
         fontSize: theme.dTextHeight,
         fontFamily: 'SourceSans', // Ensure the correct family is used
         fontVariations: textStyle == NutriaTextStyle.boldItalic

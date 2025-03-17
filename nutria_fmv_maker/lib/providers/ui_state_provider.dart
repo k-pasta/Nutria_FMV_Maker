@@ -33,8 +33,10 @@ class UiStateProvider extends ChangeNotifier {
   bool get isModalOrMenuOpen => _isModalOrMenuOpen;
 
   void setModalOrMenuOpen(bool value) {
-    _isModalOrMenuOpen = value;
-    notifyListeners();
+    if (_isModalOrMenuOpen != value) {
+      _isModalOrMenuOpen = value;
+      notifyListeners();
+    }
   }
 
 //menu

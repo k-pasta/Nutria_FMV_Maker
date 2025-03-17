@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'models/app_theme.dart';
+import '../models/app_theme.dart';
 import 'dart:ui';
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
+import '../../providers/theme_provider.dart';
 
 class GridPainter extends CustomPainter {
   final TransformationController transformationController;

@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import '../static_data/ui_static_properties.dart';
 import 'package:collection/collection.dart';
 
@@ -253,26 +254,29 @@ class Input {
 
 class VideoData {
   final String id;
-  final String videoDataPath;
+  final String videoPath;
   final String? thumbnailPath;
-  String get fileName => '${Uri.file(videoDataPath).pathSegments.last}';
-  // Duration get duration =>
-  //     const Duration(seconds: 10); //TODO make work with videoplayer plugin
+  final List<MetadataEntry>? metadata;
+  String get fileName => '${Uri.file(videoPath).pathSegments.last}';
+  
   VideoData({
-    required this.videoDataPath,
+    required this.videoPath,
     required this.id,
     this.thumbnailPath,
+    this.metadata = const <MetadataEntry>[],
   });
 
   VideoData copyWith({
     String? id,
     String? videoDataPath,
     String? thumbnailPath,
+    List<MetadataEntry>? metadata,
   }) {
     return VideoData(
       id: id ?? this.id,
-      videoDataPath: videoDataPath ?? this.videoDataPath,
+      videoPath: videoDataPath ?? this.videoPath,
       thumbnailPath: thumbnailPath ?? this.thumbnailPath,
+      metadata: metadata ?? this.metadata,
     );
   }
 }

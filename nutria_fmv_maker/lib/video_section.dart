@@ -8,9 +8,14 @@ import 'package:media_kit/media_kit.dart'; // Provides [Player], [Media], [Playl
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_slider.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/models/enums_ui.dart';
+import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import 'models/app_theme.dart';
 import 'providers/theme_provider.dart'; // Provides [VideoController] & [Video] etc.
@@ -72,6 +77,8 @@ class VideoSectionState extends State<VideoSection> {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    VideoPlayerProvider videoPlayerProvider =
+        context.read<VideoPlayerProvider>();
 
     return Padding(
       padding: EdgeInsets.only(
@@ -257,10 +264,61 @@ class VideoSectionState extends State<VideoSection> {
                   ],
                 ),
               ),
+              Selector<VideoPlayerProvider, VideoData?>(
+                selector: (_, provider) => provider.currentVideoData,
+                builder: (_, videoData, __) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      if (videoData != null && videoData.metadata != null)
+                        ...videoData.metadata!
+                            .map((entry) => MetaDataDisplayBox(metaData: entry))
+                            .toList(),
+                    ],
+                  );
+                },
+              )
             ],
           ),
         ),
       ),
+    );
+  }
+}
+
+class MetaDataDisplayBox extends StatelessWidget {
+  final MetadataEntry metaData;
+  const MetaDataDisplayBox({required this.metaData});
+
+  @override
+  Widget build(BuildContext context) {
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppLocalizations t = AppLocalizations.of(context)!;
+    return Row(
+      children: [
+        SizedBox(
+          width: 100,
+          height: theme.dButtonHeight,
+          child: NutriaText(
+            text: '${metaData.metadataTitle(t)}:',
+            maxLines: 1,
+            state: NutriaTextState.inactive,
+            textStyle: NutriaTextStyle.italic,
+          ),
+        ),
+        Flexible(
+          flex: 3,
+          fit: FlexFit.tight,
+          child: SizedBox(
+            height: theme.dButtonHeight,
+            child: NutriaText(
+              text: metaData.metadataValue(t),
+              maxLines: 1,
+              textStyle: NutriaTextStyle.italic,
+            ),
+          ),
+        )
+      ],
     );
   }
 }

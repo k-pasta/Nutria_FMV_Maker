@@ -3,8 +3,8 @@ import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'dart:ui';
 import 'package:provider/provider.dart';
-import '../providers/theme_provider.dart';
-import 'models/app_theme.dart';
+import '../../providers/theme_provider.dart';
+import '../models/app_theme.dart';
 
 class NoodlePainter extends CustomPainter {
   final TransformationController transformationController;

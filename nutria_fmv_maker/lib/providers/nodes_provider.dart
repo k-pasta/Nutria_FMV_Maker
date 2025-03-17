@@ -2,8 +2,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
+import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:nutria_fmv_maker/utilities/file_metadata_retriever.dart';
+import 'package:nutria_fmv_maker/utilities/video_metadata_retriever.dart';
 import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
@@ -24,7 +26,7 @@ class NodesProvider extends ChangeNotifier {
   Future<void> _generateThumbnails() async {
     for (var video in _videos) {
       try {
-        var thumbnailPath = await _generateSingleThumbnail(video.videoDataPath);
+        var thumbnailPath = await _generateSingleThumbnail(video.videoPath);
         var updatedVideo = video.copyWith(thumbnailPath: thumbnailPath);
         _videos[_videos.indexOf(video)] = updatedVideo;
       } catch (e) {
@@ -33,7 +35,7 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  Future<String> _generateSingleThumbnail(String videoPath) async {
+  Future<String?> _generateSingleThumbnail(String videoPath) async {
     // Create a Task for the VideoData
     var task = GenerateThumbnailTask(
       name: 'Generate Thumbnail for $videoPath',
@@ -51,13 +53,14 @@ class NodesProvider extends ChangeNotifier {
       print('Thumbnail created for $videoPath: ${task.destFile}');
       return task.destFile!;
     } else {
-      print('Error creating thumbnail for $videoPath: ${task.error}');
-      throw Exception('Error creating thumbnail for $videoPath: ${task.error}');
+      // print('Error creating thumbnail for $videoPath: ${task.error}');
+      // throw Exception('Error creating thumbnail for $videoPath: ${task.error}');
+      return null;
     }
   }
 
   // Immutable list of nodes
-  final List<NodeData> _nodes =  [
+  final List<NodeData> _nodes = [
     // VideoNodeData(
     //   id: 'aaa',
     //   position: const Offset(0, 0),
@@ -208,7 +211,6 @@ class NodesProvider extends ChangeNotifier {
 
     return noodles;
   }
-
 
   final List<VideoData> _videos = [
     // VideoData(
@@ -833,30 +835,67 @@ class NodesProvider extends ChangeNotifier {
   }
 
   void addVideo(String path) {
-    if (_videos.any((video) => video.videoDataPath == path)) {
-      //TODO also notify user it already exists
-      return;
+  // Check if the video already exists
+  var existingVideo = _videos.firstWhere(
+    (video) => video.videoPath == path,
+    orElse: () => VideoData(id: '', videoPath: ''), // Dummy value
+  );
+
+  if (existingVideo.id.isNotEmpty) {
+    // Video already exists, just update its data
+    updateVideoData(existingVideo);
+    return;
+  }
+
+  // Create a new VideoData entry
+  var newVideo = VideoData(
+    id: uuid.v1(),
+    videoPath: path,
+    thumbnailPath: null,
+    metadata: [],
+  );
+
+  // Add the new video and notify listeners
+  _videos.add(newVideo);
+  notifyListeners();
+
+  // Start updating the video data (thumbnail & metadata)
+  updateVideoData(newVideo);
+}
+
+void updateVideoData(VideoData video) async {
+  int index = _videos.indexWhere((v) => v.id == video.id);
+  if (index == -1) return; // Video not found in the list
+
+  // Generate the thumbnail
+  var thumbnailPath = await _generateSingleThumbnail(video.videoPath);
+
+  // Update only the thumbnail first
+  _videos[index] = video.copyWith(thumbnailPath: thumbnailPath);
+  notifyListeners();
+
+  // Fetch metadata
+  var metadata = await fetchMetadata(video.videoPath);
+
+  // Update the video again with metadata, keeping the existing thumbnail
+  _videos[index] = _videos[index].copyWith(metadata: metadata);
+  notifyListeners();
+
+  // Print metadata for debugging
+  if (metadata != null) {
+    for (var data in metadata) {
+      print('${data.key} : ${data.value}');
     }
+  }
+}
 
-    // Create a new VideoData with an empty thumbnail path
-    var newVideo = VideoData(
-      id: uuid.v1(),
-      videoDataPath: path,
-      thumbnailPath: null,
-    );
+  Future<List<MetadataEntry<dynamic>>> fetchMetadata(String path) async {
+    List<MetadataEntry<dynamic>> fileMetaData =
+        VideoMetadataRetriever.fetchFileMetadata(path);
 
-    // Add the new video to the list and notify listeners
-    _videos.add(newVideo);
-    notifyListeners();
+    List<MetadataEntry<dynamic>> videoMetaData =
+        await VideoMetadataRetriever.fetchVideoMetadata(path);
 
-    // Generate the thumbnail and update the video
-
-    _generateSingleThumbnail(path).then((thumbnailPath) {
-      var updatedVideo = newVideo.copyWith(thumbnailPath: thumbnailPath);
-      _videos[_videos.indexOf(newVideo)] = updatedVideo;
-      notifyListeners();
-
-      print(getFileMetadata(path));
-    });
+    return [...fileMetaData, ...videoMetaData];
   }
 }

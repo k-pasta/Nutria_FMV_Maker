@@ -3,7 +3,7 @@ import 'package:nutria_fmv_maker/custom_widgets/menu_bar_elements/menu_data.dart
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as p;
 
 import 'menu_bar_elements/menu_styles.dart';
 import 'menu_bar_elements/nutria_menu_button.dart';
@@ -13,9 +13,38 @@ import '../../models/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 
-class NutriaMenuBar extends StatelessWidget {
+class NutriaMenuBar extends StatefulWidget {
   // final Widget child;
   const NutriaMenuBar({super.key});
+
+  @override
+  State<NutriaMenuBar> createState() => _NutriaMenuBarState();
+}
+
+class _NutriaMenuBarState extends State<NutriaMenuBar> with WidgetsBindingObserver {
+
+@override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeMetrics() {
+    final UiStateProvider uiStateProvider = context.read<UiStateProvider>();
+    uiStateProvider.setModalOrMenuOpen(false);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -81,12 +110,11 @@ class NutriaMenuBar extends StatelessWidget {
       },
       onClose: () {
         uiStateProvider.setModalOrMenuOpen(false);
-                print('click close');
       },
-      // onFocusChange: (_) {
-      //   uiStateProvider.setModalOrMenuOpen(false);
-      //           print('click focus change');
-      // },
+      onFocusChange: (_) {
+        // uiStateProvider.setModalOrMenuOpen(false);
+        //         print('click focus change');
+      },
       style: menuStyles.buttonStyleBar, // Apply submenu button style
       menuChildren: menu.submenuButtons.map((submenu) {
         return _buildSubmenuButton(submenu, uiStateProvider, menuStyles);

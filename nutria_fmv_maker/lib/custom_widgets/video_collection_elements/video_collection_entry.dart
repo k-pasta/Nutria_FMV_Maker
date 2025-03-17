@@ -62,7 +62,7 @@ class _VideoCollectionEntryState extends State<VideoCollectionEntry> {
             setState(() {
               _videoFileState = VideoFileState.active;
             });
-            videoPlayerProvider.loadVideo(path: videoData.videoDataPath);
+            videoPlayerProvider.loadVideo(videoData: videoData);
           },
           onTapUp: (_) {
             setState(() {

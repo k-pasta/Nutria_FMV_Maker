@@ -1,14 +1,14 @@
 import 'package:nutria_fmv_maker/custom_widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/models/node_data.dart';
-import 'package:nutria_fmv_maker/noodle_painter.dart';
+import 'package:nutria_fmv_maker/painters/noodle_painter.dart';
 import 'package:path/path.dart' as p;
 import 'package:uuid/uuid.dart';
 
 import 'custom_widgets/video_node.dart';
 import './providers/grid_canvas_provider.dart';
 import './providers/nodes_provider.dart';
-import './grid_painter.dart';
+import 'painters/grid_painter.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
