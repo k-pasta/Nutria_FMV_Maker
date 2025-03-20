@@ -21,8 +21,8 @@ class VideoPlayerProvider extends ChangeNotifier {
 
   VideoData? _currentVideoData;
   VideoData? get currentVideoData => _currentVideoData;
-
   String? _currentNodeId;
+  String? get currentNodeId => _currentNodeId;
 
   bool get isVideoPlaying {
     print(player.state.playing);

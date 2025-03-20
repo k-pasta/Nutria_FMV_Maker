@@ -36,7 +36,7 @@ class NodeMainContainer extends StatelessWidget {
           bottom:
               BorderSide(color: theme.cOutlines, width: theme.dOutlinesWidth),
         ),
-        color: nodeData.isBeingHovered ? theme.cButtonHovered :theme.cPanelTransparent,
+        color: nodeData.isBeingHovered || nodeData.isSelected ? theme.cButton :theme.cPanelTransparent,
       ),
       child: Column(children: children),
     );

@@ -24,6 +24,7 @@ abstract class NodeData {
     return textPainter.height;
   }
 
+  //padding offset used for getters of input and output positions and height
   Offset get _paddingOffset {
     return const Offset(
         UiStaticProperties.nodePadding, UiStaticProperties.nodePadding);
@@ -77,14 +78,14 @@ abstract class BaseNodeData extends NodeData {
   @override
   BaseNodeData copyWith({
     Offset? position,
-    Offset? intendedPosition,
+    Offset? intendedPosition, //used for grid snapping calculations
     String? nodeName,
     double? nodeWidth,
     bool? isExpanded,
     List<Output>? outputs,
     Input? input,
     int? swatch,
-    double? intendedNodeWidth,
+    double? intendedNodeWidth, //used for default width snapping calculations
     bool? isSelected,
     bool? isBeingHovered,
   });

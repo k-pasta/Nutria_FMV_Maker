@@ -1,12 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_expansion.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
-import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
-import 'package:nutria_fmv_maker/models/enums_data.dart';
-import 'package:nutria_fmv_maker/models/enums_ui.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
+import 'package:nutria_fmv_maker/providers/keyboard_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
@@ -17,19 +14,16 @@ import '../providers/nodes_provider.dart';
 import '../providers/video_player_provider.dart';
 import '../static_data/ui_static_properties.dart';
 import 'node_elements/node_background.dart';
-import 'node_elements/node_debug_info.dart';
 import 'node_elements/node_main_container.dart';
 import 'node_elements/node_resize_handle.dart';
 import 'node_elements/node_swatch_strip.dart';
-import 'node_elements/node_swatches_picker.dart';
 import 'node_elements/node_video_filename_text.dart';
 import 'node_elements/node_video_outputs_list.dart';
-import 'node_elements/node_video_override.dart';
 import 'node_elements/node_video_thumbnail.dart';
 
-class TestNode extends StatelessWidget {
+class VideoNode extends StatelessWidget {
   final String nodeId;
-  const TestNode({
+  const VideoNode({
     super.key,
     required this.nodeId,
   });
@@ -44,6 +38,7 @@ class TestNode extends StatelessWidget {
     final VideoPlayerProvider videoPlayerProvider =
         context.read<VideoPlayerProvider>();
     final NodesProvider nodesProvider = context.read<NodesProvider>();
+    final KeyboardProvider keyboardProvider = context.read<KeyboardProvider>();
 
     return Selector<NodesProvider, NodeData>(
       selector: (context, provider) =>
@@ -87,6 +82,7 @@ class TestNode extends StatelessWidget {
                             appSettingsProvider.snapSettings.gridSnapping);
                   },
                   onPanStart: (details) {
+                    nodesProvider.selectNodes([videoNodeData.id]);
                     nodesProvider.setActiveNode(videoNodeData.id);
                   },
                   onPanEnd: (_) {
@@ -96,9 +92,22 @@ class TestNode extends StatelessWidget {
                     nodesProvider.resetNodeIntendedValues(videoNodeData.id);
                   },
                   onTap: () {
-                    nodesProvider.setActiveNode(videoNodeData.id);
-                    videoPlayerProvider.loadVideo(
-                        videoData: videoData, nodeId: videoNodeData.id);
+                    if (!keyboardProvider.isCtrlPressed) {
+                      nodesProvider.setActiveNode(videoNodeData.id);
+                      nodesProvider.selectNodes([videoNodeData.id]);
+                      videoPlayerProvider.loadVideo(
+                          videoData: videoData, nodeId: videoNodeData.id);
+                    } else {
+                      if (!videoNodeData.isSelected) {
+                        nodesProvider.setActiveNode(videoNodeData.id);
+                        nodesProvider.selectNodes([videoNodeData.id],
+                            multiSelection: true);
+                        videoPlayerProvider.loadVideo(
+                            videoData: videoData, nodeId: videoNodeData.id);
+                      } else {
+                        nodesProvider.deselectNodes([videoNodeData.id]);
+                      }
+                    }
                   },
                   child: MouseRegion(
                     onEnter: (_) {

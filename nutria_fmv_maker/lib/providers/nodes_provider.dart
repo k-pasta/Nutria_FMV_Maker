@@ -153,6 +153,7 @@ class NodesProvider extends ChangeNotifier {
     } else {
       throw Exception("Node is not of type VideoNodeData");
     }
+    print((_nodes[nodeIndex] as VideoNodeData).overrides[key]);
   }
 
   // Getter for nodes (returns an immutable list)
@@ -705,9 +706,44 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
+  void selectNodes(List<String> ids, {bool multiSelection = false}) {
+    for (int i = 0; i < _nodes.length; i++) {
+      final node = _nodes[i];
+      if (ids.contains(node.id)) {
+        // Only update if it's not already selected
+        if (!node.isSelected) {
+          _nodes[i] = node.copyWith(isSelected: true);
+        }
+      } else if (!multiSelection) {
+        _nodes[i] = node.copyWith(isSelected: false);
+      }
+    }
+    notifyListeners();
+  }
+
+  void deselectNodes(List<String> ids) {
+    for (int i = 0; i < _nodes.length; i++) {
+      final node = _nodes[i];
+      if (ids.contains(node.id) && node.isSelected) {
+        _nodes[i] = node.copyWith(isSelected: false);
+      }
+    }
+    notifyListeners();
+  }
+
+  void deselectAllNodes() {
+    for (int i = 0; i < _nodes.length; i++) {
+      final node = _nodes[i];
+      if (node.isSelected) {
+        _nodes[i] = node.copyWith(isSelected: false);
+      }
+    }
+    notifyListeners();
+  }
+
   void offsetNodePosition(String id, Offset offset, {bool snapToGrid = false}) {
     int nodeIndex = getNodeIndexById(id);
-    final node = _nodes[nodeIndex];
+    final NodeData node = _nodes[nodeIndex];
 
     //Grid offset to make nodes snap to the corners of the dot pattern
     final double gridOffset =
@@ -835,59 +871,59 @@ class NodesProvider extends ChangeNotifier {
   }
 
   void addVideo(String path) {
-  // Check if the video already exists
-  var existingVideo = _videos.firstWhere(
-    (video) => video.videoPath == path,
-    orElse: () => VideoData(id: '', videoPath: ''), // Dummy value
-  );
+    // Check if the video already exists
+    var existingVideo = _videos.firstWhere(
+      (video) => video.videoPath == path,
+      orElse: () => VideoData(id: '', videoPath: ''), // Dummy value
+    );
 
-  if (existingVideo.id.isNotEmpty) {
-    // Video already exists, just update its data
-    updateVideoData(existingVideo);
-    return;
+    if (existingVideo.id.isNotEmpty) {
+      // Video already exists, just update its data
+      updateVideoData(existingVideo);
+      return;
+    }
+
+    // Create a new VideoData entry
+    var newVideo = VideoData(
+      id: uuid.v1(),
+      videoPath: path,
+      thumbnailPath: null,
+      metadata: [],
+    );
+
+    // Add the new video and notify listeners
+    _videos.add(newVideo);
+    notifyListeners();
+
+    // Start updating the video data (thumbnail & metadata)
+    updateVideoData(newVideo);
   }
 
-  // Create a new VideoData entry
-  var newVideo = VideoData(
-    id: uuid.v1(),
-    videoPath: path,
-    thumbnailPath: null,
-    metadata: [],
-  );
+  void updateVideoData(VideoData video) async {
+    int index = _videos.indexWhere((v) => v.id == video.id);
+    if (index == -1) return; // Video not found in the list
 
-  // Add the new video and notify listeners
-  _videos.add(newVideo);
-  notifyListeners();
+    // Generate the thumbnail
+    var thumbnailPath = await _generateSingleThumbnail(video.videoPath);
 
-  // Start updating the video data (thumbnail & metadata)
-  updateVideoData(newVideo);
-}
+    // Update only the thumbnail first
+    _videos[index] = video.copyWith(thumbnailPath: thumbnailPath);
+    notifyListeners();
 
-void updateVideoData(VideoData video) async {
-  int index = _videos.indexWhere((v) => v.id == video.id);
-  if (index == -1) return; // Video not found in the list
+    // Fetch metadata
+    var metadata = await fetchMetadata(video.videoPath);
 
-  // Generate the thumbnail
-  var thumbnailPath = await _generateSingleThumbnail(video.videoPath);
+    // Update the video again with metadata, keeping the existing thumbnail
+    _videos[index] = _videos[index].copyWith(metadata: metadata);
+    notifyListeners();
 
-  // Update only the thumbnail first
-  _videos[index] = video.copyWith(thumbnailPath: thumbnailPath);
-  notifyListeners();
-
-  // Fetch metadata
-  var metadata = await fetchMetadata(video.videoPath);
-
-  // Update the video again with metadata, keeping the existing thumbnail
-  _videos[index] = _videos[index].copyWith(metadata: metadata);
-  notifyListeners();
-
-  // Print metadata for debugging
-  if (metadata != null) {
-    for (var data in metadata) {
-      print('${data.key} : ${data.value}');
+    // Print metadata for debugging
+    if (metadata != null) {
+      for (var data in metadata) {
+        print('${data.key} : ${data.value}');
+      }
     }
   }
-}
 
   Future<List<MetadataEntry<dynamic>>> fetchMetadata(String path) async {
     List<MetadataEntry<dynamic>> fileMetaData =

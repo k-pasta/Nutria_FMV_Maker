@@ -70,6 +70,9 @@ class _NutriaButtonState extends State<NutriaButton> {
   }
 
   Color getColor(ButtonState buttonState, AppTheme theme) {
+    if (!buttonState.isActive) {
+return Colors.transparent;
+    }
     switch (buttonState.buttonStateType) {
       case ButtonStateType.hovered:
         return buttonState.isAccented
@@ -125,9 +128,11 @@ class _NutriaButtonState extends State<NutriaButton> {
       hitTestBehavior: HitTestBehavior
           .deferToChild, // accepting hits only where the child is, to prevent a rounded corners bug where hits are accepted outside the corners
       onEnter: (_) {
-        setState(() {
-          buttonState.buttonStateType = ButtonStateType.hovered;
-        });
+        if (buttonState.isActive) {
+          setState(() {
+            buttonState.buttonStateType = ButtonStateType.hovered;
+          });
+        }
       },
       onExit: (_) {
         setState(() {
@@ -178,7 +183,7 @@ class _NutriaButtonState extends State<NutriaButton> {
           decoration: BoxDecoration(
               color: getColor(buttonState, theme),
               border: Border.all(
-                color: buttonState.isAccented
+                color: buttonState.isAccented && buttonState.isActive
                     ? theme.cAccentButtonHovered
                     : theme.cOutlines,
                 width: theme.dOutlinesWidth,
@@ -226,7 +231,7 @@ class _NutriaButtonState extends State<NutriaButton> {
               Center(
                   child: Icon(widget.icon,
                       size: theme.dButtonHeight * widget.iconScalingFactor,
-                      color: buttonState.buttonStateType ==
+                      color: !buttonState.isActive ? theme.cButton : buttonState.buttonStateType ==
                               ButtonStateType.normal
                           ? theme.cPanel
                           : theme

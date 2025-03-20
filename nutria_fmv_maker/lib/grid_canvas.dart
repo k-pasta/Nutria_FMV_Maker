@@ -33,7 +33,7 @@ class _GridCanvasState extends State<GridCanvas> {
   @override
   void initState() {
     nodes = context.read<NodesProvider>().iDs.map((id) {
-      return TestNode(
+      return VideoNode(
         nodeId: id,
         key: ValueKey(id),
       );
@@ -44,7 +44,7 @@ class _GridCanvasState extends State<GridCanvas> {
   void _updateNodes(List<String> iDs) {
     if (iDs.length > nodes.length) {
       iDs.skip(nodes.length).forEach((nodeId) {
-        nodes.add(TestNode(
+        nodes.add(VideoNode(
           nodeId: nodeId,
           key: ValueKey(nodeId),
         ));

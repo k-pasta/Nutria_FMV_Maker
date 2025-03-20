@@ -2,16 +2,12 @@ import 'dart:io';
 
 import 'package:file_selector/file_selector.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
-import 'package:nutria_fmv_maker/custom_widgets/video_collection_elements/video_thumbnail.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
-import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
 
-import '../models/node_data.dart';
 import '../providers/nodes_provider.dart';
 import 'video_collection_elements/nutria_menu_dropdown.dart';
 import 'video_collection_elements/video_collection_entry.dart';
@@ -25,7 +21,7 @@ class VideoCollection extends StatelessWidget {
       // Open the file selector to pick multiple video files
       var files = await openFiles(
         acceptedTypeGroups: [
-          XTypeGroup(
+         const XTypeGroup(
             label: 'videos',
             extensions: ['mp4', 'avi', 'mov', 'mkv'],
           ),
@@ -81,7 +77,10 @@ class VideoCollection extends StatelessWidget {
               SizedBox(
                 width: double.infinity,
                 child: Padding(
-                  padding: EdgeInsets.only(bottom: theme.dButtonHeight + theme.dSectionPadding + theme.dPanelPadding),
+                  padding: EdgeInsets.only(
+                      bottom: theme.dButtonHeight +
+                          theme.dSectionPadding +
+                          theme.dPanelPadding),
                   child: RawScrollbar(
                     controller: scrollController,
                     thumbVisibility: true,
@@ -118,20 +117,22 @@ class VideoCollection extends StatelessWidget {
                 ),
               ),
               Positioned(
-                  child: NutriaButton.Icon(
-                    onTap: () {
-                      _selectVideo().then((paths) {
-                        if (paths == null) return;
+                right: 0,
+                bottom: theme.dSectionPadding,
+                child: NutriaButton.Icon(
+                  onTap: () {
+                    _selectVideo().then((paths) {
+                      if (paths == null) return;
 
-                        for (var path in paths) {
-                          nodesProvider.addVideo(path);
-                        }
-                      });
-                    },
-                    icon: Icons.add, isAccented: true,
-                  ),
-                  right: 0,
-                  bottom: theme.dSectionPadding),
+                      for (var path in paths) {
+                        nodesProvider.addVideo(path);
+                      }
+                    });
+                  },
+                  icon: Icons.add,
+                  isAccented: true,
+                ),
+              ),
             ]),
           ),
         ],

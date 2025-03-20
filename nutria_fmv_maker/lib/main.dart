@@ -1,6 +1,7 @@
 import 'package:media_kit/media_kit.dart';
 import 'package:nutria_fmv_maker/fvp_example.dart';
 
+import 'providers/keyboard_provider.dart';
 import 'custom_widgets/nutria_menu_bar.dart';
 import 'custom_widgets/nutria_split_view.dart';
 import 'custom_widgets/video_collection.dart';
@@ -34,6 +35,7 @@ void main() {
       ChangeNotifierProvider(create: (context) => UiStateProvider()),
       ChangeNotifierProvider(create: (context) => AppSettingsProvider()),
       ChangeNotifierProvider(create: (context) => VideoPlayerProvider()),
+      ChangeNotifierProvider(create: (context) => KeyboardProvider()),
     ],
     child: const MyApp(),
   ));
