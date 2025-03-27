@@ -22,12 +22,18 @@ import 'node_elements/node_video_filename_text.dart';
 import 'node_elements/node_video_outputs_list.dart';
 import 'node_elements/node_video_thumbnail.dart';
 
-class VideoNode extends StatelessWidget {
+class BaseNode extends StatelessWidget {
   final String nodeId;
-  const VideoNode({
-    super.key,
-    required this.nodeId,
-  });
+  final List<Widget> body;
+  final Widget expansion;
+  final BaseNodeData baseNodeData;
+
+  const BaseNode(
+      {super.key,
+      required this.nodeId,
+      required this.body,
+      required this.expansion,
+      required this.baseNodeData});
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +52,20 @@ class VideoNode extends StatelessWidget {
           provider.getNodeById(nodeId), // Only listen to this node
       builder: (context, node, child) {
         nodesProvider.initializeOutputs(nodeId);
-        final VideoNodeData videoNodeData =
-            nodesProvider.getNodeById(nodeId) as VideoNodeData;
-        final VideoData videoData =
-            nodesProvider.getVideoDataById(videoNodeData.videoDataId);
+        final BaseNodeData nodeData = nodesProvider.getNodeById(nodeId);
+
+        void loadVideo() {
+          if (nodeData is VideoNodeData) {
+            final VideoData videoData =
+                nodesProvider.getVideoDataById(nodeData.videoDataId);
+            videoPlayerProvider.loadVideo(
+                videoData: videoData, nodeId: nodeData.id);
+          }
+        }
 
         return Positioned(
-          top: videoNodeData.position.dy +
-              (UiStaticProperties.topLeftToMiddle.dy),
-          left: videoNodeData.position.dx +
-              (UiStaticProperties.topLeftToMiddle.dx),
+          top: nodeData.position.dy + (UiStaticProperties.topLeftToMiddle.dy),
+          left: nodeData.position.dx + (UiStaticProperties.topLeftToMiddle.dx),
           child: Stack(clipBehavior: Clip.none, children: [
             const NodeBackground(),
             Positioned(
@@ -84,42 +94,40 @@ class VideoNode extends StatelessWidget {
                             : appSettingsProvider.snapSettings);
                   },
                   onPanStart: (details) {
-                    if (videoNodeData.isSelected || keyboardProvider.isCtrlPressed) {
-                      nodesProvider.selectNodes([videoNodeData.id],
-                          multiSelection: true);
+                    if (nodeData.isSelected || keyboardProvider.isCtrlPressed) {
+                      nodesProvider
+                          .selectNodes([nodeData.id], multiSelection: true);
                     } else {
-                      nodesProvider.selectNodes([videoNodeData.id]);
+                      nodesProvider.selectNodes([nodeData.id]);
                     }
-                    nodesProvider.setActiveNode(videoNodeData.id);
+                    nodesProvider.setActiveNode(nodeData.id);
                   },
                   onPanEnd: (_) {
-                    nodesProvider.resetNodeIntendedValues(videoNodeData.id);
+                    nodesProvider.resetNodeIntendedValues(nodeData.id);
                   },
                   onPanCancel: () {
-                    nodesProvider.resetNodeIntendedValues(videoNodeData.id);
+                    nodesProvider.resetNodeIntendedValues(nodeData.id);
                   },
                   onTap: () {
                     if (!keyboardProvider.isCtrlPressed) {
-                      nodesProvider.setActiveNode(videoNodeData.id);
-                      nodesProvider.selectNodes([videoNodeData.id]);
-                      videoPlayerProvider.loadVideo(
-                          videoData: videoData, nodeId: videoNodeData.id);
+                      nodesProvider.setActiveNode(nodeData.id);
+                      nodesProvider.selectNodes([nodeData.id]);
+                      loadVideo();
                     } else {
-                      if (!videoNodeData.isSelected) {
-                        nodesProvider.setActiveNode(videoNodeData.id);
-                        nodesProvider.selectNodes([videoNodeData.id],
-                            multiSelection: true);
-                        videoPlayerProvider.loadVideo(
-                            videoData: videoData, nodeId: videoNodeData.id);
+                      if (!nodeData.isSelected) {
+                        nodesProvider.setActiveNode(nodeData.id);
+                        nodesProvider
+                            .selectNodes([nodeData.id], multiSelection: true);
+                        loadVideo();
                       } else {
-                        nodesProvider.deselectNodes([videoNodeData.id]);
+                        nodesProvider.deselectNodes([nodeData.id]);
                       }
                     }
                   },
                   child: MouseRegion(
                     onEnter: (_) {
                       nodesProvider.setCurrentUnderCursor(
-                          LogicalPosition.node(videoNodeData.id));
+                          LogicalPosition.node(nodeData.id));
                     },
                     onExit: (_) {
                       nodesProvider
@@ -127,51 +135,37 @@ class VideoNode extends StatelessWidget {
                     },
                     hitTestBehavior: HitTestBehavior.deferToChild,
                     child: SizedBox(
-                      width: videoNodeData.nodeWidth,
+                      width: nodeData.nodeWidth,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           //Swatch Strip on top
                           NodeSwatchStrip(
-                            nodeData: videoNodeData,
+                            nodeData: nodeData,
                           ),
                           //Main node background
                           NodeMainContainer(
-                            nodeData: videoNodeData,
-                            children: [
-                              //thumbnail
-                              NodeVideoThumbnail(
-                                videoDataId: videoNodeData.videoDataId,
-                                videoNodeData: videoNodeData,
-                              ),
-                              //video file name
-                              NodeVideoFileNameText(
-                                  videoNodeData: videoNodeData),
-                              NodeVideoOutputsList(
-                                videoNodeData: videoNodeData,
-                              ),
-                            ],
+                            nodeData: nodeData,
+                            children: body,
                           ),
                           //expansion
-                          if (videoNodeData.isExpanded)
+                          if (nodeData.isExpanded)
                             //distance between main node and expansion
                             SizedBox(
                               height: theme.dPanelPadding,
                             ),
-                          if (videoNodeData.isExpanded)
+                          if (nodeData.isExpanded)
                             Container(
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(
-                                    theme.dPanelBorderRadius),
-                                border: Border.all(
-                                    color: theme.cOutlines,
-                                    width: theme.dOutlinesWidth),
-                                color: theme.cPanelTransparent,
-                              ),
-                              padding: EdgeInsets.all(theme.dPanelPadding),
-                              child: NodeVideoExpansion(
-                                  videoNodeData: videoNodeData),
-                            ),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(
+                                      theme.dPanelBorderRadius),
+                                  border: Border.all(
+                                      color: theme.cOutlines,
+                                      width: theme.dOutlinesWidth),
+                                  color: theme.cPanelTransparent,
+                                ),
+                                padding: EdgeInsets.all(theme.dPanelPadding),
+                                child: expansion),
                         ],
                       ),
                     ),
@@ -179,29 +173,39 @@ class VideoNode extends StatelessWidget {
                 );
               }),
             ),
+
+            //left resize handle
             NodeResizeHandle(
-              nodeData: videoNodeData,
-              isLeftSide: false,
-              draggableAreaHeight: videoNodeData.nodeHeight(theme),
-            ),
-            NodeResizeHandle(
-              nodeData: videoNodeData,
+              nodeData: nodeData,
               isLeftSide: true,
-              draggableAreaHeight: videoNodeData.nodeHeight(theme),
+              draggableAreaHeight: nodeData.nodeHeight(theme),
             ),
+            //right resize handle
+            NodeResizeHandle(
+              nodeData: nodeData,
+              isLeftSide: false,
+              draggableAreaHeight: nodeData.nodeHeight(theme),
+            ),
+
+            //input knot
             Knot.input(
-                nodeData: videoNodeData,
-                offset: videoNodeData.inputPosition(theme)),
-            ...videoNodeData.outputs.asMap().entries.map((entry) {
+              nodeData: nodeData,
+              offset: nodeData.inputPosition(theme),
+            ),
+            //output knot(s)
+            ...nodeData.outputs.asMap().entries.map((entry) {
               int index = entry.key;
               var output = entry.value;
-              bool isLast = index == videoNodeData.outputs.length - 1;
-
-              if (!isLast || (isLast && videoNodeData.hasMaxedOutOutputs)) {
+              bool isLast = index == nodeData.outputs.length - 1;
+              if (!isLast ||
+                  (nodeData is VideoNodeData &&
+                      isLast &&
+                      nodeData.hasMaxedOutOutputs)) {
+                // if (!isLast) {
                 return Knot.output(
-                  nodeData: videoNodeData,
+                  nodeData: nodeData,
                   index: index,
-                  offset: videoNodeData.outputPosition(theme, index),
+                  offset: nodeData.outputPosition(theme, index),
                 );
               } else {
                 return Container();
@@ -211,5 +215,47 @@ class VideoNode extends StatelessWidget {
         );
       },
     );
+  }
+}
+
+class VideoNode extends StatelessWidget {
+  final String nodeId;
+
+  const VideoNode({super.key, required this.nodeId});
+
+  @override
+  Widget build(BuildContext context) {
+    final NodesProvider nodesProvider = context.read<NodesProvider>();
+
+    // final VideoNodeData nodeData = nodesProvider.getNodeById(nodeId);
+    // final VideoData videoData =
+    //     nodesProvider.getVideoDataById(nodeData.videoDataId);
+
+    return Selector<NodesProvider, NodeData>(
+        selector: (context, provider) =>
+            provider.getNodeById(nodeId), // Only listen to this node
+        builder: (context, node, child) {
+          nodesProvider.initializeOutputs(nodeId);
+          final VideoNodeData nodeData = nodesProvider.getNodeById(nodeId);
+
+          return BaseNode(
+            baseNodeData: nodeData,
+            nodeId: nodeId,
+            body: [
+              //thumbnail
+              NodeVideoThumbnail(
+                videoDataId: nodeData.videoDataId,
+                videoNodeData: nodeData,
+              ),
+              //video file name
+              NodeVideoFileNameText(videoNodeData: nodeData),
+              //outputs and expand button
+              NodeVideoOutputsList(
+                videoNodeData: nodeData,
+              ),
+            ],
+            expansion: NodeVideoExpansion(videoNodeData: nodeData),
+          );
+        });
   }
 }
