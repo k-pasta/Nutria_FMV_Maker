@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
+import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
+import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import '../../models/enums_ui.dart';
@@ -13,6 +15,9 @@ import 'dart:io';
 class MenuData {
   static List<NutriaMenuButton> menuData(BuildContext context) {
     AppLocalizations t = AppLocalizations.of(context)!;
+    final AppSettingsProvider appSettingsProvider = context.read<AppSettingsProvider>();
+    final ProjectVersionProvider projectVersionProvider = context.read<ProjectVersionProvider>();
+    final NodesProvider nodesProvider  = context.read<NodesProvider>();
     return [
       NutriaMenuButton(
         //File
@@ -49,6 +54,13 @@ class MenuData {
             shortcut: SingleActivator(LogicalKeyboardKey.keyS,
                 control: true, shift: true),
             icon: Icons.save,
+          ),
+          NutriaSubmenuButton(
+            text: 'Export Project',
+            function: () => projectVersionProvider.exportFile(nodesProvider.nodes, nodesProvider.videos),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyE,
+                control: true),
+            icon: Icons.arrow_forward,
           ),
           NutriaSubmenuButton(
             text: t.fileExit,

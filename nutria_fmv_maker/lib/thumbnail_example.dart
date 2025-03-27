@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:file_selector/file_selector.dart';
 import 'package:tmp_path/tmp_path.dart';
 
 // Task class to manage thumbnail generation
@@ -131,9 +131,11 @@ class _ThumbnailExampleState extends State<ThumbnailExample> {
 
       // Open the file selector to pick a video file
 
-      var src = await openFile();
+      var src = await FilePicker.platform.pickFiles(type: FileType.video);
+      if (src == null || src.files.isEmpty) return;
+      var srcFile = src.files.first;
       if (src == null) return;
-      srcPath = src.path;
+      srcPath = src.paths.first;
       print(srcPath);
 
       // Clear previous tasks

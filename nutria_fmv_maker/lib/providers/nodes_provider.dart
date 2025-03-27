@@ -14,6 +14,7 @@ import '../models/enums_data.dart';
 import '../models/node_data.dart';
 import 'dart:math';
 
+import '../models/snap_settings.dart';
 import '../utilities/thumbnail_generator.dart';
 
 class NodesProvider extends ChangeNotifier {
@@ -741,21 +742,65 @@ class NodesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void offsetNodePosition(String id, Offset offset, {bool snapToGrid = false}) {
+  void offsetSelectedNodes(Offset offset,
+      {SnapSettings snapSettings = const SnapSettings(gridSnapping: false)}) {
+    final double gridOffset =
+        -UiStaticProperties.nodePadding - UiStaticProperties.topLeftToMiddle.dx;
+    final double gridSize = snapSettings.gridSize;
+
+    bool positionChanged = false;
+
+    for (int i = 0; i < _nodes.length; i++) {
+      if (_nodes[i].isSelected) {
+        final NodeData node = _nodes[i];
+
+        Offset newIntendedPosition = node.intendedPosition + offset;
+        Offset? newPosition;
+
+        if (snapSettings.gridSnapping) {
+          newPosition = Offset(
+            ((newIntendedPosition.dx - gridOffset) / gridSize).round() *
+                    gridSize +
+                gridOffset,
+            ((newIntendedPosition.dy - gridOffset) / gridSize).round() *
+                    gridSize +
+                gridOffset,
+          );
+        } else {
+          newPosition = newIntendedPosition;
+        }
+
+        // Update the node with new positions
+        _nodes[i] = node.copyWith(
+            intendedPosition: newIntendedPosition, position: newPosition);
+
+        if (newPosition != node.position) {
+          positionChanged = true;
+        }
+      }
+    }
+
+    // Only notify if at least one node's position changed
+    if (positionChanged) {
+      notifyListeners();
+    }
+  }
+
+  void offsetNodePosition(String id, Offset offset,
+      {SnapSettings snapSettings = const SnapSettings(gridSnapping: false)}) {
     int nodeIndex = getNodeIndexById(id);
     final NodeData node = _nodes[nodeIndex];
 
     //Grid offset to make nodes snap to the corners of the dot pattern
     final double gridOffset =
         -UiStaticProperties.nodePadding - UiStaticProperties.topLeftToMiddle.dx;
-    // Hardcoded grid size (TODO expose)
-    const double gridSize = 50;
+    final double gridSize = snapSettings.gridSize;
 
     Offset? newPosition;
     // Update intended position freely, without snapping
     Offset newIntendedPosition = node.intendedPosition + offset;
     // If snapping is enabled, snap the new intended position to the grid
-    if (snapToGrid) {
+    if (snapSettings.gridSnapping) {
       newPosition = Offset(
         ((newIntendedPosition.dx - gridOffset) / gridSize).round() * gridSize +
             gridOffset,

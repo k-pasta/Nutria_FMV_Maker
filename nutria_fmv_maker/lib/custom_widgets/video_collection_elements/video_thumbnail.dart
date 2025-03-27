@@ -27,8 +27,6 @@ class VideoThumbnail extends StatelessWidget {
               nodesProvider.getVideoDataById(videoData.id),
           builder: (context, videoData, child) {
             return FittedBox(
-              // color: Colors.black,
-
               fit: BoxFit.cover,
               child: videoData.thumbnailPath == null
                   ? SizedBox(

@@ -1,15 +1,18 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/providers/grid_canvas_provider.dart';
 
 import 'package:provider/provider.dart';
 
 import '../../models/node_data.dart';
 import '../../models/app_theme.dart';
+import '../../painters/striped_pattern_painter.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/nodes_provider.dart';
 import '../../providers/video_player_provider.dart';
 import '../../static_data/ui_static_properties.dart';
+import '../nutria_text.dart';
 
 class NodeVideoThumbnail extends StatelessWidget {
   const NodeVideoThumbnail({
@@ -25,7 +28,6 @@ class NodeVideoThumbnail extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-   
 
     VideoData videoData = nodesProvider.getVideoDataById(videoDataId);
     return Stack(children: [
@@ -33,18 +35,31 @@ class NodeVideoThumbnail extends StatelessWidget {
         child: SizedBox(
           width: double.infinity, // Ensures it fills horizontally
           height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
-          child: FittedBox(
-            fit: BoxFit.cover, // Ensures larger side fills the container
-            child: videoData.thumbnailPath == null
-                ? Placeholder(
-                    child: Container(
-                      color: Colors.black12,
+
+          child: videoData.thumbnailPath == null
+              ? Placeholder(
+                  child: Container(
+                    color: Colors.black12,
+                  ),
+                ) //todo implement missing
+              : videoData.thumbnailPath == 'error'
+                  ? SizedBox(
+                      width: UiStaticProperties.nodeMaxWidth,
+                      height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
+                      child: CustomPaint(
+                        painter: DiagonalStripedPatternPainter(
+                            stripeSpacing: 5, stripeWidth: 2.5),
+                        child: const Center(
+                          child: NutriaText(text: 'thumbnail error'),
+                        ),
+                      ),
+                    )
+                  : FittedBox(
+                    fit: BoxFit.cover,
+                      child: videoData.thumbnailPath!.startsWith('http')
+                          ? Image.network(videoData.thumbnailPath!)
+                          : Image.file(File(videoData.thumbnailPath!)),
                     ),
-                  ) //todo implement missing
-                : videoData.thumbnailPath!.startsWith('http')
-                    ? Image.network(videoData.thumbnailPath!)
-                    : Image.file(File(videoData.thumbnailPath!)),
-          ),
         ),
       ),
       Positioned(

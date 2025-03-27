@@ -44,9 +44,12 @@ class _NutriaContextMenuState extends State<NutriaContextMenu>
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+
+    final nodesProvider = context.read<NodesProvider>();
     final MenuStyles menuStyles = MenuStyles(theme: theme);
 
     return GestureDetector(
+      onTap: nodesProvider.deselectAllNodes,
       onSecondaryTapUp: (details) {
         _showContextMenu(
           context,

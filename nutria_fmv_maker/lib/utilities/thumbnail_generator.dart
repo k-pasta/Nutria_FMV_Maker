@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
 import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
-import 'package:file_selector/file_selector.dart';
 import 'package:tmp_path/tmp_path.dart';
 
 // Task class to manage thumbnail generation

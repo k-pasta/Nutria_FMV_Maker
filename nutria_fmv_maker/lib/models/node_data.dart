@@ -1,6 +1,7 @@
 import 'dart:ffi';
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import '../static_data/ui_static_properties.dart';
 import 'package:collection/collection.dart';
@@ -13,8 +14,11 @@ abstract class NodeData {
   final Offset intendedPosition; // Always initialized and non-null
   final bool isSelected;
   final bool isBeingHovered;
+  Map<String, dynamic>? toJsonSave();
+  Map<String, dynamic>? toJsonExport();
 
-  double _getTextHeight(String text, TextStyle style) { //todo allow for multiple lines
+  double _getTextHeight(String text, TextStyle style) {
+    //todo allow for multiple lines
     final TextPainter textPainter = TextPainter(
       text: TextSpan(text: text, style: style),
       textDirection: TextDirection.ltr,
@@ -91,25 +95,57 @@ abstract class BaseNodeData extends NodeData {
   });
 }
 
-  // /// Set an override for a property
-  // void setOverride(String key, dynamic value) {
-  //   overrides[key] = value;
-  // }
+// /// Set an override for a property
+// void setOverride(String key, dynamic value) {
+//   overrides[key] = value;
+// }
 
-  // /// Remove an override (revert to default)
-  // void removeOverride(String key) {
-  //   overrides.remove(key);
-  // }
+// /// Remove an override (revert to default)
+// void removeOverride(String key) {
+//   overrides.remove(key);
+// }
 
-  // ///Get the video data for this node
-  // VideoData? getVideoData(List<VideoData> videoList) {
-  //   return videoList.firstWhereOrNull((element) => element.id == videoDataId);
-  // }
+// ///Get the video data for this node
+// VideoData? getVideoData(List<VideoData> videoList) {
+//   return videoList.firstWhereOrNull((element) => element.id == videoDataId);
+// }
 
 class VideoNodeData extends BaseNodeData {
   final String videoDataId;
   final bool hasMaxedOutOutputs;
   final Map<String, dynamic> overrides;
+
+//TODO document
+  @override
+  Map<String, Map<String, dynamic>>? toJsonExport() {
+    Map<String, dynamic> outputMap = {};
+    for (int i = 0; i < outputs.length; i++) {
+      if (outputs[i].outputData != null && outputs[i].outputData is! String) {
+        throw Exception('Output data must be a String or null');
+      }
+      String option = outputs[i].outputData as String? ?? '';
+      String? id = outputs[i].targetNodeId;
+
+      if (id != null) {
+        outputMap[option] = id;
+      }
+    }
+    return {
+      id: {
+        'video': videoDataId,
+        if (outputMap.isNotEmpty) 'choices': outputMap,
+        if (overrides.isNotEmpty)
+          'overrides': overrides.map((key, value) {
+            final overrideValue = getOverrideString(key, value);
+            return MapEntry(key, overrideValue);
+          }),
+      }
+    };
+  }
+
+  Map<String, dynamic>? toJsonSave() {
+    return null;
+  }
 
   const VideoNodeData({
     required super.position,
@@ -259,7 +295,7 @@ class VideoData {
   final String? thumbnailPath;
   final List<MetadataEntry>? metadata;
   String get fileName => '${Uri.file(videoPath).pathSegments.last}';
-  
+
   VideoData({
     required this.videoPath,
     required this.id,

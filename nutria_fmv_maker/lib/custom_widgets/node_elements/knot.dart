@@ -27,9 +27,9 @@ class Knot extends StatefulWidget {
   const Knot.input(
       {super.key,
       required this.offset,
-      required this.index,
       required this.nodeData})
-      : isOutput = false;
+      : isOutput = false,
+      index = -1; //to catch potential errors
 
   // final void Function(DragStartDetails)? onPanStart;
   // final void Function(DragUpdateDetails)? onPanUpdate;

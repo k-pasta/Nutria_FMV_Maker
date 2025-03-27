@@ -25,6 +25,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
   late FocusNode _focusNode;
   static const _doNothingIntent = DoNothingAndStopPropagationIntent();
   final TextEditingController myController = TextEditingController();
+
   // int numLines = 1;
 
   @override
@@ -55,6 +56,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         _focusNode.hasFocus ? theme.cTextFieldActive : theme.cTextField;
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
     final AppLocalizations t = AppLocalizations.of(context)!;
+      print('buttonheight: ${theme.dButtonHeight}, textheight: ${theme.dTextHeight}, padding: ${(theme.dButtonHeight - theme.dTextHeight) / 2} ');
     return Shortcuts(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.keyT):
@@ -85,23 +87,24 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         },
         textInputAction: TextInputAction.next,
         focusNode: _focusNode,
-
+      
         cursorColor: theme.cText,
         style: TextStyle(
           color: textColor,
           fontSize: theme.dTextHeight,
+          // height: 1
         ),
         // maxLines: null,
         maxLines: 1,
         maxLength: 500, //TODO De-hardcode and document
-
+      
         decoration: InputDecoration(
           isDense:
               true, //allows custom height and overwrites min height of 48 px (flutter's default for accessibility)
-
+      
           contentPadding: EdgeInsets.symmetric(
-              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2,
-              horizontal: theme.dTextfieldPadding), // TODO de-hardcode
+              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5, //Idk why i need this extra 0,5, I eyeballed it
+              horizontal: theme.dTextfieldPadding), 
           counterText: '', //disables max character counter
           hintText:
               '${t.videoNodeChoice} ${widget.index} ...',

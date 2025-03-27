@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/enums_data.dart';
+import '../models/snap_settings.dart';
 
 class AppSettingsProvider extends ChangeNotifier {
   static const SnapSettings defaultSnapSettings =
@@ -18,16 +19,6 @@ class AppSettingsProvider extends ChangeNotifier {
 }
 
 //TODO move to models
-
-class SnapSettings {
-  final bool gridSnapping;
-  final double gridSize;
-
-  const SnapSettings({
-    required this.gridSnapping,
-    this.gridSize = 50,
-  });
-}
 
 const Map<VideoOverrides, dynamic> defaultVideoSettings = {
   VideoOverrides.pauseOnEnd: false,

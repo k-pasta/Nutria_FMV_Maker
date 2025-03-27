@@ -1,6 +1,7 @@
 import 'dart:io';
 
-import 'package:file_selector/file_selector.dart';
+// import 'package:file_selector/file_selector.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
@@ -18,17 +19,14 @@ class VideoCollection extends StatelessWidget {
 
   Future<List<String>?> _selectVideo() async {
     try {
-      // Open the file selector to pick multiple video files
-      var files = await openFiles(
-        acceptedTypeGroups: [
-         const XTypeGroup(
-            label: 'videos',
-            extensions: ['mp4', 'avi', 'mov', 'mkv'],
-          ),
-        ],
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.video,
+        allowMultiple: true,
       );
-      if (files.isEmpty) return null;
-      return files.map((file) => file.path).toList();
+
+      if (result == null || result.files.isEmpty) return null;
+
+      return result.files.map((file) => file.path!).toList();
     } catch (err) {
       print('Error: $err');
       return null;

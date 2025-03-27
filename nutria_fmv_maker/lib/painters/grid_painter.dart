@@ -32,16 +32,33 @@ class GridPainter extends CustomPainter {
     final double translationY = translation.y;
     // Grid spacing (smaller for higher zoom levels)
 
-    double nearestPowerOfTwo(double num) {
+    double nearestPowerOf(double num, int exponent) {
       // Function to find the nearest number in the geometric sequence
       double start = 1; // Initial value of the sequence
-      while (start / 4 >= num) {
-        start /= 4;
+
+      // Handle zooming out (scale < 1)
+      if (num < 1) {
+        while (start / exponent >= num) {
+          start /= exponent;
+        }
+
+        return start;
       }
-      return start;
+
+      // Handle zooming in (scale > 1)
+      if (num > 1) {
+        while (start * exponent <= num) {
+          start *= exponent;
+        }
+
+        return start *
+            exponent; //normally should be start * 4, thought it's prettier having this extra step TODO document
+      }
+
+      return 1;
     }
 
-    double scaleModifier = nearestPowerOfTwo(scale);
+    double scaleModifier = nearestPowerOf(scale, 4);
     double gridSpacing = 100 / scaleModifier;
 
     // Calculate the offset to determine where the grid should start

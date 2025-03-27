@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_expansion.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/models/snap_settings.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/keyboard_provider.dart';
 import 'package:path/path.dart' as p;
@@ -76,13 +77,19 @@ class VideoNode extends StatelessWidget {
                 return GestureDetector(
                   //where node starts really
                   onPanUpdate: (details) {
-                    nodesProvider.offsetNodePosition(
-                        videoNodeData.id, details.delta,
-                        snapToGrid:
-                            appSettingsProvider.snapSettings.gridSnapping);
+                    nodesProvider.offsetSelectedNodes(details.delta,
+                        snapSettings: keyboardProvider.isShiftPressed
+                            ? appSettingsProvider.snapSettings
+                                .copyWith(gridSnapping: true)
+                            : appSettingsProvider.snapSettings);
                   },
                   onPanStart: (details) {
-                    nodesProvider.selectNodes([videoNodeData.id]);
+                    if (videoNodeData.isSelected || keyboardProvider.isCtrlPressed) {
+                      nodesProvider.selectNodes([videoNodeData.id],
+                          multiSelection: true);
+                    } else {
+                      nodesProvider.selectNodes([videoNodeData.id]);
+                    }
                     nodesProvider.setActiveNode(videoNodeData.id);
                   },
                   onPanEnd: (_) {
@@ -184,7 +191,6 @@ class VideoNode extends StatelessWidget {
             ),
             Knot.input(
                 nodeData: videoNodeData,
-                index: -1, // = input know
                 offset: videoNodeData.inputPosition(theme)),
             ...videoNodeData.outputs.asMap().entries.map((entry) {
               int index = entry.key;
