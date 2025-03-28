@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
@@ -9,6 +8,7 @@ import 'package:provider/provider.dart';
 
 import '../../models/app_theme.dart';
 import '../../models/enums_data.dart';
+import '../../models/node_data/branched_video_node_data.dart';
 import '../../providers/theme_provider.dart';
 import '../nutria_text.dart';
 import 'node_debug_info.dart';
@@ -19,7 +19,7 @@ import 'dart:math';
 class NodeVideoExpansion extends StatelessWidget {
   const NodeVideoExpansion({super.key, required this.videoNodeData});
 
-  final VideoNodeData videoNodeData;
+  final BranchedVideoNodeData videoNodeData;
 
   @override
   Widget build(BuildContext context) {
@@ -31,9 +31,10 @@ class NodeVideoExpansion extends StatelessWidget {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final void Function(String nodeId, String key, dynamic value) addOverride =
         nodesProvider.addOverride;
+    final void Function(String nodeId) convert = nodesProvider.convertNode;
 
     final List<Widget> widgets = [
-      _buildConvertButton(),
+      _buildConvertButton(convert),
       _buildSelectionTimeOverride(settings, addOverride),
       _buildPauseOnEndOverride(settings, addOverride),
       _buildShowTimerOverride(settings, addOverride),
@@ -49,12 +50,14 @@ class NodeVideoExpansion extends StatelessWidget {
     return Column(children: widgets);
   }
 
-  Widget _buildConvertButton() {
+  Widget _buildConvertButton(Function(String nodeId) convert) {
     return SizedBox(
       width: double.infinity,
       child: NutriaButton(
         child: NutriaText(text: 'convert to simple video node'),
-        onTap: () {},
+        onTap: () {
+          convert(videoNodeData.id);
+        },
       ),
     );
   }
@@ -173,13 +176,16 @@ class NodeVideoExpansion extends StatelessWidget {
               .byName((currentOverride as DefaultSelectionMethod).name)
           : settings[VideoOverrides.defaultSelection] as DefaultSelectionMethod;
 
-      final int currentIndex = DefaultSelectionMethod.values.indexOf(currentMethod);
-      final int newIndex =
-          (currentIndex + (isNext ? 1 : -1)) % DefaultSelectionMethod.values.length;
+      final int currentIndex =
+          DefaultSelectionMethod.values.indexOf(currentMethod);
+      final int newIndex = (currentIndex + (isNext ? 1 : -1)) %
+          DefaultSelectionMethod.values.length;
 
       // negative index handling
       final DefaultSelectionMethod newMethod = DefaultSelectionMethod.values[
-          newIndex < 0 ? DefaultSelectionMethod.values.length + newIndex : newIndex];
+          newIndex < 0
+              ? DefaultSelectionMethod.values.length + newIndex
+              : newIndex];
 
       // Pass the actual enum, not the name
       addOverride(videoNodeData.id, key, newMethod);

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_theme.dart';
-import '../../models/node_data.dart';
+import '../../models/node_data/node_data.dart';
 import '../../providers/theme_provider.dart';
 
 class NodeSwatchStrip extends StatelessWidget {

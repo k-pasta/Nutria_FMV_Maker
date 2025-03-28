@@ -1,6 +1,6 @@
 // Helper function to select a starting node from the list.
 // Here, we assume the starting node is the first BaseNodeData encountered.
-import '../models/node_data.dart';
+import '../models/node_data/node_data.dart';
 
 BaseNodeData findStartingNode(List<NodeData> nodes) {
   return nodes.isNotEmpty ? nodes.last as BaseNodeData : throw Exception('Empty Node List');

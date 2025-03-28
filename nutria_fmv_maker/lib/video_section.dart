@@ -11,7 +11,7 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_slider.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/enums_ui.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/providers/video_player_provider.dart';

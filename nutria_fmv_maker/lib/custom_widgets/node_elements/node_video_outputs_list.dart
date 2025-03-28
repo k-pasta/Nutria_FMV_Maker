@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_theme.dart';
-import '../../models/node_data.dart';
+import '../../models/node_data/branched_video_node_data.dart';
+import '../../models/node_data/node_data.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/nodes_provider.dart';
 import '../nutria_button.dart';
@@ -16,7 +17,7 @@ class NodeVideoOutputsList extends StatelessWidget {
     required this.videoNodeData,
   });
 
-  final VideoNodeData videoNodeData;
+  final BranchedVideoNodeData videoNodeData;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class NodeVideoOutputsList extends StatelessWidget {
       child: FocusTraversalGroup(
         policy: OrderedTraversalPolicy(),
         //this makes it so the tab key only cycles through the current node's inputs
-        child: Container(
+        child: Padding(
           padding: EdgeInsets.all(theme.dPanelPadding),
           child: Column(
             children: List.generate(videoNodeData.outputs.length, (index) {

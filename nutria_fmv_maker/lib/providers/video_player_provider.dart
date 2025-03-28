@@ -5,7 +5,7 @@ import 'package:media_kit_video/media_kit_video.dart';
 import 'dart:async';
 
 import 'package:nutria_fmv_maker/models/enums_data.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 
 class VideoPlayerProvider extends ChangeNotifier {
   VideoPlayerProvider() {

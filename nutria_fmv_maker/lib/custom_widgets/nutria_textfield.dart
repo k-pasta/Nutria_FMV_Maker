@@ -56,7 +56,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         _focusNode.hasFocus ? theme.cTextFieldActive : theme.cTextField;
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
     final AppLocalizations t = AppLocalizations.of(context)!;
-      print('buttonheight: ${theme.dButtonHeight}, textheight: ${theme.dTextHeight}, padding: ${(theme.dButtonHeight - theme.dTextHeight) / 2} ');
+     
     return Shortcuts(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.keyT):

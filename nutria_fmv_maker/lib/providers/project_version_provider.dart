@@ -4,7 +4,8 @@ import 'package:file_picker/file_picker.dart';
 
 import 'package:flutter/material.dart';
 import 'package:media_kit_video/media_kit_video.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 import 'package:nutria_fmv_maker/utilities/simplify_node_tree.dart';
 
 class ProjectVersionProvider extends ChangeNotifier {
@@ -16,8 +17,8 @@ class ProjectVersionProvider extends ChangeNotifier {
       List<String> videosUsed = [];
 
       for (int i = 0; i < nodesTraversed.length; i++) {
-        if (nodesTraversed[i] is VideoNodeData) {
-          VideoNodeData node = nodesTraversed[i] as VideoNodeData;
+        if (nodesTraversed[i] is BranchedVideoNodeData) {
+          BranchedVideoNodeData node = nodesTraversed[i] as BranchedVideoNodeData;
           nodesTraversed[i] = node.copyWith(
               videoDataId: videos
                   .firstWhere((video) => video.id == node.videoDataId)

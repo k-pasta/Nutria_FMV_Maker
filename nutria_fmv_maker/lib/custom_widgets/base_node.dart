@@ -2,13 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/knot.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_expansion.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:nutria_fmv_maker/models/snap_settings.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/keyboard_provider.dart';
 import 'package:path/path.dart' as p;
 import 'package:provider/provider.dart';
 
-import '../models/node_data.dart';
+import '../models/node_data/node_data.dart';
 import '../models/app_theme.dart';
 import '../providers/theme_provider.dart';
 import '../providers/nodes_provider.dart';
@@ -37,7 +39,7 @@ class BaseNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuilding ${nodeId}'); //DEBUG to check when nodes rebuild
+    // print('rebuilding ${nodeId}'); //DEBUG to check when nodes rebuild
 
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final AppSettingsProvider appSettingsProvider =
@@ -47,25 +49,19 @@ class BaseNode extends StatelessWidget {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final KeyboardProvider keyboardProvider = context.read<KeyboardProvider>();
 
-    return Selector<NodesProvider, NodeData>(
-      selector: (context, provider) =>
-          provider.getNodeById(nodeId), // Only listen to this node
-      builder: (context, node, child) {
-        nodesProvider.initializeOutputs(nodeId);
-        final BaseNodeData nodeData = nodesProvider.getNodeById(nodeId);
 
         void loadVideo() {
-          if (nodeData is VideoNodeData) {
+          if (baseNodeData is VideoNodeData) {
             final VideoData videoData =
-                nodesProvider.getVideoDataById(nodeData.videoDataId);
+                nodesProvider.getVideoDataById((baseNodeData as VideoNodeData).videoDataId);
             videoPlayerProvider.loadVideo(
-                videoData: videoData, nodeId: nodeData.id);
+                videoData: videoData, nodeId: baseNodeData.id);
           }
         }
 
         return Positioned(
-          top: nodeData.position.dy + (UiStaticProperties.topLeftToMiddle.dy),
-          left: nodeData.position.dx + (UiStaticProperties.topLeftToMiddle.dx),
+          top: baseNodeData.position.dy + (UiStaticProperties.topLeftToMiddle.dy),
+          left: baseNodeData.position.dx + (UiStaticProperties.topLeftToMiddle.dx),
           child: Stack(clipBehavior: Clip.none, children: [
             const NodeBackground(),
             Positioned(
@@ -94,40 +90,40 @@ class BaseNode extends StatelessWidget {
                             : appSettingsProvider.snapSettings);
                   },
                   onPanStart: (details) {
-                    if (nodeData.isSelected || keyboardProvider.isCtrlPressed) {
+                    if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed) {
                       nodesProvider
-                          .selectNodes([nodeData.id], multiSelection: true);
+                          .selectNodes([baseNodeData.id], multiSelection: true);
                     } else {
-                      nodesProvider.selectNodes([nodeData.id]);
+                      nodesProvider.selectNodes([baseNodeData.id]);
                     }
-                    nodesProvider.setActiveNode(nodeData.id);
+                    nodesProvider.setActiveNode(baseNodeData.id);
                   },
                   onPanEnd: (_) {
-                    nodesProvider.resetNodeIntendedValues(nodeData.id);
+                    nodesProvider.resetNodeIntendedValues(baseNodeData.id);
                   },
                   onPanCancel: () {
-                    nodesProvider.resetNodeIntendedValues(nodeData.id);
+                    nodesProvider.resetNodeIntendedValues(baseNodeData.id);
                   },
                   onTap: () {
                     if (!keyboardProvider.isCtrlPressed) {
-                      nodesProvider.setActiveNode(nodeData.id);
-                      nodesProvider.selectNodes([nodeData.id]);
+                      nodesProvider.setActiveNode(baseNodeData.id);
+                      nodesProvider.selectNodes([baseNodeData.id]);
                       loadVideo();
                     } else {
-                      if (!nodeData.isSelected) {
-                        nodesProvider.setActiveNode(nodeData.id);
+                      if (!baseNodeData.isSelected) {
+                        nodesProvider.setActiveNode(baseNodeData.id);
                         nodesProvider
-                            .selectNodes([nodeData.id], multiSelection: true);
+                            .selectNodes([baseNodeData.id], multiSelection: true);
                         loadVideo();
                       } else {
-                        nodesProvider.deselectNodes([nodeData.id]);
+                        nodesProvider.deselectNodes([baseNodeData.id]);
                       }
                     }
                   },
                   child: MouseRegion(
                     onEnter: (_) {
                       nodesProvider.setCurrentUnderCursor(
-                          LogicalPosition.node(nodeData.id));
+                          LogicalPosition.node(baseNodeData.id));
                     },
                     onExit: (_) {
                       nodesProvider
@@ -135,26 +131,26 @@ class BaseNode extends StatelessWidget {
                     },
                     hitTestBehavior: HitTestBehavior.deferToChild,
                     child: SizedBox(
-                      width: nodeData.nodeWidth,
+                      width: baseNodeData.nodeWidth,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
                           //Swatch Strip on top
                           NodeSwatchStrip(
-                            nodeData: nodeData,
+                            nodeData: baseNodeData,
                           ),
                           //Main node background
                           NodeMainContainer(
-                            nodeData: nodeData,
+                            nodeData: baseNodeData,
                             children: body,
                           ),
                           //expansion
-                          if (nodeData.isExpanded)
+                          if (baseNodeData.isExpanded)
                             //distance between main node and expansion
                             SizedBox(
                               height: theme.dPanelPadding,
                             ),
-                          if (nodeData.isExpanded)
+                          if (baseNodeData.isExpanded)
                             Container(
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(
@@ -176,86 +172,44 @@ class BaseNode extends StatelessWidget {
 
             //left resize handle
             NodeResizeHandle(
-              nodeData: nodeData,
+              nodeData: baseNodeData,
               isLeftSide: true,
-              draggableAreaHeight: nodeData.nodeHeight(theme),
+              draggableAreaHeight: baseNodeData.nodeHeight(theme),
             ),
             //right resize handle
             NodeResizeHandle(
-              nodeData: nodeData,
+              nodeData: baseNodeData,
               isLeftSide: false,
-              draggableAreaHeight: nodeData.nodeHeight(theme),
+              draggableAreaHeight: baseNodeData.nodeHeight(theme),
             ),
 
             //input knot
             Knot.input(
-              nodeData: nodeData,
-              offset: nodeData.inputPosition(theme),
+              nodeData: baseNodeData,
+              offset: baseNodeData.inputPosition(theme),
             ),
             //output knot(s)
-            ...nodeData.outputs.asMap().entries.map((entry) {
+            ...baseNodeData.outputs.asMap().entries.map((entry) {
               int index = entry.key;
               var output = entry.value;
-              bool isLast = index == nodeData.outputs.length - 1;
+              bool isLast = index == baseNodeData.outputs.length - 1;
               if (!isLast ||
-                  (nodeData is VideoNodeData &&
+                  (baseNodeData is BranchedVideoNodeData &&
                       isLast &&
-                      nodeData.hasMaxedOutOutputs)) {
+                      (baseNodeData as BranchedVideoNodeData).hasMaxedOutOutputs)) {
                 // if (!isLast) {
                 return Knot.output(
-                  nodeData: nodeData,
+                  nodeData: baseNodeData,
                   index: index,
-                  offset: nodeData.outputPosition(theme, index),
+                  offset: baseNodeData.outputPosition(theme, index),
                 );
               } else {
                 return Container();
               }
             }).toList(),
           ]),
-        );
-      },
+        // );
+      // },
     );
-  }
-}
-
-class VideoNode extends StatelessWidget {
-  final String nodeId;
-
-  const VideoNode({super.key, required this.nodeId});
-
-  @override
-  Widget build(BuildContext context) {
-    final NodesProvider nodesProvider = context.read<NodesProvider>();
-
-    // final VideoNodeData nodeData = nodesProvider.getNodeById(nodeId);
-    // final VideoData videoData =
-    //     nodesProvider.getVideoDataById(nodeData.videoDataId);
-
-    return Selector<NodesProvider, NodeData>(
-        selector: (context, provider) =>
-            provider.getNodeById(nodeId), // Only listen to this node
-        builder: (context, node, child) {
-          nodesProvider.initializeOutputs(nodeId);
-          final VideoNodeData nodeData = nodesProvider.getNodeById(nodeId);
-
-          return BaseNode(
-            baseNodeData: nodeData,
-            nodeId: nodeId,
-            body: [
-              //thumbnail
-              NodeVideoThumbnail(
-                videoDataId: nodeData.videoDataId,
-                videoNodeData: nodeData,
-              ),
-              //video file name
-              NodeVideoFileNameText(videoNodeData: nodeData),
-              //outputs and expand button
-              NodeVideoOutputsList(
-                videoNodeData: nodeData,
-              ),
-            ],
-            expansion: NodeVideoExpansion(videoNodeData: nodeData),
-          );
-        });
   }
 }

@@ -1,11 +1,13 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:nutria_fmv_maker/providers/grid_canvas_provider.dart';
 
 import 'package:provider/provider.dart';
 
-import '../../models/node_data.dart';
+import '../../models/node_data/branched_video_node_data.dart';
+import '../../models/node_data/node_data.dart';
 import '../../models/app_theme.dart';
 import '../../painters/striped_pattern_painter.dart';
 import '../../providers/theme_provider.dart';

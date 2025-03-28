@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
+import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
@@ -11,9 +12,12 @@ import 'package:tuple/tuple.dart';
 import 'package:uuid/uuid.dart';
 import '../models/app_theme.dart';
 import '../models/enums_data.dart';
-import '../models/node_data.dart';
+import '../models/node_data/input.dart';
+import '../models/node_data/node_data.dart';
 import 'dart:math';
 
+import '../models/node_data/output.dart';
+import '../models/node_data/simple_video_node_data.dart';
 import '../models/snap_settings.dart';
 import '../utilities/thumbnail_generator.dart';
 
@@ -62,33 +66,33 @@ class NodesProvider extends ChangeNotifier {
 
   // Immutable list of nodes
   final List<NodeData> _nodes = [
-    // VideoNodeData(
-    //   id: 'aaa',
-    //   position: const Offset(0, 0),
-    //   videoDataId: 'a',
-    //   isExpanded: false,
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: 'First text'),
-    //   ],
-    //   overrides: {
-    //     'SelectionTime': const Duration(seconds: 10),
-    //     'PauseOnEnd': false,
-    //     'ShowTimer': true
-    //   },
-    //   nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
-    // ),
-    // VideoNodeData(
-    //   id: 'bbb',
-    //   position: const Offset(150, 250),
-    //   videoDataId: 'a',
-    //   outputs: <Output>[
-    //     Output(outputData: 'First text'),
-    //     Output(outputData: 'First text'),
-    //   ],
-    // ),
+    BranchedVideoNodeData(
+      id: 'aaa',
+      position: const Offset(0, 0),
+      videoDataId: 'a',
+      isExpanded: false,
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+      ],
+      overrides: {
+        'SelectionTime': const Duration(seconds: 10),
+        'PauseOnEnd': false,
+        'ShowTimer': true
+      },
+      nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
+    ),
+    SimpleVideoNodeData(
+      id: 'bbb',
+      position: const Offset(150, 250),
+      videoDataId: 'a',
+      outputs: <Output>[
+        Output(outputData: 'First text'),
+        Output(outputData: 'First text'),
+      ],
+    ),
     // VideoNodeData(
     //   id: 'ccc',
     //   position: const Offset(150, 20),
@@ -111,11 +115,28 @@ class NodesProvider extends ChangeNotifier {
     // ),
   ];
 
+  final List<VideoData> _videos = [
+    VideoData(
+      id: 'a',
+      videoPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
+    ),
+    // VideoData(
+    //   id: 'b',
+    //   videoDataPath:
+    //       'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
+    // ),
+    // VideoData(
+    //   id: 'c',
+    //   videoDataPath:
+    //       'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
+    // ),
+  ];
+
   void removeOverride(String nodeId, String key) {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is VideoNodeData) {
+    if (node is BranchedVideoNodeData) {
       final updatedOverrides = Map<String, dynamic>.from(node.overrides);
       updatedOverrides.remove(key);
 
@@ -131,7 +152,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is VideoNodeData) {
+    if (node is BranchedVideoNodeData) {
       final updatedNode = node.copyWith(overrides: {});
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
@@ -144,7 +165,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is VideoNodeData) {
+    if (node is BranchedVideoNodeData) {
       final updatedOverrides = Map<String, dynamic>.from(node.overrides);
       updatedOverrides[key] = value;
 
@@ -154,7 +175,7 @@ class NodesProvider extends ChangeNotifier {
     } else {
       throw Exception("Node is not of type VideoNodeData");
     }
-    print((_nodes[nodeIndex] as VideoNodeData).overrides[key]);
+    print((_nodes[nodeIndex] as BranchedVideoNodeData).overrides[key]);
   }
 
   // Getter for nodes (returns an immutable list)
@@ -162,6 +183,16 @@ class NodesProvider extends ChangeNotifier {
 
   List<String> get iDs =>
       List.unmodifiable(_nodes.map((node) => node.id).toList());
+
+  List<Type> get types =>
+      List.unmodifiable(_nodes.map((node) => node.runtimeType).toList());
+
+  Tuple2<List<String>, List<Type>> get iDsandTypes {
+    return Tuple2(iDs, types);
+  }
+
+  // Map<String, Type> get iDsandTypes => Map.fromEntries(
+  //     _nodes.map((node) => MapEntry(node.id, node.runtimeType)));
 
   List<String> get videoDataIds =>
       List.unmodifiable(_videos.map((video) => video.id).toList());
@@ -213,23 +244,6 @@ class NodesProvider extends ChangeNotifier {
 
     return noodles;
   }
-
-  final List<VideoData> _videos = [
-    // VideoData(
-    //   id: 'a',
-    //   videoDataPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
-    // ),
-    // VideoData(
-    //   id: 'b',
-    //   videoDataPath:
-    //       'C:/Users/cgbook/Videos/Captures/KFC33 — Mozilla Firefox 2024-09-16 15-59-01.mp4',
-    // ),
-    // VideoData(
-    //   id: 'c',
-    //   videoDataPath:
-    //       'C:/Users/cgbook/Videos/Captures/pause_ saved to C__Users_cgbook_Desktop_photogrammetry test - RealityCapture 2024-05-31 17-55-14.mp4',
-    // ),
-  ];
 
   // Getter for videos (returns an immutable list)
   List<VideoData> get videos => List.unmodifiable(_videos);
@@ -300,7 +314,7 @@ class NodesProvider extends ChangeNotifier {
 
   void initializeOutputs(String id) {
     int index = getNodeIndexById(id);
-    VideoNodeData nodeData = _nodes[index] as VideoNodeData;
+    BranchedVideoNodeData nodeData = _nodes[index] as BranchedVideoNodeData;
 
     // Ensure outputs have at least 3 items
     while (nodeData.outputs.length < 3) {
@@ -331,7 +345,7 @@ class NodesProvider extends ChangeNotifier {
 
   int getEffectiveOutputs(String id) {
     int index = getNodeIndexById(id);
-    VideoNodeData nodeData = _nodes[index] as VideoNodeData;
+    BranchedVideoNodeData nodeData = _nodes[index] as BranchedVideoNodeData;
     if (nodeData.outputs.isEmpty) {
       return 3;
     } else if (nodeData.outputs.length <= 2) {
@@ -346,7 +360,7 @@ class NodesProvider extends ChangeNotifier {
     // Get the index of the node by its ID
     int nodeIndex = getNodeIndexById(id);
     // Cast the node to VideoNodeData
-    VideoNodeData nodeData = _nodes[nodeIndex] as VideoNodeData;
+    BranchedVideoNodeData nodeData = _nodes[nodeIndex] as BranchedVideoNodeData;
 
     // If the output index is the last one, add a new empty output
     if (nodeData.outputs.length == outputIndex + 1 && outputIndex < 9) {
@@ -873,7 +887,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is VideoNodeData) {
+    if (node is BranchedVideoNodeData) {
       final updatedNode = node.copyWith(videoDataId: videoId);
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
@@ -909,11 +923,61 @@ class NodesProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void removeSelected() {
+    _nodes.removeWhere((node) => node.isSelected);
+    notifyListeners();
+  }
+
   // Add a new node to the provider
   void addNode(NodeData node) {
     _nodes.add(node);
     notifyListeners();
   }
+
+//if SimpleVideoNodeData, replace with BranchingVideoNodeData and vice versa
+  void convertNode(String id) {
+    int nodeIndex = getNodeIndexById(id);
+    final node = _nodes[nodeIndex];
+
+    removeNode(id);
+
+    notifyListeners();
+
+    if (node is SimpleVideoNodeData) {
+      // Convert SimpleVideoNodeData to BranchedVideoNodeData
+      final convertedNode = BranchedVideoNodeData(
+        id: uuid.v1(),
+        position: node.position,
+        videoDataId: node.videoDataId,
+        isExpanded: node.isExpanded,
+        // outputs: node.outputs,
+        // overrides: {}, // Initialize with empty overrides
+        nodeName: node.nodeName,
+      );
+      _nodes.add(convertedNode);
+    } else if (node is BranchedVideoNodeData) {
+      // Convert BranchedVideoNodeData to SimpleVideoNodeData
+      final convertedNode = SimpleVideoNodeData(
+        id: uuid.v1(),
+        position: node.position,
+        videoDataId: node.videoDataId,
+        isExpanded: node.isExpanded,
+        // outputs: node.outputs,
+        nodeName: node.nodeName,
+      );
+      _nodes.add(convertedNode);
+    } else {
+      throw Exception("Node is not of a convertible type");
+    }
+
+    notifyListeners();
+  }
+
+  // void replaceNode(NodeData node) {
+  //   int nodeIndex = getNodeIndexById(node.id);
+  //   _nodes[nodeIndex] = node;
+  //   notifyListeners();
+  // }
 
   void addVideo(String path) {
     // Check if the video already exists

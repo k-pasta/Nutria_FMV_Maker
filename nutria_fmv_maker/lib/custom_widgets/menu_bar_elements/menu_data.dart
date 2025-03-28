@@ -15,9 +15,11 @@ import 'dart:io';
 class MenuData {
   static List<NutriaMenuButton> menuData(BuildContext context) {
     AppLocalizations t = AppLocalizations.of(context)!;
-    final AppSettingsProvider appSettingsProvider = context.read<AppSettingsProvider>();
-    final ProjectVersionProvider projectVersionProvider = context.read<ProjectVersionProvider>();
-    final NodesProvider nodesProvider  = context.read<NodesProvider>();
+    final AppSettingsProvider appSettingsProvider =
+        context.read<AppSettingsProvider>();
+    final ProjectVersionProvider projectVersionProvider =
+        context.read<ProjectVersionProvider>();
+    final NodesProvider nodesProvider = context.read<NodesProvider>();
     return [
       NutriaMenuButton(
         //File
@@ -57,9 +59,9 @@ class MenuData {
           ),
           NutriaSubmenuButton(
             text: 'Export Project',
-            function: () => projectVersionProvider.exportFile(nodesProvider.nodes, nodesProvider.videos),
-            shortcut: SingleActivator(LogicalKeyboardKey.keyE,
-                control: true),
+            function: () => projectVersionProvider.exportFile(
+                nodesProvider.nodes, nodesProvider.videos),
+            shortcut: SingleActivator(LogicalKeyboardKey.keyE, control: true),
             icon: Icons.arrow_forward,
           ),
           NutriaSubmenuButton(
@@ -90,12 +92,21 @@ class MenuData {
             icon: Icons.redo,
           ),
           NutriaSubmenuButton(
+            text: 'Delete Selected Node(s)',
+            function: () {
+              debugPrint("Delete");
+              context.read<NodesProvider>().removeSelected();
+            },
+            shortcut: SingleActivator(LogicalKeyboardKey.delete),
+            icon: Icons.delete_forever,
+          ),
+          NutriaSubmenuButton(
             text: 'toggle grid snapping',
-            function: () { context
-                        .read<AppSettingsProvider>()
-                        .toggleSnapping();},
-            shortcut: const SingleActivator(LogicalKeyboardKey.keyG,
-                control: true),
+            function: () {
+              context.read<AppSettingsProvider>().toggleSnapping();
+            },
+            shortcut:
+                const SingleActivator(LogicalKeyboardKey.keyG, control: true),
             icon: Icons.grid_on_rounded,
           ),
           NutriaSubmenuButton(

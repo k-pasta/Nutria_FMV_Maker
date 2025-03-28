@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import '../../models/enums_ui.dart';
-import '../../models/node_data.dart';
+import '../../models/node_data/branched_video_node_data.dart';
+import '../../models/node_data/node_data.dart';
 import '../../models/app_theme.dart';
 
 import '../../providers/app_settings_provider.dart';

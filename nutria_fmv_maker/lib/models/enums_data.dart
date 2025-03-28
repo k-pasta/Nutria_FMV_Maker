@@ -7,6 +7,7 @@ enum VideoOverrides {
   pauseMusicPath,
 }
 
+
 String getVideoOverrideKey(VideoOverrides key) {
   const keyMap = {
     VideoOverrides.selectionTime: 'SelectionTime',
@@ -86,6 +87,9 @@ String _getDefaultSelectionMethodString(DefaultSelectionMethod method) {
       return 'Unknown';
   }
 }
+
+enum NodeDataType{ branchedVideo, simpleVideo, originNode }
+
 
 enum VideoFit { fit, fitwidth, fitheight, fill, fillWidth, fillHeight, stretch }
 

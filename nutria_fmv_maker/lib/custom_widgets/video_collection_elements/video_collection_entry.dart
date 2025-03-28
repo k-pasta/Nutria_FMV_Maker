@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:nutria_fmv_maker/models/node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import '../../models/app_theme.dart';
 import '../../models/enums_ui.dart';
