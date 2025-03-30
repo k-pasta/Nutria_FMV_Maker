@@ -47,7 +47,7 @@ abstract class BaseNodeData extends NodeData {
   final double intendedNodeWidth; //Used by functions like snap to default size
   final bool isExpanded;
   final List<Output> outputs; // Must also be immutable
-  final Input input;
+  final Input? input;
   final int swatch;
 
   Offset inputPosition(AppTheme theme);

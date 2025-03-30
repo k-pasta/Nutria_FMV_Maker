@@ -68,8 +68,8 @@ class _KnotState extends State<Knot> {
       }
     } else if (!widget.isOutput) {
       //if is input
-      isBeingTargeted = widget.nodeData.input.isBeingTargeted;
-      isBeingDragged = widget.nodeData.input.isBeingDragged;
+      isBeingTargeted = widget.nodeData.input?.isBeingTargeted ?? false;
+      isBeingDragged = widget.nodeData.input?.isBeingDragged ?? false;
       nextIntent = LogicalPosition.input(widget.nodeData.id);
     }
 

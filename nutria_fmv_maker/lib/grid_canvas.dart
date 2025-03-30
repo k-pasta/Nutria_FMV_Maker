@@ -37,16 +37,6 @@ class _GridCanvasState extends State<GridCanvas> {
 
   late List<Widget> nodes;
 
-  // @override
-  // void initState() {
-  //   nodes = context.read<NodesProvider>().iDs.map((id) {
-  //     return BranchedVideoNode(
-  //       nodeId: id,
-  //       key: ValueKey(id),
-  //     );
-  //   }).toList();
-  //   super.initState();
-  // }
   @override
   void initState() {
     var iDs = context.read<NodesProvider>().iDs;
@@ -58,12 +48,6 @@ class _GridCanvasState extends State<GridCanvas> {
     });
 
     super.initState();
-// }
-
-    // nodes = context.read<NodesProvider>().iDsandTypes.entries.map((entry) {
-    //   return _addNodeById(entry.key, entry.value);
-    // }).toList();
-    // super.initState();
   }
 
   Widget _addNodeById(String id, Type type) {
@@ -87,26 +71,55 @@ class _GridCanvasState extends State<GridCanvas> {
     }
   }
 
-  void _updateNodes(List<String> iDs, List<Type> types) {
-    // Extract the list of IDs from the map
+  // void _updateNodes(List<String> iDs, List<Type> types) {
+  //   //assumes that the nodes list either grows or shrinks
 
-    // If there are more IDs in the list than nodes in the list, add the missing nodes
-    if (iDs.length > nodes.length) {
-      iDs.skip(nodes.length).forEach((nodeId) {
-        // Find the corresponding type for this ID
-        int index = iDs.indexOf(nodeId);
-        Type nodeType = types[index];
+  //   // If there are more IDs in the list than nodes in the list, add the missing nodes
+  //   if (iDs.length > nodes.length) {
+  //     iDs.skip(nodes.length).forEach((nodeId) {
+  //       // Find the corresponding type for this ID
+  //       int index = iDs.indexOf(nodeId);
+  //       Type nodeType = types[index];
 
-        // Add a new node for each missing ID
-        nodes.add(_addNodeById(nodeId, nodeType));
-      });
-    }
-    // If there are fewer IDs in the map than nodes in the list, remove the extra nodes
-    else if (iDs.length < nodes.length) {
-      // Remove nodes that are no longer in the map
-      nodes.removeRange(iDs.length, nodes.length);
+  //       // Add a new node for each missing ID
+  //       nodes.add(_addNodeById(nodeId, nodeType));
+  //     });
+  //   }
+  //   // If there are fewer IDs in the map than nodes in the list, remove the extra nodes
+  //   else if (iDs.length < nodes.length) {
+  //     // Remove nodes that are no longer in the map
+  //     nodes.removeWhere((node) {
+  //       final nodeId = (node.key as ValueKey).value as String;
+  //       return !iDs.contains(nodeId);
+  //     });
+  //   }
+  // }
+
+void _updateNodes(List<String> ids, List<Type> types) {
+  // Build a lookup of existing nodes by their id (only storing references, not copies)
+  final Map<String, Widget> nodeLookup = {
+    for (final node in nodes) (node.key as ValueKey).value as String: node,
+  };
+
+  final List<Widget> updatedNodes = [];
+
+  for (int i = 0; i < ids.length; i++) {
+    final id = ids[i];
+    final type = types[i];
+
+    if (nodeLookup.containsKey(id)) {
+      // Reuse the node and remove it from the lookup to flag it as processed
+      updatedNodes.add(nodeLookup[id]!);
+      nodeLookup.remove(id);
+    } else {
+      // Create a new node if it doesn't exist
+      updatedNodes.add(_addNodeById(id, type));
     }
   }
+
+  // Assign the reordered list back to nodes.
+  nodes = updatedNodes;
+}
 
   @override
   Widget build(BuildContext context) {
@@ -143,149 +156,139 @@ class _GridCanvasState extends State<GridCanvas> {
       }
     }
 
-    return
+    return Selector(
+        selector: (_, NodesProvider provider) => provider.iDsandTypes,
+        builder: (context, iDsandTypes, child) {
+          print('full rebuild');
+          final List<String> iDs = iDsandTypes.item1;
+          final List<Type> types = iDsandTypes.item2;
+          print('before update');
+          _updateNodes(iDs, types);
+          print('after update');
+          nodes.sort((a, b) {
+            // print(iDs.last);
+            // print((nodes.first.key as ValueKey).value);
 
-        // Selector<NodesProvider, Map<String, Type>>(
-        //     selector: (_, nodesProvider) => nodesProvider.iDsandTypes,
-        //     builder: (context, iDsandTypes, child) {
-        Selector(
-            selector: (_, NodesProvider provider) => provider.iDsandTypes,
-            builder: (context, iDsandTypes, child) {
-              print('full rebuild');
-              final List<String> iDs = iDsandTypes.item1;
-              final List<Type> types = iDsandTypes.item2;
+            final aId = (a.key as ValueKey).value as String;
+            final bId = (b.key as ValueKey).value as String;
+            return iDs.indexOf(aId).compareTo(iDs.indexOf(bId));
+          });
 
-              _updateNodes(iDs, types);
+          return Listener(
+            onPointerSignal: (event) {
+              if (event is PointerScrollEvent) {
+                gridCanvasProvider.updateScaleAndMatrix(event, context);
+              }
+            },
+            child: Center(
+              child: InteractiveViewer(
+                onInteractionUpdate: (_) {},
+                /*scale settings*/
+                scaleEnabled: false, // handled separately
 
-              nodes.sort((a, b) {
-                print(iDs.last);
-                print((nodes.first.key as ValueKey).value);
+                /*move settings*/
+                interactionEndFrictionCoefficient:
+                    double.minPositive, //near zero slide after release
 
-                final aId = (a.key as ValueKey).value as String;
-                final bId = (b.key as ValueKey).value as String;
-                return iDs.indexOf(aId).compareTo(iDs.indexOf(bId));
-              });
+                /*appearance & functionality settings*/
+                transformationController: gridCanvasProvider
+                    .transformationController, //variable that allows acces to position
+                boundaryMargin: const EdgeInsets.all(double
+                    .infinity), //creates infinite canvas by extending outwards.
+                clipBehavior: Clip.none, // allows no clipping
+                constrained: false, //panning glitches if not set to false
 
-              return Listener(
-                onPointerSignal: (event) {
-                  if (event is PointerScrollEvent) {
-                    gridCanvasProvider.updateScaleAndMatrix(event, context);
-                  }
-                },
-                child: Center(
-                  child: InteractiveViewer(
-                    onInteractionUpdate: (_) {},
-                    /*scale settings*/
-                    scaleEnabled: false, // handled separately
+                child: Stack(
+                  clipBehavior: Clip.none, //allows no clipping
 
-                    /*move settings*/
-                    interactionEndFrictionCoefficient:
-                        double.minPositive, //near zero slide after release
+                  children: [
+                    DragTarget<String>(
+                        key: gridCanvasKey,
+                        onAcceptWithDetails: (details) {
+                          final RenderBox box = gridCanvasKey.currentContext!
+                              .findRenderObject() as RenderBox;
 
-                    /*appearance & functionality settings*/
-                    transformationController: gridCanvasProvider
-                        .transformationController, //variable that allows acces to position
-                    boundaryMargin: const EdgeInsets.all(double
-                        .infinity), //creates infinite canvas by extending outwards.
-                    clipBehavior: Clip.none, // allows no clipping
-                    constrained: false, //panning glitches if not set to false
+                          Offset localPosition = box.globalToLocal(details.offset +
+                              Offset(
+                                  UiStaticProperties.videoCollectionEntryWidth /
+                                      2,
+                                  UiStaticProperties.videoCollectionEntryWidth /
+                                          2 +
+                                      theme
+                                          .dPanelPadding)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
 
-                    child: Stack(
-                      clipBehavior: Clip.none, //allows no clipping
-
-                      children: [
-                        DragTarget<String>(
-                            key: gridCanvasKey,
-                            onAcceptWithDetails: (details) {
-                              final RenderBox box = gridCanvasKey
-                                  .currentContext!
-                                  .findRenderObject() as RenderBox;
-
-                              Offset localPosition = box.globalToLocal(details
-                                      .offset +
-                                  Offset(
-                                      UiStaticProperties
-                                              .videoCollectionEntryWidth /
-                                          2,
-                                      UiStaticProperties
-                                                  .videoCollectionEntryWidth /
-                                              2 +
-                                          theme
-                                              .dPanelPadding)); //TODO debug. These extra values make it work but idk why. If unset, the offset gets moved
-
-                              addNodeFromDrag(details.data, localPosition);
-                            },
-                            builder: (context, candidateData, rejectedData) {
-                              return MouseRegion(
-                                child: NutriaContextMenu(
-                                  child: SizedBox(
-                                    height: UiStaticProperties.canvasSize,
-                                    width: UiStaticProperties.canvasSize,
-                                    child: Container(
-                                      color: theme.cBackground,
-                                      // child: const Placeholder(),
-                                    ),
-                                  ),
+                          addNodeFromDrag(details.data, localPosition);
+                        },
+                        builder: (context, candidateData, rejectedData) {
+                          return MouseRegion(
+                            child: NutriaContextMenu(
+                              child: SizedBox(
+                                height: UiStaticProperties.canvasSize,
+                                width: UiStaticProperties.canvasSize,
+                                child: Container(
+                                  color: theme.cBackground,
+                                  // child: const Placeholder(),
                                 ),
-                              ) //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
-
-                                  ;
-                            }),
-                        Positioned.fill(
-                          child: IgnorePointer(
-                            child: CustomPaint(
-                              painter: GridPainter(
-                                  transformationController: gridCanvasProvider
-                                      .transformationController,
-                                  context: context), // infinite dots grid
-                            ),
-                          ),
-                        ),
-                        Selector(
-                            selector: (_, NodesProvider provider) =>
-                                provider.currentNoodle,
-                            builder: (context, currentNoodle, child) {
-                              if (currentNoodle != null) {
-                                return Positioned.fill(
-                                  child: IgnorePointer(
-                                    child: CustomPaint(
-                                      painter: NoodlePainter(
-                                          transformationController:
-                                              gridCanvasProvider
-                                                  .transformationController,
-                                          context: context,
-                                          noodles: [currentNoodle]), // noodles
-                                    ),
-                                  ),
-                                );
-                              } else {
-                                return const SizedBox.shrink();
-                              }
-                            }),
-                        Selector(
-                          selector: (_, NodesProvider provider) =>
-                              provider.positionsAndOutputs,
-                          builder: (context, positionsAndOutputs, child) =>
-                              Positioned.fill(
-                            child: IgnorePointer(
-                              child: CustomPaint(
-                                painter: NoodlePainter(
-                                    transformationController: gridCanvasProvider
-                                        .transformationController,
-                                    context: context,
-                                    noodles:
-                                        nodesProvider.noodlesStartAndEndPoints(
-                                            theme)), // noodles
                               ),
                             ),
+                          ) //need a sized container to prevent crash from infinite bounds todo debug (what is the simplest way to prevent crashing?)
+
+                              ;
+                        }),
+                    Positioned.fill(
+                      child: IgnorePointer(
+                        child: CustomPaint(
+                          painter: GridPainter(
+                              transformationController:
+                                  gridCanvasProvider.transformationController,
+                              context: context), // infinite dots grid
+                        ),
+                      ),
+                    ),
+                    Selector(
+                        selector: (_, NodesProvider provider) =>
+                            provider.currentNoodle,
+                        builder: (context, currentNoodle, child) {
+                          if (currentNoodle != null) {
+                            return Positioned.fill(
+                              child: IgnorePointer(
+                                child: CustomPaint(
+                                  painter: NoodlePainter(
+                                      transformationController:
+                                          gridCanvasProvider
+                                              .transformationController,
+                                      context: context,
+                                      noodles: [currentNoodle]), // noodles
+                                ),
+                              ),
+                            );
+                          } else {
+                            return const SizedBox.shrink();
+                          }
+                        }),
+                    Selector(
+                      selector: (_, NodesProvider provider) =>
+                          provider.positionsAndOutputs,
+                      builder: (context, positionsAndOutputs, child) =>
+                          Positioned.fill(
+                        child: IgnorePointer(
+                          child: CustomPaint(
+                            painter: NoodlePainter(
+                                transformationController:
+                                    gridCanvasProvider.transformationController,
+                                context: context,
+                                noodles: nodesProvider.noodlesStartAndEndPoints(
+                                    theme)), // noodles
                           ),
                         ),
-                        ...nodes
-                      ],
+                      ),
                     ),
-                  ),
+                    ...nodes
+                  ],
                 ),
-              );
-            });
+              ),
+            ),
+          );
+        });
   }
 }

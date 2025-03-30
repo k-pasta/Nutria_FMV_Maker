@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/origin_node_data.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
@@ -66,32 +67,28 @@ class NodesProvider extends ChangeNotifier {
 
   // Immutable list of nodes
   final List<NodeData> _nodes = [
-    BranchedVideoNodeData(
-      id: 'aaa',
-      position: const Offset(0, 0),
-      videoDataId: 'a',
-      isExpanded: false,
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-      ],
-      overrides: {
-        'SelectionTime': const Duration(seconds: 10),
-        'PauseOnEnd': false,
-        'ShowTimer': true
-      },
-      nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
-    ),
-    SimpleVideoNodeData(
+    // BranchedVideoNodeData(
+    //   id: 'aaa',
+    //   position: const Offset(0, 0),
+    //   videoDataId: 'a',
+    //   isExpanded: false,
+    //   outputs: <Output>[
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //     Output(outputData: 'First text'),
+    //   ],
+    //   overrides: {
+    //     'SelectionTime': const Duration(seconds: 10),
+    //     'PauseOnEnd': false,
+    //     'ShowTimer': true
+    //   },
+    //   nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
+    // ),
+    OriginNodeData(
+      nodeName: 'origin',
       id: 'bbb',
       position: const Offset(150, 250),
-      videoDataId: 'a',
-      outputs: <Output>[
-        Output(outputData: 'First text'),
-        Output(outputData: 'First text'),
-      ],
     ),
     // VideoNodeData(
     //   id: 'ccc',
@@ -116,10 +113,10 @@ class NodesProvider extends ChangeNotifier {
   ];
 
   final List<VideoData> _videos = [
-    VideoData(
-      id: 'a',
-      videoPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
-    ),
+    // VideoData(
+    //   id: 'a',
+    //   videoPath: 'C:/Users/cgbook/Desktop/Eykolo_anoigma_roughcut_4.mp4',
+    // ),
     // VideoData(
     //   id: 'b',
     //   videoDataPath:
@@ -274,6 +271,18 @@ class NodesProvider extends ChangeNotifier {
   }
 
   // Get a node by its ID
+  // T? getNodeById<T extends NodeData>(String id) {
+  //   for (final node in _nodes) {
+  //     if (node.id == id) {
+  //       if (node is T) {
+  //         return node;
+  //       } else {
+  //         throw Exception("Node is not of type ${T.runtimeType}");
+  //       }
+  //     }
+  //   }
+  //   return null;
+  // }
   T getNodeById<T extends NodeData>(String id) {
     final node = _nodes.firstWhere(
       (n) => n.id == id,
@@ -399,7 +408,7 @@ class NodesProvider extends ChangeNotifier {
         int index = getNodeIndexById(node.id);
         _nodes[index] = node.copyWith(
           isBeingHovered: false,
-          input: node.input.copyWith(isBeingTargeted: false),
+          input: node.input?.copyWith(isBeingTargeted: false),
           outputs: node.outputs
               .map((output) => output.copyWith(isBeingTargeted: false))
               .toList(),
@@ -413,7 +422,7 @@ class NodesProvider extends ChangeNotifier {
       if (node is BaseNodeData) {
         int index = getNodeIndexById(node.id);
         _nodes[index] = node.copyWith(
-          input: node.input.copyWith(isBeingDragged: false),
+          input: node.input?.copyWith(isBeingDragged: false),
           outputs: node.outputs
               .map((output) => output.copyWith(isBeingDragged: false))
               .toList(),
@@ -946,25 +955,25 @@ class NodesProvider extends ChangeNotifier {
     if (node is SimpleVideoNodeData) {
       // Convert SimpleVideoNodeData to BranchedVideoNodeData
       final convertedNode = BranchedVideoNodeData(
-        id: uuid.v1(),
-        position: node.position,
-        videoDataId: node.videoDataId,
-        isExpanded: node.isExpanded,
-        // outputs: node.outputs,
-        // overrides: {}, // Initialize with empty overrides
-        nodeName: node.nodeName,
-      );
+          id: uuid.v1(),
+          position: node.position,
+          videoDataId: node.videoDataId,
+          // isExpanded: node.isExpanded,
+          outputs: [Output(targetNodeId: node.outputs[0].targetNodeId)],
+          // overrides: {}, // Initialize with empty overrides
+          nodeName: node.nodeName,
+          nodeWidth: node.nodeWidth);
       _nodes.add(convertedNode);
     } else if (node is BranchedVideoNodeData) {
       // Convert BranchedVideoNodeData to SimpleVideoNodeData
       final convertedNode = SimpleVideoNodeData(
-        id: uuid.v1(),
-        position: node.position,
-        videoDataId: node.videoDataId,
-        isExpanded: node.isExpanded,
-        // outputs: node.outputs,
-        nodeName: node.nodeName,
-      );
+          id: uuid.v1(),
+          position: node.position,
+          videoDataId: node.videoDataId,
+          // isExpanded: node.isExpanded,
+          outputs: [Output(targetNodeId: node.outputs[0].targetNodeId)],
+          nodeName: node.nodeName,
+          nodeWidth: node.nodeWidth);
       _nodes.add(convertedNode);
     } else {
       throw Exception("Node is not of a convertible type");

@@ -5,7 +5,7 @@ class UiStaticProperties {
   static const bool isDebug = false;
 
   //GridCanvas
-  static const double canvasSize = 2010;
+  static const double canvasSize = 2000000;
   static Offset get topLeftToMiddle =>
       const Offset(canvasSize / 2, canvasSize / 2);
   static const double gridCanvasScaleFactor = 0.1;

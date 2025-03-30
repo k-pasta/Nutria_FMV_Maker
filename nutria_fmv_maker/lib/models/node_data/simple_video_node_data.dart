@@ -9,7 +9,6 @@ import '../enums_data.dart';
 import 'input.dart';
 
 class SimpleVideoNodeData extends VideoNodeData {
-
 //TODO change
   @override
   Map<String, Map<String, dynamic>>? toJsonExport() {
@@ -42,13 +41,16 @@ class SimpleVideoNodeData extends VideoNodeData {
     return null;
   }
 
+  @override
+  List<Output> get outputs => [super.outputs.first];
+
   const SimpleVideoNodeData({
     required super.position,
     super.intendedPosition,
     required super.id,
     required super.videoDataId,
     super.overrides = const <String, dynamic>{},
-    super.outputs,
+    super.outputs = const [Output()],
     super.input,
     super.nodeName,
     super.isExpanded = false,
@@ -97,16 +99,12 @@ class SimpleVideoNodeData extends VideoNodeData {
   @override
   Offset outputPosition(AppTheme theme, int index) {
     double x = nodeWidth;
-    double baseY = theme.dSwatchHeight +
+    double y = theme.dSwatchHeight +
         (nodeName != null
             ? getTextHeight(nodeName!, theme.swatchTextStyle)
             : 0) +
-        (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
-        getTextHeight(videoDataId, theme.filenameTextStyle) +
-        (theme.dPanelPadding * 4) +
-        (theme.dButtonHeight / 2);
-    double extraY = index * (theme.dButtonHeight + theme.dPanelPadding);
-    return Offset(x, baseY + extraY) + paddingOffset;
+        (UiStaticProperties.nodeDefaultWidth * 9 / 16);
+    return Offset(x, y) + paddingOffset;
   }
 
   @override

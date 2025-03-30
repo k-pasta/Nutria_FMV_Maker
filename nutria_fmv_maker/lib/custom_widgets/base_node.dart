@@ -49,166 +49,181 @@ class BaseNode extends StatelessWidget {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final KeyboardProvider keyboardProvider = context.read<KeyboardProvider>();
 
+    void loadVideo() {
+      if (baseNodeData is VideoNodeData) {
+        final VideoData videoData = nodesProvider
+            .getVideoDataById((baseNodeData as VideoNodeData).videoDataId);
+        videoPlayerProvider.loadVideo(
+            videoData: videoData, nodeId: baseNodeData.id);
+      }
+    }
 
-        void loadVideo() {
-          if (baseNodeData is VideoNodeData) {
-            final VideoData videoData =
-                nodesProvider.getVideoDataById((baseNodeData as VideoNodeData).videoDataId);
-            videoPlayerProvider.loadVideo(
-                videoData: videoData, nodeId: baseNodeData.id);
-          }
-        }
-
-        return Positioned(
-          top: baseNodeData.position.dy + (UiStaticProperties.topLeftToMiddle.dy),
-          left: baseNodeData.position.dx + (UiStaticProperties.topLeftToMiddle.dx),
-          child: Stack(clipBehavior: Clip.none, children: [
-            const NodeBackground(),
-            Positioned(
-              top: UiStaticProperties.nodePadding,
-              left: UiStaticProperties.nodePadding,
-              child: DragTarget<String>(onAcceptWithDetails: (details) {
-                nodesProvider.setVideo(nodeId: nodeId, videoId: details.data);
+    return Positioned(
+      top: baseNodeData.position.dy + (UiStaticProperties.topLeftToMiddle.dy),
+      left: baseNodeData.position.dx + (UiStaticProperties.topLeftToMiddle.dx),
+      child: Stack(clipBehavior: Clip.none, children: [
+        const NodeBackground(),
+        Positioned(
+          top: UiStaticProperties.nodePadding,
+          left: UiStaticProperties.nodePadding,
+          child: DragTarget<String>(onAcceptWithDetails: (details) {
+            nodesProvider.setVideo(nodeId: nodeId, videoId: details.data);
+          },
+              // onWillAcceptWithDetails: (details) {
+              //   nodesProvider.setVideo(
+              //       nodeId: nodeId, videoId: details.data);
+              //   return true;
+              // },
+              // onLeave: (details) {
+              //                       nodesProvider.setVideo(
+              //       nodeId: nodeId, videoId: );
+              // },
+              builder: (context, candidateData, rejectedData) {
+            return GestureDetector(
+              //where node starts really
+              onPanUpdate: (details) {
+                nodesProvider.offsetSelectedNodes(details.delta,
+                    snapSettings: keyboardProvider.isShiftPressed
+                        ? appSettingsProvider.snapSettings
+                            .copyWith(gridSnapping: true)
+                        : appSettingsProvider.snapSettings);
               },
-                  // onWillAcceptWithDetails: (details) {
-                  //   nodesProvider.setVideo(
-                  //       nodeId: nodeId, videoId: details.data);
-                  //   return true;
-                  // },
-                  // onLeave: (details) {
-                  //                       nodesProvider.setVideo(
-                  //       nodeId: nodeId, videoId: );
-                  // },
-                  builder: (context, candidateData, rejectedData) {
-                return GestureDetector(
-                  //where node starts really
-                  onPanUpdate: (details) {
-                    nodesProvider.offsetSelectedNodes(details.delta,
-                        snapSettings: keyboardProvider.isShiftPressed
-                            ? appSettingsProvider.snapSettings
-                                .copyWith(gridSnapping: true)
-                            : appSettingsProvider.snapSettings);
-                  },
-                  onPanStart: (details) {
-                    if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed) {
-                      nodesProvider
-                          .selectNodes([baseNodeData.id], multiSelection: true);
-                    } else {
-                      nodesProvider.selectNodes([baseNodeData.id]);
-                    }
+              onPanStart: (details) {
+                if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed) {
+                  nodesProvider
+                      .selectNodes([baseNodeData.id], multiSelection: true);
+                } else {
+                  nodesProvider.selectNodes([baseNodeData.id]);
+                }
+                nodesProvider.setActiveNode(baseNodeData.id);
+              },
+              onPanEnd: (_) {
+                nodesProvider.resetNodeIntendedValues(baseNodeData.id);
+              },
+              onPanCancel: () {
+                nodesProvider.resetNodeIntendedValues(baseNodeData.id);
+              },
+              onTap: () {
+                if (!keyboardProvider.isCtrlPressed) {
+                  nodesProvider.setActiveNode(baseNodeData.id);
+                  nodesProvider.selectNodes([baseNodeData.id]);
+                  loadVideo();
+                } else {
+                  if (!baseNodeData.isSelected) {
                     nodesProvider.setActiveNode(baseNodeData.id);
-                  },
-                  onPanEnd: (_) {
-                    nodesProvider.resetNodeIntendedValues(baseNodeData.id);
-                  },
-                  onPanCancel: () {
-                    nodesProvider.resetNodeIntendedValues(baseNodeData.id);
-                  },
-                  onTap: () {
-                    if (!keyboardProvider.isCtrlPressed) {
-                      nodesProvider.setActiveNode(baseNodeData.id);
-                      nodesProvider.selectNodes([baseNodeData.id]);
-                      loadVideo();
-                    } else {
-                      if (!baseNodeData.isSelected) {
-                        nodesProvider.setActiveNode(baseNodeData.id);
-                        nodesProvider
-                            .selectNodes([baseNodeData.id], multiSelection: true);
-                        loadVideo();
-                      } else {
-                        nodesProvider.deselectNodes([baseNodeData.id]);
-                      }
-                    }
-                  },
-                  child: MouseRegion(
-                    onEnter: (_) {
-                      nodesProvider.setCurrentUnderCursor(
-                          LogicalPosition.node(baseNodeData.id));
-                    },
-                    onExit: (_) {
-                      nodesProvider
-                          .setCurrentUnderCursor(LogicalPosition.empty());
-                    },
-                    hitTestBehavior: HitTestBehavior.deferToChild,
-                    child: SizedBox(
-                      width: baseNodeData.nodeWidth,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          //Swatch Strip on top
-                          NodeSwatchStrip(
-                            nodeData: baseNodeData,
-                          ),
-                          //Main node background
-                          NodeMainContainer(
-                            nodeData: baseNodeData,
-                            children: body,
-                          ),
-                          //expansion
-                          if (baseNodeData.isExpanded)
-                            //distance between main node and expansion
-                            SizedBox(
-                              height: theme.dPanelPadding,
-                            ),
-                          if (baseNodeData.isExpanded)
-                            Container(
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(
-                                      theme.dPanelBorderRadius),
-                                  border: Border.all(
-                                      color: theme.cOutlines,
-                                      width: theme.dOutlinesWidth),
-                                  color: theme.cPanelTransparent,
-                                ),
-                                padding: EdgeInsets.all(theme.dPanelPadding),
-                                child: expansion),
-                        ],
+                    nodesProvider
+                        .selectNodes([baseNodeData.id], multiSelection: true);
+                    loadVideo();
+                  } else {
+                    nodesProvider.deselectNodes([baseNodeData.id]);
+                  }
+                }
+              },
+              child: MouseRegion(
+                onEnter: (_) {
+                  nodesProvider.setCurrentUnderCursor(
+                      LogicalPosition.node(baseNodeData.id));
+                },
+                onExit: (_) {
+                  nodesProvider.setCurrentUnderCursor(LogicalPosition.empty());
+                },
+                hitTestBehavior: HitTestBehavior.deferToChild,
+                child: SizedBox(
+                  width: baseNodeData.nodeWidth,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      //Swatch Strip on top
+                      NodeSwatchStrip(
+                        nodeData: baseNodeData,
                       ),
-                    ),
+                      //Main node background
+                      NodeMainContainer(
+                        nodeData: baseNodeData,
+                        children: body,
+                      ),
+                      //expansion
+                      if (baseNodeData.isExpanded)
+                        //distance between main node and expansion
+                        SizedBox(
+                          height: theme.dPanelPadding,
+                        ),
+                      if (baseNodeData.isExpanded)
+                        Container(
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(
+                                  theme.dPanelBorderRadius),
+                              border: Border.all(
+                                  color: theme.cOutlines,
+                                  width: theme.dOutlinesWidth),
+                              color: theme.cPanelTransparent,
+                            ),
+                            padding: EdgeInsets.all(theme.dPanelPadding),
+                            child: expansion),
+                    ],
                   ),
-                );
-              }),
-            ),
+                ),
+              ),
+            );
+          }),
+        ),
 
-            //left resize handle
-            NodeResizeHandle(
-              nodeData: baseNodeData,
-              isLeftSide: true,
-              draggableAreaHeight: baseNodeData.nodeHeight(theme),
-            ),
-            //right resize handle
-            NodeResizeHandle(
-              nodeData: baseNodeData,
-              isLeftSide: false,
-              draggableAreaHeight: baseNodeData.nodeHeight(theme),
-            ),
+        //left resize handle
+        NodeResizeHandle(
+          nodeData: baseNodeData,
+          isLeftSide: true,
+          draggableAreaHeight: baseNodeData.nodeHeight(theme),
+        ),
+        //right resize handle
+        NodeResizeHandle(
+          nodeData: baseNodeData,
+          isLeftSide: false,
+          draggableAreaHeight: baseNodeData.nodeHeight(theme),
+        ),
 
-            //input knot
-            Knot.input(
-              nodeData: baseNodeData,
-              offset: baseNodeData.inputPosition(theme),
-            ),
-            //output knot(s)
-            ...baseNodeData.outputs.asMap().entries.map((entry) {
-              int index = entry.key;
-              var output = entry.value;
-              bool isLast = index == baseNodeData.outputs.length - 1;
-              if (!isLast ||
-                  (baseNodeData is BranchedVideoNodeData &&
-                      isLast &&
-                      (baseNodeData as BranchedVideoNodeData).hasMaxedOutOutputs)) {
-                // if (!isLast) {
-                return Knot.output(
-                  nodeData: baseNodeData,
-                  index: index,
-                  offset: baseNodeData.outputPosition(theme, index),
-                );
-              } else {
-                return Container();
-              }
-            }).toList(),
-          ]),
-        // );
+        //input knot
+        if (baseNodeData.input != null)
+          Knot.input(
+            nodeData: baseNodeData,
+            offset: baseNodeData.inputPosition(theme),
+          ),
+
+        //output knot(s)
+        ...baseNodeData.outputs.asMap().entries.map((entry) {
+          final index = entry.key;
+          final isLast = index == baseNodeData.outputs.length - 1;
+
+          // If it's a BranchedVideoNodeData and we're at the last output without maxing out,
+          // return an empty container.
+          if (baseNodeData is BranchedVideoNodeData &&
+              isLast &&
+              !(baseNodeData as BranchedVideoNodeData).hasMaxedOutOutputs) {
+            return Container();
+          }
+
+          // Otherwise, return the Knot output.
+          return Knot.output(
+            nodeData: baseNodeData,
+            index: index,
+            offset: baseNodeData.outputPosition(theme, index),
+          );
+// });
+          // if (!isLast ||
+          //     (baseNodeData is BranchedVideoNodeData &&
+          //         isLast &&
+          //         (baseNodeData as BranchedVideoNodeData).hasMaxedOutOutputs)) {
+          //   // if (!isLast) {
+          //   return Knot.output(
+          //     nodeData: baseNodeData,
+          //     index: index,
+          //     offset: baseNodeData.outputPosition(theme, index),
+          //   );
+          // } else {
+          //   return Container();
+          // }
+        }).toList(),
+      ]),
+      // );
       // },
     );
   }
