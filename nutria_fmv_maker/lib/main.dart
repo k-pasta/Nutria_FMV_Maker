@@ -1,3 +1,4 @@
+import 'package:flutter_svg/svg.dart';
 import 'package:media_kit/media_kit.dart';
 import 'package:nutria_fmv_maker/fvp_example.dart';
 import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
@@ -164,6 +165,17 @@ class WindowsAppLayout extends StatelessWidget {
                       },
                     ),
                   ),
+                  Positioned(
+                    top: -theme.dMenuBarHeight + theme.dLogoPadding,
+                    left: theme.dLogoPadding,
+                    child: SvgPicture.asset(
+                      'assets/icons/nutria_logo_top.svg',
+                      width: 100,
+                      height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
+                      colorFilter: ColorFilter.mode(theme.cAccentButton,
+                          BlendMode.srcIn), // Optional color change
+                    ),
+                  )
                 ],
               ),
             ),

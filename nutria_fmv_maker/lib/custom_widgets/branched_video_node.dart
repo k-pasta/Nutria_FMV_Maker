@@ -33,7 +33,6 @@ class BranchedVideoNode extends StatelessWidget {
             body: [
               //thumbnail
               NodeVideoThumbnail(
-                videoDataId: nodeData.videoDataId,
                 videoNodeData: nodeData,
               ),
               //video file name

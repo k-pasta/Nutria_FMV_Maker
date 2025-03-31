@@ -14,12 +14,13 @@ class ProjectVersionProvider extends ChangeNotifier {
   Future<void> exportFile(List<NodeData> nodes, List<VideoData> videos) async {
     try {
       List<BaseNodeData> nodesTraversed = traverseNodes(nodes);
-      List<String> videosUsed = [];
+      List<BaseNodeData> simplifiedNodes = simplifyNodeIds(nodesTraversed);
+      // List<String> videosUsed = [];
 
-      for (int i = 0; i < nodesTraversed.length; i++) {
-        if (nodesTraversed[i] is BranchedVideoNodeData) {
-          BranchedVideoNodeData node = nodesTraversed[i] as BranchedVideoNodeData;
-          nodesTraversed[i] = node.copyWith(
+      for (int i = 0; i < simplifiedNodes.length; i++) {
+        if (simplifiedNodes[i] is BranchedVideoNodeData) {
+          BranchedVideoNodeData node = simplifiedNodes[i] as BranchedVideoNodeData;
+          simplifiedNodes[i] = node.copyWith(
               videoDataId: videos
                   .firstWhere((video) => video.id == node.videoDataId)
                   .videoPath);
@@ -32,7 +33,7 @@ class ProjectVersionProvider extends ChangeNotifier {
       // };
 
       var jsonNodeData =
-          nodesTraversed.map((node) => node.toJsonExport()).toList();
+          simplifiedNodes.map((node) => node.toJsonExport()).toList();
 
       String jsonString = jsonEncode(jsonNodeData);
 
@@ -52,6 +53,8 @@ class ProjectVersionProvider extends ChangeNotifier {
       print('Error exporting file: $e');
     }
   }
+
+
 
   List<NodeData> simplifyNodeTree(List<NodeData> nodes) {
     List<NodeData> filteredNodes = nodes;

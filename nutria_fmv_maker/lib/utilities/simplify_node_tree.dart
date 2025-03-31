@@ -1,9 +1,14 @@
 // Helper function to select a starting node from the list.
 // Here, we assume the starting node is the first BaseNodeData encountered.
 import '../models/node_data/node_data.dart';
+import '../models/node_data/origin_node_data.dart';
+import '../models/node_data/output.dart';
 
 BaseNodeData findStartingNode(List<NodeData> nodes) {
-  return nodes.isNotEmpty ? nodes.last as BaseNodeData : throw Exception('Empty Node List');
+  return nodes.firstWhere(
+    (node) => node is OriginNodeData,
+    orElse: () => throw Exception('No OriginNodeData found in the list'),
+  ) as BaseNodeData;
 }
 
 // Helper function to locate a node by its id.
@@ -53,4 +58,27 @@ List<BaseNodeData> traverseNodes(List<NodeData> nodes) {
   }
 
   return result;
+}
+
+List<BaseNodeData> simplifyNodeIds(List<BaseNodeData> nodes) {
+  // Create a mapping from old node IDs to new simplified IDs
+  final Map<String?, String> idMapping = {};
+  
+  // Assign new IDs starting from 000
+  for (int i = 0; i < nodes.length; i++) {
+    idMapping[nodes[i].id] = i.toString().padLeft(3, '0');
+  }
+  
+  // Create a new list with updated IDs
+  return nodes.map((node) {
+    // Update outputs with new target IDs
+    List<Output> updatedOutputs = node.outputs.map((output) {
+      return output.copyWith(targetNodeId: () => idMapping[output.targetNodeId]);
+    }).toList();
+    
+    return node.copyWith(
+      id: idMapping[node.id],
+      outputs: updatedOutputs,
+    );
+  }).toList();
 }

@@ -21,11 +21,13 @@ class NodeVideoFileNameText extends StatelessWidget {
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-    final VideoData videoData =
-        nodesProvider.getVideoDataById(videoNodeData.videoDataId);
+    final bool hasVideoData = videoNodeData.videoDataId != null;
+    final VideoData? videoData = hasVideoData
+        ? nodesProvider.getVideoDataById(videoNodeData.videoDataId!)
+        : null;
 
-    String originalText = videoData.fileName;
-    String modifiedText = originalText.split('').join('\u200B');
+    final String originalText = hasVideoData ? videoData!.fileName : 'No Video'; //TODO Localize
+    final String modifiedText = originalText.split('').join('\u200B');
 
     return Padding(
         padding: EdgeInsets.only(

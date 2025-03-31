@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
+import 'package:nutria_fmv_maker/models/enums_ui.dart';
+import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
@@ -112,60 +115,72 @@ class _NutriaContextMenuState extends State<NutriaContextMenu>
           Positioned(
             left: globalPosition.dx,
             top: globalPosition.dy,
-            child: Container(
-              width: UiStaticProperties.contextMenuWidth,
-              decoration: BoxDecoration(
-                color: theme.cPanel,
-                border: Border.all(
-                    color: theme.cOutlines, width: theme.dOutlinesWidth),
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    MenuItemButton(
-                      leadingIcon: Icon(Icons.videocam),
-                      style: buttonstyle,
-                      onPressed: () {
-                        _removeContextMenu();
-                        nodesProvider.addNode(SimpleVideoNodeData(
+            child: IntrinsicWidth(
+              child: Container(
+                // width: UiStaticProperties.contextMenuWidth,
+                decoration: BoxDecoration(
+                  color: theme.cPanel,
+                  border: Border.all(
+                      color: theme.cOutlines, width: theme.dOutlinesWidth),
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),                
+                  child: Column(                  
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      MenuItemButton(
+                        leadingIcon: Icon(Icons.videocam),
+                        style: buttonstyle,
+                        onPressed: () {
+                          _removeContextMenu();
+                          nodesProvider.addNode(SimpleVideoNodeData(
+                            position: localPosition -
+                                UiStaticProperties.topLeftToMiddle -
+                                Offset(UiStaticProperties.nodePadding,
+                                    UiStaticProperties.nodePadding),
+                            id: uuid.v1(), 
+                            
+                          ));
+                        },
+                        child: NutriaText(text: t.contextSimpleVideoNode, state: NutriaTextState.accented),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: Icon(Icons.video_call),
+                        style: buttonstyle,
+                        onPressed: () {
+                          _removeContextMenu();
+                          nodesProvider.addNode(BranchedVideoNodeData(
                             position: localPosition -
                                 UiStaticProperties.topLeftToMiddle -
                                 Offset(UiStaticProperties.nodePadding,
                                     UiStaticProperties.nodePadding),
                             id: uuid.v1(),
-                            videoDataId: 'a'));
-                      },
-                      child: Text(t.contextSimpleVideoNode),
-                    ),
-                    MenuItemButton(
-                      leadingIcon: Icon(Icons.video_call),
-                      style: buttonstyle,
-                      onPressed: () {},
-                      child: Text(t.contextBranchingVideoNode),
-                    ),
-                    MenuItemButton(
-                      leadingIcon: Icon(Icons.equalizer),
-                      style: buttonstyle,
-                      onPressed: () {},
-                      child: Text(t.contextCompareNode),
-                    ),
-                    MenuItemButton(
-                      leadingIcon: Icon(Icons.calculate),
-                      style: buttonstyle,
-                      onPressed: () {},
-                      child: Text(t.contextMathNode),
-                    ),
-                    MenuItemButton(
-                      leadingIcon: Icon(Icons.check_box_rounded),
-                      style: buttonstyle,
-                      onPressed: () {},
-                      child: Text(t.contextSetNode),
-                    ),
-                  ],
+                          ));
+                        },
+                        child: NutriaText(text: t.contextBranchingVideoNode, state: NutriaTextState.accented),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: Icon(Icons.equalizer),
+                        style: buttonstyle,
+                        onPressed: () {},
+                        child: NutriaText(text: t.contextCompareNode, state: NutriaTextState.accented),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: Icon(Icons.calculate),
+                        style: buttonstyle,
+                        onPressed: () {},
+                        child: NutriaText(text: t.contextMathNode, state: NutriaTextState.accented),
+                      ),
+                      MenuItemButton(
+                        leadingIcon: Icon(Icons.check_box_rounded),
+                        style: buttonstyle,
+                        onPressed: () {},
+                        child: NutriaText(text: t.contextSetNode, state: NutriaTextState.accented),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),

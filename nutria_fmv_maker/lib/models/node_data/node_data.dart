@@ -72,6 +72,7 @@ abstract class BaseNodeData extends NodeData {
 
   @override
   BaseNodeData copyWith({
+    String? id,
     Offset? position,
     Offset? intendedPosition, //used for grid snapping calculations
     String? nodeName,

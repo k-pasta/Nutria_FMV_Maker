@@ -50,6 +50,7 @@ class AppTheme {
   final Color cMenuBar;
   final Color cMenuBarText;
   final double dMenuBarHeight;
+  final double dLogoPadding;
 
   final cSwatches = const <Color>[
     Color(0xffff4e6a),
@@ -95,7 +96,8 @@ class AppTheme {
     this.dScrollbarWidth = 11,
     this.cMenuBar = const Color(0xff000000),
     this.cMenuBarText = const Color(0xffffffff),
-    this.dMenuBarHeight = 67,
+    this.dMenuBarHeight = 45,
+    this.dLogoPadding = 10,
   });
 
   //getters

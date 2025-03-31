@@ -48,7 +48,7 @@ class SimpleVideoNodeData extends VideoNodeData {
     required super.position,
     super.intendedPosition,
     required super.id,
-    required super.videoDataId,
+    super.videoDataId,
     super.overrides = const <String, dynamic>{},
     super.outputs = const [Output()],
     super.input,
@@ -63,6 +63,7 @@ class SimpleVideoNodeData extends VideoNodeData {
 
   @override
   SimpleVideoNodeData copyWith({
+    String? id,
     Offset? position,
     Offset? intendedPosition,
     String? videoDataId,
@@ -81,7 +82,7 @@ class SimpleVideoNodeData extends VideoNodeData {
     return SimpleVideoNodeData(
       position: position ?? this.position,
       intendedPosition: intendedPosition ?? this.intendedPosition,
-      id: id,
+      id: id ?? this.id,
       videoDataId: videoDataId ?? this.videoDataId,
       overrides: overrides ?? this.overrides,
       nodeName: nodeName ?? this.nodeName,
@@ -125,7 +126,7 @@ class SimpleVideoNodeData extends VideoNodeData {
             ? getTextHeight(nodeName!, theme.swatchTextStyle)
             : 0) +
         (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
-        getTextHeight(videoDataId, theme.filenameTextStyle) +
+        getTextHeight(videoDataId?? 'No video file', theme.filenameTextStyle) +
         (theme.dPanelPadding * (2 + outputs.length)) +
         (theme.dButtonHeight * outputs.length);
     return height;

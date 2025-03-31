@@ -50,9 +50,10 @@ class BaseNode extends StatelessWidget {
     final KeyboardProvider keyboardProvider = context.read<KeyboardProvider>();
 
     void loadVideo() {
-      if (baseNodeData is VideoNodeData) {
+      if (baseNodeData is VideoNodeData &&
+          (baseNodeData as VideoNodeData).videoDataId != null) {
         final VideoData videoData = nodesProvider
-            .getVideoDataById((baseNodeData as VideoNodeData).videoDataId);
+            .getVideoDataById((baseNodeData as VideoNodeData).videoDataId!);
         videoPlayerProvider.loadVideo(
             videoData: videoData, nodeId: baseNodeData.id);
       }

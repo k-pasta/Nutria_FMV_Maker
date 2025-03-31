@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/origin_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
@@ -53,7 +54,6 @@ class NodesProvider extends ChangeNotifier {
 
     // Run the task
     await task.run();
-
     // Return the thumbnail path if the task is successful
     if (task.destFile != null) {
       print('Thumbnail created for $videoPath: ${task.destFile}');
@@ -270,19 +270,6 @@ class NodesProvider extends ChangeNotifier {
     return _currentNoodle;
   }
 
-  // Get a node by its ID
-  // T? getNodeById<T extends NodeData>(String id) {
-  //   for (final node in _nodes) {
-  //     if (node.id == id) {
-  //       if (node is T) {
-  //         return node;
-  //       } else {
-  //         throw Exception("Node is not of type ${T.runtimeType}");
-  //       }
-  //     }
-  //   }
-  //   return null;
-  // }
   T getNodeById<T extends NodeData>(String id) {
     final node = _nodes.firstWhere(
       (n) => n.id == id,
@@ -460,7 +447,8 @@ class NodesProvider extends ChangeNotifier {
 
         // Case 1 : if starting from output and targeting input or node
         if (_currentDragIntent.isOutput &&
-            (_currentDragOutcome.isNode || _currentDragOutcome.isInput)) {
+            (_currentDragOutcome.isNode || _currentDragOutcome.isInput) &&
+            targetNodeData.input != null) {
           //set the target node as hovered and input knot as targeted
           _nodes[targetNodeIndex] = targetNodeData.copyWith(
               isBeingHovered: true, input: const Input(isBeingTargeted: true));
@@ -471,7 +459,10 @@ class NodesProvider extends ChangeNotifier {
           // Case 2 : if starting from input and targeting node
         } else if (_currentDragIntent.isInput && _currentDragOutcome.isNode) {
           // For each knot in the target node
-          for (int i = 0; i < targetNodeData.outputs.length - 1; i++) {
+          int length = targetNodeData is BranchedVideoNodeData
+              ? targetNodeData.outputs.length - 1
+              : targetNodeData.outputs.length;
+          for (int i = 0; i < length; i++) {
             // If available knots exist
             if (targetNodeData.outputs[i].targetNodeId == null) {
               //target the first one and set node as being hovered
@@ -896,7 +887,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is BranchedVideoNodeData) {
+    if (node is VideoNodeData) {
       final updatedNode = node.copyWith(videoDataId: videoId);
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
@@ -928,12 +919,65 @@ class NodesProvider extends ChangeNotifier {
 
   // Remove a node from the list
   void removeNode(String id) {
+    // Find the node with the given ID
+    final node = _nodes.firstWhere((n) => n.id == id);
+
+    // If the node is of type OriginNodeData, return without removing
+    if (node is OriginNodeData) {
+      return;
+    }
+
+    // Remove the node with the given ID
     _nodes.removeWhere((n) => n.id == id);
+
+    // Find all outputs of nodes that point to this ID and replace them with Output()
+    for (int i = 0; i < _nodes.length; i++) {
+      final node = _nodes[i];
+      if (node is BaseNodeData) {
+        final updatedOutputs = node.outputs.map((output) {
+          if (output.targetNodeId == id) {
+            return const Output(); // Replace with a default Output
+          }
+
+          return output;
+        }).toList();
+
+        _nodes[i] = node.copyWith(outputs: updatedOutputs);
+      }
+    }
+    notifyListeners();
+  }
+
+  void replaceNode(String id, String newId) {
+    // Remove the node with the given ID
+    _nodes.removeWhere((n) => n.id == id);
+
+    // Find all outputs of nodes that point to this ID and replace them with Output() with the new ID
+    for (int i = 0; i < _nodes.length; i++) {
+      final node = _nodes[i];
+      if (node is BaseNodeData) {
+        final updatedOutputs = node.outputs.map((output) {
+          if (output.targetNodeId == id) {
+            return output.copyWith(
+                targetNodeId: () =>
+                    newId); // Replace with a copy containing the new ID
+          }
+
+          return output;
+        }).toList();
+
+        _nodes[i] = node.copyWith(outputs: updatedOutputs);
+      }
+    }
     notifyListeners();
   }
 
   void removeSelected() {
-    _nodes.removeWhere((node) => node.isSelected);
+    List<String> selectedIds =
+        _nodes.where((node) => node.isSelected).map((node) => node.id).toList();
+    for (var id in selectedIds) {
+      removeNode(id);
+    }
     notifyListeners();
   }
 
@@ -947,18 +991,20 @@ class NodesProvider extends ChangeNotifier {
   void convertNode(String id) {
     int nodeIndex = getNodeIndexById(id);
     final node = _nodes[nodeIndex];
-
-    removeNode(id);
+    final String newId = uuid.v1();
+    replaceNode(id, newId);
 
     notifyListeners();
 
     if (node is SimpleVideoNodeData) {
       // Convert SimpleVideoNodeData to BranchedVideoNodeData
       final convertedNode = BranchedVideoNodeData(
-          id: uuid.v1(),
+          id: newId,
           position: node.position,
           videoDataId: node.videoDataId,
+          isSelected: node.isSelected,
           // isExpanded: node.isExpanded,
+          swatch: node.swatch,
           outputs: [Output(targetNodeId: node.outputs[0].targetNodeId)],
           // overrides: {}, // Initialize with empty overrides
           nodeName: node.nodeName,
@@ -967,10 +1013,12 @@ class NodesProvider extends ChangeNotifier {
     } else if (node is BranchedVideoNodeData) {
       // Convert BranchedVideoNodeData to SimpleVideoNodeData
       final convertedNode = SimpleVideoNodeData(
-          id: uuid.v1(),
+          id: newId,
           position: node.position,
           videoDataId: node.videoDataId,
+          isSelected: node.isSelected,
           // isExpanded: node.isExpanded,
+          swatch: node.swatch,
           outputs: [Output(targetNodeId: node.outputs[0].targetNodeId)],
           nodeName: node.nodeName,
           nodeWidth: node.nodeWidth);
@@ -978,32 +1026,29 @@ class NodesProvider extends ChangeNotifier {
     } else {
       throw Exception("Node is not of a convertible type");
     }
-
     notifyListeners();
   }
 
-  // void replaceNode(NodeData node) {
-  //   int nodeIndex = getNodeIndexById(node.id);
-  //   _nodes[nodeIndex] = node;
-  //   notifyListeners();
-  // }
-
-  void addVideo(String path) {
+  String? addVideo(String path) {
     // Check if the video already exists
     var existingVideo = _videos.firstWhere(
       (video) => video.videoPath == path,
       orElse: () => VideoData(id: '', videoPath: ''), // Dummy value
     );
 
+    //TODO check file validity.
+
     if (existingVideo.id.isNotEmpty) {
       // Video already exists, just update its data
       updateVideoData(existingVideo);
-      return;
+      return existingVideo.id;
     }
+
+    String id = uuid.v1();
 
     // Create a new VideoData entry
     var newVideo = VideoData(
-      id: uuid.v1(),
+      id: id,
       videoPath: path,
       thumbnailPath: null,
       metadata: [],
@@ -1015,6 +1060,7 @@ class NodesProvider extends ChangeNotifier {
 
     // Start updating the video data (thumbnail & metadata)
     updateVideoData(newVideo);
+    return id;
   }
 
   void updateVideoData(VideoData video) async {

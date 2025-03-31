@@ -1,4 +1,3 @@
-
 import 'dart:ui';
 
 import 'package:nutria_fmv_maker/models/node_data/output.dart';
@@ -24,7 +23,8 @@ class OriginNodeData extends BaseNodeData {
   });
   @override
   BaseNodeData copyWith(
-      {Offset? position,
+      {String? id,
+      Offset? position,
       Offset? intendedPosition,
       String? nodeName,
       double? nodeWidth,
@@ -38,7 +38,7 @@ class OriginNodeData extends BaseNodeData {
     return OriginNodeData(
       position: position ?? this.position,
       intendedPosition: intendedPosition ?? this.intendedPosition,
-      id: id,
+      id: id ?? this.id,
       nodeName: nodeName ?? this.nodeName,
       nodeWidth: nodeWidth ?? this.nodeWidth,
       isExpanded: isExpanded ?? this.isExpanded,
@@ -50,7 +50,7 @@ class OriginNodeData extends BaseNodeData {
     );
   }
 
-@override
+  @override
 // TODO: implement input
   Input? get input => null;
 
@@ -70,7 +70,7 @@ class OriginNodeData extends BaseNodeData {
 
   @override
   Offset outputPosition(AppTheme theme, int index) {
-      double x = nodeWidth;
+    double x = nodeWidth;
     double y = theme.dSwatchHeight +
         (nodeName != null
             ? getTextHeight(nodeName!, theme.swatchTextStyle)
@@ -84,7 +84,7 @@ class OriginNodeData extends BaseNodeData {
   @override
   Map<String, dynamic>? toJsonExport() {
     // TODO: implement toJsonExport
-    throw UnimplementedError();
+    return null;
   }
 
   @override

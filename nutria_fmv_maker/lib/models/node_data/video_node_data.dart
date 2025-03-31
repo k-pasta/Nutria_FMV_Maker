@@ -9,14 +9,14 @@ import 'input.dart';
 import 'node_data.dart';
 
 abstract class VideoNodeData extends BaseNodeData {
-  final String videoDataId;
+  final String? videoDataId;
   final Map<String, dynamic> overrides;
 
   const VideoNodeData({
     required super.position,
     super.intendedPosition,
     required super.id,
-    required this.videoDataId,
+    this.videoDataId,
     this.overrides = const <String, dynamic>{},
     super.outputs,
     super.input,
@@ -31,6 +31,7 @@ abstract class VideoNodeData extends BaseNodeData {
 
   @override
   VideoNodeData copyWith({
+    String? id,
     Offset? position,
     Offset? intendedPosition,
     String? videoDataId,

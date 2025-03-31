@@ -33,6 +33,10 @@ class OriginNode extends StatelessWidget {
             body: [
               Padding(
                 padding: EdgeInsets.all(8),
+                child: Icon(Icons.flag),
+              ),
+              Padding(
+                padding: EdgeInsets.all(8),
                 child: NutriaTextfield(),
               )
             ],

@@ -24,10 +24,15 @@ class MenuStyles {
         EdgeInsets.symmetric(horizontal: 0, vertical: 16),
       ),
     );
+
     buttonStyleBar = ButtonStyle(
       overlayColor: WidgetStatePropertyAll(theme.cPanel),
       foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
+      fixedSize: WidgetStatePropertyAll<Size>(
+        Size.fromHeight(theme.dMenuBarHeight),
+      ),
     );
+
     buttonStyleMenu = ButtonStyle(
       iconColor: WidgetStatePropertyAll(theme.cAccent),
       overlayColor: WidgetStatePropertyAll(theme.cAccentButtonHovered),

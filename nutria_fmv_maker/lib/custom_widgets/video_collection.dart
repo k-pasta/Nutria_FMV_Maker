@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
+import 'package:nutria_fmv_maker/utilities/select_video.dart';
 import 'package:provider/provider.dart';
 
 import '../providers/nodes_provider.dart';
@@ -17,21 +18,7 @@ class VideoCollection extends StatelessWidget {
   VideoCollection({super.key});
   final scrollController = ScrollController();
 
-  Future<List<String>?> _selectVideo() async {
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        type: FileType.video,
-        allowMultiple: true,
-      );
 
-      if (result == null || result.files.isEmpty) return null;
-
-      return result.files.map((file) => file.path!).toList();
-    } catch (err) {
-      print('Error: $err');
-      return null;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,7 +106,7 @@ class VideoCollection extends StatelessWidget {
                 bottom: theme.dSectionPadding,
                 child: NutriaButton.Icon(
                   onTap: () {
-                    _selectVideo().then((paths) {
+                    selectVideos().then((paths) {
                       if (paths == null) return;
 
                       for (var path in paths) {

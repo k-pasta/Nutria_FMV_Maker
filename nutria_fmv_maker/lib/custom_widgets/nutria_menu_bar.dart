@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/menu_bar_elements/menu_data.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/models/enums_ui.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:path/path.dart' as p;
+import 'package:flutter_svg/flutter_svg.dart';
 
 import 'menu_bar_elements/menu_styles.dart';
 import 'menu_bar_elements/nutria_menu_button.dart';
@@ -21,9 +24,9 @@ class NutriaMenuBar extends StatefulWidget {
   State<NutriaMenuBar> createState() => _NutriaMenuBarState();
 }
 
-class _NutriaMenuBarState extends State<NutriaMenuBar> with WidgetsBindingObserver {
-
-@override
+class _NutriaMenuBarState extends State<NutriaMenuBar>
+    with WidgetsBindingObserver {
+  @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addObserver(this);
@@ -73,27 +76,45 @@ class _NutriaMenuBarState extends State<NutriaMenuBar> with WidgetsBindingObserv
               children: [ */
             Focus(
           focusNode: uiStateProvider.parentfocusNode,
-          onFocusChange: (gotFocus) {
-          },
-          child: SizedBox(
-            width: double.infinity,
-            child: MenuBar(
-              style: menuStyles.menuStyle, // Apply menu bar style
-              children: menuData.map((menu) {
-                return _buildMenuButton(menu, uiStateProvider, menuStyles);
-              }).toList(),
+          onFocusChange: (gotFocus) {},
+          child: Stack(children: [
+            SizedBox(
+              height: theme.dMenuBarHeight,
+              width: double.infinity,
+              child: MenuBar(
+                style: menuStyles.menuStyle, // Apply menu bar style
+                children: [
+                  SizedBox(
+                    width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
+                  ),
+                  ...menuData.map((menu) {
+                    return _buildMenuButton(menu, uiStateProvider, menuStyles);
+                  })
+                ],
+              ),
             ),
-          ),
+            Positioned(
+              top: theme.dLogoPadding,
+              left: theme.dLogoPadding,
+              child: SvgPicture.asset(
+                'assets/icons/nutria_logo_top.svg',
+                width: 100,
+                height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
+                colorFilter: ColorFilter.mode(theme.cAccentButton,
+                    BlendMode.srcIn), // Optional color change
+              ),
+            ),
+          ]),
         ),
-        //     Expanded(
-        //       child: ClipRRect(
-        //         clipBehavior: Clip.hardEdge,
-        //         child: child,
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ),
+      //     Expanded(
+      //       child: ClipRRect(
+      //         clipBehavior: Clip.hardEdge,
+      //         child: child,
+      //       ),
+      //     ),
+      //   ],
+      // ),
     );
   }
 
@@ -115,11 +136,19 @@ class _NutriaMenuBarState extends State<NutriaMenuBar> with WidgetsBindingObserv
         // uiStateProvider.setModalOrMenuOpen(false);
         //         print('click focus change');
       },
+      // style: menuStyles.buttonStyleBar.copyWith(
+      //   fixedSize: WidgetStatePropertyAll<Size>(
+      //     Size.fromHeight(65),
+      //   ),
+      // ),
       style: menuStyles.buttonStyleBar, // Apply submenu button style
       menuChildren: menu.submenuButtons.map((submenu) {
         return _buildSubmenuButton(submenu, uiStateProvider, menuStyles);
       }).toList(),
-      child: Text(menu.title),
+      child: NutriaText(
+        text: menu.title,
+        state: NutriaTextState.accented,
+      ),
     );
   }
 
