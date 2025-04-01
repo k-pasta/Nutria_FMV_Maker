@@ -9,13 +9,29 @@ import '../providers/ui_state_provider.dart';
 class NutriaTextfield extends StatefulWidget {
   final int index;
   final String? text;
+  final String? placeholderText;
   final ValueChanged<String>? onChanged;
+  final int maxlines;
+  final TextAlign textAlign;
+
+  const NutriaTextfield.option({
+    super.key,
+    this.index = 1,
+    this.text,
+    this.onChanged,
+  })  : placeholderText = null,
+        maxlines = 1,
+        textAlign = TextAlign.left;
 
   const NutriaTextfield(
       {super.key,
-      this.index = 1,
+      this.placeholderText,
       this.text,
-      this.onChanged}); //TODO de-hardcode
+      this.onChanged,
+      this.maxlines = 1,
+      this.textAlign = TextAlign.left
+      })
+      : index = 0;
 
   @override
   State<NutriaTextfield> createState() => _NutriaTextfieldState();
@@ -56,7 +72,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         _focusNode.hasFocus ? theme.cTextFieldActive : theme.cTextField;
     Color textColor = _focusNode.hasFocus ? theme.cTextActive : theme.cText;
     final AppLocalizations t = AppLocalizations.of(context)!;
-     
+
     return Shortcuts(
       shortcuts: const {
         SingleActivator(LogicalKeyboardKey.keyT):
@@ -85,9 +101,10 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
         onTap: () {
           // TODO: Set active Widget
         },
+
         textInputAction: TextInputAction.next,
         focusNode: _focusNode,
-      
+
         cursorColor: theme.cText,
         style: TextStyle(
           color: textColor,
@@ -95,18 +112,20 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           // height: 1
         ),
         // maxLines: null,
-        maxLines: 1,
+        maxLines: widget.maxlines,
         maxLength: 500, //TODO De-hardcode and document
-      
+        textAlign: widget.textAlign, // This centers the text
+
         decoration: InputDecoration(
           isDense:
               true, //allows custom height and overwrites min height of 48 px (flutter's default for accessibility)
-      
+
           contentPadding: EdgeInsets.symmetric(
-              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5, //Idk why i need this extra 0,5, I eyeballed it
-              horizontal: theme.dTextfieldPadding), 
+              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 +
+                  0.5, //Idk why i need this extra 0,5, I eyeballed it
+              horizontal: theme.dTextfieldPadding),
           counterText: '', //disables max character counter
-          hintText:
+          hintText: widget.placeholderText ??
               '${t.videoNodeChoice} ${widget.index} ...',
           hintStyle: TextStyle(
               color: theme.cTextInactive, fontWeight: FontWeight.normal),

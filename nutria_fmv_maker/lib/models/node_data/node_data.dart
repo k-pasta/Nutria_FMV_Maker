@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:nutria_fmv_maker/models/converters/offset_converter.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/utilities/get_text_height.dart';
@@ -8,16 +10,18 @@ import '../app_theme.dart';
 import 'input.dart';
 import 'output.dart';
 
+
+// @JsonSerializable()
 abstract class NodeData {
+  @OffsetConverter()
   final Offset position;
   final String id;
+  @OffsetConverter()
   final Offset intendedPosition; // Always initialized and non-null
   final bool isSelected;
   final bool isBeingHovered;
-  Map<String, dynamic>? toJsonSave();
+
   Map<String, dynamic>? toJsonExport();
-
-
 
   //padding offset used for getters of input and output positions and height
   Offset get paddingOffset {
@@ -39,8 +43,10 @@ abstract class NodeData {
       Offset? intendedPosition,
       bool? isSelected,
       bool? isBeingHovered});
+
 }
 
+// @JsonSerializable()
 abstract class BaseNodeData extends NodeData {
   final String? nodeName;
   final double nodeWidth;
@@ -85,52 +91,5 @@ abstract class BaseNodeData extends NodeData {
     bool? isSelected,
     bool? isBeingHovered,
   });
-}
 
-// /// Set an override for a property
-// void setOverride(String key, dynamic value) {
-//   overrides[key] = value;
-// }
-
-// /// Remove an override (revert to default)
-// void removeOverride(String key) {
-//   overrides.remove(key);
-// }
-
-// ///Get the video data for this node
-// VideoData? getVideoData(List<VideoData> videoList) {
-//   return videoList.firstWhereOrNull((element) => element.id == videoDataId);
-// }
-
-
-
-
-
-class VideoData {
-  final String id;
-  final String videoPath;
-  final String? thumbnailPath;
-  final List<MetadataEntry>? metadata;
-  String get fileName => '${Uri.file(videoPath).pathSegments.last}';
-
-  VideoData({
-    required this.videoPath,
-    required this.id,
-    this.thumbnailPath,
-    this.metadata = const <MetadataEntry>[],
-  });
-
-  VideoData copyWith({
-    String? id,
-    String? videoDataPath,
-    String? thumbnailPath,
-    List<MetadataEntry>? metadata,
-  }) {
-    return VideoData(
-      id: id ?? this.id,
-      videoPath: videoDataPath ?? this.videoPath,
-      thumbnailPath: thumbnailPath ?? this.thumbnailPath,
-      metadata: metadata ?? this.metadata,
-    );
-  }
 }

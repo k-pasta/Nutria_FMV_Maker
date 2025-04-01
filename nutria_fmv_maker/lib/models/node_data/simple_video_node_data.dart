@@ -1,5 +1,7 @@
 import 'dart:ui';
 
+import 'package:json_annotation/json_annotation.dart';
+
 import 'output.dart';
 import 'video_node_data.dart';
 import '../../utilities/get_text_height.dart';
@@ -7,7 +9,13 @@ import '../../static_data/ui_static_properties.dart';
 import '../app_theme.dart';
 import '../enums_data.dart';
 import 'input.dart';
+import '../converters/offset_converter.dart';
 
+
+
+part 'simple_video_node_data.g.dart';
+
+@JsonSerializable()
 class SimpleVideoNodeData extends VideoNodeData {
 //TODO change
   @override
@@ -35,10 +43,6 @@ class SimpleVideoNodeData extends VideoNodeData {
           }),
       }
     };
-  }
-
-  Map<String, dynamic>? toJsonSave() {
-    return null;
   }
 
   @override
@@ -131,4 +135,12 @@ class SimpleVideoNodeData extends VideoNodeData {
         (theme.dButtonHeight * outputs.length);
     return height;
   }
+
+  //JsonSerializable encode and decode methods
+  factory SimpleVideoNodeData.fromJson(Map<String, dynamic> json) =>
+      _$SimpleVideoNodeDataFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$SimpleVideoNodeDataToJson(this);
+
 }

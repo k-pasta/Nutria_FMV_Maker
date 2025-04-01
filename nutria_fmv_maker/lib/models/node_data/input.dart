@@ -1,3 +1,8 @@
+import 'package:json_annotation/json_annotation.dart';
+
+part 'input.g.dart';
+
+@JsonSerializable()
 class Input {
   final bool isBeingTargeted;
   final bool isBeingDragged;
@@ -16,4 +21,10 @@ class Input {
       isBeingDragged: isBeingDragged ?? this.isBeingDragged,
     );
   }
+  
+//JsonSerializable encode and decode methods
+factory Input.fromJson(Map<String, dynamic> json) => _$InputFromJson(json);
+
+Map<String, dynamic> toJson() => _$InputToJson(this);
+
 }

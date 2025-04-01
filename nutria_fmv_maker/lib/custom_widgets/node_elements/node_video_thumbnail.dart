@@ -11,6 +11,7 @@ import 'package:provider/provider.dart';
 import '../../models/node_data/branched_video_node_data.dart';
 import '../../models/node_data/node_data.dart';
 import '../../models/app_theme.dart';
+import '../../models/node_data/video_data.dart';
 import '../../painters/striped_pattern_painter.dart';
 import '../../providers/theme_provider.dart';
 import '../../providers/nodes_provider.dart';

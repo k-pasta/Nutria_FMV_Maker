@@ -6,6 +6,7 @@ import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/node_data/node_data.dart';
+import '../../models/node_data/video_data.dart';
 import '../../static_data/ui_static_properties.dart';
 
 class VideoThumbnail extends StatelessWidget {

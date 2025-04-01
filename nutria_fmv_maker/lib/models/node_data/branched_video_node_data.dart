@@ -1,48 +1,21 @@
 import 'dart:ui';
 
-import 'package:nutria_fmv_maker/models/node_data/output.dart';
-import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
-import 'package:nutria_fmv_maker/utilities/get_text_height.dart';
+import 'package:json_annotation/json_annotation.dart';
+import '../converters/offset_converter.dart';
+import 'output.dart';
+import 'video_node_data.dart';
+import '../../utilities/get_text_height.dart';
 import '../../static_data/ui_static_properties.dart';
 import '../app_theme.dart';
 import '../enums_data.dart';
 import 'input.dart';
-import 'node_data.dart';
 
+
+part 'branched_video_node_data.g.dart';
+
+@JsonSerializable()
 class BranchedVideoNodeData extends VideoNodeData {
   final bool hasMaxedOutOutputs;
-
-//TODO document
-  @override
-  Map<String, Map<String, dynamic>>? toJsonExport() {
-    Map<String, dynamic> outputMap = {};
-    for (int i = 0; i < outputs.length; i++) {
-      if (outputs[i].outputData != null && outputs[i].outputData is! String) {
-        throw Exception('Output data must be a String or null');
-      }
-      String option = outputs[i].outputData as String? ?? '';
-      String? id = outputs[i].targetNodeId;
-
-      if (id != null) {
-        outputMap[option] = id;
-      }
-    }
-    return {
-      id: {
-        'video': videoDataId,
-        if (outputMap.isNotEmpty) 'choices': outputMap,
-        if (overrides.isNotEmpty)
-          'overrides': overrides.map((key, value) {
-            final overrideValue = getOverrideString(key, value);
-            return MapEntry(key, overrideValue);
-          }),
-      }
-    };
-  }
-
-  Map<String, dynamic>? toJsonSave() {
-    return null;
-  }
 
   const BranchedVideoNodeData({
     required super.position,
@@ -99,6 +72,34 @@ class BranchedVideoNodeData extends VideoNodeData {
     );
   }
 
+//TODO document
+  @override
+  Map<String, Map<String, dynamic>>? toJsonExport() {
+    Map<String, dynamic> outputMap = {};
+    for (int i = 0; i < outputs.length; i++) {
+      if (outputs[i].outputData != null && outputs[i].outputData is! String) {
+        throw Exception('Output data must be a String or null');
+      }
+      String option = outputs[i].outputData as String? ?? '';
+      String? id = outputs[i].targetNodeId;
+
+      if (id != null) {
+        outputMap[option] = id;
+      }
+    }
+    return {
+      id: {
+        'video': videoDataId,
+        if (outputMap.isNotEmpty) 'choices': outputMap,
+        if (overrides.isNotEmpty)
+          'overrides': overrides.map((key, value) {
+            final overrideValue = getOverrideString(key, value);
+            return MapEntry(key, overrideValue);
+          }),
+      }
+    };
+  }
+
   @override
   Offset outputPosition(AppTheme theme, int index) {
     double x = nodeWidth;
@@ -137,4 +138,13 @@ class BranchedVideoNodeData extends VideoNodeData {
         (theme.dButtonHeight * outputs.length);
     return height;
   }
+
+//JsonSerializable encode and decode methods
+  factory BranchedVideoNodeData.fromJson(Map<String, dynamic> json) =>
+      _$BranchedVideoNodeDataFromJson(json);
+
+  @override
+  Map<String, dynamic> toJson() => _$BranchedVideoNodeDataToJson(this);
+
+
 }

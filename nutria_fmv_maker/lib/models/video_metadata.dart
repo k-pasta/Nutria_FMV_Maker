@@ -1,15 +1,29 @@
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:json_annotation/json_annotation.dart';
+import 'package:nutria_fmv_maker/models/file_size.dart';
 
 import 'enums_data.dart';
 
+part 'video_metadata.g.dart';
+
+@JsonSerializable()
 class MetadataEntry<T> {
   final VideoMetadataType key; // Enum for metadata type
+  @MetadataEntryConverter()
   final T value; // Generic type (int, double, DateTime, etc.)
 
   MetadataEntry({
     required this.key,
     required this.value,
   });
+
+// JsonSerializable encode and decode methods
+factory MetadataEntry.fromJson(Map<String, dynamic> json) =>
+    _$MetadataEntryFromJson<T>(json);
+
+Map<String, dynamic> toJson() => _$MetadataEntryToJson<T>(this);
+
+
 }
 
 extension MetadataEntryExtension<T> on MetadataEntry<T> {
@@ -86,4 +100,65 @@ extension MetadataEntryExtension<T> on MetadataEntry<T> {
   String _audioBitDepthValue(T value) => value.toString();
   String _audioChannelsValue(T value) => value.toString();
   String _audioCodecFormatValue(T value) => value.toString();
+}
+
+// Custom converter for MetadataEntry<T>
+class MetadataEntryConverter<T> implements JsonConverter<T, dynamic> {
+  const MetadataEntryConverter();
+
+  @override
+  T fromJson(dynamic json) {
+    if (json is String) return json as T;
+    if (json is int) return json as T;
+    if (json is double) return json as T;
+
+    // Handle DateTime
+    if (json is Map<String, dynamic> && T == DateTime) {
+      return DateTime.parse(json['date']) as T;
+    }
+
+    // Handle Duration (assumed stored as milliseconds)
+    if (json is int && T == Duration) {
+      return Duration(milliseconds: json) as T;
+    }
+
+    // Handle FileSize
+    if (json is Map<String, dynamic> && T == FileSize) {
+      final size = json['size'] as double;
+      final unit = FileSizeUnit.values.firstWhere(
+        (e) => e.toString().split('.').last == json['unit'],
+        orElse: () => FileSizeUnit.bytes, // Default unit if not found
+      );
+      return FileSize(size, unit) as T;
+    }
+
+    throw UnsupportedError('Unsupported type: ${T.toString()}');
+  }
+
+  @override
+  dynamic toJson(T object) {
+    if (object is String || object is int || object is double) {
+      return object;
+    }
+
+    // Convert DateTime to JSON
+    if (object is DateTime) {
+      return {'date': object.toIso8601String()};
+    }
+
+    // Convert Duration to JSON (stored as milliseconds)
+    if (object is Duration) {
+      return object.inMilliseconds;
+    }
+
+    // Convert FileSize to JSON
+    if (object is FileSize) {
+      return {
+        'size': object.size,
+        'unit': object.unit.toString().split('.').last,
+      };
+    }
+
+    throw UnsupportedError('Unsupported type: ${object.runtimeType}');
+  }
 }

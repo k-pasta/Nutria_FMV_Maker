@@ -47,7 +47,7 @@ class NodeVideoOutputsList extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Expanded(
-                        child: NutriaTextfield(
+                        child: NutriaTextfield.option(
                           onChanged: (currentText) {
                             nodesProvider.setVideoNodeOutputText(
                                 text: currentText,

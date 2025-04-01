@@ -21,6 +21,7 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'models/app_theme.dart';
+import 'models/node_data/video_data.dart';
 import 'providers/theme_provider.dart'; // Provides [VideoController] & [Video] etc.
 
 class VideoSection extends StatefulWidget {

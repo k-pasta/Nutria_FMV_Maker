@@ -1,12 +1,18 @@
 import 'dart:ui';
 
+import 'package:json_annotation/json_annotation.dart';
 import 'package:nutria_fmv_maker/models/node_data/output.dart';
 import '../../static_data/ui_static_properties.dart';
 import '../../utilities/get_text_height.dart';
 import '../app_theme.dart';
 import 'input.dart';
 import 'node_data.dart';
+import '../converters/offset_converter.dart';
 
+
+part 'origin_node_data.g.dart';
+
+@JsonSerializable()
 class OriginNodeData extends BaseNodeData {
   const OriginNodeData({
     required super.position,
@@ -87,9 +93,10 @@ class OriginNodeData extends BaseNodeData {
     return null;
   }
 
-  @override
-  Map<String, dynamic>? toJsonSave() {
-    // TODO: implement toJsonSave
-    throw UnimplementedError();
-  }
+//JsonSerializable encode and decode methods
+factory OriginNodeData.fromJson(Map<String, dynamic> json) =>
+    _$OriginNodeDataFromJson(json);
+
+@override
+Map<String, dynamic> toJson() => _$OriginNodeDataToJson(this);
 }

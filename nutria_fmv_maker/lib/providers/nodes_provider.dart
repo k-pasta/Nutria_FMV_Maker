@@ -1,13 +1,12 @@
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/origin_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
-import 'package:nutria_fmv_maker/utilities/file_metadata_retriever.dart';
 import 'package:nutria_fmv_maker/utilities/video_metadata_retriever.dart';
 import 'package:path/path.dart' as p;
 import 'package:tuple/tuple.dart';
@@ -86,7 +85,7 @@ class NodesProvider extends ChangeNotifier {
     //   nodeName: 'First nodeFirst nodeFirst nodeFirst nodeFirst nodeFirst node',
     // ),
     OriginNodeData(
-      nodeName: 'origin',
+      nodeName: 'Origin Node',
       id: 'bbb',
       position: const Offset(150, 250),
     ),
@@ -203,6 +202,18 @@ class NodesProvider extends ChangeNotifier {
 //tuple for the noodle drawer to listen to
   Tuple2<List<Offset>, List<Output>> get positionsAndOutputs {
     return Tuple2(positions, outputs);
+  }
+
+  void replaceNodesAndVideos(
+      {required List<NodeData> nodes, required List<VideoData> newVideos}) {
+    _nodes.clear();
+    _videos.clear();
+    _nodes.addAll(nodes);
+    _videos.addAll(newVideos);
+    for (var video in _videos) {
+      updateVideoData(video);
+    }
+    notifyListeners();
   }
 
   List<NodeData> get selectedNodes =>
@@ -1082,11 +1093,11 @@ class NodesProvider extends ChangeNotifier {
     notifyListeners();
 
     // Print metadata for debugging
-    if (metadata != null) {
-      for (var data in metadata) {
-        print('${data.key} : ${data.value}');
-      }
-    }
+    // if (metadata != null) {
+    //   for (var data in metadata) {
+    //     print('${data.key} : ${data.value}');
+    //   }
+    // }
   }
 
   Future<List<MetadataEntry<dynamic>>> fetchMetadata(String path) async {

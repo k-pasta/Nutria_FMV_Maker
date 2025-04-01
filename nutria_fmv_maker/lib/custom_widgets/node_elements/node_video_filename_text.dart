@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../../models/node_data/video_data.dart';
 import '../nutria_text.dart';
 import '../../models/enums_ui.dart';
 import '../../models/node_data/video_node_data.dart';

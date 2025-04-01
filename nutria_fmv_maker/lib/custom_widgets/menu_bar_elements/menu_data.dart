@@ -6,6 +6,11 @@ import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import '../../models/enums_ui.dart';
+import '../../models/node_data/branched_video_node_data.dart';
+import '../../models/node_data/node_data.dart';
+import '../../models/node_data/origin_node_data.dart';
+import '../../models/node_data/simple_video_node_data.dart';
+import '../../models/node_data/video_data.dart';
 import 'nutria_menu_button.dart';
 import 'package:flutter/services.dart';
 import '../../providers/locale_provider.dart';
@@ -35,7 +40,31 @@ class MenuData {
           ),
           NutriaSubmenuButton(
             text: t.fileLoadProject,
-            function: () => debugPrint("Open File selected"),
+            function: () {
+              projectVersionProvider.loadFile().then((jsonData) {
+                // Directly assign the already parsed objects.
+                List<NodeData> nodes =
+                    (jsonData['nodes'] as List).cast<NodeData>();
+                List<VideoData> videos =
+                    (jsonData['videos'] as List).cast<VideoData>();
+
+                // Check if both lists are empty.
+                if (nodes.isEmpty && videos.isEmpty) {
+                  // Return early if there's no data to process.
+                  // notifyError("Error processing file: $e");
+                  return;
+                }
+
+                // Replace nodes and videos if data is valid.
+                nodesProvider.replaceNodesAndVideos(
+                  nodes: nodes,
+                  newVideos: videos,
+                );
+              }).catchError((e) {
+                // Handle error if necessary.
+                // notifyError("Error processing file: $e");
+              });
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyO, control: true),
             icon: Icons.folder_open,
           ),
@@ -52,7 +81,8 @@ class MenuData {
           ),
           NutriaSubmenuButton(
             text: t.fileSaveProjectAs,
-            function: () => debugPrint("Save File selected"),
+            function: () => projectVersionProvider.saveFile(
+                nodesProvider.nodes, nodesProvider.videos),
             shortcut: SingleActivator(LogicalKeyboardKey.keyS,
                 control: true, shift: true),
             icon: Icons.save,

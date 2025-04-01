@@ -90,7 +90,6 @@ String _getDefaultSelectionMethodString(DefaultSelectionMethod method) {
 
 enum NodeDataType{ branchedVideo, simpleVideo, originNode }
 
-
 enum VideoFit { fit, fitwidth, fitheight, fill, fillWidth, fillHeight, stretch }
 
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
@@ -100,6 +99,7 @@ enum LogicalPositionType { output, input, node, empty }
 enum MediaFileSource { videoFile, node, audioFile }
 
 enum FileSizeUnit { bytes, kilobytes, megabytes, gigabytes }
+
 
 enum VideoMetadataType {
   // Basic File Information
