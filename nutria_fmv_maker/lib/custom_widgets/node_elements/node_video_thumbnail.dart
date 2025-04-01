@@ -92,7 +92,8 @@ class NodeVideoThumbnail extends StatelessWidget {
                                 ? BlinkingIcon(
                                     key: ValueKey('${videoNodeData.id}play'),
                                     icon: Icons.play_arrow,
-                                    color: theme.cAccent,
+                                    color:
+                                        theme.cSwatches[videoNodeData.swatch],
                                     size: UiStaticProperties
                                         .nodePlayIndicatorSize,
                                     blinks: true,
@@ -100,7 +101,8 @@ class NodeVideoThumbnail extends StatelessWidget {
                                 : BlinkingIcon(
                                     key: ValueKey('${videoNodeData.id}pause'),
                                     icon: Icons.pause,
-                                    color: theme.cAccent,
+                                    color:
+                                        theme.cSwatches[videoNodeData.swatch],
                                     size: UiStaticProperties
                                         .nodePlayIndicatorSize,
                                     blinks: false,

@@ -38,13 +38,16 @@ class OriginNode extends StatelessWidget {
                 width: double.infinity,
                 height: UiStaticProperties.nodeDefaultWidth * 9 / 16,
                 child: Container(
-                  color: Colors.black,
+                  color: Colors.black, //TODO de-hardcode
+                  child: Center(
+                    child: NutriaText(text: 'Main Menu Placeholder'),
+                  ), //TODO create render
                 ),
               ),
               Padding(
                 padding: EdgeInsets.all(theme.dPanelPadding),
                 child: NutriaTextfield(
-                  placeholderText: 'Project Name ...',
+                  placeholderText: 'Project Title ...',
                 ),
               ),
               Padding(
@@ -55,7 +58,7 @@ class OriginNode extends StatelessWidget {
                 ),
                 child: NutriaTextfield(
                   placeholderText: 'Project Description ...',
-                  maxlines: 6,
+                  maxlines: 2,
                   textAlign: TextAlign.left,
                 ),
               ),

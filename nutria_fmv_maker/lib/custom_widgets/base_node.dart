@@ -91,7 +91,7 @@ class BaseNode extends StatelessWidget {
                         : appSettingsProvider.snapSettings);
               },
               onPanStart: (details) {
-                if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed) {
+                if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed || keyboardProvider.isShiftPressed) {
                   nodesProvider
                       .selectNodes([baseNodeData.id], multiSelection: true);
                 } else {
@@ -100,13 +100,13 @@ class BaseNode extends StatelessWidget {
                 nodesProvider.setActiveNode(baseNodeData.id);
               },
               onPanEnd: (_) {
-                nodesProvider.resetNodeIntendedValues(baseNodeData.id);
+                nodesProvider.resetNodesIntendedValues();
               },
               onPanCancel: () {
-                nodesProvider.resetNodeIntendedValues(baseNodeData.id);
+                nodesProvider.resetNodesIntendedValues();
               },
               onTap: () {
-                if (!keyboardProvider.isCtrlPressed) {
+                if (!keyboardProvider.isCtrlPressed && !keyboardProvider.isShiftPressed) {
                   nodesProvider.setActiveNode(baseNodeData.id);
                   nodesProvider.selectNodes([baseNodeData.id]);
                   loadVideo();
@@ -158,7 +158,7 @@ class BaseNode extends StatelessWidget {
                               border: Border.all(
                                   color: theme.cOutlines,
                                   width: theme.dOutlinesWidth),
-                              color: theme.cPanelTransparent,
+                              color: baseNodeData.isBeingHovered || baseNodeData.isSelected ? theme.cButton :theme.cPanelTransparent,
                             ),
                             padding: EdgeInsets.all(theme.dPanelPadding),
                             child: expansion),

@@ -86,8 +86,9 @@ class NodesProvider extends ChangeNotifier {
     // ),
     OriginNodeData(
       nodeName: 'Origin Node',
-      id: 'bbb',
+      id: 'OriginNode',
       position: const Offset(150, 250),
+      swatch: 1,
     ),
     // VideoNodeData(
     //   id: 'ccc',
@@ -132,7 +133,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is BranchedVideoNodeData) {
+    if (node is VideoNodeData) {
       final updatedOverrides = Map<String, dynamic>.from(node.overrides);
       updatedOverrides.remove(key);
 
@@ -161,7 +162,7 @@ class NodesProvider extends ChangeNotifier {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
-    if (node is BranchedVideoNodeData) {
+    if (node is VideoNodeData) {
       final updatedOverrides = Map<String, dynamic>.from(node.overrides);
       updatedOverrides[key] = value;
 
@@ -171,7 +172,7 @@ class NodesProvider extends ChangeNotifier {
     } else {
       throw Exception("Node is not of type VideoNodeData");
     }
-    print((_nodes[nodeIndex] as BranchedVideoNodeData).overrides[key]);
+    print((_nodes[nodeIndex] as VideoNodeData).overrides[key]);
   }
 
   // Getter for nodes (returns an immutable list)
@@ -916,6 +917,21 @@ class NodesProvider extends ChangeNotifier {
             .nodeWidth); //the values should normally reset by themselves as set in model
 
     _nodes[nodeIndex] = updatedNode;
+  }
+
+  void resetNodesIntendedValues() {
+    List<String> selectedIds =
+        _nodes.where((node) => node.isSelected).map((node) => node.id).toList();
+    for (var id in selectedIds) {
+      int nodeIndex = getNodeIndexById(id);
+      final node = _nodes[nodeIndex] as BaseNodeData;
+      BaseNodeData updatedNode = node.copyWith(
+          intendedPosition: node.position,
+          intendedNodeWidth: node
+              .nodeWidth); //the values should normally reset by themselves as set in model
+
+      _nodes[nodeIndex] = updatedNode;
+    }
   }
 
   void rebuildNode(String id) {

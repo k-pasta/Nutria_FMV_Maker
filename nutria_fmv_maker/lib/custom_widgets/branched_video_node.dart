@@ -42,7 +42,7 @@ class BranchedVideoNode extends StatelessWidget {
                 videoNodeData: nodeData,
               ),
             ],
-            expansion: NodeVideoExpansion(videoNodeData: nodeData),
+            expansion: NodeVideoExpansion.branched(videoNodeData: nodeData),
           );
         });
   }

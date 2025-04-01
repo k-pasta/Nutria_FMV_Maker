@@ -51,7 +51,10 @@ class SimpleVideoNode extends StatelessWidget {
                       onTap: () {
                         nodesProvider.convertNode(nodeData.id);
                       },
-                      child: NutriaText(text: 'Convert to branching node'),
+                      child: Padding(
+                        padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
+                        child: NutriaText(text: 'Convert to branching node'),
+                      ),
                     )),
                     SizedBox(
                       width: theme.dPanelPadding,
@@ -72,7 +75,7 @@ class SimpleVideoNode extends StatelessWidget {
                 ),
               ),
             ],
-            expansion: Placeholder(),
+            expansion: NodeVideoExpansion.simple(videoNodeData: nodeData),
           );
         });
   }

@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import '../../models/app_theme.dart';
 import '../../models/enums_data.dart';
 import '../../models/node_data/branched_video_node_data.dart';
+import '../../models/node_data/video_node_data.dart';
 import '../../providers/theme_provider.dart';
 import '../nutria_text.dart';
 import 'node_debug_info.dart';
@@ -17,9 +18,10 @@ import 'node_video_override.dart';
 import 'dart:math';
 
 class NodeVideoExpansion extends StatelessWidget {
-  const NodeVideoExpansion({super.key, required this.videoNodeData});
-
-  final BranchedVideoNodeData videoNodeData;
+  const NodeVideoExpansion.branched({super.key, required this.videoNodeData}) : isBranched = true;
+  const NodeVideoExpansion.simple({super.key, required this.videoNodeData}) : isBranched = false;
+  final VideoNodeData videoNodeData;
+  final bool isBranched;
 
   @override
   Widget build(BuildContext context) {
@@ -33,28 +35,76 @@ class NodeVideoExpansion extends StatelessWidget {
         nodesProvider.addOverride;
     final void Function(String nodeId) convert = nodesProvider.convertNode;
 
-    final List<Widget> widgets = [
+if (isBranched){
+final List<Widget> branchedWidgets = [
       _buildConvertButton(convert),
       _buildSelectionTimeOverride(settings, addOverride),
       _buildPauseOnEndOverride(settings, addOverride),
       _buildShowTimerOverride(settings, addOverride),
       _buildVideoFitOverride(settings, addOverride),
       _buildDefaultSelectionOverride(settings, addOverride),
-      _buildPauseMusicOverride(settings, addOverride),
+      // _buildPauseMusicOverride(settings, addOverride),
       _buildSwatchesPicker(),
       _buildDebugInfo(),
     ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
+    branchedWidgets.removeLast(); // Remove trailing spacing
+    return Column(children: branchedWidgets);
+} else {
+  final List<Widget> simpleWidgets = [
+      _buildVideoFitOverride(settings, addOverride),
+      _buildSwatchesPicker(),
+      _buildDebugInfo(),
+    ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
+     simpleWidgets.removeLast(); // Remove trailing spacing
+    return Column(children: simpleWidgets);
+}
 
-    widgets.removeLast(); // Remove trailing spacing
+    
 
-    return Column(children: widgets);
+  
+
+
   }
+
+// class NodeSimpleVideoExpansion extends StatelessWidget {
+//   const NodeSimpleVideoExpansion({super.key, required this.videoNodeData});
+
+//   final BranchedVideoNodeData videoNodeData;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+//     final AppSettingsProvider appSettingsProvider =
+//         context.read<AppSettingsProvider>(); //TODO check if updates
+//     final Map<VideoOverrides, dynamic> settings =
+//         appSettingsProvider.currentVideoSettings;
+//     final NodesProvider nodesProvider = context.read<NodesProvider>();
+//     final void Function(String nodeId, String key, dynamic value) addOverride =
+//         nodesProvider.addOverride;
+//     final void Function(String nodeId) convert = nodesProvider.convertNode;
+
+//     final List<Widget> widgets = [
+//       _buildConvertButton(convert),
+//       _buildSelectionTimeOverride(settings, addOverride),
+//       _buildPauseOnEndOverride(settings, addOverride),
+//       _buildShowTimerOverride(settings, addOverride),
+//       _buildVideoFitOverride(settings, addOverride),
+//       _buildDefaultSelectionOverride(settings, addOverride),
+//       _buildPauseMusicOverride(settings, addOverride),
+//       _buildSwatchesPicker(),
+//       _buildDebugInfo(),
+//     ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
+
+//     widgets.removeLast(); // Remove trailing spacing
+
+//     return Column(children: widgets);
+//   }
 
   Widget _buildConvertButton(Function(String nodeId) convert) {
     return SizedBox(
       width: double.infinity,
       child: NutriaButton(
-        child: NutriaText(text: 'convert to simple video node'),
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 8) ,child: NutriaText(text: 'Convert to simple video node')), //TODO get theme
         onTap: () {
           convert(videoNodeData.id);
         },
