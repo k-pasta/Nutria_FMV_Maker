@@ -19,7 +19,7 @@ Future<Map<String, dynamic>> loadFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       dialogTitle: 'Open Project File',
       type: FileType.custom,
-      allowedExtensions: ['nfmvm'],
+      allowedExtensions: ['nfmv'],
     );
 
     if (result != null && result.files.single.path != null) {
