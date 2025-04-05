@@ -16,7 +16,7 @@ import 'video_collection_elements/video_collection_entry.dart';
 
 class VideoCollection extends StatelessWidget {
   VideoCollection({super.key});
-  final scrollController = ScrollController();
+  final scrollController = ScrollController(); //TODO move to UIprovider
 
 
 

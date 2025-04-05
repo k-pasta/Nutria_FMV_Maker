@@ -1,8 +1,13 @@
 import 'package:flutter_svg/svg.dart';
 import 'package:media_kit/media_kit.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/fvp_example.dart';
 import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
+import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
+import 'package:url_launcher/link.dart';
 
+import 'models/enums_ui.dart';
 import 'providers/keyboard_provider.dart';
 import 'custom_widgets/nutria_menu_bar.dart';
 import 'custom_widgets/nutria_split_view.dart';
@@ -165,6 +170,7 @@ class WindowsAppLayout extends StatelessWidget {
                       },
                     ),
                   ),
+                  //Logo under
                   Positioned(
                     top: -theme.dMenuBarHeight + theme.dLogoPadding,
                     left: theme.dLogoPadding,
@@ -175,11 +181,203 @@ class WindowsAppLayout extends StatelessWidget {
                       colorFilter: ColorFilter.mode(theme.cAccentButton,
                           BlendMode.srcIn), // Optional color change
                     ),
-                  )
+                  ),
+                  Modal(theme: theme)
                 ],
               ),
             ),
           ),
+        ),
+        Container(
+          height: 20,
+          decoration: BoxDecoration(
+              color: theme.cPanel,
+              border: Border.fromBorderSide(BorderSide(width: 2))),
+        )
+      ],
+    );
+  }
+}
+
+class Modal extends StatelessWidget {
+  const Modal({
+    super.key,
+    required this.theme,
+  });
+
+  final AppTheme theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxWidth: 450,
+          // maxHeight: 350,
+        ),
+        child: IntrinsicHeight(
+          child: SingleChildScrollView(
+            child: Stack(
+              children: [
+                Container(
+                  decoration: BoxDecoration(
+                      color: theme.cPanel,
+                      borderRadius: BorderRadius.circular(
+                          theme.dPanelBorderRadius),
+                      border: Border.all(
+                        color: theme.cOutlines,
+                        width: theme.dSectionOutlineWidth,
+                      )),
+                  padding:
+                      EdgeInsets.all(theme.dSectionPadding * 3),
+                  child: AppInfoWindow(theme: theme),
+                ),
+                //close button
+                Positioned(
+                    right: theme.dSectionPadding * 2,
+                    top: theme.dSectionPadding * 2,
+                    child: MouseRegion(
+                        cursor: SystemMouseCursors.click,
+                        child: Icon(
+                          Icons.close,
+                          color: theme.cTextInactive,
+                          size: 25,
+                        )))
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class AppInfoWindow extends StatelessWidget {
+  const AppInfoWindow({
+    super.key,
+    required this.theme,
+  });
+
+  final AppTheme theme;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        SvgPicture.asset(
+          'assets/icons/nutria_logo.svg',
+          width: 150,
+          height: 150,
+          colorFilter: ColorFilter.mode(
+              theme.cAccent, BlendMode.srcIn),
+        ),
+        NutriaText(
+          text:
+              'Nutria FMV Maker v${DataStaticProperties.softwareVersion}.${DataStaticProperties.softwareSubVersion}${DataStaticProperties.softwareVersionSuffix}',
+          textAlign: TextAlign.center,
+        ),
+        SizedBox(
+          height: theme.dPanelPadding,
+        ),
+        NutriaText(
+            text:
+                'Nutria FMV Maker is an in-the-making free/open-source Flutter project aiming to make the process of creating interactive movie experiences more accessible, published under the GPLv3 license.',
+            maxLines: 100,
+            textAlign: TextAlign.justify),
+        SizedBox(
+          height: theme.dPanelPadding,
+        ),
+        NutriaText(
+            text:
+                'FFmpeg is bundled under the GPLv3 license.',
+            maxLines: 100,
+            textAlign: TextAlign.justify),
+        SizedBox(
+          height: theme.dPanelPadding,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: Link(
+                uri: Uri.parse(
+                    'https://github.com/k-pasta/Nutria_FMV_Maker'),
+                builder: (context, followLink) =>
+                    NutriaButton(
+                  onTap: () => followLink!(),
+                  child: Padding(
+                     padding: EdgeInsets.symmetric(
+                        horizontal: theme.dTextfieldPadding),
+                    child: Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: theme
+                                    .dPanelPadding),
+                            child: Icon(
+                              Icons.link,
+                              color: theme.cTextInactive,
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: NutriaText(
+                              text: 'Github repository',),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              width: theme.dSectionPadding,
+            ),
+            Expanded(
+              child: Link(
+                uri: Uri.parse(
+                    'https://your.documentation.link.here'),
+                builder: (context, followLink) =>
+                    NutriaButton(
+                  onTap: () => followLink!(),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                        horizontal: theme.dTextfieldPadding),
+                    child: Row(
+                      mainAxisAlignment:
+                          MainAxisAlignment.center,
+                      children: [
+                        Flexible(
+                          fit: FlexFit.loose,
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                                right: theme
+                                    .dPanelPadding),
+                            child: Icon(
+                              Icons.link,
+                              color: theme.cTextInactive,
+                            ),
+                          ),
+                        ),
+                        Flexible(
+                          fit: FlexFit.tight,
+                          flex: 2,
+                          child: NutriaText(
+                              text: 'Documentation'),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ],
     );

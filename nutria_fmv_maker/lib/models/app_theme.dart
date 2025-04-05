@@ -30,6 +30,7 @@ class AppTheme {
 
 //menus
   final double dSectionPadding;
+  final double dSectionOutlineWidth;
 
 //button 3 states
   final Color cButton;
@@ -79,6 +80,7 @@ class AppTheme {
     this.cPanelTransparent = const Color(0xf1252525),
     this.cOutlines = const Color(0x45ffffff),
     this.dSectionPadding = 10,
+    this.dSectionOutlineWidth = 2,
     this.dOutlinesWidth = 1,
     this.cButtonOutlines = const Color(0xf1252525),
     this.dButtonOutlinesWidth = 1,

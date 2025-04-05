@@ -140,13 +140,13 @@ Widget _buildDivider(
               left: area == AreaSide.right
                   ? BorderSide(
                       color: theme.cOutlines,
-                      width: theme.dOutlinesWidth,
+                      width: theme.dSectionOutlineWidth,
                     )
                   : BorderSide.none,
               right: area == AreaSide.left
                   ? BorderSide(
                       color: theme.cOutlines,
-                      width: theme.dOutlinesWidth,
+                      width: theme.dSectionOutlineWidth,
                     )
                   : BorderSide.none,
             ),

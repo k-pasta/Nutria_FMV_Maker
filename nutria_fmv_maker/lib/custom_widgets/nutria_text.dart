@@ -27,6 +27,7 @@ class NutriaText extends StatelessWidget {
     return Text(
       text,
       textAlign: textAlign,
+      softWrap: false,
       style: TextStyle(
         height: 1.0,
         color: state == NutriaTextState.accented
