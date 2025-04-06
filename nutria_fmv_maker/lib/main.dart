@@ -63,7 +63,7 @@ class MyApp extends StatelessWidget {
           locale: localeProvider.locale,
           localizationsDelegates: AppLocalizations.localizationsDelegates,
           supportedLocales: AppLocalizations.supportedLocales,
-          title: 'Flutter Demo',
+          title: 'Nutria FMV Maker',
           theme: ThemeData(
             splashFactory: NoSplash.splashFactory,
             menuButtonTheme: MenuButtonThemeData(
@@ -97,7 +97,7 @@ class MyApp extends StatelessWidget {
                       FontWeight.w800), // Default weight for headlineLarge
             ),
           ),
-          home: MyHomePage(apptitle: 'Flutter Demo Home Page'),
+          home: const MyHomePage(),
         );
       },
     );
@@ -105,8 +105,7 @@ class MyApp extends StatelessWidget {
 }
 
 class MyHomePage extends StatelessWidget {
-  const MyHomePage({super.key, required this.apptitle});
-  final String apptitle;
+  const MyHomePage({super.key});
 
   @override
   Widget build(BuildContext context) {

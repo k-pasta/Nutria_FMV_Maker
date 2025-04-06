@@ -46,7 +46,7 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
   @override
   void didChangeMetrics() {
     final UiStateProvider uiStateProvider = context.read<UiStateProvider>();
-    uiStateProvider.setModalOrMenuOpen(false);
+    uiStateProvider.isMenuOpen = false;
   }
 
   @override
@@ -127,10 +127,10 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
     return SubmenuButton(
       onOpen: () {
         print('click open');
-        uiStateProvider.setModalOrMenuOpen(true);
+        uiStateProvider.isMenuOpen = true;
       },
       onClose: () {
-        uiStateProvider.setModalOrMenuOpen(false);
+        uiStateProvider.isMenuOpen = false;
       },
       onFocusChange: (_) {
         // uiStateProvider.setModalOrMenuOpen(false);

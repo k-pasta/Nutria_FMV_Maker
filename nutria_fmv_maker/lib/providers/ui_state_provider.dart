@@ -6,41 +6,50 @@ import '../static_data/ui_static_properties.dart';
 
 import 'dart:math';
 
-
-
 class UiStateProvider extends ChangeNotifier {
   //context menu
 
+  // bool _isOpaque = true;
+
+  // bool get isOpaque => _isOpaque;
+
+  // set isOpaque(bool value) {
+  //   _isOpaque = value;
+  //   notifyListeners();
+  // }
   bool _isContextMenuOpen = false;
-
   bool get isContextMenuOpen => _isContextMenuOpen;
-
-  bool _isOpaque = true;
-
-  bool get isOpaque => _isOpaque;
-
-  set isOpaque(bool value) {
-    _isOpaque = value;
-    notifyListeners();
-  }
 
   void setContextMenuOpen(bool isOpen) {
     _isContextMenuOpen = isOpen;
     notifyListeners();
   }
 
-  bool _isModalOrMenuOpen = false;
-  bool get isModalOrMenuOpen => _isModalOrMenuOpen;
+  // bool _isModalOrMenuOpen = false;
+  bool get isModalOrMenuOpen {
+    return _isMenuOpen || _isModalInfoOpen;
+  }
 
-  void setModalOrMenuOpen(bool value) {
-    if (_isModalOrMenuOpen != value) {
-      _isModalOrMenuOpen = value;
+  bool _isMenuOpen = false;
+  bool get isMenuOpen => _isMenuOpen;
+  set isMenuOpen(bool value) {
+    if (_isMenuOpen != value) {
+      _isMenuOpen = value;
+      notifyListeners();
+    }
+  }
+
+  bool _isModalInfoOpen = false;
+  bool get isModalInfoOpen => _isModalInfoOpen;
+  set isModalInfoOpen(bool value) {
+    if (_isModalInfoOpen != value) {
+      _isModalInfoOpen = value;
       notifyListeners();
     }
   }
 
 //menu
-  FocusNode _parentfocusNode = FocusNode();
+  final FocusNode _parentfocusNode = FocusNode();
   get parentfocusNode => _parentfocusNode;
 
 //split view
