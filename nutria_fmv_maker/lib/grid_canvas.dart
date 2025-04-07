@@ -95,31 +95,31 @@ class _GridCanvasState extends State<GridCanvas> {
   //   }
   // }
 
-void _updateNodes(List<String> ids, List<Type> types) {
-  // Build a lookup of existing nodes by their id (only storing references, not copies)
-  final Map<String, Widget> nodeLookup = {
-    for (final node in nodes) (node.key as ValueKey).value as String: node,
-  };
+  void _updateNodes(List<String> ids, List<Type> types) {
+    // Build a lookup of existing nodes by their id (only storing references, not copies)
+    final Map<String, Widget> nodeLookup = {
+      for (final node in nodes) (node.key as ValueKey).value as String: node,
+    };
 
-  final List<Widget> updatedNodes = [];
+    final List<Widget> updatedNodes = [];
 
-  for (int i = 0; i < ids.length; i++) {
-    final id = ids[i];
-    final type = types[i];
+    for (int i = 0; i < ids.length; i++) {
+      final id = ids[i];
+      final type = types[i];
 
-    if (nodeLookup.containsKey(id)) {
-      // Reuse the node and remove it from the lookup to flag it as processed
-      updatedNodes.add(nodeLookup[id]!);
-      nodeLookup.remove(id);
-    } else {
-      // Create a new node if it doesn't exist
-      updatedNodes.add(_addNodeById(id, type));
+      if (nodeLookup.containsKey(id)) {
+        // Reuse the node and remove it from the lookup to flag it as processed
+        updatedNodes.add(nodeLookup[id]!);
+        nodeLookup.remove(id);
+      } else {
+        // Create a new node if it doesn't exist
+        updatedNodes.add(_addNodeById(id, type));
+      }
     }
-  }
 
-  // Assign the reordered list back to nodes.
-  nodes = updatedNodes;
-}
+    // Assign the reordered list back to nodes.
+    nodes = updatedNodes;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -159,12 +159,9 @@ void _updateNodes(List<String> ids, List<Type> types) {
     return Selector(
         selector: (_, NodesProvider provider) => provider.iDsandTypes,
         builder: (context, iDsandTypes, child) {
-          print('full rebuild');
           final List<String> iDs = iDsandTypes.item1;
           final List<Type> types = iDsandTypes.item2;
-          print('before update');
           _updateNodes(iDs, types);
-          print('after update');
           nodes.sort((a, b) {
             // print(iDs.last);
             // print((nodes.first.key as ValueKey).value);

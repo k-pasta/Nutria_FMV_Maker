@@ -9,13 +9,13 @@ import '../grid_canvas.dart';
 import '../providers/notifications_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/ui_state_provider.dart';
-import '../video_section.dart';
+import '../video_player_section.dart';
 import 'app_info_window.dart';
 import 'modal.dart';
 import 'nutria_menu_bar.dart';
 import 'nutria_split_view.dart';
 import 'nutria_text.dart';
-import 'video_collection.dart';
+import 'left_section.dart';
 
 class WindowsAppLayout extends StatelessWidget {
   const WindowsAppLayout({
@@ -46,8 +46,8 @@ class WindowsAppLayout extends StatelessWidget {
                 children: [
                   const GridCanvas(),
                   NutriaSplitView(
-                    rightChild: VideoSection(),
-                    leftChild: VideoCollection(),
+                    rightChild: VideoPlayerSection(),
+                    leftChild: LeftSection(),
                   ),
                   Positioned.fill(
                     //UI fader

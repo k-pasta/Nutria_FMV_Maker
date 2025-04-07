@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_expansion.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
@@ -23,11 +24,11 @@ class SimpleVideoNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppLocalizations t = AppLocalizations.of(context)!;
     return Selector<NodesProvider, NodeData>(
         selector: (context, provider) =>
             provider.getNodeById(nodeId), // Only listen to this node
         builder: (context, node, child) {
-          
           final SimpleVideoNodeData nodeData =
               nodesProvider.getNodeById(nodeId);
 
@@ -52,8 +53,9 @@ class SimpleVideoNode extends StatelessWidget {
                         nodesProvider.convertNode(nodeData.id);
                       },
                       child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
-                        child: NutriaText(text: 'Convert to branching node'),
+                        padding: EdgeInsets.symmetric(
+                            horizontal: theme.dTextfieldPadding),
+                        child: NutriaText(text: t.nodeConvertToBranching),
                       ),
                     )),
                     SizedBox(

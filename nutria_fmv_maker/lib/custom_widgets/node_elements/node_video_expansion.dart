@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
@@ -34,15 +35,16 @@ class NodeVideoExpansion extends StatelessWidget {
     final void Function(String nodeId, String key, dynamic value) addOverride =
         nodesProvider.addOverride;
     final void Function(String nodeId) convert = nodesProvider.convertNode;
+        final AppLocalizations t = AppLocalizations.of(context)!;
 
 if (isBranched){
 final List<Widget> branchedWidgets = [
-      _buildConvertButton(convert),
-      _buildSelectionTimeOverride(settings, addOverride),
-      _buildPauseOnEndOverride(settings, addOverride),
-      _buildShowTimerOverride(settings, addOverride),
-      _buildVideoFitOverride(settings, addOverride),
-      _buildDefaultSelectionOverride(settings, addOverride),
+      _buildConvertButton(convert, t),
+      _buildSelectionTimeOverride(settings, addOverride, t),
+      _buildPauseOnEndOverride(settings, addOverride, t),
+      _buildShowTimerOverride(settings, addOverride, t),
+      _buildVideoFitOverride(settings, addOverride, t),
+      _buildDefaultSelectionOverride(settings, addOverride, t),
       // _buildPauseMusicOverride(settings, addOverride),
       _buildSwatchesPicker(),
       _buildDebugInfo(),
@@ -51,7 +53,7 @@ final List<Widget> branchedWidgets = [
     return Column(children: branchedWidgets);
 } else {
   final List<Widget> simpleWidgets = [
-      _buildVideoFitOverride(settings, addOverride),
+      _buildVideoFitOverride(settings, addOverride, t),
       _buildSwatchesPicker(),
       _buildDebugInfo(),
     ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
@@ -100,11 +102,11 @@ final List<Widget> branchedWidgets = [
 //     return Column(children: widgets);
 //   }
 
-  Widget _buildConvertButton(Function(String nodeId) convert) {
+  Widget _buildConvertButton(Function(String nodeId) convert, AppLocalizations t) {
     return SizedBox(
       width: double.infinity,
       child: NutriaButton(
-        child: Padding(padding: EdgeInsets.symmetric(horizontal: 8) ,child: NutriaText(text: 'Convert to simple video node')), //TODO get theme
+        child: Padding(padding: EdgeInsets.symmetric(horizontal: 8) ,child: NutriaText(text: t.nodeConvertToSimple )), //TODO get theme
         onTap: () {
           convert(videoNodeData.id);
         },
@@ -113,7 +115,7 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildSelectionTimeOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     final String key = getVideoOverrideKey(VideoOverrides.selectionTime);
 
     void _updateSelectionTime(
@@ -135,7 +137,7 @@ final List<Widget> branchedWidgets = [
 
     return VideoOverride.leftRight(
       videoNodeData: videoNodeData,
-      labelText: 'Selection Time',
+      labelText: t.overrideSelectionTime,
       onTapLeft: () => _updateSelectionTime(
           settings, addOverride, -DataStaticProperties.intervalInMs),
       onTapRight: () => _updateSelectionTime(
@@ -145,10 +147,10 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildPauseOnEndOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
-      labelText: 'Pause on end',
+      labelText: t.overridePauseOnEnd,
       onTap: () {
         final String key = getVideoOverrideKey(VideoOverrides.pauseOnEnd);
         final currentOverride = videoNodeData.overrides[key];
@@ -161,10 +163,10 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildShowTimerOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
-      labelText: 'Show timer',
+      labelText: t.overrideShowTimer,
       onTap: () {
         final String key = getVideoOverrideKey(VideoOverrides.showTimer);
         final currentOverride = videoNodeData.overrides[key];
@@ -177,7 +179,7 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildVideoFitOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     final String key = getVideoOverrideKey(VideoOverrides.videoFit);
 
     void _updateVideoFit(
@@ -204,7 +206,7 @@ final List<Widget> branchedWidgets = [
 
     return VideoOverride.leftRight(
       videoNodeData: videoNodeData,
-      labelText: 'Video Fit',
+      labelText: t.overrideVideoFit,
       onTapLeft: () => _updateVideoFit(settings, addOverride, false),
       onTapRight: () => _updateVideoFit(settings, addOverride, true),
       videoOverride: VideoOverrides.videoFit,
@@ -212,7 +214,7 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildDefaultSelectionOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     final String key = getVideoOverrideKey(VideoOverrides.defaultSelection);
 
     void _updateDefaultSelection(
@@ -243,7 +245,7 @@ final List<Widget> branchedWidgets = [
 
     return VideoOverride.leftRight(
       videoNodeData: videoNodeData,
-      labelText: 'Default selection',
+      labelText: t.overrideDefaultSelection,
       onTapLeft: () => _updateDefaultSelection(settings, addOverride, false),
       onTapRight: () => _updateDefaultSelection(settings, addOverride, true),
       videoOverride: VideoOverrides.defaultSelection,
@@ -251,10 +253,10 @@ final List<Widget> branchedWidgets = [
   }
 
   Widget _buildPauseMusicOverride(Map<VideoOverrides, dynamic> settings,
-      void Function(String nodeId, String key, dynamic value) addOverride) {
+      void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
-      labelText: 'Pause music',
+      labelText: 'Pause music', 
       onTap: () {},
       videoOverride: VideoOverrides.pauseMusicPath,
     );

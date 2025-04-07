@@ -20,6 +20,13 @@ class UiStateProvider extends ChangeNotifier {
   bool _isContextMenuOpen = false;
   bool get isContextMenuOpen => _isContextMenuOpen;
 
+  LeftPanelSection _leftPanelSection = LeftPanelSection.videos;
+  LeftPanelSection get leftPanelSection => _leftPanelSection;
+  set leftPanelSection(LeftPanelSection value) {
+    _leftPanelSection = value;
+    notifyListeners();
+  }
+
   void setContextMenuOpen(bool isOpen) {
     _isContextMenuOpen = isOpen;
     notifyListeners();

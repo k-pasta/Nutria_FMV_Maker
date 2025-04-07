@@ -1,9 +1,8 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/link.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 import '../models/app_theme.dart';
 import '../providers/theme_provider.dart';
@@ -16,10 +15,10 @@ class AppInfoWindow extends StatelessWidget {
     super.key,
   });
 
-
   @override
   Widget build(BuildContext context) {
-        final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final AppLocalizations t = AppLocalizations.of(context)!;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -27,8 +26,8 @@ class AppInfoWindow extends StatelessWidget {
           'assets/icons/nutria_logo.svg',
           width: 150,
           height: 150,
-          colorFilter: ColorFilter.mode(
-              theme.cAccentButtonPressed, BlendMode.srcIn),
+          colorFilter:
+              ColorFilter.mode(theme.cAccentButtonPressed, BlendMode.srcIn),
         ),
         NutriaText(
           text:
@@ -39,18 +38,14 @@ class AppInfoWindow extends StatelessWidget {
           height: theme.dPanelPadding,
         ),
         NutriaText(
-            text:
-                ' \"Nutria FMV Maker\" is an in-the-making free/open-source Flutter project aiming to make the process of creating interactive movie experiences more accessible, published under the GPLv3 license.',
+            text: t.infoProjectDescription,
             maxLines: 100,
             textAlign: TextAlign.justify),
         SizedBox(
           height: theme.dPanelPadding,
         ),
         NutriaText(
-            text:
-                'FFmpeg is bundled under the GPLv3 license.',
-            maxLines: 100,
-            textAlign: TextAlign.justify),
+            text: t.infoFFmpeg, maxLines: 100, textAlign: TextAlign.justify),
         SizedBox(
           height: theme.dPanelPadding,
         ),
@@ -58,24 +53,20 @@ class AppInfoWindow extends StatelessWidget {
           children: [
             Expanded(
               child: Link(
-                uri: Uri.parse(
-                    DataStaticProperties.gitHubPath),
-                builder: (context, followLink) =>
-                    NutriaButton(
+                uri: Uri.parse(DataStaticProperties.gitHubPath),
+                builder: (context, followLink) => NutriaButton(
                   onTap: () => followLink!(),
                   child: Padding(
-                     padding: EdgeInsets.symmetric(
+                    padding: EdgeInsets.symmetric(
                         horizontal: theme.dTextfieldPadding),
                     child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
                           fit: FlexFit.loose,
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                right: theme
-                                    .dPanelPadding),
+                            padding:
+                                EdgeInsets.only(right: theme.dPanelPadding),
                             child: Icon(
                               Icons.link,
                               color: theme.cTextInactive,
@@ -86,7 +77,8 @@ class AppInfoWindow extends StatelessWidget {
                           fit: FlexFit.tight,
                           flex: 2,
                           child: NutriaText(
-                              text: 'Github repository',),
+                            text: 'Github repository',
+                          ),
                         ),
                       ],
                     ),
@@ -99,24 +91,20 @@ class AppInfoWindow extends StatelessWidget {
             ),
             Expanded(
               child: Link(
-                uri: Uri.parse(
-                    DataStaticProperties.documentationPath),
-                builder: (context, followLink) =>
-                    NutriaButton(
+                uri: Uri.parse(DataStaticProperties.documentationPath),
+                builder: (context, followLink) => NutriaButton(
                   onTap: () => followLink!(),
                   child: Padding(
                     padding: EdgeInsets.symmetric(
                         horizontal: theme.dTextfieldPadding),
                     child: Row(
-                      mainAxisAlignment:
-                          MainAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Flexible(
                           fit: FlexFit.loose,
                           child: Padding(
-                            padding: EdgeInsets.only(
-                                right: theme
-                                    .dPanelPadding),
+                            padding:
+                                EdgeInsets.only(right: theme.dPanelPadding),
                             child: Icon(
                               Icons.link,
                               color: theme.cTextInactive,
@@ -126,8 +114,7 @@ class AppInfoWindow extends StatelessWidget {
                         Flexible(
                           fit: FlexFit.tight,
                           flex: 2,
-                          child: NutriaText(
-                              text: 'Documentation'),
+                          child: NutriaText(text: 'Documentation'),
                         ),
                       ],
                     ),

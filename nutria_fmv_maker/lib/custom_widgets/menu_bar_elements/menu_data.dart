@@ -49,7 +49,7 @@ class MenuData {
                   nodesProvider.nodes, nodesProvider.videos);
               if (projectVersionProvider.hasFileChanged(serializedData)) {
                 notificationProvider.addNotification(
-                    'Unsaved File: ${projectVersionProvider.currentSavePath!}');
+                    'Unsaved File: ${projectVersionProvider.currentSavePath ?? ''}');
               }
 
               projectVersionProvider.loadFile().then((jsonData) {
@@ -117,7 +117,7 @@ class MenuData {
             function: () {
               String serializedData = projectVersionProvider.makeSaveFile(
                   nodesProvider.nodes, nodesProvider.videos);
-              projectVersionProvider.saveFile(serializedData);
+              projectVersionProvider.saveFileAs(serializedData);
             },
             shortcut: SingleActivator(LogicalKeyboardKey.keyS,
                 control: true, shift: true),
@@ -171,7 +171,7 @@ class MenuData {
           //   icon: Icons.delete_forever,
           // ),
           NutriaSubmenuButton(
-            text: 'toggle grid snapping',
+            text: t.editToggleGridSnapping,
             function: () {
               context.read<AppSettingsProvider>().toggleSnapping();
             },
