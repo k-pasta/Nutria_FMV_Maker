@@ -206,7 +206,7 @@ return Colors.transparent;
                               : buttonState.buttonHoverSide ==
                                       ButtonHoverSide.right
                                   ? theme.cTextInactive
-                                  : theme.cPanel),
+                                  : theme.cButtonContentUnhovered),
                     )
                   : Container(),
               widget._isLeftRight
@@ -222,7 +222,7 @@ return Colors.transparent;
                               : buttonState.buttonHoverSide ==
                                       ButtonHoverSide.left
                                   ? theme.cTextInactive
-                                  : theme.cPanel),
+                                  : theme.cButtonContentUnhovered),
                     )
                   : Container(),
               Center(
@@ -233,7 +233,7 @@ return Colors.transparent;
                       size: theme.dButtonHeight * widget.iconScalingFactor,
                       color: !buttonState.isActive ? theme.cButton : buttonState.buttonStateType ==
                               ButtonStateType.normal
-                          ? theme.cPanel
+                          ? theme.cButtonContentUnhovered
                           : theme
                               .cText)), //TODO figure why this is not centered
             ]),

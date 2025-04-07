@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
@@ -11,6 +12,7 @@ import '../../models/node_data/node_data.dart';
 import '../../models/node_data/origin_node_data.dart';
 import '../../models/node_data/simple_video_node_data.dart';
 import '../../models/node_data/video_data.dart';
+import '../../providers/notifications_provider.dart';
 import 'nutria_menu_button.dart';
 import 'package:flutter/services.dart';
 import '../../providers/locale_provider.dart';
@@ -24,6 +26,8 @@ class MenuData {
         context.read<AppSettingsProvider>();
     final ProjectVersionProvider projectVersionProvider =
         context.read<ProjectVersionProvider>();
+    final NotificationProvider notificationProvider =
+        context.read<NotificationProvider>();
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     return [
       NutriaMenuButton(
@@ -41,17 +45,39 @@ class MenuData {
           NutriaSubmenuButton(
             text: t.fileLoadProject,
             function: () {
+              String serializedData = projectVersionProvider.makeSaveFile(
+                  nodesProvider.nodes, nodesProvider.videos);
+              if (projectVersionProvider.hasFileChanged(serializedData)) {
+                notificationProvider.addNotification(
+                    'Unsaved File: ${projectVersionProvider.currentSavePath!}');
+              }
+
               projectVersionProvider.loadFile().then((jsonData) {
                 // Directly assign the already parsed objects.
                 List<NodeData> nodes =
-                    (jsonData['nodes'] as List).cast<NodeData>();
+                    (jsonData['nodes'] as List?)?.cast<NodeData>() ?? [];
                 List<VideoData> videos =
-                    (jsonData['videos'] as List).cast<VideoData>();
-
+                    (jsonData['videos'] as List?)?.cast<VideoData>() ?? [];
+                LoadErrors? error = jsonData['error'] as LoadErrors?;
                 // Check if both lists are empty.
                 if (nodes.isEmpty && videos.isEmpty) {
-                  // Return early if there's no data to process.
-                  // notifyError("Error processing file: $e");
+                  jsonData['error'] =
+                      LoadErrors.invalidData; // Set the error to fileEmpty.
+                }
+                if (error != null) {
+                  switch (error) {
+                    case LoadErrors.userCancelled:
+                      notificationProvider
+                          .addNotification('File loading cancelled by user.');
+                      break;
+                    case LoadErrors.invalidData:
+                      notificationProvider
+                          .addNotification('Invalid Save File.');
+                      break;
+                    default:
+                      notificationProvider
+                          .addNotification('Error Loading File.');
+                  }
                   return;
                 }
 
@@ -68,21 +94,31 @@ class MenuData {
             shortcut: SingleActivator(LogicalKeyboardKey.keyO, control: true),
             icon: Icons.folder_open,
           ),
-          NutriaSubmenuButton(
-            text: t.fileRecentProjects,
-            function: () => debugPrint("Save File selected"),
-            icon: Icons.folder_open,
-          ),
+          // NutriaSubmenuButton(
+          //   text: t.fileRecentProjects,
+          //   function: () => debugPrint("Save File selected"),
+          //   icon: Icons.folder_open,
+          // ),
           NutriaSubmenuButton(
             text: t.fileSaveProject,
-            function: () => debugPrint("Save File selected"),
+            function: () {
+              String serializedData = projectVersionProvider.makeSaveFile(
+                  nodesProvider.nodes, nodesProvider.videos);
+              projectVersionProvider.saveFile(serializedData).then((_) {
+                notificationProvider.addNotification(
+                    'file saved at: ${projectVersionProvider.currentSavePath!}');
+              });
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyS, control: true),
             icon: Icons.save,
           ),
           NutriaSubmenuButton(
             text: t.fileSaveProjectAs,
-            function: () => projectVersionProvider.saveFile(
-                nodesProvider.nodes, nodesProvider.videos),
+            function: () {
+              String serializedData = projectVersionProvider.makeSaveFile(
+                  nodesProvider.nodes, nodesProvider.videos);
+              projectVersionProvider.saveFile(serializedData);
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyS,
                 control: true, shift: true),
             icon: Icons.save,
@@ -110,26 +146,30 @@ class MenuData {
         submenuButtons: [
           NutriaSubmenuButton(
             text: t.editUndo,
-            function: () => debugPrint("Cut selected"),
+            function: () => {
+              Provider.of<NotificationProvider>(context, listen: false)
+                  .addNotification(
+                      "Something happened! Something happened! Something happened! Something happened! ")
+            },
             shortcut: SingleActivator(LogicalKeyboardKey.keyZ, control: true),
             icon: Icons.undo,
           ),
-          NutriaSubmenuButton(
-            text: t.editRedo,
-            function: () => debugPrint("Copy selected"),
-            shortcut: SingleActivator(LogicalKeyboardKey.keyZ,
-                control: true, shift: true),
-            icon: Icons.redo,
-          ),
-          NutriaSubmenuButton(
-            text: 'Delete Selected Node(s)',
-            function: () {
-              debugPrint("Delete");
-              context.read<NodesProvider>().removeSelected();
-            },
-            shortcut: SingleActivator(LogicalKeyboardKey.delete),
-            icon: Icons.delete_forever,
-          ),
+          // NutriaSubmenuButton(
+          //   text: t.editRedo,
+          //   function: () => debugPrint("Copy selected"),
+          //   shortcut: SingleActivator(LogicalKeyboardKey.keyZ,
+          //       control: true, shift: true),
+          //   icon: Icons.redo,
+          // ),
+          // NutriaSubmenuButton(
+          //   text: 'Delete Selected Node(s)',
+          //   function: () {
+          //     debugPrint("Delete");
+          //     context.read<NodesProvider>().removeSelected();
+          //   },
+          //   shortcut: SingleActivator(LogicalKeyboardKey.delete),
+          //   icon: Icons.delete_forever,
+          // ),
           NutriaSubmenuButton(
             text: 'toggle grid snapping',
             function: () {
@@ -253,7 +293,9 @@ class MenuData {
         submenuButtons: [
           NutriaSubmenuButton(
             text: t.helpAbout,
-            function: () => debugPrint("Cut selected"),
+            function: () {
+              context.read<UiStateProvider>().isModalInfoOpen = true;
+            },
             icon: Icons.info,
           ),
           NutriaSubmenuButton(

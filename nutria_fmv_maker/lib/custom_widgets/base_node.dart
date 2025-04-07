@@ -69,6 +69,9 @@ class BaseNode extends StatelessWidget {
           top: UiStaticProperties.nodePadding,
           left: UiStaticProperties.nodePadding,
           child: DragTarget<String>(onAcceptWithDetails: (details) {
+            if (baseNodeData is! VideoNodeData) {
+              return;
+            }
             nodesProvider.setVideo(nodeId: nodeId, videoId: details.data);
           },
               // onWillAcceptWithDetails: (details) {

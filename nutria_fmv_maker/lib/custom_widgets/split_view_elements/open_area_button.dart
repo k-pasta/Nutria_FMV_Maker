@@ -1,5 +1,6 @@
 
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
 import 'package:provider/provider.dart';
 
 import '../../models/app_theme.dart';
@@ -36,7 +37,8 @@ class _OpenAreaButtonState extends State<OpenAreaButton> {
       top: 0,
       bottom: 0,
       child: AnimatedOpacity(
-        duration: Duration(milliseconds: 200),
+        duration: Duration(milliseconds: DataStaticProperties.baseAnimationTimeInMs),
+        curve: Curves.easeInOut,
         opacity: (_isHovered) ? 1.0 : 0.0,
         child: IgnorePointer(
           ignoring: !_isActive,

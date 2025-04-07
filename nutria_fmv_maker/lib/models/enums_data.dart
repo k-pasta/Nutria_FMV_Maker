@@ -88,6 +88,12 @@ String _getDefaultSelectionMethodString(DefaultSelectionMethod method) {
   }
 }
 
+enum LoadErrors {
+  userCancelled,
+  invalidData,
+  unknownError,
+}
+
 enum NodeDataType{ branchedVideo, simpleVideo, originNode }
 
 enum VideoFit { fit, fitwidth, fitheight, fill, fillWidth, fillHeight, stretch }

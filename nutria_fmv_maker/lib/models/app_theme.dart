@@ -36,6 +36,7 @@ class AppTheme {
   final Color cButton;
   final Color cButtonHovered;
   final Color cButtonPressed;
+  final Color cButtonContentUnhovered;
   final double dButtonHeight;
   final double dButtonBorderRadius;
 
@@ -87,6 +88,7 @@ class AppTheme {
     this.cButton = const Color(0xff383838), //transparent
     this.cButtonHovered = const Color(0xff4a4a4a), //TODO remove
     this.cButtonPressed = const Color(0xff555555), //TODO remove
+    this.cButtonContentUnhovered = const Color(0xff252525),
     this.cTextField = const Color(0x00000000), //transparent
     this.cTextFieldActive = const Color(0x4a000000),
     this.dPanelPadding = 7,

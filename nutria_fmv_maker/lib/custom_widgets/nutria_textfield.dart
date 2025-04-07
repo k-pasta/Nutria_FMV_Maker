@@ -29,8 +29,7 @@ class NutriaTextfield extends StatefulWidget {
       this.text,
       this.onChanged,
       this.maxlines = 1,
-      this.textAlign = TextAlign.left
-      })
+      this.textAlign = TextAlign.left})
       : index = 0;
 
   @override
@@ -128,7 +127,7 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           hintText: widget.placeholderText ??
               '${t.videoNodeChoice} ${widget.index} ...',
           hintStyle: TextStyle(
-              color: theme.cTextInactive, fontWeight: FontWeight.normal),
+              color: theme.cTextInactive, fontWeight: FontWeight.w900),
           border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderSide: BorderSide(
@@ -146,6 +145,12 @@ class _NutriaTextfieldState extends State<NutriaTextfield> {
           ),
           filled: true,
           fillColor: backgroundColor,
+          // fillColor: WidgetStateColor.resolveWith((states) {
+          //   if (states.contains(WidgetState.hovered)) {
+          //     return const Color.fromARGB(10, 0, 0, 0); // light color on hover
+          //   }
+          //   return backgroundColor; // default color
+          // }),
         ),
       ),
     );

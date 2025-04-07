@@ -84,8 +84,18 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
               child: MenuBar(
                 style: menuStyles.menuStyle, // Apply menu bar style
                 children: [
-                  SizedBox(
-                    width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
+                  MouseRegion(
+                    cursor: SystemMouseCursors.click,
+                    child: GestureDetector(
+                      onTap: () {
+                        uiStateProvider.isModalInfoOpen = true;
+                        print('click logo');
+                      },
+                      child: Container(
+                        color: Colors.transparent,
+                        width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
+                      ),
+                    ),
                   ),
                   ...menuData.map((menu) {
                     return _buildMenuButton(menu, uiStateProvider, menuStyles);
@@ -96,12 +106,14 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
             Positioned(
               top: theme.dLogoPadding,
               left: theme.dLogoPadding,
-              child: SvgPicture.asset(
-                'assets/icons/nutria_logo_top.svg',
-                width: 100,
-                height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
-                colorFilter: ColorFilter.mode(theme.cAccentButton,
-                    BlendMode.srcIn), // Optional color change
+              child: IgnorePointer(
+                child: SvgPicture.asset(
+                  'assets/icons/nutria_logo_top.svg',
+                  width: 100,
+                  height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
+                  colorFilter: ColorFilter.mode(theme.cAccentButton,
+                      BlendMode.srcIn), // Optional color change
+                ),
               ),
             ),
           ]),
@@ -172,7 +184,10 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
           children: [
             if (submenu.icon != null) Icon(submenu.icon, size: 16),
             const SizedBox(width: 8),
-            Text(submenu.text),
+            NutriaText(
+              text: submenu.text,
+              state: NutriaTextState.accented,
+            ),
           ],
         ),
       );
@@ -186,7 +201,10 @@ class _NutriaMenuBarState extends State<NutriaMenuBar>
           children: [
             if (submenu.icon != null) Icon(submenu.icon, size: 16),
             const SizedBox(width: 8),
-            Text(submenu.text),
+            NutriaText(
+              text: submenu.text,
+              state: NutriaTextState.accented,
+            ),
           ],
         ),
       );
