@@ -8,43 +8,43 @@ enum VideoOverrides {
 }
 
 
-String getVideoOverrideKey(VideoOverrides key) {
-  const keyMap = {
-    VideoOverrides.selectionTime: 'SelectionTime',
-    VideoOverrides.pauseOnEnd: 'PauseOnEnd',
-    VideoOverrides.showTimer: 'ShowTimer',
-    VideoOverrides.videoFit: 'VideoFit',
-    VideoOverrides.defaultSelection: 'DefaultSelection',
-    VideoOverrides.pauseMusicPath: 'PauseMusicPath',
-  };
+// String getVideoOverrideKey(VideoOverrides key) {
+//   const keyMap = {
+//     VideoOverrides.selectionTime: 'SelectionTime',
+//     VideoOverrides.pauseOnEnd: 'PauseOnEnd',
+//     VideoOverrides.showTimer: 'ShowTimer',
+//     VideoOverrides.videoFit: 'VideoFit',
+//     VideoOverrides.defaultSelection: 'DefaultSelection',
+//     VideoOverrides.pauseMusicPath: 'PauseMusicPath',
+//   };
 
-  return keyMap[key] ?? 'invalid key';
-}
+//   return keyMap[key] ?? 'invalid key';
+// }
 
-String getOverrideString(String key, dynamic value) {
+String getOverrideString(String overrideKey, dynamic value) {
   final Map<String, String Function(dynamic)> keyToStringMap = {
-    getVideoOverrideKey(VideoOverrides.selectionTime): (value) =>
+    VideoOverrides.selectionTime.name: (value) =>
         value is Duration
             ? '${(value.inMilliseconds / 1000).toStringAsFixed(2)} s'
             : 'Invalid Time',
-    getVideoOverrideKey(VideoOverrides.pauseOnEnd): (value) =>
+    VideoOverrides.pauseOnEnd.name : (value) =>
         value is bool ? (value ? 'Yes' : 'No') : 'Invalid Bool',
-    getVideoOverrideKey(VideoOverrides.showTimer): (value) =>
+    VideoOverrides.showTimer.name : (value) =>
         value is bool ? (value ? 'Yes' : 'No') : 'Invalid Bool',
-    getVideoOverrideKey(VideoOverrides.videoFit): (value) =>
+    VideoOverrides.videoFit.name : (value) =>
         value is VideoFit ? _getVideoFitString(value) : 'Invalid VideoFit',
-    getVideoOverrideKey(VideoOverrides.defaultSelection): (value) =>
+    VideoOverrides.defaultSelection.name : (value) =>
         value is DefaultSelectionMethod
             ? _getDefaultSelectionMethodString(value)
             : 'Invalid Selection Method',
-    getVideoOverrideKey(VideoOverrides.pauseMusicPath): (value) =>
+    VideoOverrides.pauseMusicPath.name : (value) =>
         value is String && value.isNotEmpty
             ? Uri.file(value).pathSegments.last
             : 'None',
   };
 
-  if (keyToStringMap.containsKey(key)) {
-    return keyToStringMap[key]!(value);
+  if (keyToStringMap.containsKey(overrideKey)) {
+    return keyToStringMap[overrideKey]!(value);
   } else {
     return 'Unknown Key';
   }

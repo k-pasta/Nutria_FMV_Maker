@@ -363,6 +363,24 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
+  void setProjectTitle({required String title}) {
+    int nodeIndex = _nodes.indexWhere((node) => node is OriginNodeData);
+    OriginNodeData nodeData = _nodes[nodeIndex] as OriginNodeData;
+    _nodes[nodeIndex] = nodeData.copyWith(projectTitle: () {
+      return title;
+    });
+    notifyListeners();
+  }
+
+  void setProjectDescription({required String description}) {
+    int nodeIndex = _nodes.indexWhere((node) => node is OriginNodeData);
+    OriginNodeData nodeData = _nodes[nodeIndex] as OriginNodeData;
+    _nodes[nodeIndex] = nodeData.copyWith(projectDescription: () {
+      return description;
+    });
+    notifyListeners();
+  }
+
   void setVideoNodeOutputText(
       {required String id, required String text, required int outputIndex}) {
     // Get the index of the node by its ID

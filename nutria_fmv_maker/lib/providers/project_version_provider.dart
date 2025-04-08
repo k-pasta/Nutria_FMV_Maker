@@ -231,7 +231,12 @@ class ProjectVersionProvider extends ChangeNotifier {
       var jsonNodeData =
           simplifiedNodes.map((node) => node.toJsonExport()).toList();
 
-      String jsonString = jsonEncode(jsonNodeData);
+Map<String, dynamic>  mergedNodes = {};
+for (var node in jsonNodeData) {
+    mergedNodes.addAll(node ?? {});
+}
+
+      String jsonString = jsonEncode(mergedNodes);
 
       String? outputPath = await FilePicker.platform.saveFile(
         dialogTitle: 'Save JSON File',

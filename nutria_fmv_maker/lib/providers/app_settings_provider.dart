@@ -9,8 +9,17 @@ class AppSettingsProvider extends ChangeNotifier {
       SnapSettings(gridSnapping: false);
 
   NodeDataType _defaultNodeType = NodeDataType.branchedVideo;
+
   NodeDataType get defaultNodeType => _defaultNodeType;
+
   set defaultNodeType(NodeDataType value) {
+    if (_defaultNodeType == value) return;
+    if (value != NodeDataType.branchedVideo &&
+        value != NodeDataType.simpleVideo) {
+      //  throw ArgumentError(
+      //   'Invalid node type: $value. Must be either NodeDataType.branchedVideo or NodeDataType.simpleVideo.');
+      return;
+    }
     _defaultNodeType = value;
   }
 
@@ -20,6 +29,14 @@ class AppSettingsProvider extends ChangeNotifier {
   Map<VideoOverrides, dynamic> _currentVideoSettings = defaultVideoSettings;
   Map<VideoOverrides, dynamic> get currentVideoSettings =>
       _currentVideoSettings;
+
+  void updateVideoSetting(VideoOverrides key, dynamic value) {
+    _currentVideoSettings = {
+      ..._currentVideoSettings, //overwrites the value
+      key: value,
+    };
+    notifyListeners();
+  }
 
   void toggleSnapping() {
     _snapSettings = SnapSettings(gridSnapping: !_snapSettings.gridSnapping);

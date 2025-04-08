@@ -12,6 +12,7 @@ class NutriaText extends StatelessWidget {
   final int maxLines;
   final TextAlign textAlign;
   final bool selectable;
+  final double sizeMultiplier;
   const NutriaText(
       {required this.text,
       this.state = NutriaTextState.normal,
@@ -19,6 +20,7 @@ class NutriaText extends StatelessWidget {
       this.maxLines = 1,
       this.textAlign = TextAlign.left,
       this.selectable = false,
+      this.sizeMultiplier = 1.0,
       super.key});
 
   @override
@@ -29,13 +31,14 @@ class NutriaText extends StatelessWidget {
       textAlign: textAlign,
       softWrap: false,
       style: TextStyle(
+
         height: 1.0,
         color: state == NutriaTextState.accented
             ? theme.cTextActive
             : state == NutriaTextState.inactive
           ? theme.cTextInactive
           : theme.cText,
-        fontSize: theme.dTextHeight,
+        fontSize: theme.dTextHeight * sizeMultiplier,
         fontFamily: 'SourceSans', // Ensure the correct family is used
         fontVariations: textStyle == NutriaTextStyle.boldItalic
             ? [FontVariation('wght', 700)]

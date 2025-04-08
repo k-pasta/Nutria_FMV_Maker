@@ -256,10 +256,10 @@ class VideoPlayerSectionState extends State<VideoPlayerSection> {
                                   icon: Icons.timer,
                                   onTap: () => {
                                     nodesProvider.addOverride(
-                                      currentNodeId!,
-                                      getVideoOverrideKey(
-                                        VideoOverrides.selectionTime),
-                                      data.duration - data.position) //TODO implement
+                                        currentNodeId!,
+                                        VideoOverrides.selectionTime.name,
+                                        data.duration -
+                                            data.position) //TODO implement
                                   }, //TODO important Account for node deletion
                                 );
                               },

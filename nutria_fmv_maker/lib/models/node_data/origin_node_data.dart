@@ -9,12 +9,16 @@ import 'input.dart';
 import 'node_data.dart';
 import '../converters/offset_converter.dart';
 
-
 part 'origin_node_data.g.dart';
 
 @JsonSerializable()
 class OriginNodeData extends BaseNodeData {
+  final String? projectTitle;
+  final String? projectDescription;
+
   const OriginNodeData({
+    this.projectTitle,
+    this.projectDescription,
     required super.position,
     super.intendedPosition,
     required super.id,
@@ -29,7 +33,9 @@ class OriginNodeData extends BaseNodeData {
   });
   @override
   BaseNodeData copyWith(
-      {String? id,
+      {String? Function()? projectTitle,
+      String? Function()? projectDescription,
+      String? id,
       Offset? position,
       Offset? intendedPosition,
       String? nodeName,
@@ -42,6 +48,10 @@ class OriginNodeData extends BaseNodeData {
       bool? isSelected,
       bool? isBeingHovered}) {
     return OriginNodeData(
+      projectTitle: projectTitle != null ? projectTitle() : this.projectTitle,
+      projectDescription: projectDescription != null
+          ? projectDescription()
+          : this.projectDescription,
       position: position ?? this.position,
       intendedPosition: intendedPosition ?? this.intendedPosition,
       id: id ?? this.id,
@@ -90,13 +100,13 @@ class OriginNodeData extends BaseNodeData {
   @override
   Map<String, dynamic>? toJsonExport() {
     // TODO: implement toJsonExport
-    return null;
+    return {'title': projectTitle, 'description': projectDescription};
   }
 
 //JsonSerializable encode and decode methods
-factory OriginNodeData.fromJson(Map<String, dynamic> json) =>
-    _$OriginNodeDataFromJson(json);
+  factory OriginNodeData.fromJson(Map<String, dynamic> json) =>
+      _$OriginNodeDataFromJson(json);
 
-@override
-Map<String, dynamic> toJson() => _$OriginNodeDataToJson(this);
+  @override
+  Map<String, dynamic> toJson() => _$OriginNodeDataToJson(this);
 }

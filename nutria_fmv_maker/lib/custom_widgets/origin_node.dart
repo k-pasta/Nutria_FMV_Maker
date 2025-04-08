@@ -40,7 +40,16 @@ class OriginNode extends StatelessWidget {
                 child: Container(
                   color: Colors.black, //TODO de-hardcode
                   child: Center(
-                    child: NutriaText(text: 'Main Menu Placeholder'),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        NutriaText(text: (nodeData.projectTitle == null) ? 'Main Menu Placeholder' : nodeData.projectTitle!),
+                        SizedBox(
+                          height: theme.dPanelPadding,
+                        ),
+                        NutriaText(text: (nodeData.projectDescription == null) ? '' : nodeData.projectDescription!, sizeMultiplier: .5, ),
+                      ],
+                    ),
                   ), //TODO create render
                 ),
               ),
@@ -48,6 +57,9 @@ class OriginNode extends StatelessWidget {
                 padding: EdgeInsets.all(theme.dPanelPadding),
                 child: NutriaTextfield(
                   placeholderText: 'Project Title ...',
+                  onChanged: (value) {
+                    nodesProvider.setProjectTitle(title: value);
+                  },
                 ),
               ),
               Padding(
@@ -58,6 +70,9 @@ class OriginNode extends StatelessWidget {
                 ),
                 child: NutriaTextfield(
                   placeholderText: 'Project Description ...',
+                  onChanged: (value) {
+                    nodesProvider.setProjectDescription(description: value);
+                  },
                   maxlines: 2,
                   textAlign: TextAlign.left,
                 ),

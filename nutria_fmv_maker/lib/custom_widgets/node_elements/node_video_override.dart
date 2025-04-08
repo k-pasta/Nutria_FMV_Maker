@@ -22,8 +22,8 @@ class VideoOverride extends StatelessWidget {
     required this.onTapRight,
     required this.labelText,
   })  : isLeftRight = true,
-        onTap = _defaultOnTap,
-        isParent = false;
+        onTap = _defaultOnTap;
+  // isParent = false;
 
   const VideoOverride({
     super.key,
@@ -33,19 +33,19 @@ class VideoOverride extends StatelessWidget {
     required this.labelText,
   })  : isLeftRight = false,
         onTapLeft = _defaultOnTap,
-        onTapRight = _defaultOnTap,
-        isParent = false;
+        onTapRight = _defaultOnTap;
+  // isParent = false;
 
-  const VideoOverride.parent({
-    super.key,
-    required this.videoNodeData,
-    required this.labelText,
-  })  : isLeftRight = false,
-        videoOverride = VideoOverrides.selectionTime, //todo make more readable
-        onTap = _defaultOnTap,
-        onTapLeft = _defaultOnTap,
-        onTapRight = _defaultOnTap,
-        isParent = true;
+  // const VideoOverride.parent({
+  //   super.key,
+  //   required this.videoNodeData,
+  //   required this.labelText,
+  // })  : isLeftRight = false,
+  //       videoOverride = VideoOverrides.selectionTime, //todo make more readable
+  //       onTap = _defaultOnTap,
+  //       onTapLeft = _defaultOnTap,
+  //       onTapRight = _defaultOnTap,
+  //       isParent = true;
 
   static void _defaultOnTap() {}
 
@@ -56,7 +56,7 @@ class VideoOverride extends StatelessWidget {
   final VoidCallback onTap;
   final VideoNodeData videoNodeData;
   final VideoOverrides videoOverride;
-  final bool isParent;
+  // final bool isParent;
 
   @override
   Widget build(BuildContext context) {
@@ -67,70 +67,77 @@ class VideoOverride extends StatelessWidget {
 
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
-    final String key = getVideoOverrideKey(videoOverride);
+    final String key = videoOverride.name;
     final bool isOverriden = videoNodeData.overrides.containsKey(key);
-    final String data = isOverriden
-        ? getOverrideString(key, videoNodeData.overrides[key])
-        : getOverrideString(
-            key, appSettingsProvider.currentVideoSettings[videoOverride]);
 
-    return Row(
-      children: [
-        Expanded(
-          child: SizedBox(
-            height: theme.dButtonHeight,
-            child: Row(children: [
-              if (isOverriden)
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    behavior: HitTestBehavior.opaque,
-                    onTap: () {
-                      nodesProvider.removeOverride(videoNodeData.id, key);
-                    },
-                    child: Container(
-                      color: Colors.transparent,
-                      child: SizedBox(
-                        width: theme.dTextHeight + theme.dPanelPadding,
-                        child: Align(
-                          alignment:
-                              Alignment.centerLeft, // Align the icon to the left
-                          child: Icon(
-                            Icons.close,
-                            color: theme.cTextActive,
-                            size: theme.dTextHeight,
+    return Selector<AppSettingsProvider, Map<VideoOverrides, dynamic>>(
+      selector: (context, provider) => provider.currentVideoSettings,
+      builder: (context, settings, child) {
+        
+        final String data = isOverriden
+            ? getOverrideString(key, videoNodeData.overrides[key])
+            : getOverrideString(
+                key, appSettingsProvider.currentVideoSettings[videoOverride]);
+
+        return Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                height: theme.dButtonHeight,
+                child: Row(children: [
+                  if (isOverriden)
+                    MouseRegion(
+                      cursor: SystemMouseCursors.click,
+                      child: GestureDetector(
+                        behavior: HitTestBehavior.opaque,
+                        onTap: () {
+                          nodesProvider.removeOverride(videoNodeData.id, key);
+                        },
+                        child: Container(
+                          color: Colors.transparent,
+                          child: SizedBox(
+                            width: theme.dTextHeight + theme.dPanelPadding,
+                            child: Align(
+                              alignment: Alignment
+                                  .centerLeft, // Align the icon to the left
+                              child: Icon(
+                                Icons.close,
+                                color: theme.cTextActive,
+                                size: theme.dTextHeight,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
+                  Expanded(
+                    child: NutriaText(
+                      text: labelText,
+                      state: isOverriden
+                          ? NutriaTextState.accented
+                          : NutriaTextState.normal,
+                    ),
                   ),
-                ),
-              Expanded(
-                child: NutriaText(
-                  text: labelText,
-                  state: isOverriden
-                      ? NutriaTextState.accented
-                      : NutriaTextState.normal,
-                ),
+                ]),
               ),
-            ]),
-          ),
-        ),
-        Expanded(
-          child: isLeftRight
-              ? NutriaButton.leftRight(
-                  isAccented: isOverriden,
-                  onTapLeft: onTapLeft,
-                  onTapRight: onTapRight,
-                  child: NutriaText(text: data),
-                )
-              : NutriaButton(
-                  isAccented: isOverriden,
-                  onTap: onTap,
-                  child: NutriaText(text: data),
-                ),
-        ),
-      ],
+            ),
+            Expanded(
+              child: isLeftRight
+                  ? NutriaButton.leftRight(
+                      isAccented: isOverriden,
+                      onTapLeft: onTapLeft,
+                      onTapRight: onTapRight,
+                      child: NutriaText(text: data),
+                    )
+                  : NutriaButton(
+                      isAccented: isOverriden,
+                      onTap: onTap,
+                      child: NutriaText(text: data),
+                    ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

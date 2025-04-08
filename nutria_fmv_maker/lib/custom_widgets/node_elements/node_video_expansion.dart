@@ -68,40 +68,6 @@ final List<Widget> branchedWidgets = [
 
   }
 
-// class NodeSimpleVideoExpansion extends StatelessWidget {
-//   const NodeSimpleVideoExpansion({super.key, required this.videoNodeData});
-
-//   final BranchedVideoNodeData videoNodeData;
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-//     final AppSettingsProvider appSettingsProvider =
-//         context.read<AppSettingsProvider>(); //TODO check if updates
-//     final Map<VideoOverrides, dynamic> settings =
-//         appSettingsProvider.currentVideoSettings;
-//     final NodesProvider nodesProvider = context.read<NodesProvider>();
-//     final void Function(String nodeId, String key, dynamic value) addOverride =
-//         nodesProvider.addOverride;
-//     final void Function(String nodeId) convert = nodesProvider.convertNode;
-
-//     final List<Widget> widgets = [
-//       _buildConvertButton(convert),
-//       _buildSelectionTimeOverride(settings, addOverride),
-//       _buildPauseOnEndOverride(settings, addOverride),
-//       _buildShowTimerOverride(settings, addOverride),
-//       _buildVideoFitOverride(settings, addOverride),
-//       _buildDefaultSelectionOverride(settings, addOverride),
-//       _buildPauseMusicOverride(settings, addOverride),
-//       _buildSwatchesPicker(),
-//       _buildDebugInfo(),
-//     ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
-
-//     widgets.removeLast(); // Remove trailing spacing
-
-//     return Column(children: widgets);
-//   }
-
   Widget _buildConvertButton(Function(String nodeId) convert, AppLocalizations t) {
     return SizedBox(
       width: double.infinity,
@@ -116,13 +82,13 @@ final List<Widget> branchedWidgets = [
 
   Widget _buildSelectionTimeOverride(Map<VideoOverrides, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = getVideoOverrideKey(VideoOverrides.selectionTime);
+    final String key = VideoOverrides.selectionTime.name;
 
     void _updateSelectionTime(
         Map<VideoOverrides, dynamic> settings,
         void Function(String nodeId, String key, dynamic value) addOverride,
         int interval) {
-      final String key = getVideoOverrideKey(VideoOverrides.selectionTime);
+      final String key = VideoOverrides.selectionTime.name;
       final currentOverride = videoNodeData.overrides[key];
       final int newDurationInMilliseconds = (currentOverride != null
               ? (currentOverride as Duration).inMilliseconds + interval
@@ -152,7 +118,7 @@ final List<Widget> branchedWidgets = [
       videoNodeData: videoNodeData,
       labelText: t.overridePauseOnEnd,
       onTap: () {
-        final String key = getVideoOverrideKey(VideoOverrides.pauseOnEnd);
+        final String key = VideoOverrides.pauseOnEnd.name;
         final currentOverride = videoNodeData.overrides[key];
         final newValue =
             !(currentOverride ?? settings[VideoOverrides.pauseOnEnd] as bool);
@@ -168,7 +134,7 @@ final List<Widget> branchedWidgets = [
       videoNodeData: videoNodeData,
       labelText: t.overrideShowTimer,
       onTap: () {
-        final String key = getVideoOverrideKey(VideoOverrides.showTimer);
+        final String key = VideoOverrides.showTimer.name;
         final currentOverride = videoNodeData.overrides[key];
         final newValue =
             !(currentOverride ?? settings[VideoOverrides.showTimer] as bool);
@@ -180,7 +146,7 @@ final List<Widget> branchedWidgets = [
 
   Widget _buildVideoFitOverride(Map<VideoOverrides, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = getVideoOverrideKey(VideoOverrides.videoFit);
+    final String key = VideoOverrides.videoFit.name;
 
     void _updateVideoFit(
         Map<VideoOverrides, dynamic> settings,
@@ -215,7 +181,7 @@ final List<Widget> branchedWidgets = [
 
   Widget _buildDefaultSelectionOverride(Map<VideoOverrides, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = getVideoOverrideKey(VideoOverrides.defaultSelection);
+    final String key = VideoOverrides.defaultSelection.name;
 
     void _updateDefaultSelection(
         Map<VideoOverrides, dynamic> settings,

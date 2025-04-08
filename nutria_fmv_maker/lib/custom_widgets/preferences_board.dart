@@ -12,8 +12,8 @@ import '../providers/nodes_provider.dart';
 import '../providers/theme_provider.dart';
 import 'nutria_text.dart';
 
-class ProjectSettingsBoard extends StatelessWidget {
-  ProjectSettingsBoard({super.key});
+class PreferencesBoard extends StatelessWidget {
+  PreferencesBoard({super.key});
   final scrollController = ScrollController(); //TODO move to UIprovider
   @override
   Widget build(BuildContext context) {
@@ -71,7 +71,7 @@ class ProjectSettingsBoardList extends StatelessWidget {
         appSettingsProvider.updateVideoSetting;
 
     final List<Widget> branchedWidgets = [
-      _buildSelectionTimeSetting(settings, editSetting, t),
+      _buildSnappingToggleSetting(settings, editSetting, t),
       _buildPauseOnEndSetting(settings, editSetting, t),
       _buildShowTimerSetting(settings, editSetting, t),
       _buildVideoFitSetting(settings, editSetting, t),
@@ -81,27 +81,12 @@ class ProjectSettingsBoardList extends StatelessWidget {
     return Column(children: branchedWidgets);
   }
 
-// void _updateSelectionTime(
-//         Map<VideoOverrides, dynamic> settings,
-//         void Function(String nodeId, String key, dynamic value) addOverride,
-//         int interval) {
-//       final String key = VideoOverrides.selectionTime.name;
-//       final currentOverride = videoNodeData.overrides[key];
-//       final int newDurationInMilliseconds = (currentOverride != null
-//               ? (currentOverride as Duration).inMilliseconds + interval
-//               : (settings[VideoOverrides.selectionTime] as Duration)
-//                       .inMilliseconds +
-//                   interval)
-//           .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
-//           .toInt();
-//       final newDuration = Duration(milliseconds: newDurationInMilliseconds);
-//       addOverride(videoNodeData.id, key, newDuration);
-//     }
+
   Widget _buildSpacing(AppTheme theme) {
     return SizedBox(height: theme.dPanelPadding);
   }
 
-  Widget _buildSelectionTimeSetting(
+  Widget _buildSnappingToggleSetting(
       Map<VideoOverrides, dynamic> settings,
       Function(VideoOverrides key, dynamic value) editSetting,
       AppLocalizations t) {

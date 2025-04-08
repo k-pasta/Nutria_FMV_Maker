@@ -19,31 +19,31 @@ part 'simple_video_node_data.g.dart';
 class SimpleVideoNodeData extends VideoNodeData {
 //TODO change
   @override
-  Map<String, Map<String, dynamic>>? toJsonExport() {
-    Map<String, dynamic> outputMap = {};
-    for (int i = 0; i < outputs.length; i++) {
-      if (outputs[i].outputData != null && outputs[i].outputData is! String) {
-        throw Exception('Output data must be a String or null');
-      }
-      String option = outputs[i].outputData as String? ?? '';
-      String? id = outputs[i].targetNodeId;
+Map<String, Map<String, dynamic>>? toJsonExport() {
+  Map<String, dynamic> outputMap = {};
 
-      if (id != null) {
-        outputMap[option] = id;
-      }
+  // Ensure the node has at least one output
+  if (outputs.isNotEmpty) {
+    var firstOutput = outputs[0];
+    String? id = firstOutput.targetNodeId;
+
+    if (id != null) {
+      outputMap['target'] = id; // Set "target" if id is not null
     }
-    return {
-      id: {
-        'video': videoDataId,
-        if (outputMap.isNotEmpty) 'choices': outputMap,
-        if (overrides.isNotEmpty)
-          'overrides': overrides.map((key, value) {
-            final overrideValue = getOverrideString(key, value);
-            return MapEntry(key, overrideValue);
-          }),
-      }
-    };
   }
+
+  return {
+    id: {
+      'video': videoDataId,
+      if (outputMap.isNotEmpty) ...outputMap, // Spread outputMap if it's not empty
+      if (overrides.isNotEmpty)
+        'overrides': overrides.map((key, value) {
+          final overrideValue = getOverrideString(key, value);
+          return MapEntry(key, overrideValue);
+        }),
+    }
+  };
+}
 
   @override
   List<Output> get outputs => [super.outputs.first];
