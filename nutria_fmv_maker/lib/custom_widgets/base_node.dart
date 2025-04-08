@@ -72,7 +72,11 @@ class BaseNode extends StatelessWidget {
             if (baseNodeData is! VideoNodeData) {
               return;
             }
+            if (videoPlayerProvider.currentNodeId == baseNodeData.id) {
+              videoPlayerProvider.loadVideo(videoData: nodesProvider.getVideoDataById(details.data), nodeId: nodeId);
+            }
             nodesProvider.setVideo(nodeId: nodeId, videoId: details.data);
+            // videoPlayerProvider
           },
               // onWillAcceptWithDetails: (details) {
               //   nodesProvider.setVideo(

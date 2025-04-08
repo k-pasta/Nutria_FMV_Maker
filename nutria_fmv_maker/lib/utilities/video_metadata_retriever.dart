@@ -214,7 +214,7 @@ class VideoMetadataRetriever {
     int widthReduced = widthInt ~/ divisor;
     int heightReduced = heightInt ~/ divisor;
 
-    return "$widthReduced:$heightReduced from function";
+    return "$widthReduced:$heightReduced";
   }
 
   static int _gcd(int a, int b) => b == 0 ? a : _gcd(b, a % b);

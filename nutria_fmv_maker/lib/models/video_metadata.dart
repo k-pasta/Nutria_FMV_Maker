@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:nutria_fmv_maker/models/file_size.dart';
 
@@ -18,12 +21,10 @@ class MetadataEntry<T> {
   });
 
 // JsonSerializable encode and decode methods
-factory MetadataEntry.fromJson(Map<String, dynamic> json) =>
-    _$MetadataEntryFromJson<T>(json);
+  factory MetadataEntry.fromJson(Map<String, dynamic> json) =>
+      _$MetadataEntryFromJson<T>(json);
 
-Map<String, dynamic> toJson() => _$MetadataEntryToJson<T>(this);
-
-
+  Map<String, dynamic> toJson() => _$MetadataEntryToJson<T>(this);
 }
 
 extension MetadataEntryExtension<T> on MetadataEntry<T> {
@@ -78,17 +79,65 @@ extension MetadataEntryExtension<T> on MetadataEntry<T> {
 
   String _filenameValue(T value) => value.toString();
   String _filePathValue(T value) => value.toString();
-  String _fileSizeValue(T value, AppLocalizations t) => value.toString();
-  String _dateCreatedValue(T value) =>
-      (value is DateTime) ? value.toLocal().toString() : value.toString();
+  String _fileSizeValue(T value, AppLocalizations t) {
+    FileSize fileSize = (value as FileSize);
+    String suffix = '';
+
+    switch (fileSize.unit) {
+      case FileSizeUnit.bytes:
+        suffix = t.videoMetadataNamesBytes;
+      case FileSizeUnit.kilobytes:
+        suffix = t.videoMetadataNamesKilobytes;
+      case FileSizeUnit.megabytes:
+        suffix = t.videoMetadataNamesMegabytes;
+      case FileSizeUnit.gigabytes:
+        suffix = t.videoMetadataNamesGigabytes;
+
+        break;
+      default:
+        '';
+    }
+
+    return '${fileSize.size.toStringAsFixed(2)} $suffix';
+  }
+
+  String _dateCreatedValue(T value) { 
+    
+    return (value is DateTime)
+      ? DateFormat('dd MMM yyyy, HH:mm', ).format(value.toLocal())
+      : value.toString(); }
   String _resolutionValue(T value) => value.toString();
 
   String _frameRateValue(T value, AppLocalizations t) {
-    if (value is double) {
-      return "${value.toStringAsFixed(2)} ${t}"; // Use localized FPS suffix
+
+  // Check if the string contains a fraction
+  if ((value as String).contains('/')) {
+    final parts = value.split('/');
+    if (parts.length == 2) {
+      final numerator = double.tryParse(parts[0].trim());
+      final denominator = double.tryParse(parts[1].trim());
+      if (numerator != null && denominator != null && denominator != 0) {
+        // Perform the division and round the result to 2 decimals
+        return '${(numerator / denominator).toStringAsFixed(2)} ${t.videoMetadataNamesFps}' ;
+      }
     }
-    return value.toString();
+    // Fallback if parsing fails
+    return '0.00';
+  } else {
+    // Directly parse the numeric value and round to 2 decimals
+    final parsedValue = double.tryParse(value.trim());
+    if (parsedValue != null) {
+      return '${parsedValue.toStringAsFixed(2)} ${t.videoMetadataNamesFps}';
+    }
+    // Fallback if parsing fails
+    return '0.00';
   }
+}
+
+  //     return "${value.toStringAsFixed(2)} ${t}"; // Use localized FPS suffix
+  //   }
+  //   return value.toString();
+  // }
 
   String _codecFormatValue(T value) => value.toString();
   String _bitrateValue(T value) => value.toString();

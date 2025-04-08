@@ -15,6 +15,7 @@ import '../../models/node_data/origin_node_data.dart';
 import '../../models/node_data/simple_video_node_data.dart';
 import '../../models/node_data/video_data.dart';
 import '../../providers/notifications_provider.dart';
+import '../../providers/video_player_provider.dart';
 import 'nutria_menu_button.dart';
 import 'package:flutter/services.dart';
 import '../../providers/locale_provider.dart';
@@ -31,6 +32,8 @@ class MenuData {
     final NotificationProvider notificationProvider =
         context.read<NotificationProvider>();
     final NodesProvider nodesProvider = context.read<NodesProvider>();
+    final VideoPlayerProvider videoPlayerProvider =
+        context.read<VideoPlayerProvider>();
     return [
       NutriaMenuButton(
         //File
@@ -168,7 +171,17 @@ class MenuData {
             text: t.editDeleteSelectedNodes,
             function: () {
               debugPrint("Delete");
-              context.read<NodesProvider>().removeSelected();
+              List<NodeData> selectedList =
+                  nodesProvider.nodes.where((nodedata) {
+                return nodedata.isSelected;
+              }).toList();
+
+              for (var node in selectedList) {
+                if (videoPlayerProvider.currentNodeId == node.id) {
+                  videoPlayerProvider.unloadVideos();
+                }
+              }
+              nodesProvider.removeSelected();
             },
             shortcut: SingleActivator(LogicalKeyboardKey.delete),
             icon: Icons.delete_forever,
@@ -311,7 +324,7 @@ class MenuData {
           NutriaSubmenuButton(
             text: t.helpGithub,
             function: () {
-               launchUrl(Uri.parse(DataStaticProperties.gitHubPath));
+              launchUrl(Uri.parse(DataStaticProperties.gitHubPath));
             },
             icon: Icons.link,
           ),

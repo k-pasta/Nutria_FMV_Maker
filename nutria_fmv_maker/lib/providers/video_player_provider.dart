@@ -41,6 +41,13 @@ class VideoPlayerProvider extends ChangeNotifier {
     }
   }
 
+  void unloadVideos() {
+    player.stop();
+    _currentVideoData = null;
+    _currentNodeId = null;
+    notifyListeners();
+  }
+
   @override
   void dispose() {
     // Dispose of subscriptions to avoid memory leaks
