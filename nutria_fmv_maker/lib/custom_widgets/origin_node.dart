@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_expansion.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_textfield.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
+import 'package:nutria_fmv_maker/models/enums_ui.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
@@ -24,6 +26,7 @@ class OriginNode extends StatelessWidget {
   Widget build(BuildContext context) {
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    AppLocalizations t = AppLocalizations.of(context)!;
     return Selector<NodesProvider, NodeData>(
         selector: (context, provider) =>
             provider.getNodeById(nodeId), // Only listen to this node
@@ -43,11 +46,24 @@ class OriginNode extends StatelessWidget {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        NutriaText(text: (nodeData.projectTitle == null) ? 'Main Menu Placeholder' : nodeData.projectTitle!),
-                        SizedBox(
-                          height: theme.dPanelPadding,
+                        NutriaText(
+                          text: ((nodeData.projectTitle == null ||
+                                      nodeData.projectTitle == '') &&
+                                  (nodeData.projectDescription == null ||
+                                      nodeData.projectDescription == ''))
+                              ? t.originTitlePlaceHolder
+                              : nodeData.projectTitle ?? '',
+                          textStyle: (nodeData.projectTitle == null ||
+                                  nodeData.projectTitle == '')
+                              ? NutriaTextStyle.italic
+                              : NutriaTextStyle.bold,
                         ),
-                        NutriaText(text: (nodeData.projectDescription == null) ? '' : nodeData.projectDescription!, sizeMultiplier: .5, ),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        NutriaText(
+                            text: nodeData.projectDescription ?? '',
+                            sizeMultiplier: .65),
                       ],
                     ),
                   ), //TODO create render
@@ -56,7 +72,7 @@ class OriginNode extends StatelessWidget {
               Padding(
                 padding: EdgeInsets.all(theme.dPanelPadding),
                 child: NutriaTextfield(
-                  placeholderText: 'Project Title ...',
+                  placeholderText: '${t.originProjectTitle} ...',
                   onChanged: (value) {
                     nodesProvider.setProjectTitle(title: value);
                   },
@@ -69,7 +85,7 @@ class OriginNode extends StatelessWidget {
                   bottom: theme.dPanelPadding,
                 ),
                 child: NutriaTextfield(
-                  placeholderText: 'Project Description ...',
+                  placeholderText: '${t.originProjectDescription} ...',
                   onChanged: (value) {
                     nodesProvider.setProjectDescription(description: value);
                   },

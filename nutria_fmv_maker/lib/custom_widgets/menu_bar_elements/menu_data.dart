@@ -6,6 +6,8 @@ import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/providers/project_version_provider.dart';
 import 'package:nutria_fmv_maker/providers/theme_provider.dart';
 import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
+import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../models/enums_ui.dart';
 import '../../models/node_data/branched_video_node_data.dart';
 import '../../models/node_data/node_data.dart';
@@ -144,16 +146,16 @@ class MenuData {
         //Edit
         title: t.menuBarEdit,
         submenuButtons: [
-          NutriaSubmenuButton(
-            text: t.editUndo,
-            function: () => {
-              Provider.of<NotificationProvider>(context, listen: false)
-                  .addNotification(
-                      "Something happened! Something happened! Something happened! Something happened! ")
-            },
-            shortcut: SingleActivator(LogicalKeyboardKey.keyZ, control: true),
-            icon: Icons.undo,
-          ),
+          // NutriaSubmenuButton(
+          //   text: t.editUndo,
+          //   function: () => {
+          //     Provider.of<NotificationProvider>(context, listen: false)
+          //         .addNotification(
+          //             "Something happened! Something happened! Something happened! Something happened! ")
+          //   },
+          //   shortcut: SingleActivator(LogicalKeyboardKey.keyZ, control: true),
+          //   icon: Icons.undo,
+          // ),
           // NutriaSubmenuButton(
           //   text: t.editRedo,
           //   function: () => debugPrint("Copy selected"),
@@ -161,15 +163,16 @@ class MenuData {
           //       control: true, shift: true),
           //   icon: Icons.redo,
           // ),
-          // NutriaSubmenuButton(
-          //   text: 'Delete Selected Node(s)',
-          //   function: () {
-          //     debugPrint("Delete");
-          //     context.read<NodesProvider>().removeSelected();
-          //   },
-          //   shortcut: SingleActivator(LogicalKeyboardKey.delete),
-          //   icon: Icons.delete_forever,
-          // ),
+          NutriaSubmenuButton(
+            // text: '',
+            text: t.editDeleteSelectedNodes,
+            function: () {
+              debugPrint("Delete");
+              context.read<NodesProvider>().removeSelected();
+            },
+            shortcut: SingleActivator(LogicalKeyboardKey.delete),
+            icon: Icons.delete_forever,
+          ),
           NutriaSubmenuButton(
             text: t.editToggleGridSnapping,
             function: () {
@@ -179,16 +182,16 @@ class MenuData {
                 const SingleActivator(LogicalKeyboardKey.keyG, control: true),
             icon: Icons.grid_on_rounded,
           ),
-          NutriaSubmenuButton(
-            text: t.editProjectSettings,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.settings,
-          ),
-          NutriaSubmenuButton(
-            text: t.editPreferences,
-            function: () => debugPrint("Paste selected"),
-            icon: Icons.settings,
-          ),
+          // NutriaSubmenuButton(
+          //   text: t.editProjectSettings,
+          //   function: () => debugPrint("Paste selected"),
+          //   icon: Icons.settings,
+          // ),
+          // NutriaSubmenuButton(
+          //   text: t.editPreferences,
+          //   function: () => debugPrint("Paste selected"),
+          //   icon: Icons.settings,
+          // ),
         ],
       ),
       NutriaMenuButton(
@@ -240,7 +243,7 @@ class MenuData {
               ]),
           NutriaSubmenuButton(
               text: t.viewTheme,
-              function: () => debugPrint("Copy selected"),
+              function: () {},
               icon: Icons.brush,
               submenuButtons: [
                 NutriaSubmenuButton(
@@ -300,12 +303,16 @@ class MenuData {
           ),
           NutriaSubmenuButton(
             text: t.helpDocumentation,
-            function: () => debugPrint("Copy selected"),
+            function: () {
+              launchUrl(Uri.parse(DataStaticProperties.documentationPath));
+            },
             icon: Icons.link,
           ),
           NutriaSubmenuButton(
             text: t.helpGithub,
-            function: () => debugPrint("Paste selected"),
+            function: () {
+               launchUrl(Uri.parse(DataStaticProperties.gitHubPath));
+            },
             icon: Icons.link,
           ),
         ],

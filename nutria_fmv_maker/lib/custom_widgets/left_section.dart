@@ -56,10 +56,10 @@ class LeftSection extends StatelessWidget {
                             LeftPanelSection.videos;
                       },
                     ),
-                    DropdownOption(
-                      icon: Icons.list_alt,
-                      text: t.boardVariables,
-                    ),
+                    // DropdownOption(
+                    //   icon: Icons.list_alt,
+                    //   text: t.boardVariables,
+                    // ),
                     DropdownOption(
                       icon: Icons.tune,
                       text: t.boardProjectSettings,
@@ -68,10 +68,10 @@ class LeftSection extends StatelessWidget {
                             LeftPanelSection.projectSettings;
                       },
                     ),
-                    DropdownOption(
-                      icon: Icons.settings,
-                      text: t.boardPreferences,
-                    ),
+                    // DropdownOption(
+                    //   icon: Icons.settings,
+                    //   text: t.boardPreferences,
+                    // ),
                   ],
                 )
               ],
