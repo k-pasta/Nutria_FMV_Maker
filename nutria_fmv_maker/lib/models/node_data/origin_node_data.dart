@@ -99,8 +99,19 @@ class OriginNodeData extends BaseNodeData {
 
   @override
   Map<String, dynamic>? toJsonExport() {
-    // TODO: implement toJsonExport
-    return {'title': projectTitle, 'description': projectDescription};
+    // Initialize an empty map
+    Map<String, dynamic> result = {};
+
+    // Add the title and description only if they are not null
+    if (projectTitle != null) {
+      result['title'] = projectTitle;
+    }
+    if (projectDescription != null) {
+      result['description'] = projectDescription;
+    }
+
+    // Return the map, which will only contain non-null key-value pairs
+    return result.isNotEmpty ? result : null;
   }
 
 //JsonSerializable encode and decode methods

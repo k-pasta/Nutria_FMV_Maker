@@ -73,32 +73,38 @@ class BranchedVideoNodeData extends VideoNodeData {
   }
 
 //TODO document
-  @override
-  Map<String, Map<String, dynamic>>? toJsonExport() {
-    Map<String, dynamic> outputMap = {};
-    for (int i = 0; i < outputs.length; i++) {
-      if (outputs[i].outputData != null && outputs[i].outputData is! String) {
-        throw Exception('Output data must be a String or null');
-      }
-      String option = outputs[i].outputData as String? ?? '';
-      String? id = outputs[i].targetNodeId;
+@override
+Map<String, Map<String, dynamic>>? toJsonExport() {
+  List<Map<String, String>> choicesList = [];
 
-      if (id != null) {
-        outputMap[option] = id;
-      }
+  for (int i = 0; i < outputs.length; i++) {
+    if (outputs[i].outputData != null && outputs[i].outputData is! String) {
+      throw Exception('Output data must be a String or null');
     }
-    return {
-      id: {
-        'video': videoDataId,
-        if (outputMap.isNotEmpty) 'choices': outputMap,
-        if (overrides.isNotEmpty)
-          'overrides': overrides.map((key, value) {
-            final overrideValue = getOverrideString(key, value);
-            return MapEntry(key, overrideValue);
-          }),
-      }
-    };
+
+    String option = outputs[i].outputData as String? ?? '';
+    String? id = outputs[i].targetNodeId;
+
+    if (id != null) {
+      choicesList.add({
+        'option': option,
+        'target': id,
+      });
+    }
   }
+
+  return {
+    id: {
+      'video': videoDataId,
+      if (choicesList.isNotEmpty) 'choices': choicesList,
+      if (overrides.isNotEmpty)
+        'overrides': overrides.map((key, value) {
+          final overrideValue = getOverrideString(key, value);
+          return MapEntry(key, overrideValue);
+        }),
+    }
+  };
+}
 
   @override
   Offset outputPosition(AppTheme theme, int index) {

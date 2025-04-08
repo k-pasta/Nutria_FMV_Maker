@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
@@ -206,38 +207,105 @@ class ProjectVersionProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> exportFile(List<NodeData> nodes, List<VideoData> videos) async {
+  // Future<void> exportFile(List<NodeData> nodes, List<VideoData> videos) async {
+  //   try {
+  //     List<BaseNodeData> nodesTraversed = traverseNodes(nodes);
+  //     List<BaseNodeData> simplifiedNodes = simplifyNodeIds(nodesTraversed);
+
+  //     for (int i = 0; i < simplifiedNodes.length; i++) {
+  //       if (simplifiedNodes[i] is VideoNodeData) {
+  //         VideoNodeData node =
+  //             simplifiedNodes[i] as VideoNodeData;
+  //         simplifiedNodes[i] = node.copyWith(
+  //             videoDataId: videos
+  //                 .firstWhere((video) => video.id == node.videoDataId)
+  //                 .videoPath);
+  //       }
+  //     }
+
+  //     var jsonNodeData =
+  //         simplifiedNodes.map((node) => node.toJsonExport()).toList();
+
+  //     Map<String, dynamic> mergedNodes = {};
+  //     for (var node in jsonNodeData) {
+  //       mergedNodes.addAll(node ?? {});
+  //     }
+
+  //     String jsonString = jsonEncode(mergedNodes);
+
+  //     String? outputPath = await FilePicker.platform.saveFile(
+  //       dialogTitle: 'Save JSON File',
+  //       fileName: 'nodes_data.json',
+  //     );
+
+  //     if (outputPath != null) {
+  //       File file = File(outputPath);
+  //       await file.writeAsString(jsonString);
+  //       print('File saved at: $outputPath');
+  //     } else {
+  //       print('File save cancelled.');
+  //     }
+  //   } catch (e) {
+  //     print('Error exporting file: $e');
+  //   }
+  // }
+
+  Future<void> exportFile(
+      {required List<NodeData> nodes,
+      required List<VideoData> videos,
+      required Map<VideoOverrides, dynamic>
+          projectSettings // Accept ProjectSettings as a parameter
+      }) async {
     try {
       List<BaseNodeData> nodesTraversed = traverseNodes(nodes);
       List<BaseNodeData> simplifiedNodes = simplifyNodeIds(nodesTraversed);
-      // List<String> videosUsed = [];
 
-      for (int i = 0; i < simplifiedNodes.length; i++) {
-        if (simplifiedNodes[i] is BranchedVideoNodeData) {
-          BranchedVideoNodeData node =
-              simplifiedNodes[i] as BranchedVideoNodeData;
-          simplifiedNodes[i] = node.copyWith(
+      // Separate OriginNodeData (first node in the list)
+      BaseNodeData? originNode =
+          simplifiedNodes.isNotEmpty ? simplifiedNodes[0] : null;
+      List<BaseNodeData> nodesWithoutOrigin = simplifiedNodes.sublist(1);
+
+      // Process nodes with videoDataId
+      for (int i = 0; i < nodesWithoutOrigin.length; i++) {
+        if (nodesWithoutOrigin[i] is VideoNodeData) {
+          VideoNodeData node = nodesWithoutOrigin[i] as VideoNodeData;
+          nodesWithoutOrigin[i] = node.copyWith(
               videoDataId: videos
                   .firstWhere((video) => video.id == node.videoDataId)
                   .videoPath);
         }
       }
 
-      // Map<String, String> jsonVideoData = {
-      //   for (var video in videos)
-      //     if (videosUsed.contains(video.id)) video.id: video.videoPath,
-      // };
+      // Export ProjectInfo (OriginNodeData)
+      var originNodeData = originNode?.toJsonExport() ?? {};
 
+      // Export Nodes (other nodes excluding OriginNodeData)
       var jsonNodeData =
-          simplifiedNodes.map((node) => node.toJsonExport()).toList();
+          nodesWithoutOrigin.map((node) => node.toJsonExport()).toList();
 
-Map<String, dynamic>  mergedNodes = {};
-for (var node in jsonNodeData) {
-    mergedNodes.addAll(node ?? {});
-}
+      // Merge all nodes under 'Nodes'
+      Map<String, dynamic> mergedNodes = {};
+      for (var node in jsonNodeData) {
+        mergedNodes.addAll(node ?? {});
+      }
 
-      String jsonString = jsonEncode(mergedNodes);
+      // Convert the VideoOverrides map to strings using the provided method
+      Map<String, String> convertedSettings = {};
+      projectSettings.forEach((key, value) {
+        convertedSettings[key.name] = getOverrideString(key.name, value);
+      });
 
+      // Final JSON structure
+      Map<String, dynamic> finalJson = {
+        'ProjectInfo': originNodeData, // Add OriginNodeData here
+        'ProjectSettings': convertedSettings, // Use converted settings here
+        'Nodes': mergedNodes, // Add the rest of the nodes under 'Nodes'
+      };
+
+      // Convert final structure to JSON string
+      String jsonString = jsonEncode(finalJson);
+
+      // Save the file
       String? outputPath = await FilePicker.platform.saveFile(
         dialogTitle: 'Save JSON File',
         fileName: 'nodes_data.json',

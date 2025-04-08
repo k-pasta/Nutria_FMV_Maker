@@ -49,7 +49,7 @@ const Map<VideoOverrides, dynamic> defaultVideoSettings = {
   VideoOverrides.pauseOnEnd: false,
   VideoOverrides.showTimer: true,
   VideoOverrides.selectionTime: Duration(seconds: 6),
-  VideoOverrides.pauseMusicPath: '',
+  // VideoOverrides.pauseMusicPath: '',
   VideoOverrides.videoFit: VideoFit.fit,
   VideoOverrides.defaultSelection: DefaultSelectionMethod.first,
 };

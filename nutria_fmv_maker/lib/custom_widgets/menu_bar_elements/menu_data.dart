@@ -131,7 +131,9 @@ class MenuData {
           NutriaSubmenuButton(
             text: 'Export Project',
             function: () => projectVersionProvider.exportFile(
-                nodesProvider.nodes, nodesProvider.videos),
+                nodes: nodesProvider.nodes,
+                videos: nodesProvider.videos,
+                projectSettings: appSettingsProvider.currentVideoSettings),
             shortcut: SingleActivator(LogicalKeyboardKey.keyE, control: true),
             icon: Icons.arrow_forward,
           ),
