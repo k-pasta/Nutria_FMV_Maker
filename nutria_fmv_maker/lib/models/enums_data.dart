@@ -49,14 +49,42 @@ String getOverrideString(String overrideKey, dynamic value) {
     return 'Unknown Key';
   }
 }
+dynamic getOverrideForJson(String overrideKey, dynamic value) {
+  final Map<String, dynamic Function(dynamic)> keyToStringMap = {
+    VideoOverrides.selectionTime.name: (value) =>
+        value is Duration
+            ? value.inMilliseconds
+            : null,
+    VideoOverrides.pauseOnEnd.name : (value) =>
+        value is bool ? value : null,
+    VideoOverrides.showTimer.name : (value) =>
+        value is bool ? value : null,
+    VideoOverrides.videoFit.name : (value) =>
+        value is VideoFit ? _getVideoFitString(value) : null,
+    VideoOverrides.defaultSelection.name : (value) =>
+        value is DefaultSelectionMethod
+            ? _getDefaultSelectionMethodString(value)
+            : null,
+    VideoOverrides.pauseMusicPath.name : (value) =>
+        value is String && value.isNotEmpty
+            ? Uri.file(value).pathSegments.last
+            : null,
+  };
+
+  if (keyToStringMap.containsKey(overrideKey)) {
+    return keyToStringMap[overrideKey]!(value);
+  } else {
+    return 'Unknown Key';
+  }
+}
 
 String _getVideoFitString(VideoFit fit) {
   switch (fit) {
     case VideoFit.fit:
       return 'Fit';
-    case VideoFit.fitwidth:
+    case VideoFit.fitWidth:
       return 'Fit Width';
-    case VideoFit.fitheight:
+    case VideoFit.fitHeight:
       return 'Fit Height';
     case VideoFit.fill:
       return 'Fill';
@@ -96,7 +124,7 @@ enum LoadErrors {
 
 enum NodeDataType{ branchedVideo, simpleVideo, originNode }
 
-enum VideoFit { fit, fitwidth, fitheight, fill, fillWidth, fillHeight, stretch }
+enum VideoFit { fit, fitWidth, fitHeight, fill, fillWidth, fillHeight, stretch }
 
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
 

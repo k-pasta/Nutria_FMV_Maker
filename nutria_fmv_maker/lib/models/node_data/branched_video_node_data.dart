@@ -99,7 +99,7 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
       if (choicesList.isNotEmpty) 'choices': choicesList,
       if (overrides.isNotEmpty)
         'overrides': overrides.map((key, value) {
-          final overrideValue = getOverrideString(key, value);
+          final overrideValue = getOverrideForJson(key, value);
           return MapEntry(key, overrideValue);
         }),
     }

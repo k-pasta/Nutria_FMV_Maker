@@ -38,7 +38,7 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
       if (outputMap.isNotEmpty) ...outputMap, // Spread outputMap if it's not empty
       if (overrides.isNotEmpty)
         'overrides': overrides.map((key, value) {
-          final overrideValue = getOverrideString(key, value);
+          final overrideValue = getOverrideForJson(key, value);
           return MapEntry(key, overrideValue);
         }),
     }

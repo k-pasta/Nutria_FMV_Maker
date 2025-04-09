@@ -290,9 +290,9 @@ class ProjectVersionProvider extends ChangeNotifier {
       }
 
       // Convert the VideoOverrides map to strings using the provided method
-      Map<String, String> convertedSettings = {};
+      Map<String, dynamic> convertedSettings = {};
       projectSettings.forEach((key, value) {
-        convertedSettings[key.name] = getOverrideString(key.name, value);
+        convertedSettings[key.name] = getOverrideForJson(key.name, value);
       });
 
       // Final JSON structure
