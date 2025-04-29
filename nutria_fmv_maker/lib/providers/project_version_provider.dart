@@ -257,6 +257,7 @@ class ProjectVersionProvider extends ChangeNotifier {
           projectSettings // Accept ProjectSettings as a parameter
       }) async {
     try {
+      // Traverse and simplify node data
       List<BaseNodeData> nodesTraversed = traverseNodes(nodes);
       List<BaseNodeData> simplifiedNodes = simplifyNodeIds(nodesTraversed);
 
@@ -270,9 +271,10 @@ class ProjectVersionProvider extends ChangeNotifier {
         if (nodesWithoutOrigin[i] is VideoNodeData) {
           VideoNodeData node = nodesWithoutOrigin[i] as VideoNodeData;
           nodesWithoutOrigin[i] = node.copyWith(
-              videoDataId: videos
-                  .firstWhere((video) => video.id == node.videoDataId)
-                  .videoPath);
+            videoDataId: videos
+                .firstWhere((video) => video.id == node.videoDataId)
+                .videoPath,
+          );
         }
       }
 
@@ -305,13 +307,20 @@ class ProjectVersionProvider extends ChangeNotifier {
       // Convert final structure to JSON string
       String jsonString = jsonEncode(finalJson);
 
-      // Save the file
+      // Save the file using native file picker with .fmv restriction
       String? outputPath = await FilePicker.platform.saveFile(
-        dialogTitle: 'Save JSON File',
-        fileName: 'nodes_data.json',
+        dialogTitle: 'Export Interactive Movie',
+        fileName: 'untitled_interactive_movie.fmv',
+        type: FileType.custom,
+        allowedExtensions: ['fmv'],
       );
 
       if (outputPath != null) {
+        // Ensure file ends with .fmv
+        if (!outputPath.endsWith('.fmv')) {
+          outputPath += '.fmv';
+        }
+
         File file = File(outputPath);
         await file.writeAsString(jsonString);
         print('File saved at: $outputPath');

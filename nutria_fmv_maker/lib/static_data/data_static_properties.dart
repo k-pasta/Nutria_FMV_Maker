@@ -16,5 +16,5 @@ class DataStaticProperties {
   static const String gitHubPath =
       'https://github.com/k-pasta/Nutria_FMV_Maker';
   static const String documentationPath =
-      'https://github.com/k-pasta/Nutria_FMV_Maker';
+      'http://rigascg.com/nutriafmvdocs/';
 }
