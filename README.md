@@ -4,5 +4,4 @@
 
 **FFmpeg** is bundled under the **GPLv3 license**.
 
-For more information, visit the project's documentation below:
-[Nutria FMV Documentation](https://rigascg.com/nutriafmvdocs/)
+For more information, please visit the project's documentation page: [Nutria FMV Documentation](https://rigascg.com/nutriafmvdocs/)
