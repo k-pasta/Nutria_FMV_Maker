@@ -18,25 +18,37 @@ class UndoableAction extends Action {
         );
 }
 
+/// Represents different type of elements that can be under a cursor in the node system UI. 
+/// Used in node connecting algorithms.
+/// Uses the LogicalPositionType Enum from 'enums_data.dart'.
+/// Possible types: node, input, output, empty.
 class LogicalPosition {
   final String nodeId;
   final int index;
   final LogicalPositionType type;
 
-  LogicalPosition.node(this.nodeId)
-      : index = 0,
-        type = LogicalPositionType.node;
-  LogicalPosition.output(this.nodeId, this.index)
-      : type = LogicalPositionType.output;
-  LogicalPosition.input(this.nodeId)
-      : index = 0,
-        type = LogicalPositionType.input;
-  LogicalPosition.empty()
-      : nodeId = '',
-        index = 0,
-        type = LogicalPositionType.empty;
+/// Creates a LogicalPosition representing a [LogicalPositionType.node].
+LogicalPosition.node(this.nodeId)
+    : index = 0,
+      type = LogicalPositionType.node;
+
+/// Creates a LogicalPosition representing a [LogicalPositionType.output].
+LogicalPosition.output(this.nodeId, this.index)
+    : type = LogicalPositionType.output;
+
+/// Creates a LogicalPosition representing a [LogicalPositionType.input].
+LogicalPosition.input(this.nodeId)
+    : index = 0,
+      type = LogicalPositionType.input;
+
+/// Creates an empty LogicalPosition (no node under the cursor).
+LogicalPosition.empty()
+    : nodeId = '',
+      index = 0,
+      type = LogicalPositionType.empty;
 }
 
+///
 extension LogicalPositionExtensions on LogicalPosition {
   bool get isInput => type == LogicalPositionType.input;
   bool get isOutput => type == LogicalPositionType.output;
