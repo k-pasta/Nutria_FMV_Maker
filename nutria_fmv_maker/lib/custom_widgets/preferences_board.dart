@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:nutria_fmv_maker/custom_widgets/board_video_override.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';
 import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
 import 'package:provider/provider.dart';
@@ -33,16 +34,20 @@ class PreferencesBoard extends StatelessWidget {
           trackColor: theme.cButton,
           trackVisibility: true,
           child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
               child: SingleChildScrollView(
                 clipBehavior: Clip.hardEdge,
-                controller: scrollController,
-                child: Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
-                  selector: (context, provider) => provider.currentVideoSettings,
-                  builder:
-                      (BuildContext context, currentVideoSettings, Widget? child) {
+                controller: scrollController, 
+                //TODO verify if updates
+                child: Selector<AppSettingsProvider, List<Object>>(
+                  selector: (context, provider) => provider.currentVideoSettings
+                      .map((o) => o.jsonValue)
+                      .toList(),
+                  builder: (BuildContext context, currentVideoSettings,
+                      Widget? child) {
                     return ProjectSettingsBoardList();
                   },
                 ),
@@ -80,7 +85,6 @@ class ProjectSettingsBoardList extends StatelessWidget {
     branchedWidgets.removeLast(); // Remove trailing spacing
     return Column(children: branchedWidgets);
   }
-
 
   Widget _buildSpacing(AppTheme theme) {
     return SizedBox(height: theme.dPanelPadding);
@@ -135,7 +139,8 @@ class ProjectSettingsBoardList extends StatelessWidget {
       Map<VideoOverrideType, dynamic> settings,
       Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
-    final currentSetting = settings[VideoOverrideType.showTimer] as bool? ?? false;
+    final currentSetting =
+        settings[VideoOverrideType.showTimer] as bool? ?? false;
 
     return BoardVideoSetting(
       videoSetting: VideoOverrideType.showTimer,
