@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 import 'package:path/path.dart' as p;
 
 import 'package:flutter/material.dart';
@@ -253,9 +254,7 @@ class ProjectVersionProvider extends ChangeNotifier {
   Future<void> exportFile(
       {required List<NodeData> nodes,
       required List<VideoData> videos,
-      required Map<VideoOverrides, dynamic>
-          projectSettings // Accept ProjectSettings as a parameter
-      }) async {
+      required List<VideoNodeOverride> projectSettings}) async {
     try {
       // Traverse and simplify node data
       List<BaseNodeData> nodesTraversed = traverseNodes(nodes);
@@ -292,10 +291,10 @@ class ProjectVersionProvider extends ChangeNotifier {
       }
 
       // Convert the VideoOverrides map to strings using the provided method
-      Map<String, dynamic> convertedSettings = {};
-      projectSettings.forEach((key, value) {
-        convertedSettings[key.name] = getOverrideForJson(key.name, value);
-      });
+      final convertedSettings = {
+        for (final override in projectSettings)
+          override.videoOverrideType.name: override.jsonValue,
+      };
 
       // Final JSON structure
       Map<String, dynamic> finalJson = {

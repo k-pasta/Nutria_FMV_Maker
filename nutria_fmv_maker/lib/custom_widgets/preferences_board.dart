@@ -39,7 +39,7 @@ class PreferencesBoard extends StatelessWidget {
               child: SingleChildScrollView(
                 clipBehavior: Clip.hardEdge,
                 controller: scrollController,
-                child: Selector<AppSettingsProvider, Map<VideoOverrides, dynamic>>(
+                child: Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
                   selector: (context, provider) => provider.currentVideoSettings,
                   builder:
                       (BuildContext context, currentVideoSettings, Widget? child) {
@@ -65,9 +65,9 @@ class ProjectSettingsBoardList extends StatelessWidget {
     final AppSettingsProvider appSettingsProvider =
         context.read<AppSettingsProvider>();
 
-    final Map<VideoOverrides, dynamic> settings =
+    final Map<VideoOverrideType, dynamic> settings =
         appSettingsProvider.currentVideoSettings;
-    final void Function(VideoOverrides key, dynamic value) editSetting =
+    final void Function(VideoOverrideType key, dynamic value) editSetting =
         appSettingsProvider.updateVideoSetting;
 
     final List<Widget> branchedWidgets = [
@@ -87,10 +87,10 @@ class ProjectSettingsBoardList extends StatelessWidget {
   }
 
   Widget _buildSnappingToggleSetting(
-      Map<VideoOverrides, dynamic> settings,
-      Function(VideoOverrides key, dynamic value) editSetting,
+      Map<VideoOverrideType, dynamic> settings,
+      Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
-    final currentSetting = settings[VideoOverrides.selectionTime];
+    final currentSetting = settings[VideoOverrideType.selectionTime];
     print(currentSetting);
     final Duration durationUp = Duration(
         milliseconds: ((currentSetting as Duration).inMilliseconds +
@@ -104,53 +104,53 @@ class ProjectSettingsBoardList extends StatelessWidget {
             .toInt());
 
     return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrides.selectionTime,
+      videoSetting: VideoOverrideType.selectionTime,
       onTapLeft: () {
-        editSetting(VideoOverrides.selectionTime, durationDown);
+        editSetting(VideoOverrideType.selectionTime, durationDown);
       },
       onTapRight: () {
-        editSetting(VideoOverrides.selectionTime, durationUp);
+        editSetting(VideoOverrideType.selectionTime, durationUp);
       },
       labelText: t.overrideSelectionTime,
     );
   }
 
   Widget _buildPauseOnEndSetting(
-      Map<VideoOverrides, dynamic> settings,
-      Function(VideoOverrides key, dynamic value) editSetting,
+      Map<VideoOverrideType, dynamic> settings,
+      Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
     final currentSetting =
-        settings[VideoOverrides.pauseOnEnd] as bool? ?? false;
+        settings[VideoOverrideType.pauseOnEnd] as bool? ?? false;
 
     return BoardVideoSetting(
-      videoSetting: VideoOverrides.pauseOnEnd,
+      videoSetting: VideoOverrideType.pauseOnEnd,
       onTap: () {
-        editSetting(VideoOverrides.pauseOnEnd, !currentSetting);
+        editSetting(VideoOverrideType.pauseOnEnd, !currentSetting);
       },
       labelText: t.overridePauseOnEnd,
     );
   }
 
   Widget _buildShowTimerSetting(
-      Map<VideoOverrides, dynamic> settings,
-      Function(VideoOverrides key, dynamic value) editSetting,
+      Map<VideoOverrideType, dynamic> settings,
+      Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
-    final currentSetting = settings[VideoOverrides.showTimer] as bool? ?? false;
+    final currentSetting = settings[VideoOverrideType.showTimer] as bool? ?? false;
 
     return BoardVideoSetting(
-      videoSetting: VideoOverrides.showTimer,
+      videoSetting: VideoOverrideType.showTimer,
       onTap: () {
-        editSetting(VideoOverrides.showTimer, !currentSetting);
+        editSetting(VideoOverrideType.showTimer, !currentSetting);
       },
       labelText: t.overrideShowTimer,
     );
   }
 
   Widget _buildVideoFitSetting(
-      Map<VideoOverrides, dynamic> settings,
-      Function(VideoOverrides key, dynamic value) editSetting,
+      Map<VideoOverrideType, dynamic> settings,
+      Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
-    final currentFit = settings[VideoOverrides.videoFit] as VideoFit;
+    final currentFit = settings[VideoOverrideType.videoFit] as VideoFit;
     final int currentIndex = VideoFit.values.indexOf(currentFit);
 
     final int nextIndex = (currentIndex + 1) % VideoFit.values.length;
@@ -161,23 +161,23 @@ class ProjectSettingsBoardList extends StatelessWidget {
     final VideoFit previousFit = VideoFit.values[previousIndex];
 
     return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrides.videoFit,
+      videoSetting: VideoOverrideType.videoFit,
       onTapLeft: () {
-        editSetting(VideoOverrides.videoFit, previousFit);
+        editSetting(VideoOverrideType.videoFit, previousFit);
       },
       onTapRight: () {
-        editSetting(VideoOverrides.videoFit, nextFit);
+        editSetting(VideoOverrideType.videoFit, nextFit);
       },
       labelText: t.overrideVideoFit,
     );
   }
 
   Widget _buildDefaultSelectionSetting(
-      Map<VideoOverrides, dynamic> settings,
-      Function(VideoOverrides key, dynamic value) editSetting,
+      Map<VideoOverrideType, dynamic> settings,
+      Function(VideoOverrideType key, dynamic value) editSetting,
       AppLocalizations t) {
     final currentMethod =
-        settings[VideoOverrides.defaultSelection] as DefaultSelectionMethod;
+        settings[VideoOverrideType.defaultSelection] as DefaultSelectionMethod;
     final int currentIndex =
         DefaultSelectionMethod.values.indexOf(currentMethod);
 
@@ -193,12 +193,12 @@ class ProjectSettingsBoardList extends StatelessWidget {
         DefaultSelectionMethod.values[previousIndex];
 
     return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrides.defaultSelection,
+      videoSetting: VideoOverrideType.defaultSelection,
       onTapLeft: () {
-        editSetting(VideoOverrides.defaultSelection, previousMethod);
+        editSetting(VideoOverrideType.defaultSelection, previousMethod);
       },
       onTapRight: () {
-        editSetting(VideoOverrides.defaultSelection, nextMethod);
+        editSetting(VideoOverrideType.defaultSelection, nextMethod);
       },
       labelText: t.overrideDefaultSelection,
     );

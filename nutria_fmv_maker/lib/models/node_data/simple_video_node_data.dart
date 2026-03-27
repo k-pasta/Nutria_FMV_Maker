@@ -10,8 +10,7 @@ import '../app_theme.dart';
 import '../enums_data.dart';
 import 'input.dart';
 import '../converters/offset_converter.dart';
-
-
+import 'video_node_overrides.dart';
 
 part 'simple_video_node_data.g.dart';
 
@@ -19,31 +18,33 @@ part 'simple_video_node_data.g.dart';
 class SimpleVideoNodeData extends VideoNodeData {
 //TODO change
   @override
-Map<String, Map<String, dynamic>>? toJsonExport() {
-  Map<String, dynamic> outputMap = {};
+  Map<String, Map<String, dynamic>>? toJsonExport() {
+    final Map<String, dynamic> outputMap = {};
 
-  // Ensure the node has at least one output
-  if (outputs.isNotEmpty) {
-    var firstOutput = outputs[0];
-    String? id = firstOutput.targetNodeId;
+    // Ensure the node has at least one output
+    if (outputs.isNotEmpty) {
+      final firstOutput = outputs[0];
+      final String? id = firstOutput.targetNodeId;
 
-    if (id != null) {
-      outputMap['target'] = id; // Set "target" if id is not null
+      if (id != null) {
+        outputMap['target'] = id;
+      }
     }
+
+    // Convert overrides using the new VideoNodeOverride architecture
+    final Map<String, dynamic> overridesMap = {
+      for (final override in overrides)
+        override.videoOverrideType.name: override.jsonValue
+    };
+
+    return {
+      id: {
+        'video': videoDataId,
+        if (outputMap.isNotEmpty) ...outputMap,
+        if (overridesMap.isNotEmpty) 'overrides': overridesMap,
+      }
+    };
   }
-
-  return {
-    id: {
-      'video': videoDataId,
-      if (outputMap.isNotEmpty) ...outputMap, // Spread outputMap if it's not empty
-      if (overrides.isNotEmpty)
-        'overrides': overrides.map((key, value) {
-          final overrideValue = getOverrideForJson(key, value);
-          return MapEntry(key, overrideValue);
-        }),
-    }
-  };
-}
 
   @override
   List<Output> get outputs => [super.outputs.first];
@@ -53,7 +54,7 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
     super.intendedPosition,
     required super.id,
     super.videoDataId,
-    super.overrides = const <String, dynamic>{},
+    super.overrides,
     super.outputs = const [Output()],
     super.input,
     super.nodeName,
@@ -71,7 +72,7 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
     Offset? position,
     Offset? intendedPosition,
     String? videoDataId,
-    Map<String, dynamic>? overrides,
+    List<VideoNodeOverride>? overrides,
     bool? hasMaxedOutOutputs,
     String? nodeName,
     double? nodeWidth,
@@ -130,7 +131,7 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
             ? getTextHeight(nodeName!, theme.swatchTextStyle)
             : 0) +
         (UiStaticProperties.nodeDefaultWidth * 9 / 16) +
-        getTextHeight(videoDataId?? 'No video file', theme.filenameTextStyle) +
+        getTextHeight(videoDataId ?? 'No video file', theme.filenameTextStyle) +
         (theme.dPanelPadding * (2 + outputs.length)) +
         (theme.dButtonHeight * outputs.length);
     return height;
@@ -142,5 +143,4 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
 
   @override
   Map<String, dynamic> toJson() => _$SimpleVideoNodeDataToJson(this);
-
 }

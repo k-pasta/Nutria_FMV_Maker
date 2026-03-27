@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:json_annotation/json_annotation.dart';
+import 'video_node_overrides.dart';
 import '../converters/offset_converter.dart';
 import 'output.dart';
 import 'video_node_data.dart';
@@ -9,7 +10,6 @@ import '../../static_data/ui_static_properties.dart';
 import '../app_theme.dart';
 import '../enums_data.dart';
 import 'input.dart';
-
 
 part 'branched_video_node_data.g.dart';
 
@@ -22,7 +22,7 @@ class BranchedVideoNodeData extends VideoNodeData {
     super.intendedPosition,
     required super.id,
     super.videoDataId,
-    super.overrides = const <String, dynamic>{},
+    super.overrides,
     this.hasMaxedOutOutputs = false,
     super.outputs,
     super.input,
@@ -41,7 +41,7 @@ class BranchedVideoNodeData extends VideoNodeData {
     Offset? position,
     Offset? intendedPosition,
     String? videoDataId,
-    Map<String, dynamic>? overrides,
+    List<VideoNodeOverride>? overrides,
     bool? hasMaxedOutOutputs,
     String? nodeName,
     double? nodeWidth,
@@ -73,38 +73,41 @@ class BranchedVideoNodeData extends VideoNodeData {
   }
 
 //TODO document
-@override
-Map<String, Map<String, dynamic>>? toJsonExport() {
-  List<Map<String, String>> choicesList = [];
+  @override
+  Map<String, Map<String, dynamic>>? toJsonExport() {
+    // Build the list of choices
+    final List<Map<String, String>> choicesList = [];
 
-  for (int i = 0; i < outputs.length; i++) {
-    if (outputs[i].outputData != null && outputs[i].outputData is! String) {
-      throw Exception('Output data must be a String or null');
+    for (final output in outputs) {
+      if (output.outputData != null && output.outputData is! String) {
+        throw Exception('Output data must be a String or null');
+      }
+
+      final String option = output.outputData as String? ?? '';
+      final String? targetId = output.targetNodeId;
+
+      if (targetId != null) {
+        choicesList.add({
+          'option': option,
+          'target': targetId,
+        });
+      }
     }
 
-    String option = outputs[i].outputData as String? ?? '';
-    String? id = outputs[i].targetNodeId;
+    // Convert overrides using the new architecture
+    final Map<String, dynamic> overridesMap = {
+      for (final override in overrides)
+        override.videoOverrideType.name: override.jsonValue
+    };
 
-    if (id != null) {
-      choicesList.add({
-        'option': option,
-        'target': id,
-      });
-    }
+    return {
+      id: {
+        'video': videoDataId,
+        if (choicesList.isNotEmpty) 'choices': choicesList,
+        if (overridesMap.isNotEmpty) 'overrides': overridesMap,
+      }
+    };
   }
-
-  return {
-    id: {
-      'video': videoDataId,
-      if (choicesList.isNotEmpty) 'choices': choicesList,
-      if (overrides.isNotEmpty)
-        'overrides': overrides.map((key, value) {
-          final overrideValue = getOverrideForJson(key, value);
-          return MapEntry(key, overrideValue);
-        }),
-    }
-  };
-}
 
   @override
   Offset outputPosition(AppTheme theme, int index) {
@@ -151,6 +154,4 @@ Map<String, Map<String, dynamic>>? toJsonExport() {
 
   @override
   Map<String, dynamic> toJson() => _$BranchedVideoNodeDataToJson(this);
-
-
 }

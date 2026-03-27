@@ -14,10 +14,11 @@ SimpleVideoNodeData _$SimpleVideoNodeDataFromJson(Map<String, dynamic> json) =>
           json['intendedPosition'], const OffsetConverter().fromJson),
       id: json['id'] as String,
       videoDataId: json['videoDataId'] as String?,
-      overrides: json['overrides'] == null
-          ? const <String, dynamic>{}
-          : const OverridesConverter()
-              .fromJson(json['overrides'] as Map<String, dynamic>),
+      overrides: (json['overrides'] as List<dynamic>?)
+              ?.map((e) => const VideoNodeOverrideConverter()
+                  .fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <VideoNodeOverride>[],
       outputs: (json['outputs'] as List<dynamic>?)
               ?.map((e) => Output.fromJson(e as Map<String, dynamic>))
               .toList() ??
@@ -51,7 +52,9 @@ Map<String, dynamic> _$SimpleVideoNodeDataToJson(
       'input': instance.input,
       'swatch': instance.swatch,
       'videoDataId': instance.videoDataId,
-      'overrides': const OverridesConverter().toJson(instance.overrides),
+      'overrides': instance.overrides
+          .map(const VideoNodeOverrideConverter().toJson)
+          .toList(),
       'outputs': instance.outputs,
     };
 

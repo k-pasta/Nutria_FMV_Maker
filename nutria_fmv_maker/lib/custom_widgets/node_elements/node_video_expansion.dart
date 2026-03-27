@@ -29,7 +29,7 @@ class NodeVideoExpansion extends StatelessWidget {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
     final AppSettingsProvider appSettingsProvider =
         context.read<AppSettingsProvider>(); //TODO check if updates
-    final Map<VideoOverrides, dynamic> settings =
+    final Map<VideoOverrideType, dynamic> settings =
         appSettingsProvider.currentVideoSettings;
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final void Function(String nodeId, String key, dynamic value) addOverride =
@@ -80,19 +80,19 @@ final List<Widget> branchedWidgets = [
     );
   }
 
-  Widget _buildSelectionTimeOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildSelectionTimeOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = VideoOverrides.selectionTime.name;
+    final String key = VideoOverrideType.selectionTime.name;
 
     void _updateSelectionTime(
-        Map<VideoOverrides, dynamic> settings,
+        Map<VideoOverrideType, dynamic> settings,
         void Function(String nodeId, String key, dynamic value) addOverride,
         int interval) {
-      final String key = VideoOverrides.selectionTime.name;
+      final String key = VideoOverrideType.selectionTime.name;
       final currentOverride = videoNodeData.overrides[key];
       final int newDurationInMilliseconds = (currentOverride != null
               ? (currentOverride as Duration).inMilliseconds + interval
-              : (settings[VideoOverrides.selectionTime] as Duration)
+              : (settings[VideoOverrideType.selectionTime] as Duration)
                       .inMilliseconds +
                   interval)
           .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
@@ -108,55 +108,55 @@ final List<Widget> branchedWidgets = [
           settings, addOverride, -DataStaticProperties.intervalInMs),
       onTapRight: () => _updateSelectionTime(
           settings, addOverride, DataStaticProperties.intervalInMs),
-      videoOverride: VideoOverrides.selectionTime,
+      videoOverride: VideoOverrideType.selectionTime,
     );
   }
 
-  Widget _buildPauseOnEndOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildPauseOnEndOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
       labelText: t.overridePauseOnEnd,
       onTap: () {
-        final String key = VideoOverrides.pauseOnEnd.name;
+        final String key = VideoOverrideType.pauseOnEnd.name;
         final currentOverride = videoNodeData.overrides[key];
         final newValue =
-            !(currentOverride ?? settings[VideoOverrides.pauseOnEnd] as bool);
+            !(currentOverride ?? settings[VideoOverrideType.pauseOnEnd] as bool);
         addOverride(videoNodeData.id, key, newValue);
       },
-      videoOverride: VideoOverrides.pauseOnEnd,
+      videoOverride: VideoOverrideType.pauseOnEnd,
     );
   }
 
-  Widget _buildShowTimerOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildShowTimerOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
       labelText: t.overrideShowTimer,
       onTap: () {
-        final String key = VideoOverrides.showTimer.name;
+        final String key = VideoOverrideType.showTimer.name;
         final currentOverride = videoNodeData.overrides[key];
         final newValue =
-            !(currentOverride ?? settings[VideoOverrides.showTimer] as bool);
+            !(currentOverride ?? settings[VideoOverrideType.showTimer] as bool);
         addOverride(videoNodeData.id, key, newValue);
       },
-      videoOverride: VideoOverrides.showTimer,
+      videoOverride: VideoOverrideType.showTimer,
     );
   }
 
-  Widget _buildVideoFitOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildVideoFitOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = VideoOverrides.videoFit.name;
+    final String key = VideoOverrideType.videoFit.name;
 
     void _updateVideoFit(
-        Map<VideoOverrides, dynamic> settings,
+        Map<VideoOverrideType, dynamic> settings,
         void Function(String nodeId, String key, dynamic value) addOverride,
         bool isNext) {
       final currentOverride = videoNodeData.overrides[key];
 
       final VideoFit currentFit = currentOverride != null
           ? VideoFit.values.byName((currentOverride as VideoFit).name)
-          : settings[VideoOverrides.videoFit] as VideoFit;
+          : settings[VideoOverrideType.videoFit] as VideoFit;
 
       final int currentIndex = VideoFit.values.indexOf(currentFit);
       final int newIndex =
@@ -175,16 +175,16 @@ final List<Widget> branchedWidgets = [
       labelText: t.overrideVideoFit,
       onTapLeft: () => _updateVideoFit(settings, addOverride, false),
       onTapRight: () => _updateVideoFit(settings, addOverride, true),
-      videoOverride: VideoOverrides.videoFit,
+      videoOverride: VideoOverrideType.videoFit,
     );
   }
 
-  Widget _buildDefaultSelectionOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildDefaultSelectionOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
-    final String key = VideoOverrides.defaultSelection.name;
+    final String key = VideoOverrideType.defaultSelection.name;
 
     void _updateDefaultSelection(
-        Map<VideoOverrides, dynamic> settings,
+        Map<VideoOverrideType, dynamic> settings,
         void Function(String nodeId, String key, dynamic value) addOverride,
         bool isNext) {
       final currentOverride = videoNodeData.overrides[key];
@@ -192,7 +192,7 @@ final List<Widget> branchedWidgets = [
       final DefaultSelectionMethod currentMethod = currentOverride != null
           ? DefaultSelectionMethod.values
               .byName((currentOverride as DefaultSelectionMethod).name)
-          : settings[VideoOverrides.defaultSelection] as DefaultSelectionMethod;
+          : settings[VideoOverrideType.defaultSelection] as DefaultSelectionMethod;
 
       final int currentIndex =
           DefaultSelectionMethod.values.indexOf(currentMethod);
@@ -214,17 +214,17 @@ final List<Widget> branchedWidgets = [
       labelText: t.overrideDefaultSelection,
       onTapLeft: () => _updateDefaultSelection(settings, addOverride, false),
       onTapRight: () => _updateDefaultSelection(settings, addOverride, true),
-      videoOverride: VideoOverrides.defaultSelection,
+      videoOverride: VideoOverrideType.defaultSelection,
     );
   }
 
-  Widget _buildPauseMusicOverride(Map<VideoOverrides, dynamic> settings,
+  Widget _buildPauseMusicOverride(Map<VideoOverrideType, dynamic> settings,
       void Function(String nodeId, String key, dynamic value) addOverride, AppLocalizations t) {
     return VideoOverride(
       videoNodeData: videoNodeData,
       labelText: 'Pause music', 
       onTap: () {},
-      videoOverride: VideoOverrides.pauseMusicPath,
+      videoOverride: VideoOverrideType.pauseMusicPath,
     );
   }
 

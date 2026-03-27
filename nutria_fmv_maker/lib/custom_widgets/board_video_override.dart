@@ -47,7 +47,7 @@ class BoardVideoSetting extends StatelessWidget {
   final VoidCallback onTapLeft;
   final VoidCallback onTapRight;
   final VoidCallback onTap;
-  final VideoOverrides videoSetting;
+  final VideoOverrideType videoSetting;
   // final bool isParent;
 
   @override
@@ -57,7 +57,7 @@ class BoardVideoSetting extends StatelessWidget {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
     final String key = videoSetting.name;
-    return Selector<AppSettingsProvider, Map<VideoOverrides, dynamic>>(
+    return Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
       selector: (context, provider) => provider.currentVideoSettings,
       builder: (context, settings, child) {
         return Row(children: [

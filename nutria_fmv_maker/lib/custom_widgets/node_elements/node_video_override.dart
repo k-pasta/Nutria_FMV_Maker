@@ -55,7 +55,7 @@ class VideoOverride extends StatelessWidget {
   final VoidCallback onTapRight;
   final VoidCallback onTap;
   final VideoNodeData videoNodeData;
-  final VideoOverrides videoOverride;
+  final VideoOverrideType videoOverride;
   // final bool isParent;
 
   @override
@@ -70,7 +70,7 @@ class VideoOverride extends StatelessWidget {
     final String key = videoOverride.name;
     final bool isOverriden = videoNodeData.overrides.containsKey(key);
 
-    return Selector<AppSettingsProvider, Map<VideoOverrides, dynamic>>(
+    return Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
       selector: (context, provider) => provider.currentVideoSettings,
       builder: (context, settings, child) {
         

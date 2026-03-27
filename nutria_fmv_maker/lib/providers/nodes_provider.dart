@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:nutria_fmv_maker/custom_widgets/node_elements/node_video_override.dart';
 import 'package:nutria_fmv_maker/models/action_models.dart';
 import 'package:nutria_fmv_maker/models/node_data/branched_video_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/origin_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 import 'package:nutria_fmv_maker/models/noodle_data.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
@@ -129,13 +131,14 @@ class NodesProvider extends ChangeNotifier {
     // ),
   ];
 
-  void removeOverride(String nodeId, String key) {
+  void removeOverride(String nodeId, VideoOverrideType type) {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
 
     if (node is VideoNodeData) {
-      final updatedOverrides = Map<String, dynamic>.from(node.overrides);
-      updatedOverrides.remove(key);
+      final List<VideoNodeOverride> updatedOverrides = node.overrides
+          .where((override) => override.videoOverrideType != type)
+          .toList();
 
       final updatedNode = node.copyWith(overrides: updatedOverrides);
       _nodes[nodeIndex] = updatedNode;
@@ -150,7 +153,7 @@ class NodesProvider extends ChangeNotifier {
     final node = _nodes[nodeIndex];
 
     if (node is BranchedVideoNodeData) {
-      final updatedNode = node.copyWith(overrides: {});
+      final updatedNode = node.copyWith(overrides: []);
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
     } else {
@@ -158,21 +161,59 @@ class NodesProvider extends ChangeNotifier {
     }
   }
 
-  void addOverride(String nodeId, String key, dynamic value) {
+  // void addOverride(String nodeId, VideoOverrideType type, Object value) {
+  //   int nodeIndex = getNodeIndexById(nodeId);
+  //   final node = _nodes[nodeIndex];
+  //   final VideoNodeOverride newOverride = createVideoOverride(type, value);
+
+  //   if (node is VideoNodeData) {
+  //     // Check if an override of the same type exists
+  //     final List<VideoNodeOverride> overrides = List.from(node.overrides);
+  //     final int existingIndex = overrides.indexWhere((o) => o.videoOverrideType == type);
+
+  //     if (existingIndex != -1) {
+  //     // Replace existing override
+  //     overrides[existingIndex] = newOverride;
+  //     } else {
+  //     // Add new override
+  //     overrides.add(newOverride);
+  //     }
+
+  //     final updatedNode = node.copyWith(overrides: overrides);
+  //     _nodes[nodeIndex] = updatedNode;
+  //     notifyListeners();
+  //   } else {
+  //     throw Exception("Node is not of type VideoNodeData");
+  //   }
+  // }
+  void addOverride(String nodeId, VideoNodeOverride override) {
     int nodeIndex = getNodeIndexById(nodeId);
     final node = _nodes[nodeIndex];
-
+    
     if (node is VideoNodeData) {
-      final updatedOverrides = Map<String, dynamic>.from(node.overrides);
-      updatedOverrides[key] = value;
+      // Create a mutable copy of the existing overrides list
+      final List<VideoNodeOverride> overrides = List.from(node.overrides);
+      
+      // Check if an override of the same type already exists
+      final int existingIndex = overrides.indexWhere(
+        (o) => o.videoOverrideType == override.videoOverrideType
+      );
 
-      final updatedNode = node.copyWith(overrides: updatedOverrides);
+      if (existingIndex != -1) {
+        // Replace the existing override with the new one
+        overrides[existingIndex] = override;
+      } else {
+        // Add the new override to the list
+        overrides.add(override);
+      }
+
+      // Update the node with the modified overrides list
+      final updatedNode = node.copyWith(overrides: overrides);
       _nodes[nodeIndex] = updatedNode;
       notifyListeners();
     } else {
       throw Exception("Node is not of type VideoNodeData");
     }
-    print((_nodes[nodeIndex] as VideoNodeData).overrides[key]);
   }
 
   // Getter for nodes (returns an immutable list)

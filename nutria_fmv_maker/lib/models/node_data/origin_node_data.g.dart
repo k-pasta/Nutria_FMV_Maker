@@ -8,6 +8,8 @@ part of 'origin_node_data.dart';
 
 OriginNodeData _$OriginNodeDataFromJson(Map<String, dynamic> json) =>
     OriginNodeData(
+      projectTitle: json['projectTitle'] as String?,
+      projectDescription: json['projectDescription'] as String?,
       position: const OffsetConverter()
           .fromJson(json['position'] as Map<String, dynamic>),
       intendedPosition: _$JsonConverterFromJson<Map<String, dynamic>, Offset>(
@@ -41,6 +43,8 @@ Map<String, dynamic> _$OriginNodeDataToJson(OriginNodeData instance) =>
       'isExpanded': instance.isExpanded,
       'outputs': instance.outputs,
       'swatch': instance.swatch,
+      'projectTitle': instance.projectTitle,
+      'projectDescription': instance.projectDescription,
     };
 
 Value? _$JsonConverterFromJson<Json, Value>(

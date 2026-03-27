@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:nutria_fmv_maker/custom_widgets/branched_video_node.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 
 import '../models/enums_data.dart';
 import '../models/snap_settings.dart';
@@ -26,15 +27,14 @@ class AppSettingsProvider extends ChangeNotifier {
   SnapSettings _snapSettings = defaultSnapSettings;
   SnapSettings get snapSettings => _snapSettings;
 
-  Map<VideoOverrides, dynamic> _currentVideoSettings = defaultVideoSettings;
-  Map<VideoOverrides, dynamic> get currentVideoSettings =>
+  List<VideoNodeOverride> _currentVideoSettings = defaultVideoSettings;
+  List<VideoNodeOverride> get currentVideoSettings =>
       _currentVideoSettings;
 
-  void updateVideoSetting(VideoOverrides key, dynamic value) {
-    _currentVideoSettings = {
-      ..._currentVideoSettings, //overwrites the value
-      key: value,
-    };
+  void updateVideoSetting(VideoNodeOverride newsetting) {
+    _currentVideoSettings = _currentVideoSettings
+        .map((setting) => setting.runtimeType == newsetting.runtimeType ? newsetting : setting)
+        .toList();
     notifyListeners();
   }
 
@@ -45,11 +45,10 @@ class AppSettingsProvider extends ChangeNotifier {
 
 //TODO move to models
 
-const Map<VideoOverrides, dynamic> defaultVideoSettings = {
-  VideoOverrides.pauseOnEnd: false,
-  VideoOverrides.showTimer: true,
-  VideoOverrides.selectionTime: Duration(seconds: 6),
-  // VideoOverrides.pauseMusicPath: '',
-  VideoOverrides.videoFit: VideoFit.fit,
-  VideoOverrides.defaultSelection: DefaultSelectionMethod.first,
-};
+List<VideoNodeOverride> defaultVideoSettings = [  
+  VideoNodeOverridePauseOnEnd(pauseOnEnd: false),
+  VideoNodeOverrideShowTimer(showTimer: true),
+  VideoNodeOverrideSelectionTime(selectionTime: const Duration(seconds: 6)),
+  VideoNodeOverrideVideoFit(videoFit: VideoFit.fit),
+  VideoNodeOverrideDefaultSelection(defaultSelection: DefaultSelectionMethod.first)
+];

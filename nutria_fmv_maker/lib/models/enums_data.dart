@@ -8,7 +8,7 @@
 /// - `videoFit` [VideoFit]: the video fitting algorithm.
 /// - `defaultSelection` [DefaultSelectionMethod]: The algorithm used to auto-select when `pauseOnEnd` is `false`.
 /// - `pauseMusicPath` (`string`): is to reference an audio file for when paused. currently unused
-enum VideoOverrides {
+enum VideoOverrideType {
   selectionTime,
   pauseOnEnd,
   showTimer,
@@ -18,96 +18,6 @@ enum VideoOverrides {
 }
 
 /// TODO reference localization
-String getOverrideString(String overrideKey, dynamic value) {
-  final Map<String, String Function(dynamic)> keyToStringMap = {
-    VideoOverrides.selectionTime.name: (value) => value is Duration
-        ? '${(value.inMilliseconds / 1000).toStringAsFixed(2)} s'
-        : 'Invalid Time',
-    VideoOverrides.pauseOnEnd.name: (value) =>
-        value is bool ? (value ? 'Yes' : 'No') : 'Invalid Bool',
-    VideoOverrides.showTimer.name: (value) =>
-        value is bool ? (value ? 'Yes' : 'No') : 'Invalid Bool',
-    VideoOverrides.videoFit.name: (value) =>
-        value is VideoFit ? _getVideoFitString(value) : 'Invalid VideoFit',
-    VideoOverrides.defaultSelection.name: (value) =>
-        value is DefaultSelectionMethod
-            ? _getDefaultSelectionMethodString(value)
-            : 'Invalid Selection Method',
-    VideoOverrides.pauseMusicPath.name: (value) =>
-        value is String && value.isNotEmpty
-            ? Uri.file(value).pathSegments.last
-            : 'None',
-  };
-
-  if (keyToStringMap.containsKey(overrideKey)) {
-    return keyToStringMap[overrideKey]!(value);
-  } else {
-    return 'Unknown Key';
-  }
-}
-
-dynamic getOverrideForJson(String overrideKey, dynamic value) {
-  final Map<String, dynamic Function(dynamic)> keyToStringMap = {
-    VideoOverrides.selectionTime.name: (value) =>
-        value is Duration ? value.inMilliseconds : null,
-    VideoOverrides.pauseOnEnd.name: (value) => value is bool ? value : null,
-    VideoOverrides.showTimer.name: (value) => value is bool ? value : null,
-    VideoOverrides.videoFit.name: (value) =>
-        value is VideoFit ? _getVideoFitString(value) : null,
-    VideoOverrides.defaultSelection.name: (value) =>
-        value is DefaultSelectionMethod
-            ? _getDefaultSelectionMethodString(value)
-            : null,
-    VideoOverrides.pauseMusicPath.name: (value) =>
-        value is String && value.isNotEmpty
-            ? Uri.file(value).pathSegments.last
-            : null,
-  };
-
-  if (keyToStringMap.containsKey(overrideKey)) {
-    return keyToStringMap[overrideKey]!(value);
-  } else {
-    return 'Unknown Key';
-  }
-}
-
-String _getVideoFitString(VideoFit fit) {
-  switch (fit) {
-    case VideoFit.fit:
-      return 'Fit';
-    case VideoFit.fitWidth:
-      return 'Fit Width';
-    case VideoFit.fitHeight:
-      return 'Fit Height';
-    case VideoFit.fill:
-      return 'Fill';
-    case VideoFit.fillWidth:
-      return 'Fill Width';
-    case VideoFit.fillHeight:
-      return 'Fill Height';
-    case VideoFit.stretch:
-      return 'Stretch';
-    default:
-      return 'Unknown';
-  }
-}
-
-String _getDefaultSelectionMethodString(DefaultSelectionMethod method) {
-  switch (method) {
-    case DefaultSelectionMethod.first:
-      return 'First';
-    case DefaultSelectionMethod.last:
-      return 'Last';
-    case DefaultSelectionMethod.lastSelected:
-      return 'Last Selected';
-    case DefaultSelectionMethod.random:
-      return 'Random';
-    case DefaultSelectionMethod.specified:
-      return 'Specified';
-    default:
-      return 'Unknown';
-  }
-}
 
 enum LoadErrors {
   userCancelled,
@@ -117,7 +27,8 @@ enum LoadErrors {
 
 enum NodeDataType { branchedVideo, simpleVideo, originNode }
 
-enum VideoFit { fit, fitWidth, fitHeight, fill, fillWidth, fillHeight, stretch }
+enum VideoFit { fit, fill, fillWidth, fillHeight, stretch }
+// fitWidth & fitHeight removed as they are essentially identical to fit
 
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
 

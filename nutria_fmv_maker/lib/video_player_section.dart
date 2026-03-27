@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 // Make sure to add following packages to pubspec.yaml:
 // * media_kit
 // * media_kit_video
@@ -13,6 +12,7 @@ import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/enums_ui.dart';
 import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
+import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 import 'package:nutria_fmv_maker/models/video_metadata.dart';
 import 'package:nutria_fmv_maker/providers/nodes_provider.dart';
 import 'package:nutria_fmv_maker/providers/video_player_provider.dart';
@@ -257,10 +257,11 @@ class VideoPlayerSectionState extends State<VideoPlayerSection> {
                                   icon: Icons.timer,
                                   onTap: () => {
                                     nodesProvider.addOverride(
-                                        currentNodeId!,
-                                        VideoOverrides.selectionTime.name,
-                                        data.duration -
-                                            data.position) //TODO implement
+                                      currentNodeId!,
+                                      VideoNodeOverrideSelectionTime(
+                                          selectionTime:
+                                              data.duration - data.position),
+                                    ) //TODO implement
                                   }, //TODO important Account for node deletion
                                 );
                               },
