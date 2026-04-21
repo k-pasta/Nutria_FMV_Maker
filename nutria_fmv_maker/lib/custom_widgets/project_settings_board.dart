@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import '../models/app_theme.dart';
 import '../models/enums_data.dart';
 import '../models/enums_ui.dart';
+import '../models/node_data/video_node_overrides.dart';
 import '../providers/nodes_provider.dart';
 import '../providers/theme_provider.dart';
 import 'nutria_text.dart';
@@ -33,20 +34,14 @@ class ProjectSettingsBoard extends StatelessWidget {
           trackColor: theme.cButton,
           trackVisibility: true,
           child: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(scrollbars: false),
+            behavior:
+                ScrollConfiguration.of(context).copyWith(scrollbars: false),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
               child: SingleChildScrollView(
-                clipBehavior: Clip.hardEdge,
-                controller: scrollController,
-                child: Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
-                  selector: (context, provider) => provider.currentVideoSettings,
-                  builder:
-                      (BuildContext context, currentVideoSettings, Widget? child) {
-                    return ProjectSettingsBoardList();
-                  },
-                ),
-              ),
+                  clipBehavior: Clip.hardEdge,
+                  controller: scrollController,
+                  child: const ProjectSettingsBoardList()),
             ),
           ),
         ),
@@ -60,26 +55,50 @@ class ProjectSettingsBoardList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final AppLocalizations t = AppLocalizations.of(context)!;
-    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-    final AppSettingsProvider appSettingsProvider =
-        context.read<AppSettingsProvider>();
+    final t = AppLocalizations.of(context)!;
+    final theme = context.watch<ThemeProvider>().currentAppTheme;
+    final settings = context.watch<AppSettingsProvider>().currentVideoSettings;
 
-    final Map<VideoOverrideType, dynamic> settings =
-        appSettingsProvider.currentVideoSettings;
-    final void Function(VideoOverrideType key, dynamic value) editSetting =
-        appSettingsProvider.updateVideoSetting;
+    return Column(
+      children: List.generate(settings.length, (index) {
+        final setting = settings[index];
 
-    final List<Widget> branchedWidgets = [
-      _buildSelectionTimeSetting(settings, editSetting, t),
-      _buildPauseOnEndSetting(settings, editSetting, t),
-      _buildShowTimerSetting(settings, editSetting, t),
-      _buildVideoFitSetting(settings, editSetting, t),
-      _buildDefaultSelectionSetting(settings, editSetting, t),
-    ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
-    branchedWidgets.removeLast(); // Remove trailing spacing
-    return Column(children: branchedWidgets);
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: index == settings.length - 1 ? 0 : theme.dPanelPadding,
+          ),
+          child: _SettingTile(setting: setting),
+        );
+      }),
+    );
   }
+}
+
+// class ProjectSettingsBoardList extends StatelessWidget {
+//   const ProjectSettingsBoardList({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     final AppLocalizations t = AppLocalizations.of(context)!;
+//     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+//     final AppSettingsProvider appSettingsProvider =
+//         context.read<AppSettingsProvider>();
+
+//     final Map<VideoOverrideType, dynamic> settings =
+//         appSettingsProvider.currentVideoSettings;
+//     final void Function(VideoOverrideType key, dynamic value) editSetting =
+//         appSettingsProvider.updateVideoSetting;
+
+//     final List<Widget> branchedWidgets = [
+//       _buildSelectionTimeSetting(settings, editSetting, t),
+//       _buildPauseOnEndSetting(settings, editSetting, t),
+//       _buildShowTimerSetting(settings, editSetting, t),
+//       _buildVideoFitSetting(settings, editSetting, t),
+//       _buildDefaultSelectionSetting(settings, editSetting, t),
+//     ].expand((widget) => [widget, _buildSpacing(theme)]).toList();
+//     branchedWidgets.removeLast(); // Remove trailing spacing
+//     return Column(children: branchedWidgets);
+//   }
 
 // void _updateSelectionTime(
 //         Map<VideoOverrides, dynamic> settings,
@@ -97,125 +116,154 @@ class ProjectSettingsBoardList extends StatelessWidget {
 //       final newDuration = Duration(milliseconds: newDurationInMilliseconds);
 //       addOverride(videoNodeData.id, key, newDuration);
 //     }
-  Widget _buildSpacing(AppTheme theme) {
-    return SizedBox(height: theme.dPanelPadding);
-  }
+Widget _buildSpacing(AppTheme theme) {
+  return SizedBox(height: theme.dPanelPadding);
+}
 
-  Widget _buildSelectionTimeSetting(
-      Map<VideoOverrideType, dynamic> settings,
-      Function(VideoOverrideType key, dynamic value) editSetting,
-      AppLocalizations t) {
-    final currentSetting = settings[VideoOverrideType.selectionTime];
-    print(currentSetting);
-    final Duration durationUp = Duration(
-        milliseconds: ((currentSetting as Duration).inMilliseconds +
-                DataStaticProperties.intervalInMs)
-            .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
-            .toInt());
-    final Duration durationDown = Duration(
-        milliseconds: ((currentSetting as Duration).inMilliseconds -
-                DataStaticProperties.intervalInMs)
-            .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
-            .toInt());
+class _SettingTile extends StatelessWidget {
+  final VideoNodeOverride setting;
 
-    return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrideType.selectionTime,
-      onTapLeft: () {
-        editSetting(VideoOverrideType.selectionTime, durationDown);
-      },
-      onTapRight: () {
-        editSetting(VideoOverrideType.selectionTime, durationUp);
-      },
-      labelText: t.overrideSelectionTime,
-    );
-  }
+  const _SettingTile({required this.setting});
 
-  Widget _buildPauseOnEndSetting(
-      Map<VideoOverrideType, dynamic> settings,
-      Function(VideoOverrideType key, dynamic value) editSetting,
-      AppLocalizations t) {
-    final currentSetting =
-        settings[VideoOverrideType.pauseOnEnd] as bool? ?? false;
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context)!;
+    final provider = context.read<AppSettingsProvider>();
 
-    return BoardVideoSetting(
-      videoSetting: VideoOverrideType.pauseOnEnd,
-      onTap: () {
-        editSetting(VideoOverrideType.pauseOnEnd, !currentSetting);
-      },
-      labelText: t.overridePauseOnEnd,
-    );
-  }
-
-  Widget _buildShowTimerSetting(
-      Map<VideoOverrideType, dynamic> settings,
-      Function(VideoOverrideType key, dynamic value) editSetting,
-      AppLocalizations t) {
-    final currentSetting = settings[VideoOverrideType.showTimer] as bool? ?? false;
-
-    return BoardVideoSetting(
-      videoSetting: VideoOverrideType.showTimer,
-      onTap: () {
-        editSetting(VideoOverrideType.showTimer, !currentSetting);
-      },
-      labelText: t.overrideShowTimer,
-    );
-  }
-
-  Widget _buildVideoFitSetting(
-      Map<VideoOverrideType, dynamic> settings,
-      Function(VideoOverrideType key, dynamic value) editSetting,
-      AppLocalizations t) {
-    final currentFit = settings[VideoOverrideType.videoFit] as VideoFit;
-    final int currentIndex = VideoFit.values.indexOf(currentFit);
-
-    final int nextIndex = (currentIndex + 1) % VideoFit.values.length;
-    final int previousIndex =
-        (currentIndex - 1) < 0 ? VideoFit.values.length - 1 : currentIndex - 1;
-
-    final VideoFit nextFit = VideoFit.values[nextIndex];
-    final VideoFit previousFit = VideoFit.values[previousIndex];
-
-    return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrideType.videoFit,
-      onTapLeft: () {
-        editSetting(VideoOverrideType.videoFit, previousFit);
-      },
-      onTapRight: () {
-        editSetting(VideoOverrideType.videoFit, nextFit);
-      },
-      labelText: t.overrideVideoFit,
-    );
-  }
-
-  Widget _buildDefaultSelectionSetting(
-      Map<VideoOverrideType, dynamic> settings,
-      Function(VideoOverrideType key, dynamic value) editSetting,
-      AppLocalizations t) {
-    final currentMethod =
-        settings[VideoOverrideType.defaultSelection] as DefaultSelectionMethod;
-    final int currentIndex =
-        DefaultSelectionMethod.values.indexOf(currentMethod);
-
-    final int nextIndex =
-        (currentIndex + 1) % DefaultSelectionMethod.values.length;
-    final int previousIndex = currentIndex - 1 < 0
-        ? DefaultSelectionMethod.values.length - 1
-        : currentIndex - 1;
-
-    final DefaultSelectionMethod nextMethod =
-        DefaultSelectionMethod.values[nextIndex];
-    final DefaultSelectionMethod previousMethod =
-        DefaultSelectionMethod.values[previousIndex];
-
-    return BoardVideoSetting.leftRight(
-      videoSetting: VideoOverrideType.defaultSelection,
-      onTapLeft: () {
-        editSetting(VideoOverrideType.defaultSelection, previousMethod);
-      },
-      onTapRight: () {
-        editSetting(VideoOverrideType.defaultSelection, nextMethod);
-      },
-      labelText: t.overrideDefaultSelection,
-    );
+    return switch (setting) {
+      VideoNodeOverrideSingleButton s => BoardVideoSetting(
+          labelText: s.getOverrideNameString(t),
+          valueText: s.getOverrideValueString(t),
+          onTap: () => provider.updateVideoSetting(s.copySwitched()),
+        ),
+      VideoNodeOverrideDoubleButton d => BoardVideoSetting(
+          labelText: d.getOverrideNameString(t),
+          valueText: d.getOverrideValueString(t),
+          onTap: () {}, // unused
+          onTapLeft: () =>
+              provider.updateVideoSetting(d.copyIteratedDownwards()),
+          onTapRight: () =>
+              provider.updateVideoSetting(d.copyIteratedUpwards()),
+        ),
+    };
   }
 }
+
+  // Widget _buildSelectionTimeSetting(
+  //     Map<VideoOverrideType, dynamic> settings,
+  //     Function(VideoOverrideType key, dynamic value) editSetting,
+  //     AppLocalizations t) {
+  //   final currentSetting = settings[VideoOverrideType.selectionTime];
+  //   print(currentSetting);
+  //   final Duration durationUp = Duration(
+  //       milliseconds: ((currentSetting as Duration).inMilliseconds +
+  //               DataStaticProperties.intervalInMs)
+  //           .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
+  //           .toInt());
+  //   final Duration durationDown = Duration(
+  //       milliseconds: ((currentSetting as Duration).inMilliseconds -
+  //               DataStaticProperties.intervalInMs)
+  //           .clamp(0, DataStaticProperties.maxSelectionTimeInMs)
+  //           .toInt());
+
+  //   return BoardVideoSetting.leftRight(
+  //     videoSetting: VideoOverrideType.selectionTime,
+  //     onTapLeft: () {
+  //       editSetting(VideoOverrideType.selectionTime, durationDown);
+  //     },
+  //     onTapRight: () {
+  //       editSetting(VideoOverrideType.selectionTime, durationUp);
+  //     },
+  //     labelText: t.overrideSelectionTime,
+  //   );
+  // }
+
+  // Widget _buildPauseOnEndSetting(
+  //     Map<VideoOverrideType, dynamic> settings,
+  //     Function(VideoOverrideType key, dynamic value) editSetting,
+  //     AppLocalizations t) {
+  //   final currentSetting =
+  //       settings[VideoOverrideType.pauseOnEnd] as bool? ?? false;
+
+  //   return BoardVideoSetting(
+  //     videoSetting: VideoOverrideType.pauseOnEnd,
+  //     onTap: () {
+  //       editSetting(VideoOverrideType.pauseOnEnd, !currentSetting);
+  //     },
+  //     labelText: t.overridePauseOnEnd,
+  //   );
+  // }
+
+  // Widget _buildShowTimerSetting(
+  //     Map<VideoOverrideType, dynamic> settings,
+  //     Function(VideoOverrideType key, dynamic value) editSetting,
+  //     AppLocalizations t) {
+  //   final currentSetting = settings[VideoOverrideType.showTimer] as bool? ?? false;
+
+  //   return BoardVideoSetting(
+  //     videoSetting: VideoOverrideType.showTimer,
+  //     onTap: () {
+  //       editSetting(VideoOverrideType.showTimer, !currentSetting);
+  //     },
+  //     labelText: t.overrideShowTimer,
+  //   );
+  // }
+
+  // Widget _buildVideoFitSetting(
+  //     Map<VideoOverrideType, dynamic> settings,
+  //     Function(VideoOverrideType key, dynamic value) editSetting,
+  //     AppLocalizations t) {
+  //   final currentFit = settings[VideoOverrideType.videoFit] as VideoFit;
+  //   final int currentIndex = VideoFit.values.indexOf(currentFit);
+
+  //   final int nextIndex = (currentIndex + 1) % VideoFit.values.length;
+  //   final int previousIndex =
+  //       (currentIndex - 1) < 0 ? VideoFit.values.length - 1 : currentIndex - 1;
+
+  //   final VideoFit nextFit = VideoFit.values[nextIndex];
+  //   final VideoFit previousFit = VideoFit.values[previousIndex];
+
+  //   return BoardVideoSetting.leftRight(
+  //     videoSetting: VideoOverrideType.videoFit,
+  //     onTapLeft: () {
+  //       editSetting(VideoOverrideType.videoFit, previousFit);
+  //     },
+  //     onTapRight: () {
+  //       editSetting(VideoOverrideType.videoFit, nextFit);
+  //     },
+  //     labelText: t.overrideVideoFit,
+  //   );
+  // }
+
+  // Widget _buildDefaultSelectionSetting(
+  //     Map<VideoOverrideType, dynamic> settings,
+  //     Function(VideoOverrideType key, dynamic value) editSetting,
+  //     AppLocalizations t) {
+  //   final currentMethod =
+  //       settings[VideoOverrideType.defaultSelection] as DefaultSelectionMethod;
+  //   final int currentIndex =
+  //       DefaultSelectionMethod.values.indexOf(currentMethod);
+
+  //   final int nextIndex =
+  //       (currentIndex + 1) % DefaultSelectionMethod.values.length;
+  //   final int previousIndex = currentIndex - 1 < 0
+  //       ? DefaultSelectionMethod.values.length - 1
+  //       : currentIndex - 1;
+
+  //   final DefaultSelectionMethod nextMethod =
+  //       DefaultSelectionMethod.values[nextIndex];
+  //   final DefaultSelectionMethod previousMethod =
+  //       DefaultSelectionMethod.values[previousIndex];
+
+  //   return BoardVideoSetting.leftRight(
+  //     videoSetting: VideoOverrideType.defaultSelection,
+  //     onTapLeft: () {
+  //       editSetting(VideoOverrideType.defaultSelection, previousMethod);
+  //     },
+  //     onTapRight: () {
+  //       editSetting(VideoOverrideType.defaultSelection, nextMethod);
+  //     },
+  //     labelText: t.overrideDefaultSelection,
+  //   );
+  // }
+// }

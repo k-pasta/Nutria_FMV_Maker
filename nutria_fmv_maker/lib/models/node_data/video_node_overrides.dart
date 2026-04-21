@@ -81,7 +81,7 @@ class VideoNodeOverrideSelectionTime extends VideoNodeOverrideDoubleButton {
 class VideoNodeOverridePauseOnEnd extends VideoNodeOverrideSingleButton {
   final bool pauseOnEnd;
 
-  VideoNodeOverridePauseOnEnd({
+  const VideoNodeOverridePauseOnEnd({
     required this.pauseOnEnd,
   }) : super(videoOverrideType: VideoOverrideType.pauseOnEnd);
 

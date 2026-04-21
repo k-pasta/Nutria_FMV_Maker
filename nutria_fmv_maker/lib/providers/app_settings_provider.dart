@@ -28,12 +28,14 @@ class AppSettingsProvider extends ChangeNotifier {
   SnapSettings get snapSettings => _snapSettings;
 
   List<VideoNodeOverride> _currentVideoSettings = defaultVideoSettings;
-  List<VideoNodeOverride> get currentVideoSettings =>
-      _currentVideoSettings;
+  List<VideoNodeOverride> get currentVideoSettings => _currentVideoSettings;
 
   void updateVideoSetting(VideoNodeOverride newsetting) {
     _currentVideoSettings = _currentVideoSettings
-        .map((setting) => setting.runtimeType == newsetting.runtimeType ? newsetting : setting)
+        .map((setting) =>
+            setting.videoOverrideType == newsetting.videoOverrideType
+                ? newsetting
+                : setting)
         .toList();
     notifyListeners();
   }
@@ -45,10 +47,11 @@ class AppSettingsProvider extends ChangeNotifier {
 
 //TODO move to models
 
-List<VideoNodeOverride> defaultVideoSettings = [  
-  VideoNodeOverridePauseOnEnd(pauseOnEnd: false),
-  VideoNodeOverrideShowTimer(showTimer: true),
-  VideoNodeOverrideSelectionTime(selectionTime: const Duration(seconds: 6)),
-  VideoNodeOverrideVideoFit(videoFit: VideoFit.fit),
-  VideoNodeOverrideDefaultSelection(defaultSelection: DefaultSelectionMethod.first)
-];
+List<VideoNodeOverride> get defaultVideoSettings => const [
+      VideoNodeOverrideSelectionTime(selectionTime: Duration(seconds: 6)),
+      VideoNodeOverridePauseOnEnd(pauseOnEnd: false),
+      VideoNodeOverrideShowTimer(showTimer: true),
+      VideoNodeOverrideVideoFit(videoFit: VideoFit.fit),
+      VideoNodeOverrideDefaultSelection(
+          defaultSelection: DefaultSelectionMethod.first),
+    ];

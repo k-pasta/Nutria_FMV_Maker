@@ -9,94 +9,135 @@ import 'nutria_button.dart';
 import 'nutria_text.dart';
 
 class BoardVideoSetting extends StatelessWidget {
-  const BoardVideoSetting.leftRight({
-    super.key,
-    required this.videoSetting,
-    required this.onTapLeft,
-    required this.onTapRight,
-    required this.labelText,
-  })  : isLeftRight = true,
-        onTap = _defaultOnTap;
-  // isParent = false;
-
   const BoardVideoSetting({
     super.key,
-    required this.videoSetting,
-    required this.onTap,
     required this.labelText,
-  })  : isLeftRight = false,
-        onTapLeft = _defaultOnTap,
-        onTapRight = _defaultOnTap;
-  // isParent = false;
-
-  // const VideoOverride.parent({
-  //   super.key,
-  //   required this.videoNodeData,
-  //   required this.labelText,
-  // })  : isLeftRight = false,
-  //       videoOverride = VideoOverrides.selectionTime, //todo make more readable
-  //       onTap = _defaultOnTap,
-  //       onTapLeft = _defaultOnTap,
-  //       onTapRight = _defaultOnTap,
-  //       isParent = true;
-
-  static void _defaultOnTap() {}
+    required this.valueText,
+    required this.onTap,
+    this.onTapLeft,
+    this.onTapRight,
+  });
 
   final String labelText;
-  final bool isLeftRight;
-  final VoidCallback onTapLeft;
-  final VoidCallback onTapRight;
+  final String valueText;
+
   final VoidCallback onTap;
-  final VideoOverrideType videoSetting;
-  // final bool isParent;
+  final VoidCallback? onTapLeft;
+  final VoidCallback? onTapRight;
+
+  bool get isLeftRight => onTapLeft != null && onTapRight != null;
 
   @override
   Widget build(BuildContext context) {
-    // final AppSettingsProvider appSettingsProvider =
-    //     context.read<AppSettingsProvider>();
-    final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+    final theme = context.watch<ThemeProvider>().currentAppTheme;
 
-    final String key = videoSetting.name;
-    return Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
-      selector: (context, provider) => provider.currentVideoSettings,
-      builder: (context, settings, child) {
-        return Row(children: [
-          Expanded(
-            child: SizedBox(
-              height: theme.dButtonHeight,
-              child: Row(children: [
+    return Row(
+      children: [
+        Expanded(
+          child: SizedBox(
+            height: theme.dButtonHeight,
+            child: Row(
+              children: [
                 Expanded(
-                  child: NutriaText(
-                    text: labelText,
-                  ),
+                  child: NutriaText(text: labelText),
                 ),
-              ]),
+              ],
             ),
           ),
-          Expanded(
-            child: isLeftRight
-                ? NutriaButton.leftRight(
-                    onTapLeft: onTapLeft,
-                    onTapRight: onTapRight,
-                    child: NutriaText(
-                      text: getOverrideString(
-                        key,
-                        settings[videoSetting],
-                      ),
-                    ),
-                  )
-                : NutriaButton(
-                    onTap: onTap,
-                    child: NutriaText(
-                      text: getOverrideString(
-                        key,
-                        settings[videoSetting],
-                      ),
-                    ),
-                  ),
-          ),
-        ]);
-      },
+        ),
+        Expanded(
+          child: isLeftRight
+              ? NutriaButton.leftRight(
+                  onTapLeft: onTapLeft!,
+                  onTapRight: onTapRight!,
+                  child: NutriaText(text: valueText),
+                )
+              : NutriaButton(
+                  onTap: onTap,
+                  child: NutriaText(text: valueText),
+                ),
+        ),
+      ],
     );
   }
 }
+
+// class BoardVideoSetting extends StatelessWidget {
+//   const BoardVideoSetting.leftRight({
+//     super.key,
+//     required this.videoSetting,
+//     required this.onTapLeft,
+//     required this.onTapRight,
+//     required this.labelText,
+//   })  : isLeftRight = true,
+//         onTap = _defaultOnTap;
+//   // isParent = false;
+
+//   const BoardVideoSetting({
+//     super.key,
+//     required this.videoSetting,
+//     required this.onTap,
+//     required this.labelText,
+//   })  : isLeftRight = false,
+//         onTapLeft = _defaultOnTap,
+//         onTapRight = _defaultOnTap;
+//   static void _defaultOnTap() {}
+
+//   final String labelText;
+//   final bool isLeftRight;
+//   final VoidCallback onTapLeft;
+//   final VoidCallback onTapRight;
+//   final VoidCallback onTap;
+//   final VideoOverrideType videoSetting;
+//   // final bool isParent;
+
+//   @override
+//   Widget build(BuildContext context) {
+//     // final AppSettingsProvider appSettingsProvider =
+//     //     context.read<AppSettingsProvider>();
+//     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
+
+//     final String key = videoSetting.name;
+//     return Selector<AppSettingsProvider, Map<VideoOverrideType, dynamic>>(
+//       selector: (context, provider) => provider.currentVideoSettings,
+//       builder: (context, settings, child) {
+//         return Row(children: [
+//           Expanded(
+//             child: SizedBox(
+//               height: theme.dButtonHeight,
+//               child: Row(children: [
+//                 Expanded(
+//                   child: NutriaText(
+//                     text: labelText,
+//                   ),
+//                 ),
+//               ]),
+//             ),
+//           ),
+//           Expanded(
+//             child: isLeftRight
+//                 ? NutriaButton.leftRight(
+//                     onTapLeft: onTapLeft,
+//                     onTapRight: onTapRight,
+//                     child: NutriaText(
+//                       text: getOverrideString(
+//                         key,
+//                         settings[videoSetting],
+//                       ),
+//                     ),
+//                   )
+//                 : NutriaButton(
+//                     onTap: onTap,
+//                     child: NutriaText(
+//                       text: getOverrideString(
+//                         key,
+//                         settings[videoSetting],
+//                       ),
+//                     ),
+//                   ),
+//           ),
+//         ]);
+//       },
+//     );
+//   }
+// }
