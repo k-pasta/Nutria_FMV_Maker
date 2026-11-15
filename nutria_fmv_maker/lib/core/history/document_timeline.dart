@@ -5,13 +5,17 @@ import 'package:nutria_fmv_maker/core/document/project_document.dart';
 /// A labeled document snapshot in the undo or redo stack.
 @immutable
 class HistoryEntry {
-  const HistoryEntry(this.label, this.document);
+  const HistoryEntry(this.label, this.document, {this.mergeKey});
 
   /// Human-readable name of the edit, e.g. "Move nodes".
   final String label;
 
   /// The document as it was before (undo stack) or after (redo stack) the edit.
   final ProjectDocument document;
+
+  /// Consecutive edits with the same non-null key share one undo step
+  /// (see [DocumentTimeline.apply]).
+  final Object? mergeKey;
 }
 
 /// The current document plus its undo/redo history.
@@ -65,16 +69,28 @@ class DocumentTimeline {
   /// Applies [edit]. Outside a transaction this records one undo step named
   /// [label]; inside a transaction it only updates [current].
   /// Edits that don't change the document record nothing.
+  ///
+  /// When [mergeKey] is given and the most recent undo step was recorded with
+  /// the same key (and nothing was undone since), this edit joins that step
+  /// instead of adding one. Text fields use it so typing a word is one step;
+  /// pass a key that changes per focus session to start a new step.
   DocumentTimeline apply(
     String label,
-    ProjectDocument Function(ProjectDocument document) edit,
-  ) {
+    ProjectDocument Function(ProjectDocument document) edit, {
+    Object? mergeKey,
+  }) {
     final next = edit(current);
     if (identical(next, current) || next == current) return this;
     if (inTransaction) return _copy(current: next);
+    final mergesWithLast = mergeKey != null &&
+        redoStack.isEmpty &&
+        undoStack.isNotEmpty &&
+        undoStack.last.mergeKey == mergeKey;
+    if (mergesWithLast) return _copy(current: next);
     return _copy(
       current: next,
-      undoStack: _pushCapped(undoStack, HistoryEntry(label, current)),
+      undoStack: _pushCapped(
+          undoStack, HistoryEntry(label, current, mergeKey: mergeKey)),
       redoStack: const [],
     );
   }

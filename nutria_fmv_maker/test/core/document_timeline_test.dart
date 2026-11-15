@@ -82,4 +82,28 @@ void main() {
     }
     expect(timeline.undoStack, hasLength(3));
   });
+
+  group('merge keys', () {
+    test('consecutive edits with the same key are one undo step', () {
+      final start = storyFixture();
+      var timeline = DocumentTimeline.start(start);
+      for (var x = 1.0; x <= 5; x++) {
+        timeline = timeline.apply('Type', (d) => moveB(d, x), mergeKey: 'k');
+      }
+      expect(timeline.undoStack, hasLength(1));
+      expect(timeline.undo().current, same(start));
+    });
+
+    test('a different key or an undo starts a new step', () {
+      var timeline = DocumentTimeline.start(storyFixture())
+          .apply('Type', (d) => moveB(d, 1), mergeKey: 'a')
+          .apply('Type', (d) => moveB(d, 2), mergeKey: 'b');
+      expect(timeline.undoStack, hasLength(2));
+
+      timeline = timeline
+          .undo()
+          .apply('Type', (d) => moveB(d, 3), mergeKey: 'a');
+      expect(timeline.undoStack, hasLength(2));
+    });
+  });
 }
