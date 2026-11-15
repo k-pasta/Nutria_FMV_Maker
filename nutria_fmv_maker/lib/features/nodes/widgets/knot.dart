@@ -9,7 +9,9 @@ import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provi
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
-import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
+
+/// How fast a knot grows and shrinks. Short, so it feels snappy.
+const kKnotAnimation = Duration(milliseconds: 60);
 
 /// A rotated square on the node edge for an input or output [port]. It grows
 /// while hovered, and while it's one end of the noodle being dragged.
@@ -57,7 +59,6 @@ class _KnotState extends ConsumerState<Knot> {
     final large = active || (_hovered && !dragging);
     final size = large ? kKnotSizeLarge : kKnotSizeSmall;
     return MouseRegion(
-      cursor: SystemMouseCursors.precise,
       onEnter: (_) {
         setState(() => _hovered = true);
         _drag.hover(_target);
@@ -77,7 +78,8 @@ class _KnotState extends ConsumerState<Knot> {
           dimension: kKnotHitSize,
           child: Center(
             child: AnimatedContainer(
-              duration: kShortAnimation,
+              duration: kKnotAnimation,
+              curve: Curves.easeOut,
               width: size,
               height: size,
               transform: Matrix4.rotationZ(math.pi / 4),

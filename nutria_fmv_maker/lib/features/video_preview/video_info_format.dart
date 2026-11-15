@@ -35,11 +35,9 @@ String _date(DateTime d) {
       '${_two(local.hour)}:${_two(local.minute)}';
 }
 
-String _bitrate(int bitsPerSecond) => bitsPerSecond >= 1000000
-    ? '${(bitsPerSecond / 1000000).toStringAsFixed(1)} Mbps'
-    : '${(bitsPerSecond / 1000).round()} kbps';
-
-/// Label and value of every detail [info] has, in display order.
+/// Label and value of the details [info] has, in display order. Codecs,
+/// bitrates and audio details are left out: they're often missing or
+/// unreadable (codec GUIDs on Windows) and rarely matter while editing.
 List<(String, String)> videoInfoRows(VideoInfo info, AppLocalizations t) {
   final frameRate = info.frameRate;
   final duration = info.duration;
@@ -63,16 +61,5 @@ List<(String, String)> videoInfoRows(VideoInfo info, AppLocalizations t) {
         '${frameRate.toStringAsFixed(frameRate % 1 == 0 ? 0 : 2)} '
             '${t.videoMetadataNamesFps}'
       ),
-    if (info.videoCodec case final codec?) (t.videoMetadataCodecFormat, codec),
-    if (info.videoBitrate case final bitrate?)
-      (t.videoMetadataBitrate, _bitrate(bitrate)),
-    if (info.audioCodec case final codec?)
-      (t.videoMetadataAudioCodecFormat, codec),
-    if (info.audioSampleRate case final rate?)
-      (t.videoMetadataAudioSampleRate, '$rate Hz'),
-    if (info.audioChannels case final channels?)
-      (t.videoMetadataAudioChannels, '$channels'),
-    if (info.audioBitDepth case final depth?)
-      (t.videoMetadataAudioBitDepth, '$depth bit'),
   ];
 }

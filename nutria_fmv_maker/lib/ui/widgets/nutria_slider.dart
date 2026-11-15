@@ -27,6 +27,8 @@ class NutriaSlider extends StatelessWidget {
     final safeMax = max > 0 ? max : 1.0;
     return SliderTheme(
       data: SliderTheme.of(context).copyWith(
+        // Rounded outer ends, flat where the filled part stops.
+        trackShape: const RoundedRectSliderTrackShape(),
         thumbShape: SliderComponentShape.noThumb,
         overlayShape: SliderComponentShape.noOverlay,
         trackHeight: theme.dPanelPadding + 1,

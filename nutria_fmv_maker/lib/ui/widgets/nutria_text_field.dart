@@ -114,8 +114,7 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
           ),
           counterText: '',
           hintText: widget.hint,
-          hintStyle:
-              TextStyle(color: theme.cTextInactive, fontWeight: FontWeight.w900),
+          hintStyle: TextStyle(color: theme.cTextInactive),
           border: InputBorder.none,
           enabledBorder: OutlineInputBorder(
             borderSide:

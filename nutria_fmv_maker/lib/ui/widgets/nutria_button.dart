@@ -139,7 +139,9 @@ class _NutriaButtonState extends State<NutriaButton> {
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
           ),
           child: IgnorePointer(
-            child: Stack(children: [
+            // Centered, and only as wide as the content needs: a Center
+            // would stretch icon buttons to the full width they're offered.
+            child: Stack(alignment: Alignment.center, children: [
               if (widget._isStepper) ...[
                 Positioned(
                   top: 0,
@@ -158,18 +160,16 @@ class _NutriaButtonState extends State<NutriaButton> {
                       color: _arrowColor(theme, _Side.right)),
                 ),
               ],
-              if (widget.child != null) Center(child: widget.child),
+              ?widget.child,
               if (widget.icon != null)
-                Center(
-                  child: Icon(
-                    widget.icon,
-                    size: theme.dButtonHeight * widget.iconScale,
-                    color: !active
-                        ? theme.cButton
-                        : _hovered
-                            ? theme.cText
-                            : theme.cButtonContentUnhovered,
-                  ),
+                Icon(
+                  widget.icon,
+                  size: theme.dButtonHeight * widget.iconScale,
+                  color: !active
+                      ? theme.cButton
+                      : _hovered
+                          ? theme.cText
+                          : theme.cButtonContentUnhovered,
                 ),
             ]),
           ),

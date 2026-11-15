@@ -48,6 +48,19 @@ void main() {
     expect(container.read(selectionProvider).selected, isEmpty);
   });
 
+  testWidgets("using a node's text field or buttons selects the node",
+      (tester) async {
+    final container = await pumpApp(tester);
+    final id = await addNode(tester, container,
+        type: DefaultNodeType.branchedVideo);
+    expect(container.read(selectionProvider).selected, isEmpty);
+
+    await tester.tap(find.ancestor(
+        of: find.text('Option 1'), matching: find.byType(TextField)));
+    await tester.pumpAndSettle();
+    expect(container.read(selectionProvider).selected, {id});
+  });
+
   testWidgets('dragging a node moves it, and undo puts it back in one step',
       (tester) async {
     final container = await pumpApp(tester);

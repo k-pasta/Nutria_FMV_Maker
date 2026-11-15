@@ -49,15 +49,22 @@ class NodeFrame extends ConsumerWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(kNodePadding),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _NodeBody(node: node, selected: selected, child: body),
-                if (expansion != null && node.isExpanded) ...[
-                  SizedBox(height: theme.dPanelPadding),
-                  _Expansion(selected: selected, child: expansion),
+            // Sees every press on the node, even ones its buttons and text
+            // fields handle, so using any part of a node selects it.
+            child: Listener(
+              onPointerDown: (_) => ref
+                  .read(nodeGestureProvider.notifier)
+                  .pointerDown(node.id, additive: _additive),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _NodeBody(node: node, selected: selected, child: body),
+                  if (expansion != null && node.isExpanded) ...[
+                    SizedBox(height: theme.dPanelPadding),
+                    _Expansion(selected: selected, child: expansion),
+                  ],
                 ],
-              ],
+              ),
             ),
           ),
           for (final knot in layout.knots)

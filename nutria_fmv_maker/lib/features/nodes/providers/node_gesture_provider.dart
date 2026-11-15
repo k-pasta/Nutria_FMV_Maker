@@ -66,6 +66,15 @@ class NodeGestureNotifier extends _$NodeGestureNotifier {
     ref.read(videoPreviewProvider.notifier).showNode(id);
   }
 
+  /// A mouse button went down anywhere on node [id], including its buttons
+  /// and text fields: using a node selects it. Ctrl/Shift clicks ([additive])
+  /// are left to [tap], which toggles.
+  void pointerDown(String id, {required bool additive}) {
+    if (additive || ref.read(selectionProvider).selected.contains(id)) return;
+    _selection.selectOnly(id);
+    _selection.raise(id);
+  }
+
   /// Drop of a library video onto node [id].
   void dropVideo(String id, String videoId) =>
       ref.read(graphEditorProvider).setVideo(id, videoId);
