@@ -9,10 +9,7 @@ import 'package:nutria_fmv_maker/providers/ui_state_provider.dart';
 import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
 import 'package:url_launcher/url_launcher.dart';
 import '../../models/enums_ui.dart';
-import '../../models/node_data/branched_video_node_data.dart';
 import '../../models/node_data/node_data.dart';
-import '../../models/node_data/origin_node_data.dart';
-import '../../models/node_data/simple_video_node_data.dart';
 import '../../models/node_data/video_data.dart';
 import '../../providers/notifications_provider.dart';
 import '../../providers/video_player_provider.dart';
@@ -22,6 +19,7 @@ import '../../providers/locale_provider.dart';
 import 'package:provider/provider.dart';
 import 'dart:io';
 
+///contains the data for the topbar menu
 class MenuData {
   static List<NutriaMenuButton> menuData(BuildContext context) {
     AppLocalizations t = AppLocalizations.of(context)!;

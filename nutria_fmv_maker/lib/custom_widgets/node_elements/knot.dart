@@ -12,7 +12,7 @@ import '../../../providers/theme_provider.dart';
 class Knot extends StatefulWidget {
   final double _sizeLarge = UiStaticProperties.knotSizeLarge;
   final double _sizeSmall = UiStaticProperties.knotSizeSmall;
-  final Offset offset;
+  final Offset offset; //location related to top left of node
   final int index;
   final BaseNodeData nodeData;
   final bool isOutput;
@@ -24,12 +24,9 @@ class Knot extends StatefulWidget {
       required this.nodeData})
       : isOutput = true;
 
-  const Knot.input(
-      {super.key,
-      required this.offset,
-      required this.nodeData})
+  const Knot.input({super.key, required this.offset, required this.nodeData})
       : isOutput = false,
-      index = -1; //to catch potential errors
+        index = -1; //to catch potential errors
 
   // final void Function(DragStartDetails)? onPanStart;
   // final void Function(DragUpdateDetails)? onPanUpdate;
@@ -46,16 +43,18 @@ class _KnotState extends State<Knot> {
   bool isBeingDragged = false;
   LogicalPosition? nextIntent;
   LogicalPosition? selfIntent;
+
   @override
   Widget build(BuildContext context) {
     // print ('Knot build');
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
 
     final NodesProvider nodesProvider = context.read<NodesProvider>();
-    final double boxSize = widget._sizeLarge * sqrt2;
+    final double boxSize = widget._sizeLarge *
+        sqrt2; //since the know is a rotated square, we use the boxSize double to calculate the bounding box
 
+    //if is output
     if (widget.isOutput) {
-      //if is output
       isBeingTargeted = widget.nodeData.outputs[widget.index].isBeingTargeted;
       isBeingDragged = widget.nodeData.outputs[widget.index].isBeingDragged;
 
@@ -66,10 +65,11 @@ class _KnotState extends State<Knot> {
       } else {
         nextIntent = LogicalPosition.output(widget.nodeData.id, widget.index);
       }
+      //if is input      
     } else if (!widget.isOutput) {
-      //if is input
       isBeingTargeted = widget.nodeData.input?.isBeingTargeted ?? false;
       isBeingDragged = widget.nodeData.input?.isBeingDragged ?? false;
+
       nextIntent = LogicalPosition.input(widget.nodeData.id);
     }
 
@@ -115,7 +115,6 @@ class _KnotState extends State<Knot> {
               );
               nodesProvider.clearOutput(selfIntent!);
             }
-
           },
           onPanUpdate: (details) {
             nodesProvider.setDraggedNoodle(
@@ -141,6 +140,7 @@ class _KnotState extends State<Knot> {
                   angle: 45 * 3.1415927 / 180, // Rotate by 45 degrees
                   child: Container(
                     color: theme.cAccent,
+                    // color: theme.cSwatches[widget.nodeData.swatch],
                   ),
                 ),
               ),

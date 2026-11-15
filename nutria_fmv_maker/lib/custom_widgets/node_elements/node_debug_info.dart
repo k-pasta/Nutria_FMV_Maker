@@ -10,6 +10,7 @@ import '../../providers/theme_provider.dart';
 import '../../providers/nodes_provider.dart';
 import '../../static_data/ui_static_properties.dart';
 
+///Extra info that appears on nodes for debugging. Debugging = True on uistaticproperties
 class NodeDebugInfo extends StatelessWidget {
   const NodeDebugInfo({
     super.key,
@@ -21,7 +22,7 @@ class NodeDebugInfo extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final AppTheme theme = context.watch<ThemeProvider>().currentAppTheme;
-    final NodesProvider nodesProvider = context.read<NodesProvider>();
+    // final NodesProvider nodesProvider = context.read<NodesProvider>();
     if (UiStaticProperties.isDebug) {
       return Column(
         children: [

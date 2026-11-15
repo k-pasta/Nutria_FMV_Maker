@@ -80,6 +80,7 @@ class SwatchStripTextField extends StatelessWidget {
     );
   }
 }
+
 class SwatchStripText extends StatelessWidget {
   const SwatchStripText({
     super.key,

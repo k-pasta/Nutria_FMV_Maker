@@ -17,14 +17,14 @@ class BranchedVideoNode extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    
     final NodesProvider nodesProvider = context.read<NodesProvider>();
 
     return Selector<NodesProvider, NodeData>(
         selector: (context, provider) =>
             provider.getNodeById(nodeId), // Only listen to this node
         builder: (context, node, child) {
-          nodesProvider.initializeOutputs(nodeId);
-          
+          nodesProvider.initializeOutputs(nodeId);          
           final BranchedVideoNodeData nodeData = nodesProvider.getNodeById(nodeId);
 
           return BaseNode(

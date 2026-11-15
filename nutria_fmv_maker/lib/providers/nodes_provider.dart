@@ -361,6 +361,8 @@ class NodesProvider extends ChangeNotifier {
   //   }
   // }
 
+/// Makes sure each branched video node has at least 3 outputs, and not more than max.
+/// Also deletes empty outputs at the end, if more than one.
   void initializeOutputs(String id) {
     int index = getNodeIndexById(id);
     BranchedVideoNodeData nodeData = _nodes[index] as BranchedVideoNodeData;

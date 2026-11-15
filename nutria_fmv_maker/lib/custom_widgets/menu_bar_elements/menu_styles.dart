@@ -20,7 +20,7 @@ class MenuStyles {
       shape: const WidgetStatePropertyAll<OutlinedBorder>(
         RoundedRectangleBorder(borderRadius: BorderRadius.zero),
       ),
-      padding: WidgetStatePropertyAll(
+      padding: const WidgetStatePropertyAll(
         EdgeInsets.symmetric(horizontal: 0, vertical: 16),
       ),
     );

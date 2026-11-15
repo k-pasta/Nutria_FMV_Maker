@@ -13,6 +13,7 @@ import 'package:provider/provider.dart';
 import '../models/node_data/node_data.dart';
 import '../models/app_theme.dart';
 import '../models/node_data/video_data.dart';
+import '../providers/grid_canvas_provider.dart';
 import '../providers/theme_provider.dart';
 import '../providers/nodes_provider.dart';
 import '../providers/video_player_provider.dart';
@@ -49,7 +50,10 @@ class BaseNode extends StatelessWidget {
         context.read<VideoPlayerProvider>();
     final NodesProvider nodesProvider = context.read<NodesProvider>();
     final KeyboardProvider keyboardProvider = context.read<KeyboardProvider>();
+        final GridCanvasProvider canvasProvider =
+        context.read<GridCanvasProvider>();
 
+//TODO move to correct widget
     void loadVideo() {
       if (baseNodeData is VideoNodeData &&
           (baseNodeData as VideoNodeData).videoDataId != null) {
@@ -73,7 +77,9 @@ class BaseNode extends StatelessWidget {
               return;
             }
             if (videoPlayerProvider.currentNodeId == baseNodeData.id) {
-              videoPlayerProvider.loadVideo(videoData: nodesProvider.getVideoDataById(details.data), nodeId: nodeId);
+              videoPlayerProvider.loadVideo(
+                  videoData: nodesProvider.getVideoDataById(details.data),
+                  nodeId: nodeId);
             }
             nodesProvider.setVideo(nodeId: nodeId, videoId: details.data);
             // videoPlayerProvider
@@ -98,7 +104,9 @@ class BaseNode extends StatelessWidget {
                         : appSettingsProvider.snapSettings);
               },
               onPanStart: (details) {
-                if (baseNodeData.isSelected || keyboardProvider.isCtrlPressed || keyboardProvider.isShiftPressed) {
+                if (baseNodeData.isSelected ||
+                    keyboardProvider.isCtrlPressed ||
+                    keyboardProvider.isShiftPressed) {
                   nodesProvider
                       .selectNodes([baseNodeData.id], multiSelection: true);
                 } else {
@@ -113,7 +121,8 @@ class BaseNode extends StatelessWidget {
                 nodesProvider.resetNodesIntendedValues();
               },
               onTap: () {
-                if (!keyboardProvider.isCtrlPressed && !keyboardProvider.isShiftPressed) {
+                if (!keyboardProvider.isCtrlPressed &&
+                    !keyboardProvider.isShiftPressed) {
                   nodesProvider.setActiveNode(baseNodeData.id);
                   nodesProvider.selectNodes([baseNodeData.id]);
                   loadVideo();
@@ -162,10 +171,24 @@ class BaseNode extends StatelessWidget {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(
                                   theme.dPanelBorderRadius),
+                              boxShadow: baseNodeData.isSelected
+                                  ? [
+                                      BoxShadow(
+                                        color: Color.fromARGB(255, 0, 0, 0), //TODO De-Hardcode                                      
+                                        blurRadius:
+                                            5 / canvasProvider.currentScale,
+                                        offset: Offset(
+                                            0, 2 / canvasProvider.currentScale),
+                                      ),
+                                    ]
+                                  : [],
                               border: Border.all(
                                   color: theme.cOutlines,
                                   width: theme.dOutlinesWidth),
-                              color: baseNodeData.isBeingHovered || baseNodeData.isSelected ? theme.cButton :theme.cPanelTransparent,
+                              color: baseNodeData.isBeingHovered ||
+                                      baseNodeData.isSelected
+                                  ? theme.cButton
+                                  : theme.cPanelTransparent,
                             ),
                             padding: EdgeInsets.all(theme.dPanelPadding),
                             child: expansion),

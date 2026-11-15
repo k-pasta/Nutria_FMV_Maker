@@ -94,6 +94,6 @@ class GridCanvasProvider extends ChangeNotifier {
     _currentScale = newScale;
 //  print (newScale);
     // print('${positionOffset.dx} - dx, ${positionOffset.dy} - dy');
-    // notifyListeners();
+    notifyListeners();
   }
 }
