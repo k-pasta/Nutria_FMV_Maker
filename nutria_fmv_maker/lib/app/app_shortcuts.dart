@@ -22,6 +22,24 @@ const kShortcutGridSnapping =
 /// Single-key shortcuts. `NutriaTextField` blocks these while typing.
 const kShortcutLeftPanel = SingleActivator(LogicalKeyboardKey.keyT);
 const kShortcutRightPanel = SingleActivator(LogicalKeyboardKey.keyN);
+const kShortcutZoomIn = [
+  SingleActivator(LogicalKeyboardKey.add),
+  SingleActivator(LogicalKeyboardKey.numpadAdd),
+  // "+" shares the "=" key on most layouts.
+  SingleActivator(LogicalKeyboardKey.equal),
+];
+const kShortcutZoomOut = [
+  SingleActivator(LogicalKeyboardKey.minus),
+  SingleActivator(LogicalKeyboardKey.numpadSubtract),
+];
+
+/// Arrow keys pan the canvas. Text fields consume them while typing.
+const kPanKeys = [
+  (key: SingleActivator(LogicalKeyboardKey.arrowLeft), direction: Offset(-1, 0)),
+  (key: SingleActivator(LogicalKeyboardKey.arrowRight), direction: Offset(1, 0)),
+  (key: SingleActivator(LogicalKeyboardKey.arrowUp), direction: Offset(0, -1)),
+  (key: SingleActivator(LogicalKeyboardKey.arrowDown), direction: Offset(0, 1)),
+];
 
 /// Key bindings for [commands].
 Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
@@ -38,4 +56,10 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutGridSnapping: commands.toggleGridSnapping,
       kShortcutLeftPanel: () => commands.togglePanel(PanelSide.left),
       kShortcutRightPanel: () => commands.togglePanel(PanelSide.right),
+      for (final key in kShortcutZoomIn)
+        key: () => commands.zoomCanvas(zoomIn: true),
+      for (final key in kShortcutZoomOut)
+        key: () => commands.zoomCanvas(zoomIn: false),
+      for (final (:key, :direction) in kPanKeys)
+        key: () => commands.panCanvas(direction),
     };

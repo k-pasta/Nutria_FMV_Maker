@@ -27,8 +27,25 @@ class CanvasViewController extends TransformationController {
       : super(Matrix4.identity()
           ..translateByDouble(-kCanvasCenter.dx, -kCanvasCenter.dy, 0, 1));
 
+  /// Size of the on-screen canvas. Keyboard zoom keeps its center fixed.
+  Size get viewportSize => _viewportSize;
+  Size _viewportSize = Size.zero;
+
+  /// Called by the canvas widget after layout. The first time, the view is
+  /// moved so that canvas position (0, 0) is in the middle of the screen.
+  void setViewportSize(Size size) {
+    final first = _viewportSize == Size.zero;
+    _viewportSize = size;
+    if (first && size != Size.zero) panBy(size.center(Offset.zero));
+  }
+
   /// Current zoom factor (1 = 100%).
-  double get scale => value.getMaxScaleOnAxis();
+  double get scale => scaleOf(value);
+
+  /// The zoom factor of a pan/zoom [matrix]. Not `getMaxScaleOnAxis`: zoom
+  /// only scales x and y, so that would never report less than the z scale
+  /// of 1.
+  static double scaleOf(Matrix4 matrix) => matrix.storage[0];
 
   /// Zooms one step in or out, keeping [focalPoint] (viewport coordinates,
   /// e.g. the mouse position) fixed on screen.
@@ -43,6 +60,10 @@ class CanvasViewController extends TransformationController {
       ..translateByDouble(-focalPoint.dx, -focalPoint.dy, 0, 1)
       ..multiply(value);
   }
+
+  /// Zooms one step around the middle of the viewport (keyboard zoom).
+  void zoomCentered({required bool zoomIn}) =>
+      zoomAt(viewportSize.center(Offset.zero), zoomIn: zoomIn);
 
   /// Pans the view by [delta] in screen pixels.
   void panBy(Offset delta) {

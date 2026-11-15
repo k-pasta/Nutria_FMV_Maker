@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
+import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -101,6 +102,13 @@ class AppCommands {
       _ref.read(preferencesProvider.notifier).toggleGridSnapping();
 
   // ------------------------------------------------------------------- view
+
+  /// Moves the view one step in [direction] (e.g. `Offset(1, 0)` = right).
+  void panCanvas(Offset direction) =>
+      _ref.read(canvasViewProvider).panBy(-direction * kArrowPanStep);
+
+  void zoomCanvas({required bool zoomIn}) =>
+      _ref.read(canvasViewProvider).zoomCentered(zoomIn: zoomIn);
 
   void togglePanel(PanelSide side) => _ref
       .read(panelLayoutProvider.notifier)

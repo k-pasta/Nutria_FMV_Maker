@@ -26,10 +26,12 @@ class GraphEditor {
 
   // ------------------------------------------------------------------ nodes
 
-  /// Adds a video node of the preferred type at [position] and returns its id.
-  String addVideoNode(Position position, {String? videoId}) {
+  /// Adds a video node at [position] and returns its id. The node is of
+  /// [type], or of the type chosen in the preferences.
+  String addVideoNode(Position position,
+      {String? videoId, DefaultNodeType? type}) {
     final id = _newId();
-    final node = switch (_ref.read(preferencesProvider).defaultNodeType) {
+    final node = switch (type ?? _ref.read(preferencesProvider).defaultNodeType) {
       DefaultNodeType.simpleVideo =>
         SimpleVideoNode(id: id, position: position, videoId: videoId),
       DefaultNodeType.branchedVideo => newBranchedVideoNode(

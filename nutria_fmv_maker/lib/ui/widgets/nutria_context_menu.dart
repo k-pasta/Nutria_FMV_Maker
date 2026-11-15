@@ -28,6 +28,7 @@ class NutriaContextMenuArea extends StatefulWidget {
     required this.child,
     this.onTap,
     this.onOpenChanged,
+    this.behavior = HitTestBehavior.deferToChild,
   });
 
   final List<NutriaContextMenuItem> Function(Offset localPosition) itemsAt;
@@ -36,6 +37,9 @@ class NutriaContextMenuArea extends StatefulWidget {
   /// Plain (left) click on the area.
   final VoidCallback? onTap;
   final ValueChanged<bool>? onOpenChanged;
+
+  /// Use [HitTestBehavior.opaque] when [child] paints nothing itself.
+  final HitTestBehavior behavior;
 
   @override
   State<NutriaContextMenuArea> createState() => _NutriaContextMenuAreaState();
@@ -143,6 +147,7 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
 
   @override
   Widget build(BuildContext context) => GestureDetector(
+        behavior: widget.behavior,
         onTap: widget.onTap,
         onSecondaryTapUp: _open,
         child: widget.child,

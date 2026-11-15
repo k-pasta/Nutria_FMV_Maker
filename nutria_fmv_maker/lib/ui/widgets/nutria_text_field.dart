@@ -44,6 +44,7 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     SingleActivator(LogicalKeyboardKey.add): DoNothingAndStopPropagationIntent(),
     SingleActivator(LogicalKeyboardKey.numpadAdd):
         DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.equal): DoNothingAndStopPropagationIntent(),
     SingleActivator(LogicalKeyboardKey.minus): DoNothingAndStopPropagationIntent(),
     SingleActivator(LogicalKeyboardKey.numpadSubtract):
         DoNothingAndStopPropagationIntent(),
