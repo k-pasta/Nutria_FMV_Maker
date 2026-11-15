@@ -121,6 +121,12 @@ class AppLocalizationsEl extends AppLocalizations {
   String get nodeConvertToSimple => 'Μετατροπή σε Απλό Κόμβο Βίντεο';
 
   @override
+  String get nodeNoVideo => 'Χωρίς βίντεο';
+
+  @override
+  String get nodeThumbnailError => 'Χωρίς μικρογραφία';
+
+  @override
   String notifyExportWarnings(int count) {
     return 'Η εξαγωγή έγινε με $count προειδοποιήσεις (βίντεο που λείπουν ή επιλογές χωρίς σύνδεση)';
   }

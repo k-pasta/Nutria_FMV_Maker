@@ -36,6 +36,8 @@
   "menuBarView": "Προβολή",
   "nodeConvertToBranching": "Μετατροπή σε Διακλαδικό Κόμβο",
   "nodeConvertToSimple": "Μετατροπή σε Απλό Κόμβο Βίντεο",
+  "nodeNoVideo": "Χωρίς βίντεο",
+  "nodeThumbnailError": "Χωρίς μικρογραφία",
   "notifyExportWarnings": "Η εξαγωγή έγινε με {count} προειδοποιήσεις (βίντεο που λείπουν ή επιλογές χωρίς σύνδεση)",
   "notifyExported": "Έγινε εξαγωγή: {fileName}",
   "notifyFileError": "Αδυναμία πρόσβασης στο {path}",

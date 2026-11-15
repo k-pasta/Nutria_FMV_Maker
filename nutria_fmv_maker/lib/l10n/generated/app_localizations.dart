@@ -322,6 +322,18 @@ abstract class AppLocalizations {
   /// **'Convert to Simple Video Node'**
   String get nodeConvertToSimple;
 
+  /// No description provided for @nodeNoVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'No Video'**
+  String get nodeNoVideo;
+
+  /// No description provided for @nodeThumbnailError.
+  ///
+  /// In en, this message translates to:
+  /// **'No thumbnail'**
+  String get nodeThumbnailError;
+
   /// No description provided for @notifyExportWarnings.
   ///
   /// In en, this message translates to:

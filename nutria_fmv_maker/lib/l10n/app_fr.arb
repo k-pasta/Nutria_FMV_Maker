@@ -36,6 +36,8 @@
   "menuBarView": "Afficage",
   "nodeConvertToBranching": "Convertir en Νœud Ramifié",
   "nodeConvertToSimple": "Convertir en Νœud Vidéo Simple",
+  "nodeNoVideo": "Aucune vidéo",
+  "nodeThumbnailError": "Pas de miniature",
   "notifyExportWarnings": "Exporté avec {count} avertissements (vidéos manquantes ou choix non connectés)",
   "notifyExported": "Exporté : {fileName}",
   "notifyFileError": "Impossible d'accéder à {path}",

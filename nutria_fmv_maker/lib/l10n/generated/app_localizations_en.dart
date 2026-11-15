@@ -121,6 +121,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nodeConvertToSimple => 'Convert to Simple Video Node';
 
   @override
+  String get nodeNoVideo => 'No Video';
+
+  @override
+  String get nodeThumbnailError => 'No thumbnail';
+
+  @override
   String notifyExportWarnings(int count) {
     return 'Exported with $count warnings (missing videos or unconnected choices)';
   }

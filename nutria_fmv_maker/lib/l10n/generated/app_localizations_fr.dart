@@ -123,6 +123,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nodeConvertToSimple => 'Convertir en Νœud Vidéo Simple';
 
   @override
+  String get nodeNoVideo => 'Aucune vidéo';
+
+  @override
+  String get nodeThumbnailError => 'Pas de miniature';
+
+  @override
   String notifyExportWarnings(int count) {
     return 'Exporté avec $count avertissements (vidéos manquantes ou choix non connectés)';
   }

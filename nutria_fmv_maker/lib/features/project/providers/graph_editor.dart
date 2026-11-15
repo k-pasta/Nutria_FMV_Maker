@@ -48,6 +48,16 @@ class GraphEditor {
     _ref.read(selectionProvider.notifier).clear();
   }
 
+  /// Deletes node [id] from its context menu: the whole selection if [id]
+  /// is part of it, otherwise just [id].
+  void removeNodeOrSelection(String id) {
+    final selection = _ref.read(selectionProvider.notifier);
+    if (!_ref.read(selectionProvider).selected.contains(id)) {
+      selection.selectOnly(id);
+    }
+    removeSelection();
+  }
+
   /// Switches a video node between simple and branched.
   void convertNode(String id) => _document.apply(
       'Convert node', (d) => d.convertVideoNode(id, newId: _newId));
@@ -126,6 +136,17 @@ class GraphEditor {
   Future<List<String>> pickAndImportVideos() async {
     final paths = await _ref.read(projectFileServiceProvider).pickVideos();
     return importVideos(paths);
+  }
+
+  /// Asks for video files, imports them and gives the first one to video
+  /// node [nodeId], as one undo step.
+  Future<void> pickVideoFor(String nodeId) async {
+    final paths = await _ref.read(projectFileServiceProvider).pickVideos();
+    if (paths.isEmpty) return;
+    _document.beginTransaction('Set video');
+    final ids = importVideos(paths);
+    setVideo(nodeId, ids.first);
+    _document.commit();
   }
 
   /// Imports [paths] as one undo step. Already imported files are reused.

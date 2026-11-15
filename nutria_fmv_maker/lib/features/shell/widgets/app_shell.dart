@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/app/app_menus.dart';
 import 'package:nutria_fmv_maker/app/app_shortcuts.dart';
 import 'package:nutria_fmv_maker/features/about/widgets/about_window.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_view.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/node_layer.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
@@ -46,7 +47,7 @@ class AppShell extends ConsumerWidget {
             const Expanded(
               child: ClipRect(
                 child: Stack(children: [
-                  CanvasView(),
+                  CanvasView(layers: [NodeLayer()]),
                   SidePanels(),
                   _LogoTail(),
                   _Dimmer(),

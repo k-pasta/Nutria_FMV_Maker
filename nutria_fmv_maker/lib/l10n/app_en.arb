@@ -36,6 +36,8 @@
   "menuBarView": "View",
   "nodeConvertToBranching": "Convert to Branching Node",
   "nodeConvertToSimple": "Convert to Simple Video Node",
+  "nodeNoVideo": "No Video",
+  "nodeThumbnailError": "No thumbnail",
   "notifyExportWarnings": "Exported with {count} warnings (missing videos or unconnected choices)",
   "@notifyExportWarnings": {
     "placeholders": {
