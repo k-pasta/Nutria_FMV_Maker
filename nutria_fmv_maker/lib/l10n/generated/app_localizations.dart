@@ -154,6 +154,12 @@ abstract class AppLocalizations {
   /// **'Simple Video'**
   String get contextSimpleVideoNode;
 
+  /// No description provided for @dialogUnsavedChanges.
+  ///
+  /// In en, this message translates to:
+  /// **'Discard unsaved changes?'**
+  String get dialogUnsavedChanges;
+
   /// No description provided for @editDeleteSelectedNodes.
   ///
   /// In en, this message translates to:
@@ -208,17 +214,17 @@ abstract class AppLocalizations {
   /// **'Exit'**
   String get fileExit;
 
+  /// No description provided for @fileExportProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Project'**
+  String get fileExportProject;
+
   /// No description provided for @fileLoadProject.
   ///
   /// In en, this message translates to:
   /// **'Load Project'**
   String get fileLoadProject;
-
-  /// No description provided for @filename.
-  ///
-  /// In en, this message translates to:
-  /// **'File Name'**
-  String get filename;
 
   /// No description provided for @fileNewProject.
   ///
@@ -243,6 +249,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Project as'**
   String get fileSaveProjectAs;
+
+  /// No description provided for @filename.
+  ///
+  /// In en, this message translates to:
+  /// **'File Name'**
+  String get filename;
 
   /// No description provided for @helloWorld.
   ///
@@ -309,6 +321,48 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Convert to Simple Video Node'**
   String get nodeConvertToSimple;
+
+  /// No description provided for @notifyExportWarnings.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported with {count} warnings (missing videos or unconnected choices)'**
+  String notifyExportWarnings(int count);
+
+  /// No description provided for @notifyExported.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported {fileName}'**
+  String notifyExported(String fileName);
+
+  /// No description provided for @notifyFileError.
+  ///
+  /// In en, this message translates to:
+  /// **'Could not access {path}'**
+  String notifyFileError(String path);
+
+  /// No description provided for @notifyInvalidProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Not a valid project file'**
+  String get notifyInvalidProject;
+
+  /// No description provided for @notifyNewerProject.
+  ///
+  /// In en, this message translates to:
+  /// **'This project was made with a newer version of Nutria FMV Maker'**
+  String get notifyNewerProject;
+
+  /// No description provided for @notifyOldProject.
+  ///
+  /// In en, this message translates to:
+  /// **'This project was made with an older version and can\'t be opened'**
+  String get notifyOldProject;
+
+  /// No description provided for @notifySaved.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved {fileName}'**
+  String notifySaved(String fileName);
 
   /// No description provided for @originProjectDescription.
   ///
@@ -436,6 +490,12 @@ abstract class AppLocalizations {
   /// **'Stretch'**
   String get overrideVideoFit_Stretch;
 
+  /// No description provided for @statusUnsavedFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Unsaved File'**
+  String get statusUnsavedFile;
+
   /// No description provided for @videoMetadataAspectRatio.
   ///
   /// In en, this message translates to:
@@ -496,12 +556,6 @@ abstract class AppLocalizations {
   /// **'Duration'**
   String get videoMetadataDuration;
 
-  /// No description provided for @videoMetadataFilename.
-  ///
-  /// In en, this message translates to:
-  /// **'Filename'**
-  String get videoMetadataFilename;
-
   /// No description provided for @videoMetadataFilePath.
   ///
   /// In en, this message translates to:
@@ -513,6 +567,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'File Size'**
   String get videoMetadataFileSize;
+
+  /// No description provided for @videoMetadataFilename.
+  ///
+  /// In en, this message translates to:
+  /// **'Filename'**
+  String get videoMetadataFilename;
 
   /// No description provided for @videoMetadataFrameRate.
   ///

@@ -16,6 +16,7 @@ class NutriaSplitView extends StatefulWidget {
     required this.leftOpen,
     required this.rightOpen,
     required this.onDividerDrag,
+    required this.onDividerDragEnd,
     required this.onOpenRequested,
     required this.onWindowResized,
     this.handleWidth = 10,
@@ -35,6 +36,9 @@ class NutriaSplitView extends StatefulWidget {
 
   /// A divider was dragged by `dx` pixels in a view `totalWidth` wide.
   final void Function(SplitSide side, double dx, double totalWidth) onDividerDrag;
+
+  /// The user let go of the divider next to `side`.
+  final void Function(SplitSide side) onDividerDragEnd;
 
   /// The edge button of a closed panel was clicked.
   final void Function(SplitSide side, double totalWidth) onOpenRequested;
@@ -65,6 +69,7 @@ class _NutriaSplitViewState extends State<NutriaSplitView> {
       Widget divider(SplitSide side, bool open) => GestureDetector(
             onHorizontalDragUpdate: (d) =>
                 widget.onDividerDrag(side, d.delta.dx, total),
+            onHorizontalDragEnd: (_) => widget.onDividerDragEnd(side),
             child: MouseRegion(
               cursor: SystemMouseCursors.resizeLeftRight,
               child: Container(

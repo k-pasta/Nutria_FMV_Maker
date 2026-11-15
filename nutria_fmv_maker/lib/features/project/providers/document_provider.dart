@@ -127,12 +127,14 @@ class DocumentNotifier extends _$DocumentNotifier {
 
   /// Exports a `.fmv` for the Player. Problems such as nodes without a video
   /// don't stop the export; they're returned so the UI can report them.
-  Future<({FileOutcome outcome, List<ExportIssue> issues})> export() async {
+  Future<({FileOutcome outcome, String? path, List<ExportIssue> issues})>
+      export() async {
     final export = exportFmv(state.document);
     final path =
         await _files.saveExportAs(export, suggestedName: _suggestedName());
     return (
       outcome: path == null ? FileOutcome.cancelled : FileOutcome.done,
+      path: path,
       issues: export.issues,
     );
   }

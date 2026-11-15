@@ -40,6 +40,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cTextFieldActive = const Color(0x4a000000),
     this.cMenuBar = const Color(0xff000000),
     this.cMenuBarText = const Color(0xffffffff),
+    this.cDimmer = const Color(0x73000000),
     this.cSwatches = kDefaultSwatches,
     this.dTextHeight = 14,
     this.dTextfieldPadding = 7,
@@ -56,6 +57,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.dScrollbarWidth = 11,
     this.dMenuBarHeight = 45,
     this.dLogoPadding = 10,
+    this.dStatusBarHeight = 25,
   });
 
   /// Canvas background.
@@ -87,6 +89,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color cTextFieldActive;
   final Color cMenuBar;
   final Color cMenuBarText;
+
+  /// Darkens the editor behind open menus and dialogs.
+  final Color cDimmer;
   /// Node color swatches, indexed by `Node.swatch`.
   final List<Color> cSwatches;
   /// Base font size.
@@ -107,6 +112,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final double dScrollbarWidth;
   final double dMenuBarHeight;
   final double dLogoPadding;
+  final double dStatusBarHeight;
 
   /// Node titles.
   TextStyle get swatchTextStyle => TextStyle(
@@ -147,6 +153,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cTextFieldActive,
     Color? cMenuBar,
     Color? cMenuBarText,
+    Color? cDimmer,
     List<Color>? cSwatches,
     double? dTextHeight,
     double? dTextfieldPadding,
@@ -163,6 +170,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     double? dScrollbarWidth,
     double? dMenuBarHeight,
     double? dLogoPadding,
+    double? dStatusBarHeight,
   }) =>
       AppTheme(
         cBackground: cBackground ?? this.cBackground,
@@ -186,6 +194,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
         cTextFieldActive: cTextFieldActive ?? this.cTextFieldActive,
         cMenuBar: cMenuBar ?? this.cMenuBar,
         cMenuBarText: cMenuBarText ?? this.cMenuBarText,
+        cDimmer: cDimmer ?? this.cDimmer,
         cSwatches: cSwatches ?? this.cSwatches,
         dTextHeight: dTextHeight ?? this.dTextHeight,
         dTextfieldPadding: dTextfieldPadding ?? this.dTextfieldPadding,
@@ -202,6 +211,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
         dScrollbarWidth: dScrollbarWidth ?? this.dScrollbarWidth,
         dMenuBarHeight: dMenuBarHeight ?? this.dMenuBarHeight,
         dLogoPadding: dLogoPadding ?? this.dLogoPadding,
+        dStatusBarHeight: dStatusBarHeight ?? this.dStatusBarHeight,
       );
 
   /// Themes switch instantly: there is no meaningful halfway point between

@@ -36,6 +36,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contextSimpleVideoNode => 'Simple Video';
 
   @override
+  String get dialogUnsavedChanges => 'Discard unsaved changes?';
+
+  @override
   String get editDeleteSelectedNodes => 'Delete Selected Node(s)';
 
   @override
@@ -63,10 +66,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fileExit => 'Exit';
 
   @override
-  String get fileLoadProject => 'Load Project';
+  String get fileExportProject => 'Export Project';
 
   @override
-  String get filename => 'File Name';
+  String get fileLoadProject => 'Load Project';
 
   @override
   String get fileNewProject => 'New Project';
@@ -79,6 +82,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get fileSaveProjectAs => 'Save Project as';
+
+  @override
+  String get filename => 'File Name';
 
   @override
   String get helloWorld => 'Hello World!';
@@ -113,6 +119,37 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nodeConvertToSimple => 'Convert to Simple Video Node';
+
+  @override
+  String notifyExportWarnings(int count) {
+    return 'Exported with $count warnings (missing videos or unconnected choices)';
+  }
+
+  @override
+  String notifyExported(String fileName) {
+    return 'Exported $fileName';
+  }
+
+  @override
+  String notifyFileError(String path) {
+    return 'Could not access $path';
+  }
+
+  @override
+  String get notifyInvalidProject => 'Not a valid project file';
+
+  @override
+  String get notifyNewerProject =>
+      'This project was made with a newer version of Nutria FMV Maker';
+
+  @override
+  String get notifyOldProject =>
+      'This project was made with an older version and can\'t be opened';
+
+  @override
+  String notifySaved(String fileName) {
+    return 'Saved $fileName';
+  }
 
   @override
   String get originProjectDescription => 'Project Description';
@@ -178,6 +215,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Stretch';
 
   @override
+  String get statusUnsavedFile => 'Unsaved File';
+
+  @override
   String get videoMetadataAspectRatio => 'Aspect Ratio';
 
   @override
@@ -208,13 +248,13 @@ class AppLocalizationsEn extends AppLocalizations {
   String get videoMetadataDuration => 'Duration';
 
   @override
-  String get videoMetadataFilename => 'Filename';
-
-  @override
   String get videoMetadataFilePath => 'File Path';
 
   @override
   String get videoMetadataFileSize => 'File Size';
+
+  @override
+  String get videoMetadataFilename => 'Filename';
 
   @override
   String get videoMetadataFrameRate => 'Frame Rate';

@@ -8,6 +8,7 @@
   "contextMathNode": "Math",
   "contextSetNode": "Set Value",
   "contextSimpleVideoNode": "Simple Video",
+  "dialogUnsavedChanges": "Discard unsaved changes?",
   "editDeleteSelectedNodes": "Delete Selected Node(s)",
   "editPreferences": "Preferences",
   "editProjectSettings": "Project Settings",
@@ -17,12 +18,13 @@
   "essentialsNo": "No",
   "essentialsYes": "Yes",
   "fileExit": "Exit",
+  "fileExportProject": "Export Project",
   "fileLoadProject": "Load Project",
-  "filename": "File Name",
   "fileNewProject": "New Project",
   "fileRecentProjects": "Recent Projects",
   "fileSaveProject": "Save Project",
   "fileSaveProjectAs": "Save Project as",
+  "filename": "File Name",
   "helloWorld": "Hello World!",
   "helpAbout": "About Nutria FMV Maker",
   "helpDocumentation": "Documentation",
@@ -34,6 +36,41 @@
   "menuBarView": "View",
   "nodeConvertToBranching": "Convert to Branching Node",
   "nodeConvertToSimple": "Convert to Simple Video Node",
+  "notifyExportWarnings": "Exported with {count} warnings (missing videos or unconnected choices)",
+  "@notifyExportWarnings": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyExported": "Exported {fileName}",
+  "@notifyExported": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyFileError": "Could not access {path}",
+  "@notifyFileError": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "notifyInvalidProject": "Not a valid project file",
+  "notifyNewerProject": "This project was made with a newer version of Nutria FMV Maker",
+  "notifyOldProject": "This project was made with an older version and can't be opened",
+  "notifySaved": "Saved {fileName}",
+  "@notifySaved": {
+    "placeholders": {
+      "fileName": {
+        "type": "String"
+      }
+    }
+  },
   "originProjectDescription": "Project Description",
   "originProjectTitle": "Project Title",
   "originTitlePlaceHolder": "Main Menu Placeholder",
@@ -55,6 +92,7 @@
   "overrideVideoFit_FitHeight": "Fit Height",
   "overrideVideoFit_FitWidth": "Fit Width",
   "overrideVideoFit_Stretch": "Stretch",
+  "statusUnsavedFile": "Unsaved File",
   "videoMetadataAspectRatio": "Aspect Ratio",
   "videoMetadataAudioBitDepth": "Audio Bit Depth",
   "videoMetadataAudioChannels": "Audio Channels",
@@ -65,9 +103,9 @@
   "videoMetadataColorProfile": "Color Profile",
   "videoMetadataDateCreated": "Date Created",
   "videoMetadataDuration": "Duration",
-  "videoMetadataFilename": "Filename",
   "videoMetadataFilePath": "File Path",
   "videoMetadataFileSize": "File Size",
+  "videoMetadataFilename": "Filename",
   "videoMetadataFrameRate": "Frame Rate",
   "videoMetadataNamesBytes": "Bytes",
   "videoMetadataNamesFps": "fps",

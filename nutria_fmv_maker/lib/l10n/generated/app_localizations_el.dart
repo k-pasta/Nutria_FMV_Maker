@@ -36,6 +36,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get contextSimpleVideoNode => 'Απλό Βίντεο';
 
   @override
+  String get dialogUnsavedChanges => 'Απόρριψη μη αποθηκευμένων αλλαγών;';
+
+  @override
   String get editDeleteSelectedNodes => 'Διαγραφή Επελεγμένων Κόμβων';
 
   @override
@@ -63,10 +66,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get fileExit => 'Έξοδος';
 
   @override
-  String get fileLoadProject => 'Άνοιγμα ';
+  String get fileExportProject => 'Εξαγωγή έργου';
 
   @override
-  String get filename => 'File Name';
+  String get fileLoadProject => 'Άνοιγμα ';
 
   @override
   String get fileNewProject => 'Νέο Πρότζεκτ';
@@ -79,6 +82,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get fileSaveProjectAs => 'Αποθήκευση Πρότζεκτ ως';
+
+  @override
+  String get filename => 'File Name';
 
   @override
   String get helloWorld => 'Γεια σου κοσμε!';
@@ -113,6 +119,37 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get nodeConvertToSimple => 'Μετατροπή σε Απλό Κόμβο Βίντεο';
+
+  @override
+  String notifyExportWarnings(int count) {
+    return 'Η εξαγωγή έγινε με $count προειδοποιήσεις (βίντεο που λείπουν ή επιλογές χωρίς σύνδεση)';
+  }
+
+  @override
+  String notifyExported(String fileName) {
+    return 'Έγινε εξαγωγή: $fileName';
+  }
+
+  @override
+  String notifyFileError(String path) {
+    return 'Αδυναμία πρόσβασης στο $path';
+  }
+
+  @override
+  String get notifyInvalidProject => 'Μη έγκυρο αρχείο έργου';
+
+  @override
+  String get notifyNewerProject =>
+      'Το έργο δημιουργήθηκε με νεότερη έκδοση του Nutria FMV Maker';
+
+  @override
+  String get notifyOldProject =>
+      'Το έργο δημιουργήθηκε με παλαιότερη έκδοση και δεν μπορεί να ανοίξει';
+
+  @override
+  String notifySaved(String fileName) {
+    return 'Αποθηκεύτηκε: $fileName';
+  }
 
   @override
   String get originProjectDescription => 'Περιγραφή Πρότζεκτ';
@@ -178,6 +215,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Παραμόρφωση';
 
   @override
+  String get statusUnsavedFile => 'Μη αποθηκευμένο αρχείο';
+
+  @override
   String get videoMetadataAspectRatio => 'Αναλογία Διαστάσεων';
 
   @override
@@ -208,13 +248,13 @@ class AppLocalizationsEl extends AppLocalizations {
   String get videoMetadataDuration => 'Διάρκεια';
 
   @override
-  String get videoMetadataFilename => 'Όνομα Αρχείου';
-
-  @override
   String get videoMetadataFilePath => 'Θέση Αρχείου';
 
   @override
   String get videoMetadataFileSize => 'Μέγεθος Αρχείου';
+
+  @override
+  String get videoMetadataFilename => 'Όνομα Αρχείου';
 
   @override
   String get videoMetadataFrameRate => 'Ρυθμός Καρέ';

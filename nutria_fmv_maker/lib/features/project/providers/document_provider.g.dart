@@ -99,7 +99,7 @@ final class DocumentNotifierProvider
   }
 }
 
-String _$documentNotifierHash() => r'c8e006cb840ed32ba15259c6b27e9a2b140aefd7';
+String _$documentNotifierHash() => r'f087a3bc44bfb656ac808b1d9cb68b9c12e38c03';
 
 /// Owns the open project. **Every** document change goes through [apply] (or a
 /// transaction), which is what makes undo/redo work for every edit.

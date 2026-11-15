@@ -44,5 +44,12 @@ ThemeData buildThemeData(AppTheme appTheme, {required bool dark}) => ThemeData(
       brightness: dark ? Brightness.dark : Brightness.light,
       fontFamily: 'SourceSans',
       scaffoldBackgroundColor: appTheme.cBackground,
+      splashFactory: NoSplash.splashFactory,
+      textTheme: const TextTheme(
+        bodyLarge: TextStyle(fontWeight: FontWeight.w600),
+        bodyMedium: TextStyle(fontWeight: FontWeight.w600),
+        bodySmall: TextStyle(fontWeight: FontWeight.w600),
+        headlineLarge: TextStyle(fontWeight: FontWeight.w800),
+      ),
       extensions: [appTheme],
     );

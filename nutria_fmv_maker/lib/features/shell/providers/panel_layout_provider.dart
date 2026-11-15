@@ -100,6 +100,12 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
     state = s;
   }
 
+  /// The drag on [side]'s handle ended: forget how far past the limits it
+  /// went, so the next drag responds immediately.
+  void dragEnd(PanelSide side) => state = side == PanelSide.left
+      ? state.copyWith(intendedLeft: state.left)
+      : state.copyWith(intendedRight: state.right);
+
   /// Opens or closes the panel on [side].
   void toggle(PanelSide side, double totalWidth) {
     final closed = side == PanelSide.left ? state.leftClosed : state.rightClosed;

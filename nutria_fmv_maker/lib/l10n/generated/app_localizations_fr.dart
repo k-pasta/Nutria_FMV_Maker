@@ -36,6 +36,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get contextSimpleVideoNode => 'Vidéo Simple';
 
   @override
+  String get dialogUnsavedChanges =>
+      'Abandonner les modifications non enregistrées ?';
+
+  @override
   String get editDeleteSelectedNodes => 'Supprimer les Nœuds Sélectionnés';
 
   @override
@@ -64,10 +68,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fileExit => 'Quitter';
 
   @override
-  String get fileLoadProject => 'Charger un Projet';
+  String get fileExportProject => 'Exporter le projet';
 
   @override
-  String get filename => 'Nom du Fichier';
+  String get fileLoadProject => 'Charger un Projet';
 
   @override
   String get fileNewProject => 'Nouveau Projet';
@@ -80,6 +84,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get fileSaveProjectAs => 'Enregistrer le Projet sous...';
+
+  @override
+  String get filename => 'Nom du Fichier';
 
   @override
   String get helloWorld => 'Salut Monde!';
@@ -114,6 +121,37 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nodeConvertToSimple => 'Convertir en Νœud Vidéo Simple';
+
+  @override
+  String notifyExportWarnings(int count) {
+    return 'Exporté avec $count avertissements (vidéos manquantes ou choix non connectés)';
+  }
+
+  @override
+  String notifyExported(String fileName) {
+    return 'Exporté : $fileName';
+  }
+
+  @override
+  String notifyFileError(String path) {
+    return 'Impossible d\'accéder à $path';
+  }
+
+  @override
+  String get notifyInvalidProject => 'Fichier de projet non valide';
+
+  @override
+  String get notifyNewerProject =>
+      'Ce projet a été créé avec une version plus récente de Nutria FMV Maker';
+
+  @override
+  String get notifyOldProject =>
+      'Ce projet a été créé avec une version plus ancienne et ne peut pas être ouvert';
+
+  @override
+  String notifySaved(String fileName) {
+    return 'Enregistré : $fileName';
+  }
 
   @override
   String get originProjectDescription => 'Description du projet';
@@ -179,6 +217,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Étirer';
 
   @override
+  String get statusUnsavedFile => 'Fichier non enregistré';
+
+  @override
   String get videoMetadataAspectRatio => 'Rapport de Forme';
 
   @override
@@ -209,13 +250,13 @@ class AppLocalizationsFr extends AppLocalizations {
   String get videoMetadataDuration => 'Durée';
 
   @override
-  String get videoMetadataFilename => 'Nom de fichier';
-
-  @override
   String get videoMetadataFilePath => 'Chemin d\'accès';
 
   @override
   String get videoMetadataFileSize => 'Taille du fichier';
+
+  @override
+  String get videoMetadataFilename => 'Nom de fichier';
 
   @override
   String get videoMetadataFrameRate => 'Images par seconde';
