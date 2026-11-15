@@ -68,9 +68,12 @@ class NutriaMenuBar extends StatelessWidget {
               MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
+                  // The box is empty, so it must catch clicks itself.
+                  behavior: HitTestBehavior.opaque,
                   onTap: onLogoTap,
                   child: SizedBox(
-                      width: theme.dMenuBarHeight * 2 - theme.dLogoPadding),
+                      width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
+                      height: theme.dMenuBarHeight),
                 ),
               ),
               for (final menu in menus)

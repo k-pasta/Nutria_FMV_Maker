@@ -92,6 +92,9 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
         controller: _controller,
         focusNode: _focus,
         onChanged: widget.onChanged,
+        // Clicking elsewhere ends editing, so the app's keyboard shortcuts
+        // work again (desktop fields keep focus by default).
+        onTapOutside: (_) => _focus.unfocus(),
         textInputAction: TextInputAction.next,
         cursorColor: theme.cText,
         style: TextStyle(

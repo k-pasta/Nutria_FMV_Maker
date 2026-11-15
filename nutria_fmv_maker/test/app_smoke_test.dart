@@ -50,6 +50,13 @@ void main() {
     expect(find.byType(NutriaModal), findsNothing);
   });
 
+  testWidgets('clicking the logo opens the About dialog', (tester) async {
+    await pumpApp(tester);
+    await tester.tapAt(const Offset(30, 15));
+    await tester.pumpAndSettle();
+    expect(find.byType(NutriaModal), findsOneWidget);
+  });
+
   testWidgets('T toggles the left panel', (tester) async {
     await pumpApp(tester);
     await tester.sendKeyEvent(LogicalKeyboardKey.keyT);

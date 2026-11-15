@@ -19,11 +19,54 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_modal.dart';
 
-class AppShell extends ConsumerWidget {
+class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<AppShell> createState() => _AppShellState();
+}
+
+class _AppShellState extends ConsumerState<AppShell> {
+  /// Holds keyboard focus whenever nothing more specific (a text field, a
+  /// menu, a dialog) has it, so the shortcuts above it receive key presses.
+  final _shellFocus = FocusNode(debugLabel: 'AppShell');
+
+  @override
+  void initState() {
+    super.initState();
+    FocusManager.instance.addListener(_reclaimFocus);
+  }
+
+  @override
+  void dispose() {
+    FocusManager.instance.removeListener(_reclaimFocus);
+    _shellFocus.dispose();
+    super.dispose();
+  }
+
+  /// When focus falls back to this page's scope (a text field was left or
+  /// removed), it would sit above the shortcuts and they'd stop working.
+  /// Dialogs have their own scope, so they keep their focus.
+  void _reclaimFocus() {
+    final primary = FocusManager.instance.primaryFocus;
+    final ownScope = _shellFocus.enclosingScope;
+    final fellBack = primary == null ||
+        primary == ownScope ||
+        primary == FocusManager.instance.rootScope;
+    if (!fellBack) return;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final now = FocusManager.instance.primaryFocus;
+      if (mounted &&
+          (now == null ||
+              now == _shellFocus.enclosingScope ||
+              now == FocusManager.instance.rootScope)) {
+        _shellFocus.requestFocus();
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final commands = AppCommands(context, ref);
     final history = ref.watch(historyStatusProvider);
     final preferences = ref.watch(preferencesProvider);
@@ -31,6 +74,7 @@ class AppShell extends ConsumerWidget {
     return CallbackShortcuts(
       bindings: appShortcuts(commands),
       child: Focus(
+        focusNode: _shellFocus,
         autofocus: true,
         child: Scaffold(
           body: Column(children: [
