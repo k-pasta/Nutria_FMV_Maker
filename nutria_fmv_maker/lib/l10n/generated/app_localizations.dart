@@ -502,6 +502,24 @@ abstract class AppLocalizations {
   /// **'Stretch'**
   String get overrideVideoFit_Stretch;
 
+  /// No description provided for @prefDefaultNodeType.
+  ///
+  /// In en, this message translates to:
+  /// **'New Video Nodes'**
+  String get prefDefaultNodeType;
+
+  /// No description provided for @prefGridSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid Size'**
+  String get prefGridSize;
+
+  /// No description provided for @prefGridSnapping.
+  ///
+  /// In en, this message translates to:
+  /// **'Grid Snapping'**
+  String get prefGridSnapping;
+
   /// No description provided for @statusUnsavedFile.
   ///
   /// In en, this message translates to:

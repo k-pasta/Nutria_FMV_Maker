@@ -4,9 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
-import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
-import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
-import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 
 /// The localized name of a setting.
 String videoSettingName(AppLocalizations t, VideoSettingType type) =>
@@ -46,8 +44,8 @@ String videoSettingValue(
         },
     };
 
-/// Name on the left, value button(s) on the right. On nodes, an overridden
-/// setting is accented and gets a reset (x) button.
+/// One setting as a [NutriaSettingRow]. On nodes, an overridden setting is
+/// accented and gets a reset (x) button.
 class VideoSettingRow extends StatelessWidget {
   const VideoSettingRow({
     super.key,
@@ -72,55 +70,16 @@ class VideoSettingRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
     final t = AppLocalizations.of(context);
-    final value = NutriaText(text: videoSettingValue(t, type, settings));
-    return Row(children: [
-      Expanded(
-        child: SizedBox(
-          height: theme.dButtonHeight,
-          child: Row(children: [
-            if (isOverridden && onReset != null)
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onReset,
-                  child: SizedBox(
-                    width: theme.dTextHeight + theme.dPanelPadding,
-                    child: Align(
-                      alignment: Alignment.centerLeft,
-                      child: Icon(Icons.close,
-                          color: theme.cTextActive, size: theme.dTextHeight),
-                    ),
-                  ),
-                ),
-              ),
-            Expanded(
-              child: NutriaText(
-                text: videoSettingName(t, type),
-                state: isOverridden
-                    ? NutriaTextState.accented
-                    : NutriaTextState.normal,
-              ),
-            ),
-          ]),
-        ),
-      ),
-      Expanded(
-        child: isToggleSetting(type)
-            ? NutriaButton(
-                isAccented: isOverridden,
-                onTap: () => onStep(1),
-                child: value,
-              )
-            : NutriaButton.leftRight(
-                isAccented: isOverridden,
-                onTapLeft: () => onStep(-1),
-                onTapRight: () => onStep(1),
-                child: value,
-              ),
-      ),
-    ]);
+    final toggle = isToggleSetting(type);
+    return NutriaSettingRow(
+      label: videoSettingName(t, type),
+      value: videoSettingValue(t, type, settings),
+      isAccented: isOverridden,
+      onReset: isOverridden ? onReset : null,
+      onTap: toggle ? () => onStep(1) : null,
+      onPrevious: toggle ? null : () => onStep(-1),
+      onNext: toggle ? null : () => onStep(1),
+    );
   }
 }

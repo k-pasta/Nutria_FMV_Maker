@@ -1,6 +1,8 @@
 // The video shown in the preview panel and the player that plays it.
 import 'dart:async';
 
+import 'package:flutter/foundation.dart';
+
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:media_kit/media_kit.dart';
@@ -12,11 +14,38 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'video_preview_provider.freezed.dart';
 part 'video_preview_provider.g.dart';
 
+/// A snapshot of the player, for the transport controls.
+typedef PlaybackStatus = ({
+  Duration position,
+  Duration duration,
+  bool playing,
+
+  /// 0 to 100.
+  double volume,
+});
+
+const PlaybackStatus kStoppedStatus = (
+  position: Duration.zero,
+  duration: Duration.zero,
+  playing: false,
+  volume: 100,
+);
+
 /// Plays one file at a time. An interface so tests don't need native video.
 abstract interface class PreviewPlayer {
   /// Loads [path] paused.
   Future<void> open(String path);
   Future<void> stop();
+  Future<void> playOrPause();
+
+  /// Jumps to [position], clamped to the video.
+  Future<void> seek(Duration position);
+
+  /// [volume] from 0 to 100.
+  Future<void> setVolume(double volume);
+
+  /// Updates while the video plays.
+  ValueListenable<PlaybackStatus> get status;
   void dispose();
 }
 
@@ -24,10 +53,45 @@ abstract interface class PreviewPlayer {
 class MediaKitPreviewPlayer implements PreviewPlayer {
   MediaKitPreviewPlayer() : player = Player() {
     controller = VideoController(player);
+    final stream = player.stream;
+    _subscriptions = [
+      stream.position.listen((v) => _update((s) => (
+            position: v,
+            duration: s.duration,
+            playing: s.playing,
+            volume: s.volume,
+          ))),
+      stream.duration.listen((v) => _update((s) => (
+            position: s.position,
+            duration: v,
+            playing: s.playing,
+            volume: s.volume,
+          ))),
+      stream.playing.listen((v) => _update((s) => (
+            position: s.position,
+            duration: s.duration,
+            playing: v,
+            volume: s.volume,
+          ))),
+      stream.volume.listen((v) => _update((s) => (
+            position: s.position,
+            duration: s.duration,
+            playing: s.playing,
+            volume: v,
+          ))),
+    ];
   }
 
   final Player player;
   late final VideoController controller;
+  late final List<StreamSubscription<Object>> _subscriptions;
+  final _status = ValueNotifier<PlaybackStatus>(kStoppedStatus);
+
+  void _update(PlaybackStatus Function(PlaybackStatus s) change) =>
+      _status.value = change(_status.value);
+
+  @override
+  ValueListenable<PlaybackStatus> get status => _status;
 
   @override
   Future<void> open(String path) => player.open(Media(path), play: false);
@@ -36,7 +100,28 @@ class MediaKitPreviewPlayer implements PreviewPlayer {
   Future<void> stop() => player.stop();
 
   @override
-  void dispose() => unawaited(player.dispose());
+  Future<void> playOrPause() => player.playOrPause();
+
+  @override
+  Future<void> seek(Duration position) {
+    final end = player.state.duration;
+    return player.seek(position < Duration.zero
+        ? Duration.zero
+        : (position > end ? end : position));
+  }
+
+  @override
+  Future<void> setVolume(double volume) =>
+      player.setVolume(volume.clamp(0, 100));
+
+  @override
+  void dispose() {
+    for (final subscription in _subscriptions) {
+      unawaited(subscription.cancel());
+    }
+    _status.dispose();
+    unawaited(player.dispose());
+  }
 }
 
 /// The app's preview player. Requires `MediaKit.ensureInitialized()`.

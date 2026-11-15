@@ -223,6 +223,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Étirer';
 
   @override
+  String get prefDefaultNodeType => 'Nouveaux nœuds vidéo';
+
+  @override
+  String get prefGridSize => 'Taille de la grille';
+
+  @override
+  String get prefGridSnapping => 'Aimanter à la grille';
+
+  @override
   String get statusUnsavedFile => 'Fichier non enregistré';
 
   @override

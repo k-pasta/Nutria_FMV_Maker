@@ -19,6 +19,12 @@ enum ThemeChoice { dark, light, custom }
 /// Languages the UI is translated to.
 const kSupportedLanguages = ['en', 'el', 'fr'];
 
+/// Language names in their own language (so they're never translated).
+const kLanguageNames = {'en': 'English', 'el': 'Ελληνικά', 'fr': 'Français'};
+
+/// Grid sizes offered in the preferences, in canvas units.
+const kGridSizes = [25.0, 50.0, 100.0, 200.0];
+
 @freezed
 abstract class Preferences with _$Preferences {
   const factory Preferences({
@@ -59,6 +65,15 @@ class PreferencesNotifier extends _$PreferencesNotifier {
 
   void toggleGridSnapping() =>
       _update(state.copyWith(gridSnapping: !state.gridSnapping));
+
+  /// Picks the next ([direction] 1) or previous (-1) of [kGridSizes].
+  void stepGridSize(int direction) {
+    final current = kGridSizes.indexOf(state.gridSize);
+    final next = current == -1
+        ? kGridSizes.indexOf(kDefaultGridSize)
+        : (current + direction).clamp(0, kGridSizes.length - 1);
+    _update(state.copyWith(gridSize: kGridSizes[next]));
+  }
 
   void setDefaultNodeType(DefaultNodeType type) =>
       _update(state.copyWith(defaultNodeType: type));

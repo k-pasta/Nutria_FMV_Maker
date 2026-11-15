@@ -44,27 +44,30 @@ class NodeFrame extends ConsumerWidget {
     final expansion = this.expansion;
     return SizedBox(
       width: node.width + kNodePadding * 2,
-      child: Stack(clipBehavior: Clip.none, children: [
-        Padding(
-          padding: const EdgeInsets.all(kNodePadding),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _NodeBody(node: node, selected: selected, child: body),
-              if (expansion != null && node.isExpanded) ...[
-                SizedBox(height: theme.dPanelPadding),
-                _Expansion(selected: selected, child: expansion),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(kNodePadding),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                _NodeBody(node: node, selected: selected, child: body),
+                if (expansion != null && node.isExpanded) ...[
+                  SizedBox(height: theme.dPanelPadding),
+                  _Expansion(selected: selected, child: expansion),
+                ],
               ],
-            ],
+            ),
           ),
-        ),
-        for (final knot in layout.knots)
-          Positioned(
-            left: knot.offset.dx - kKnotHitSize / 2,
-            top: knot.offset.dy - kKnotHitSize / 2,
-            child: Knot(port: knot.port),
-          ),
-      ]),
+          for (final knot in layout.knots)
+            Positioned(
+              left: knot.offset.dx - kKnotHitSize / 2,
+              top: knot.offset.dy - kKnotHitSize / 2,
+              child: Knot(port: knot.port),
+            ),
+        ],
+      ),
     );
   }
 }
@@ -72,8 +75,11 @@ class NodeFrame extends ConsumerWidget {
 /// The strip and the main panel. Clicking selects, dragging moves the
 /// selection, the edges resize, and right-click opens the node menu.
 class _NodeBody extends ConsumerStatefulWidget {
-  const _NodeBody(
-      {required this.node, required this.selected, required this.child});
+  const _NodeBody({
+    required this.node,
+    required this.selected,
+    required this.child,
+  });
 
   final Node node;
   final bool selected;
@@ -88,10 +94,12 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
 
   // Read once: the mouse-exit callback can fire while the node is being
   // removed, when `ref` may no longer be used.
-  late final NodeGestureNotifier _gestures =
-      ref.read(nodeGestureProvider.notifier);
-  late final ConnectionDragNotifier _drag =
-      ref.read(connectionDragProvider.notifier);
+  late final NodeGestureNotifier _gestures = ref.read(
+    nodeGestureProvider.notifier,
+  );
+  late final ConnectionDragNotifier _drag = ref.read(
+    connectionDragProvider.notifier,
+  );
 
   List<NutriaContextMenuItem> _menu(AppLocalizations t) {
     final node = widget.node;
@@ -120,11 +128,25 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
 
   @override
   Widget build(BuildContext context) {
+    final node = widget.node;
+    // Library videos dropped on a video node replace its video.
+    return DragTarget<String>(
+      onWillAcceptWithDetails: (_) => node.isVideoNode,
+      onAcceptWithDetails: (details) =>
+          _gestures.dropVideo(node.id, details.data),
+      builder: (context, candidates, _) =>
+          _body(context, candidates.isNotEmpty),
+    );
+  }
+
+  Widget _body(BuildContext context, bool dropping) {
     final theme = context.appTheme;
     final node = widget.node;
     final radius = Radius.circular(theme.dPanelBorderRadius);
-    final outline =
-        BorderSide(color: theme.cOutlines, width: theme.dOutlinesWidth);
+    final outline = BorderSide(
+      color: theme.cOutlines,
+      width: theme.dOutlinesWidth,
+    );
     return NutriaContextMenuArea(
       itemsAt: (_) => _menu(AppLocalizations.of(context)),
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
@@ -142,35 +164,48 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           onTap: () => _gestures.tap(node.id, additive: _additive),
           onPanStart: (_) => _gestures.beginMove(node.id, additive: _additive),
           // Local deltas are in canvas units: the node is inside the canvas.
-          onPanUpdate: (details) => _gestures.updateMove(details.delta,
-              snap: HardwareKeyboard.instance.isShiftPressed),
+          onPanUpdate: (details) => _gestures.updateMove(
+            details.delta,
+            snap: HardwareKeyboard.instance.isShiftPressed,
+          ),
           onPanEnd: (_) => _gestures.end(),
           onPanCancel: _gestures.end,
-          child: Stack(children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                _SwatchStrip(node: node),
-                DecoratedBox(
-                  decoration: BoxDecoration(
-                    borderRadius:
-                        BorderRadius.only(bottomLeft: radius, bottomRight: radius),
-                    boxShadow: [
-                      if (widget.selected)
-                        BoxShadow(color: theme.cAccentButton, spreadRadius: 3),
-                    ],
-                    border: Border(left: outline, right: outline, bottom: outline),
-                    color: _hovered || widget.selected
-                        ? theme.cButton
-                        : theme.cPanelTransparent,
+          child: Stack(
+            children: [
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  _SwatchStrip(node: node),
+                  DecoratedBox(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        bottomLeft: radius,
+                        bottomRight: radius,
+                      ),
+                      boxShadow: [
+                        if (widget.selected)
+                          BoxShadow(
+                            color: theme.cAccentButton,
+                            spreadRadius: 3,
+                          ),
+                      ],
+                      border: Border(
+                        left: outline,
+                        right: outline,
+                        bottom: outline,
+                      ),
+                      color: _hovered || widget.selected || dropping
+                          ? theme.cButton
+                          : theme.cPanelTransparent,
+                    ),
+                    child: widget.child,
                   ),
-                  child: widget.child,
-                ),
-              ],
-            ),
-            _ResizeHandle(nodeId: node.id, fromLeft: true),
-            _ResizeHandle(nodeId: node.id, fromLeft: false),
-          ]),
+                ],
+              ),
+              _ResizeHandle(nodeId: node.id, fromLeft: true),
+              _ResizeHandle(nodeId: node.id, fromLeft: false),
+            ],
+          ),
         ),
       ),
     );
@@ -198,10 +233,12 @@ class _SwatchStrip extends StatelessWidget {
       ),
       child: name == null
           ? null
-          : Text(name,
+          : Text(
+              name,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
-              style: theme.swatchTextStyle),
+              style: theme.swatchTextStyle,
+            ),
     );
   }
 }

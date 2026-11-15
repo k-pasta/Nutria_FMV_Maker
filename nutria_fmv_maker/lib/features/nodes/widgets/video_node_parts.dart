@@ -41,35 +41,49 @@ class NodeThumbnail extends ConsumerWidget {
       );
     }
     final previewed = ref.watch(
-        videoPreviewProvider.select((p) => p?.nodeId == node.id));
+      videoPreviewProvider.select((p) => p?.nodeId == node.id),
+    );
     final thumbnail = ref.watch(videoThumbnailProvider(path));
     return SizedBox(
       height: height,
-      child: Stack(fit: StackFit.expand, children: [
-        switch (thumbnail) {
-          AsyncData(value: final bytes?) =>
-            Image.memory(bytes, fit: BoxFit.cover, gaplessPlayback: true),
-          AsyncLoading() => const SizedBox.shrink(),
-          _ => CustomPaint(
-              painter: DiagonalStripesPainter(
+      // The stripes painter draws past its bounds.
+      child: ClipRect(
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+            switch (thumbnail) {
+              AsyncData(value: final bytes?) => Image.memory(
+                bytes,
+                fit: BoxFit.cover,
+                gaplessPlayback: true,
+              ),
+              AsyncLoading() => const SizedBox.shrink(),
+              _ => CustomPaint(
+                painter: DiagonalStripesPainter(
                   stripeWidth: 2.5,
                   stripeSpacing: 5,
-                  color: theme.cOutlines),
-              child: Center(
-                child: NutriaText(
-                    text: AppLocalizations.of(context).nodeThumbnailError),
+                  color: theme.cOutlines,
+                ),
+                child: Center(
+                  child: NutriaText(
+                    text: AppLocalizations.of(context).nodeThumbnailError,
+                  ),
+                ),
               ),
-            ),
-        },
-        if (previewed)
-          Positioned(
-            left: theme.dPanelPadding * 2,
-            top: theme.dPanelPadding * 2,
-            child: Icon(Icons.play_arrow,
-                size: theme.dButtonHeight * 1.5,
-                color: theme.cSwatches[node.swatch % theme.cSwatches.length]),
-          ),
-      ]),
+            },
+            if (previewed)
+              Positioned(
+                left: theme.dPanelPadding * 2,
+                top: theme.dPanelPadding * 2,
+                child: Icon(
+                  Icons.play_arrow,
+                  size: theme.dButtonHeight * 1.5,
+                  color: theme.cSwatches[node.swatch % theme.cSwatches.length],
+                ),
+              ),
+          ],
+        ),
+      ),
     );
   }
 }
@@ -111,9 +125,9 @@ class NodeExpandButton extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) => NutriaButton.icon(
-        icon: node.isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-        onTap: () => ref.read(graphEditorProvider).toggleExpanded(node.id),
-      );
+    icon: node.isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+    onTap: () => ref.read(graphEditorProvider).toggleExpanded(node.id),
+  );
 }
 
 /// A row of the node, exactly one button high (so knots line up with it).
@@ -124,7 +138,10 @@ class NodeRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => SizedBox(
-        height: context.appTheme.dButtonHeight,
-        child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: children),
-      );
+    height: context.appTheme.dButtonHeight,
+    child: Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: children,
+    ),
+  );
 }

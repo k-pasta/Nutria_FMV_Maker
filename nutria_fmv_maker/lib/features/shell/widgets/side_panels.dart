@@ -1,7 +1,9 @@
-// The left (properties) and right (video preview) panels around the canvas.
+// The left (library/settings) and right (video preview) panels around the canvas.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/features/shell/widgets/left_panel.dart';
+import 'package:nutria_fmv_maker/features/video_preview/widgets/video_preview_panel.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_split_view.dart';
 
 PanelSide _side(SplitSide side) =>
@@ -24,9 +26,8 @@ class SidePanels extends ConsumerWidget {
       onDividerDragEnd: (side) => panels.dragEnd(_side(side)),
       onOpenRequested: (side, total) => panels.toggle(_side(side), total),
       onWindowResized: panels.windowResized,
-      // TODO(#refactor-step-6): left panel sections and video preview.
-      left: const SizedBox.expand(),
-      right: const SizedBox.expand(),
+      left: const LeftPanel(),
+      right: const VideoPreviewPanel(),
     );
   }
 }

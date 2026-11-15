@@ -221,6 +221,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Stretch';
 
   @override
+  String get prefDefaultNodeType => 'New Video Nodes';
+
+  @override
+  String get prefGridSize => 'Grid Size';
+
+  @override
+  String get prefGridSnapping => 'Grid Snapping';
+
+  @override
   String get statusUnsavedFile => 'Unsaved File';
 
   @override

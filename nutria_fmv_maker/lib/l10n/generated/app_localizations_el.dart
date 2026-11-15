@@ -221,6 +221,15 @@ class AppLocalizationsEl extends AppLocalizations {
   String get overrideVideoFit_Stretch => 'Παραμόρφωση';
 
   @override
+  String get prefDefaultNodeType => 'Νέοι κόμβοι βίντεο';
+
+  @override
+  String get prefGridSize => 'Μέγεθος πλέγματος';
+
+  @override
+  String get prefGridSnapping => 'Κούμπωμα στο πλέγμα';
+
+  @override
   String get statusUnsavedFile => 'Μη αποθηκευμένο αρχείο';
 
   @override

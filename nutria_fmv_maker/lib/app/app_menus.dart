@@ -7,8 +7,6 @@ import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 
-/// Language names are shown in their own language, so they aren't translated.
-const _languageNames = {'en': 'English', 'fr': 'Français', 'el': 'Ελληνικά'};
 
 /// Builds the menus. [canUndo]/[canRedo] grey out Undo/Redo; [preferences]
 /// marks the current language and theme.
@@ -76,7 +74,7 @@ List<NutriaMenu> buildAppMenus({
       ]),
       NutriaMenu(title: t.menuBarView, entries: [
         NutriaMenuEntry(label: t.viewLanguage, icon: Icons.language, children: [
-          for (final MapEntry(key: code, value: name) in _languageNames.entries)
+          for (final MapEntry(key: code, value: name) in kLanguageNames.entries)
             NutriaMenuEntry(
               label: name,
               icon: preferences.languageCode == code ? Icons.check : null,

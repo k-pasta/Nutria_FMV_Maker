@@ -1,8 +1,8 @@
 // Test setup for providers: a ProviderContainer with in-memory fakes for disk,
 // dialogs, video playback and preferences.
 import 'dart:convert';
-import 'dart:typed_data';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
@@ -24,11 +24,14 @@ class MemoryProjectFiles extends ProjectFileService {
   String? nextOpenPath;
   FmvExport? lastExport;
 
+  /// What the next "pick videos" dialog returns.
+  List<String> nextVideos = const [];
+
   @override
   Future<String?> pickProject() async => nextOpenPath;
 
   @override
-  Future<List<String>> pickVideos() async => const [];
+  Future<List<String>> pickVideos() async => nextVideos;
 
   @override
   Future<ProjectDocument> readProject(String path) async => files[path]!;
@@ -74,6 +77,30 @@ class FakePlayer implements PreviewPlayer {
   Future<void> open(String path) async => opened.add(path);
   @override
   Future<void> stop() async => stops++;
+  @override
+  Future<void> playOrPause() async => status.value = (
+        position: status.value.position,
+        duration: status.value.duration,
+        playing: !status.value.playing,
+        volume: status.value.volume,
+      );
+  @override
+  Future<void> seek(Duration position) async => status.value = (
+        position: position,
+        duration: status.value.duration,
+        playing: status.value.playing,
+        volume: status.value.volume,
+      );
+  @override
+  Future<void> setVolume(double volume) async => status.value = (
+        position: status.value.position,
+        duration: status.value.duration,
+        playing: status.value.playing,
+        volume: volume,
+      );
+  @override
+  final ValueNotifier<PlaybackStatus> status =
+      ValueNotifier(kStoppedStatus);
   @override
   void dispose() {}
 }
