@@ -1,0 +1,30 @@
+{
+  "ProjectInfo": {
+    "title": "Τα 88 Ντολμαδάκια",
+    "description": "Ένα διαδραστικό παραμύθι"
+  },
+  "ProjectSettings": {
+    "selectionTime": 6000,
+    "pauseOnEnd": false,
+    "showTimer": true,
+    "videoFit": "fit",
+    "defaultSelection": "first"
+  },
+  "Nodes": {
+    "001": {
+      "video": "C:\\videos\\a.mp4",
+      "choices": [
+        { "option": "Yes", "target": "002" },
+        { "option": "No", "target": "003" }
+      ],
+      "overrides": { "showTimer": false }
+    },
+    "002": {
+      "video": "C:\\videos\\b.mp4",
+      "target": "003"
+    },
+    "003": {
+      "video": "C:\\videos\\c.mp4"
+    }
+  }
+}

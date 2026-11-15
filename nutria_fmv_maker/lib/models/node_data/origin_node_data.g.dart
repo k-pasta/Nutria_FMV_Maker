@@ -10,18 +10,23 @@ OriginNodeData _$OriginNodeDataFromJson(Map<String, dynamic> json) =>
     OriginNodeData(
       projectTitle: json['projectTitle'] as String?,
       projectDescription: json['projectDescription'] as String?,
-      position: const OffsetConverter()
-          .fromJson(json['position'] as Map<String, dynamic>),
+      position: const OffsetConverter().fromJson(
+        json['position'] as Map<String, dynamic>,
+      ),
       intendedPosition: _$JsonConverterFromJson<Map<String, dynamic>, Offset>(
-          json['intendedPosition'], const OffsetConverter().fromJson),
+        json['intendedPosition'],
+        const OffsetConverter().fromJson,
+      ),
       id: json['id'] as String,
-      outputs: (json['outputs'] as List<dynamic>?)
+      outputs:
+          (json['outputs'] as List<dynamic>?)
               ?.map((e) => Output.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [Output()],
       nodeName: json['nodeName'] as String?,
       isExpanded: json['isExpanded'] as bool? ?? false,
-      nodeWidth: (json['nodeWidth'] as num?)?.toDouble() ??
+      nodeWidth:
+          (json['nodeWidth'] as num?)?.toDouble() ??
           UiStaticProperties.nodeDefaultWidth,
       intendedNodeWidth: (json['intendedNodeWidth'] as num?)?.toDouble(),
       swatch: (json['swatch'] as num?)?.toInt() ?? 0,
@@ -29,26 +34,25 @@ OriginNodeData _$OriginNodeDataFromJson(Map<String, dynamic> json) =>
       isBeingHovered: json['isBeingHovered'] as bool? ?? false,
     );
 
-Map<String, dynamic> _$OriginNodeDataToJson(OriginNodeData instance) =>
-    <String, dynamic>{
-      'position': const OffsetConverter().toJson(instance.position),
-      'id': instance.id,
-      'intendedPosition':
-          const OffsetConverter().toJson(instance.intendedPosition),
-      'isSelected': instance.isSelected,
-      'isBeingHovered': instance.isBeingHovered,
-      'nodeName': instance.nodeName,
-      'nodeWidth': instance.nodeWidth,
-      'intendedNodeWidth': instance.intendedNodeWidth,
-      'isExpanded': instance.isExpanded,
-      'outputs': instance.outputs,
-      'swatch': instance.swatch,
-      'projectTitle': instance.projectTitle,
-      'projectDescription': instance.projectDescription,
-    };
+Map<String, dynamic> _$OriginNodeDataToJson(
+  OriginNodeData instance,
+) => <String, dynamic>{
+  'position': const OffsetConverter().toJson(instance.position),
+  'id': instance.id,
+  'intendedPosition': const OffsetConverter().toJson(instance.intendedPosition),
+  'isSelected': instance.isSelected,
+  'isBeingHovered': instance.isBeingHovered,
+  'nodeName': instance.nodeName,
+  'nodeWidth': instance.nodeWidth,
+  'intendedNodeWidth': instance.intendedNodeWidth,
+  'isExpanded': instance.isExpanded,
+  'outputs': instance.outputs.map((e) => e.toJson()).toList(),
+  'swatch': instance.swatch,
+  'projectTitle': instance.projectTitle,
+  'projectDescription': instance.projectDescription,
+};
 
 Value? _$JsonConverterFromJson<Json, Value>(
   Object? json,
   Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
+) => json == null ? null : fromJson(json as Json);

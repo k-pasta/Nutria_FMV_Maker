@@ -1,0 +1,7 @@
+targets:
+  $default:
+    builders:
+      json_serializable:
+        options:
+          # Nested freezed models (nodes, edges, settings) must serialize recursively.
+          explicit_to_json: true

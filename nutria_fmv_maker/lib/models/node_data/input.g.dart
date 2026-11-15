@@ -7,11 +7,11 @@ part of 'input.dart';
 // **************************************************************************
 
 Input _$InputFromJson(Map<String, dynamic> json) => Input(
-      isBeingTargeted: json['isBeingTargeted'] as bool? ?? false,
-      isBeingDragged: json['isBeingDragged'] as bool? ?? false,
-    );
+  isBeingTargeted: json['isBeingTargeted'] as bool? ?? false,
+  isBeingDragged: json['isBeingDragged'] as bool? ?? false,
+);
 
 Map<String, dynamic> _$InputToJson(Input instance) => <String, dynamic>{
-      'isBeingTargeted': instance.isBeingTargeted,
-      'isBeingDragged': instance.isBeingDragged,
-    };
+  'isBeingTargeted': instance.isBeingTargeted,
+  'isBeingDragged': instance.isBeingDragged,
+};

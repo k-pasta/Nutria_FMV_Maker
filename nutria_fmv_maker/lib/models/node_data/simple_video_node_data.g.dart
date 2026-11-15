@@ -8,18 +8,26 @@ part of 'simple_video_node_data.dart';
 
 SimpleVideoNodeData _$SimpleVideoNodeDataFromJson(Map<String, dynamic> json) =>
     SimpleVideoNodeData(
-      position: const OffsetConverter()
-          .fromJson(json['position'] as Map<String, dynamic>),
+      position: const OffsetConverter().fromJson(
+        json['position'] as Map<String, dynamic>,
+      ),
       intendedPosition: _$JsonConverterFromJson<Map<String, dynamic>, Offset>(
-          json['intendedPosition'], const OffsetConverter().fromJson),
+        json['intendedPosition'],
+        const OffsetConverter().fromJson,
+      ),
       id: json['id'] as String,
       videoDataId: json['videoDataId'] as String?,
-      overrides: (json['overrides'] as List<dynamic>?)
-              ?.map((e) => const VideoNodeOverrideConverter()
-                  .fromJson(e as Map<String, dynamic>))
+      overrides:
+          (json['overrides'] as List<dynamic>?)
+              ?.map(
+                (e) => const VideoNodeOverrideConverter().fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
               .toList() ??
           const <VideoNodeOverride>[],
-      outputs: (json['outputs'] as List<dynamic>?)
+      outputs:
+          (json['outputs'] as List<dynamic>?)
               ?.map((e) => Output.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [Output()],
@@ -28,7 +36,8 @@ SimpleVideoNodeData _$SimpleVideoNodeDataFromJson(Map<String, dynamic> json) =>
           : Input.fromJson(json['input'] as Map<String, dynamic>),
       nodeName: json['nodeName'] as String?,
       isExpanded: json['isExpanded'] as bool? ?? false,
-      nodeWidth: (json['nodeWidth'] as num?)?.toDouble() ??
+      nodeWidth:
+          (json['nodeWidth'] as num?)?.toDouble() ??
           UiStaticProperties.nodeDefaultWidth,
       intendedNodeWidth: (json['intendedNodeWidth'] as num?)?.toDouble(),
       swatch: (json['swatch'] as num?)?.toInt() ?? 0,
@@ -37,29 +46,27 @@ SimpleVideoNodeData _$SimpleVideoNodeDataFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$SimpleVideoNodeDataToJson(
-        SimpleVideoNodeData instance) =>
-    <String, dynamic>{
-      'position': const OffsetConverter().toJson(instance.position),
-      'id': instance.id,
-      'intendedPosition':
-          const OffsetConverter().toJson(instance.intendedPosition),
-      'isSelected': instance.isSelected,
-      'isBeingHovered': instance.isBeingHovered,
-      'nodeName': instance.nodeName,
-      'nodeWidth': instance.nodeWidth,
-      'intendedNodeWidth': instance.intendedNodeWidth,
-      'isExpanded': instance.isExpanded,
-      'input': instance.input,
-      'swatch': instance.swatch,
-      'videoDataId': instance.videoDataId,
-      'overrides': instance.overrides
-          .map(const VideoNodeOverrideConverter().toJson)
-          .toList(),
-      'outputs': instance.outputs,
-    };
+  SimpleVideoNodeData instance,
+) => <String, dynamic>{
+  'position': const OffsetConverter().toJson(instance.position),
+  'id': instance.id,
+  'intendedPosition': const OffsetConverter().toJson(instance.intendedPosition),
+  'isSelected': instance.isSelected,
+  'isBeingHovered': instance.isBeingHovered,
+  'nodeName': instance.nodeName,
+  'nodeWidth': instance.nodeWidth,
+  'intendedNodeWidth': instance.intendedNodeWidth,
+  'isExpanded': instance.isExpanded,
+  'input': instance.input?.toJson(),
+  'swatch': instance.swatch,
+  'videoDataId': instance.videoDataId,
+  'overrides': instance.overrides
+      .map(const VideoNodeOverrideConverter().toJson)
+      .toList(),
+  'outputs': instance.outputs.map((e) => e.toJson()).toList(),
+};
 
 Value? _$JsonConverterFromJson<Json, Value>(
   Object? json,
   Value? Function(Json json) fromJson,
-) =>
-    json == null ? null : fromJson(json as Json);
+) => json == null ? null : fromJson(json as Json);
