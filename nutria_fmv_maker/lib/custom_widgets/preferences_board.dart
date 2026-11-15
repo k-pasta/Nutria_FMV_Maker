@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/custom_widgets/board_video_override.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
 import 'package:nutria_fmv_maker/providers/app_settings_provider.dart';

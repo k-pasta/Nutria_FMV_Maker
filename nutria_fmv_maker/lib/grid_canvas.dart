@@ -16,7 +16,7 @@ import './providers/grid_canvas_provider.dart';
 import './providers/nodes_provider.dart';
 import 'painters/grid_painter.dart';
 import 'package:flutter/gestures.dart';
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
 import 'providers/app_settings_provider.dart';
 import 'providers/theme_provider.dart';

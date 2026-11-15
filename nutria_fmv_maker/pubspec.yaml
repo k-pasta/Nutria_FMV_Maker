@@ -59,6 +59,7 @@ dependencies:
   flutter_riverpod: ^3.5.0
   riverpod_annotation: ^4.0.8
   media_metadata: ^2.2.2
+  material_ui: ^1.11.0
 
 dev_dependencies:
   flutter_test:

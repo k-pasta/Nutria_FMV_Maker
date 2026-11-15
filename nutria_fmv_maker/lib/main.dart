@@ -13,9 +13,9 @@ import 'providers/ui_state_provider.dart';
 import 'models/app_theme.dart';
 import 'providers/grid_canvas_provider.dart';
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

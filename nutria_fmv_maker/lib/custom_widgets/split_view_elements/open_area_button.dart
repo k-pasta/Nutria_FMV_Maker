@@ -1,5 +1,5 @@
 
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/static_data/data_static_properties.dart';
 import 'package:provider/provider.dart';
 

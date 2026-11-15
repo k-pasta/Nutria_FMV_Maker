@@ -1,5 +1,5 @@
 import 'package:nutria_fmv_maker/models/enums_data.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 // part 'video_node_overrides.g.dart';

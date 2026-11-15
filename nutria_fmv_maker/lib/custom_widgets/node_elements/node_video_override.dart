@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_data.dart';
 import 'package:nutria_fmv_maker/models/node_data/video_node_overrides.dart';
@@ -13,7 +13,7 @@ import 'package:provider/provider.dart';
 import '../../../providers/theme_provider.dart';
 import '../nutria_button.dart';
 import '../nutria_text.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 
 class VideoOverride extends StatelessWidget {
   const VideoOverride({

@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/custom_widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:nutria_fmv_maker/models/enums_ui.dart';
@@ -7,7 +7,7 @@ import 'package:nutria_fmv_maker/models/node_data/node_data.dart';
 import 'package:nutria_fmv_maker/static_data/ui_static_properties.dart';
 import 'package:provider/provider.dart';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:uuid/uuid.dart';
 
 import '../models/node_data/simple_video_node_data.dart';

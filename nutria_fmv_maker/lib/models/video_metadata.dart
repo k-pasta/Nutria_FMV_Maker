@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:nutria_fmv_maker/models/file_size.dart';

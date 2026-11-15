@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/models/app_theme.dart';
 import 'package:provider/provider.dart';
 import '../models/enums_ui.dart';

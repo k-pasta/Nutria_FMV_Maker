@@ -1,4 +1,4 @@
-import 'package:flutter/material.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:nutria_fmv_maker/models/converters/offset_converter.dart';
 import 'package:nutria_fmv_maker/models/enums_data.dart';
