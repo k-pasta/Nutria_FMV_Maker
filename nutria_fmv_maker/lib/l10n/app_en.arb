@@ -27,7 +27,6 @@
   "helpAbout": "About Nutria FMV Maker",
   "helpDocumentation": "Documentation",
   "helpGithub": "Github",
-  "infoFFmpeg": "FFmpeg is bundled under the GPLv3 license.",
   "infoProjectDescription": "«Nutria FMV Maker» is an in-the-making free/open-source Flutter project aiming to make the process of creating interactive movie experiences more accessible, published under the GPLv3 license.",
   "menuBarEdit": "Edit",
   "menuBarFile": "File",

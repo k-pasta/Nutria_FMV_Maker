@@ -94,10 +94,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get helpGithub => 'Github';
 
   @override
-  String get infoFFmpeg =>
-      'Contient la bibliothèque FFmpeg sous licence GPLv3.';
-
-  @override
   String get infoProjectDescription =>
       '«Nutria FMV Maker» est un projet Flutter gratuit/open-source en cours de réalisation qui vise à rendre plus accessible le processus de création d\'expériences cinématographiques interactives. Il est publié sous licence GPLv3.';
 

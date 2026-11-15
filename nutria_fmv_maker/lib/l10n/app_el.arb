@@ -27,7 +27,6 @@
   "helpAbout": "Σχετικά με το Nutria FMV Maker",
   "helpDocumentation": "Documentation",
   "helpGithub": "Github",
-  "infoFFmpeg": "Περιλαμβάνεται το FFmpeg με την άδεια GPLv3.",
   "infoProjectDescription": "To «Nutria FMV Maker» είναι ένα υπό διαμόρφωση ελεύθερο λογισμικό ανοικτού κώδικα γραμμένο σε Flutter, που στοχεύει να κάνει τη διαδικασία κατασκευής διαδραστικών ταινιών πιο προσιτή. Δημοσιεύεται υπό την άδεια GPLv3",
   "menuBarEdit": "Επεξεργασία",
   "menuBarFile": "Αρχείο",

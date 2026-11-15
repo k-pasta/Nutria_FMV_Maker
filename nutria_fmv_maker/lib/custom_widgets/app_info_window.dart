@@ -44,11 +44,6 @@ class AppInfoWindow extends StatelessWidget {
         SizedBox(
           height: theme.dPanelPadding,
         ),
-        NutriaText(
-            text: t.infoFFmpeg, maxLines: 100, textAlign: TextAlign.justify),
-        SizedBox(
-          height: theme.dPanelPadding,
-        ),
         Row(
           children: [
             Expanded(

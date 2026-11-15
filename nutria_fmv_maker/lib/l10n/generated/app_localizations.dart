@@ -268,12 +268,6 @@ abstract class AppLocalizations {
   /// **'Github'**
   String get helpGithub;
 
-  /// No description provided for @infoFFmpeg.
-  ///
-  /// In en, this message translates to:
-  /// **'FFmpeg is bundled under the GPLv3 license.'**
-  String get infoFFmpeg;
-
   /// No description provided for @infoProjectDescription.
   ///
   /// In en, this message translates to:

@@ -11,8 +11,6 @@ class DataStaticProperties {
   static const int baseAnimationTimeInMs = 200;
 
 //paths
-  static const String ffprobePath =
-      'C:\\dev\\flutter_projects\\Nutria_FMV_Maker\\nutria_fmv_maker\\ffmpeg\\bin'; //TODO IMPORTANT relative path
   static const String gitHubPath =
       'https://github.com/k-pasta/Nutria_FMV_Maker';
   static const String documentationPath =
