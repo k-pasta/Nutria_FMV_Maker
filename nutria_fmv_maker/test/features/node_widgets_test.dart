@@ -123,13 +123,14 @@ void main() {
   testWidgets('dragging the right edge resizes the node', (tester) async {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
-    final edge = tester.getTopRight(find.text(kNoVideo));
-    // The file name is centered; aim at the node's right border instead.
+    // The file name is centered; aim at the node's right border instead,
+    // on the button row (the output knot is higher up, by the thumbnail).
     final nodeRight = tester.getCenter(find.text(kNoVideo)).dx +
         kDefaultNodeWidth / 2 -
         2;
+    final row = tester.getCenter(find.text('Convert to Branching Node')).dy;
     await tester.dragFrom(
-        Offset(nodeRight, edge.dy), const Offset(100, 0),
+        Offset(nodeRight, row), const Offset(100, 0),
         kind: PointerDeviceKind.mouse);
     await tester.pumpAndSettle();
     expect(nodeOf(container, id).width, greaterThan(kDefaultNodeWidth + 50));
@@ -156,6 +157,16 @@ void main() {
       }
     });
   }
+
+  testWidgets("a simple node's input and output knots are level",
+      (tester) async {
+    final container = await pumpApp(tester);
+    final id = await addNode(tester, container);
+    Finder knot(String port) => find.byWidgetPredicate(
+        (w) => w is Knot && w.port == PortRef(nodeId: id, port: port));
+    expect(tester.getCenter(knot(PortRef.inputPortKey)).dy,
+        moreOrLessEquals(tester.getCenter(knot('next')).dy, epsilon: 0.01));
+  });
 
   testWidgets('a branched node has a knot per choice plus its input',
       (tester) async {

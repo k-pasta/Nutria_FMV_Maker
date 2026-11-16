@@ -11,7 +11,7 @@ import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
 /// How fast a knot grows and shrinks. Short, so it feels snappy.
-const kKnotAnimation = Duration(milliseconds: 60);
+const kKnotAnimation = Duration(milliseconds: 30);
 
 /// A rotated square on the node edge for an input or output [port]. It grows
 /// while hovered, and while it's one end of the noodle being dragged.

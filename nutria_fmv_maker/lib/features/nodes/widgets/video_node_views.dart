@@ -15,7 +15,7 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 
 /// Thumbnail, file name, and a row with "convert" and the expand button.
-/// Its single output knot is on that row.
+/// Its output knot is level with its input, at the bottom of the thumbnail.
 class SimpleVideoNodeBody extends ConsumerWidget {
   const SimpleVideoNodeBody({super.key, required this.node});
 

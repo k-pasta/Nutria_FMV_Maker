@@ -145,8 +145,9 @@ class NodeLayout {
     return switch (node) {
       OriginNode() =>
         port == kNextPortKey ? Offset(right, _thumbnailBottom) : null,
+      // Level with the input, so a chain of simple nodes reads as a line.
       SimpleVideoNode() =>
-        port == kNextPortKey ? Offset(right, _rowsTop + rowCenter) : null,
+        port == kNextPortKey ? Offset(right, _thumbnailBottom) : null,
       BranchedVideoNode(:final choices) => switch (
             choices.indexWhere((c) => c.id == port)) {
           -1 => null,
