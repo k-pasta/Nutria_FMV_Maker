@@ -1,4 +1,5 @@
 // The desktop window layout: menu bar, canvas with side panels, status bar.
+import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:material_ui/material_ui.dart';
@@ -11,6 +12,7 @@ import 'package:nutria_fmv_maker/features/canvas/widgets/marquee_layer.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/noodle_layer.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_layer.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
@@ -33,14 +35,23 @@ class _AppShellState extends ConsumerState<AppShell> {
   /// menu, a dialog) has it, so the shortcuts above it receive key presses.
   final _shellFocus = FocusNode(debugLabel: 'AppShell');
 
+  /// Re-reads the clipboard when the window comes back to the front: the
+  /// user may have copied something in another app.
+  late final _lifecycle = AppLifecycleListener(onResume: _refreshClipboard);
+
+  void _refreshClipboard() =>
+      ref.read(clipboardHasNodesProvider.notifier).refresh();
+
   @override
   void initState() {
     super.initState();
     FocusManager.instance.addListener(_reclaimFocus);
+    _lifecycle;
   }
 
   @override
   void dispose() {
+    _lifecycle.dispose();
     FocusManager.instance.removeListener(_reclaimFocus);
     _shellFocus.dispose();
     super.dispose();
@@ -52,7 +63,8 @@ class _AppShellState extends ConsumerState<AppShell> {
   void _reclaimFocus() {
     final primary = FocusManager.instance.primaryFocus;
     final ownScope = _shellFocus.enclosingScope;
-    final fellBack = primary == null ||
+    final fellBack =
+        primary == null ||
         primary == ownScope ||
         primary == FocusManager.instance.rootScope;
     if (!fellBack) return;
@@ -73,40 +85,58 @@ class _AppShellState extends ConsumerState<AppShell> {
     final history = ref.watch(historyStatusProvider);
     final preferences = ref.watch(preferencesProvider);
     final overlays = ref.read(overlayProvider.notifier);
-    return CallbackShortcuts(
-      bindings: appShortcuts(commands),
-      child: Focus(
-        focusNode: _shellFocus,
-        autofocus: true,
-        child: Scaffold(
-          body: Column(children: [
-            NutriaMenuBar(
-              menus: buildAppMenus(
-                commands: commands,
-                t: AppLocalizations.of(context),
-                preferences: preferences,
-                canUndo: history.canUndo,
-                canRedo: history.canRedo,
-                canPlay: ref.watch(
-                    videoPreviewProvider.select((p) => p != null)),
-              ),
-              onLogoTap: commands.showAbout,
-              onOpenChanged: overlays.setMenuOpen,
+    // A right-click is about to open a context menu: re-read the clipboard
+    // so the menu knows whether it can offer Paste.
+    return Listener(
+      onPointerDown: (event) {
+        if (event.buttons & kSecondaryMouseButton != 0) _refreshClipboard();
+      },
+      child: CallbackShortcuts(
+        bindings: appShortcuts(commands),
+        child: Focus(
+          focusNode: _shellFocus,
+          autofocus: true,
+          child: Scaffold(
+            body: Column(
+              children: [
+                NutriaMenuBar(
+                  menus: buildAppMenus(
+                    commands: commands,
+                    t: AppLocalizations.of(context),
+                    preferences: preferences,
+                    canUndo: history.canUndo,
+                    canRedo: history.canRedo,
+                    canPlay: ref.watch(
+                      videoPreviewProvider.select((p) => p != null),
+                    ),
+                    canCopy: ref.watch(canCopySelectionProvider),
+                    canPaste: ref.watch(clipboardHasNodesProvider),
+                  ),
+                  onLogoTap: commands.showAbout,
+                  onOpenChanged: (open) {
+                    overlays.setMenuOpen(open);
+                    if (open) _refreshClipboard();
+                  },
+                ),
+                const Expanded(
+                  child: ClipRect(
+                    child: Stack(
+                      children: [
+                        CanvasView(
+                          layers: [NoodleLayer(), NodeLayer(), MarqueeLayer()],
+                        ),
+                        SidePanels(),
+                        _LogoTail(),
+                        _Dimmer(),
+                        _ModalLayer(),
+                      ],
+                    ),
+                  ),
+                ),
+                const StatusBar(),
+              ],
             ),
-            const Expanded(
-              child: ClipRect(
-                child: Stack(children: [
-                  CanvasView(
-                      layers: [NoodleLayer(), NodeLayer(), MarqueeLayer()]),
-                  SidePanels(),
-                  _LogoTail(),
-                  _Dimmer(),
-                  _ModalLayer(),
-                ]),
-              ),
-            ),
-            const StatusBar(),
-          ]),
+          ),
         ),
       ),
     );
@@ -162,8 +192,7 @@ class _ModalLayer extends ConsumerWidget {
     final close = ref.read(overlayProvider.notifier).closeModal;
     return switch (modal) {
       null => const SizedBox.shrink(),
-      AppModal.about =>
-        NutriaModal(onClose: close, child: const AboutWindow()),
+      AppModal.about => NutriaModal(onClose: close, child: const AboutWindow()),
     };
   }
 }

@@ -11,6 +11,7 @@ import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provi
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
@@ -195,8 +196,9 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           label: t.nodeConvertToSimple,
           onSelected: () => editor.convertNode(node.id),
         ),
-      // Right-clicking selected the node, so these act on the selection.
-      if (node is! OriginNode) ...[
+      // Right-clicking selected the node, so these act on the selection,
+      // which may hold nothing copyable (only the origin).
+      if (ref.read(canCopySelectionProvider)) ...[
         NutriaContextMenuItem(
           icon: Icons.content_copy,
           label: t.editCopy,
@@ -208,14 +210,15 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           onSelected: editor.duplicateSelection,
         ),
       ],
-      NutriaContextMenuItem(
-        icon: Icons.content_paste,
-        label: t.editPaste,
-        onSelected: () {
-          final view = ref.read(canvasViewProvider);
-          editor.paste(view.pointer ?? view.center);
-        },
-      ),
+      if (ref.read(clipboardHasNodesProvider))
+        NutriaContextMenuItem(
+          icon: Icons.content_paste,
+          label: t.editPaste,
+          onSelected: () {
+            final view = ref.read(canvasViewProvider);
+            editor.paste(view.pointer ?? view.center);
+          },
+        ),
       if (node is! OriginNode)
         NutriaContextMenuItem(
           icon: Icons.delete,

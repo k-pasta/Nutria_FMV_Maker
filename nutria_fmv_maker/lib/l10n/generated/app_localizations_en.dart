@@ -57,6 +57,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get variableTypeFloat => 'Float';
 
   @override
+  String get variableType => 'Type';
+
+  @override
   String get variableTrue => 'True';
 
   @override

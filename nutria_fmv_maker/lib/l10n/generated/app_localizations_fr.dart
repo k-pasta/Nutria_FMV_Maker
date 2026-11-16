@@ -58,6 +58,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get variableTypeFloat => 'Décimal';
 
   @override
+  String get variableType => 'Type';
+
+  @override
   String get variableTrue => 'Vrai';
 
   @override

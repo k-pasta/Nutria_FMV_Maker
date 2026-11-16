@@ -9,8 +9,9 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 
 
 /// Builds the menus. [canUndo]/[canRedo] grey out Undo/Redo, [canPlay]
-/// Play/Pause (no video loaded); [preferences] marks the current language
-/// and theme.
+/// Play/Pause (no video loaded), [canCopy] Copy/Duplicate (nothing copyable
+/// selected), [canPaste] Paste (no copied nodes); [preferences] marks the
+/// current language and theme.
 List<NutriaMenu> buildAppMenus({
   required AppCommands commands,
   required AppLocalizations t,
@@ -18,6 +19,8 @@ List<NutriaMenu> buildAppMenus({
   required bool canUndo,
   required bool canRedo,
   required bool canPlay,
+  required bool canCopy,
+  required bool canPaste,
 }) =>
     [
       NutriaMenu(title: t.menuBarFile, entries: [
@@ -67,17 +70,17 @@ List<NutriaMenu> buildAppMenus({
             label: t.editCopy,
             icon: Icons.content_copy,
             shortcut: kShortcutCopy,
-            onPressed: commands.copy),
+            onPressed: canCopy ? commands.copy : null),
         NutriaMenuEntry(
             label: t.editPaste,
             icon: Icons.content_paste,
             shortcut: kShortcutPaste,
-            onPressed: commands.paste),
+            onPressed: canPaste ? commands.paste : null),
         NutriaMenuEntry(
             label: t.editDuplicate,
             icon: Icons.copy_all,
             shortcut: kShortcutDuplicate,
-            onPressed: commands.duplicate),
+            onPressed: canCopy ? commands.duplicate : null),
         NutriaMenuEntry(
             label: t.editSelectAll,
             icon: Icons.select_all,

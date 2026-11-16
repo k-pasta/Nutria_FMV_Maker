@@ -32,6 +32,8 @@ void main() {
     const x = Variable.decimal(id: 'b', name: 'x');
     expect(x.withInitialText('0.25'),
         const Variable.decimal(id: 'b', name: 'x', initial: 0.25));
+    expect(x.withInitialText('-1,75'),
+        const Variable.decimal(id: 'b', name: 'x', initial: -1.75));
     expect(x.initialText, '0.0');
     expect(const Variable.boolean(id: 'c', name: 'f').withInitialText('TRUE'),
         const Variable.boolean(id: 'c', name: 'f', initial: true));

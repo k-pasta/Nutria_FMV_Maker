@@ -9,6 +9,7 @@ import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/services/clipboard_service.dart';
@@ -81,6 +82,7 @@ class GraphEditor {
         _current.copyFragment(_ref.read(selectionProvider).selected);
     if (fragment.isEmpty) return;
     await _ref.read(clipboardServiceProvider).write(fragment.encode());
+    await _ref.read(clipboardHasNodesProvider.notifier).refresh();
   }
 
   /// Pastes copied nodes centered on [at] (node coordinates) and selects

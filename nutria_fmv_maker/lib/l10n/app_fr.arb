@@ -15,6 +15,7 @@
   "variableTypeBool": "Booléen",
   "variableTypeInt": "Entier",
   "variableTypeFloat": "Décimal",
+  "variableType": "Type",
   "variableTrue": "Vrai",
   "variableFalse": "Faux",
   "tooltipAddVariable": "Ajouter une variable",

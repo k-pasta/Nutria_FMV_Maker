@@ -1,15 +1,19 @@
 // Produces thumbnail images for video files, in memory (no temp files).
+import 'dart:async';
+import 'dart:collection';
 import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:fc_native_video_thumbnail/fc_native_video_thumbnail.dart';
-import 'package:media_metadata/media_metadata.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'thumbnail_service.g.dart';
 
 /// Longest side of generated thumbnails, in pixels.
 const kThumbnailSize = 500;
+
+/// How many thumbnails are made at the same time.
+const kThumbnailConcurrency = 2;
 
 /// Creates thumbnail images for videos.
 abstract interface class ThumbnailService {
@@ -18,36 +22,47 @@ abstract interface class ThumbnailService {
   Future<Uint8List?> thumbnailFor(String path);
 }
 
-/// Uses the video's embedded cover or a captured frame (`media_metadata`),
-/// and falls back to `fc_native_video_thumbnail` for files it can't read.
+/// The operating system's video thumbnails (what Explorer shows), made on a
+/// background thread by `fc_native_video_thumbnail`.
+///
+/// Not `media_metadata`: on Windows it makes thumbnails on the UI thread,
+/// which froze the app while many videos were imported. Requests are queued
+/// so a big import doesn't start dozens of threads at once.
 class OsThumbnailService implements ThumbnailService {
-  const OsThumbnailService();
+  OsThumbnailService();
+
+  final _queue = Queue<Future<void> Function()>();
+  var _running = 0;
 
   @override
-  Future<Uint8List?> thumbnailFor(String path) async {
-    if (!await File(path).exists()) return null;
-    return await _fromMediaMetadata(path) ?? await _fromNative(path);
+  Future<Uint8List?> thumbnailFor(String path) {
+    final done = Completer<Uint8List?>();
+    _queue.add(() async => done.complete(await _make(path)));
+    _next();
+    return done.future;
   }
 
-  Future<Uint8List?> _fromMediaMetadata(String path) async {
-    if (!MediaMetadata.isSupported(path)) return null;
-    try {
-      final meta = await MediaMetadata.read(path, createThumbnail: true);
-      return meta?.imageMetadata?.data;
-    } on Exception {
-      return null;
+  void _next() {
+    while (_running < kThumbnailConcurrency && _queue.isNotEmpty) {
+      final job = _queue.removeFirst();
+      _running++;
+      unawaited(job().whenComplete(() {
+        _running--;
+        _next();
+      }));
     }
   }
 
-  Future<Uint8List?> _fromNative(String path) async {
+  Future<Uint8List?> _make(String path) async {
     try {
+      if (!await File(path).exists()) return null;
       return await FcNativeVideoThumbnail().saveThumbnailToBytes(
         srcFile: path,
         width: kThumbnailSize,
         height: kThumbnailSize,
         format: 'jpeg',
       );
-    } on Exception {
+    } on Object {
       return null;
     }
   }
@@ -55,4 +70,4 @@ class OsThumbnailService implements ThumbnailService {
 
 /// The app's [ThumbnailService].
 @Riverpod(keepAlive: true)
-ThumbnailService thumbnailService(Ref ref) => const OsThumbnailService();
+ThumbnailService thumbnailService(Ref ref) => OsThumbnailService();

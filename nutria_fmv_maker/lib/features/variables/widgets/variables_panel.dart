@@ -47,7 +47,9 @@ class VariablesPanel extends ConsumerWidget {
                       for (final (i, variable) in variables.indexed) ...[
                         if (i > 0) SizedBox(height: theme.dPanelPadding),
                         _VariableCard(
-                            key: ValueKey(variable.id), variable: variable),
+                          key: ValueKey(variable.id),
+                          variable: variable,
+                        ),
                       ],
                     ],
                   ),
@@ -91,8 +93,11 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
     final t = AppLocalizations.of(context);
     final editor = ref.read(graphEditorProvider);
     final variable = widget.variable;
-    final nameError = ref.watch(conflictingVariableNamesProvider
-        .select((names) => names.contains(variable.name.trim())));
+    final nameError = ref.watch(
+      conflictingVariableNamesProvider.select(
+        (names) => names.contains(variable.name.trim()),
+      ),
+    );
     final gap = SizedBox(width: theme.dPanelPadding);
 
     return Container(
@@ -102,83 +107,104 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
         borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
         boxShadow: theme.dElevation > 0 ? theme.cardShadow() : null,
       ),
+      // Two lines: the name, then value, type and delete.
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Row(children: [
-            Expanded(
-              child: NutriaTooltip(
-                message: nameError ? t.variableNameError : null,
-                child: NutriaTextField(
-                  text: variable.name,
-                  hint: t.variableName,
-                  isError: nameError,
-                  onFocusChanged: (focused) {
-                    if (focused) _nameSession = Object();
-                  },
-                  onChanged: (name) => editor.renameVariable(variable.id, name,
-                      mergeKey: _nameSession),
-                ),
+          NutriaTooltip(
+            message: nameError ? t.variableNameError : null,
+            child: NutriaTextField(
+              text: variable.name,
+              hint: t.variableName,
+              isError: nameError,
+              onFocusChanged: (focused) {
+                if (focused) _nameSession = Object();
+              },
+              onChanged: (name) => editor.renameVariable(
+                variable.id,
+                name,
+                mergeKey: _nameSession,
               ),
             ),
-            gap,
-            NutriaButton.icon(
-              icon: Icons.delete,
-              tooltip: t.tooltipDeleteVariable,
-              onTap: () => editor.removeVariable(variable.id),
-            ),
-          ]),
+          ),
           SizedBox(height: theme.dPanelPadding),
-          Row(children: [
-            for (final (i, (type, label)) in [
-              (VariableType.boolean, t.variableTypeBool),
-              (VariableType.integer, t.variableTypeInt),
-              (VariableType.decimal, t.variableTypeFloat),
-            ].indexed) ...[
-              if (i > 0) gap,
+          Row(
+            children: [
               Expanded(
-                child: NutriaButton(
-                  isAccented: variable.type == type,
-                  onTap: () => editor.setVariableType(variable.id, type),
-                  child: NutriaText(
-                    text: label,
-                    state: variable.type == type
-                        ? NutriaTextState.onAccent
-                        : NutriaTextState.normal,
+                flex: 3,
+                child: switch (variable) {
+                  BoolVariable(:final initial) => NutriaButton(
+                    onTap: () => editor.toggleVariable(variable.id),
+                    child: NutriaText(
+                      text: initial ? t.variableTrue : t.variableFalse,
+                    ),
+                  ),
+                  _ => NutriaTextField(
+                    // A new field per type, so its text and filter match it.
+                    key: ValueKey(variable.type),
+                    text: variable.initialText,
+                    hint: t.variableInitialValue,
+                    inputFormatters: [_numberFilter(variable.type)],
+                    onFocusChanged: (focused) {
+                      if (focused) _valueSession = Object();
+                    },
+                    onChanged: (text) => editor.setVariableInitialText(
+                      variable.id,
+                      text,
+                      mergeKey: _valueSession,
+                    ),
+                  ),
+                },
+              ),
+              gap,
+              Expanded(
+                flex: 2,
+                child: NutriaTooltip(
+                  message: t.variableType,
+                  child: NutriaButton.leftRight(
+                    onTapLeft: () => editor.setVariableType(
+                      variable.id,
+                      _stepType(variable.type, -1),
+                    ),
+                    onTapRight: () => editor.setVariableType(
+                      variable.id,
+                      _stepType(variable.type, 1),
+                    ),
+                    child: NutriaText(
+                      text: switch (variable.type) {
+                        VariableType.boolean => t.variableTypeBool,
+                        VariableType.integer => t.variableTypeInt,
+                        VariableType.decimal => t.variableTypeFloat,
+                      },
+                    ),
                   ),
                 ),
+              ),
+              gap,
+              NutriaButton.icon(
+                icon: Icons.delete,
+                tooltip: t.tooltipDeleteVariable,
+                onTap: () => editor.removeVariable(variable.id),
               ),
             ],
-          ]),
-          SizedBox(height: theme.dPanelPadding),
-          switch (variable) {
-            BoolVariable(:final initial) => NutriaButton(
-                onTap: () => editor.toggleVariable(variable.id),
-                child: NutriaText(
-                    text: initial ? t.variableTrue : t.variableFalse),
-              ),
-            _ => NutriaTextField(
-                // A new field per type, so its text and filter match it.
-                key: ValueKey(variable.type),
-                text: variable.initialText,
-                hint: t.variableInitialValue,
-                inputFormatters: [
-                  FilteringTextInputFormatter.allow(
-                    variable.type == VariableType.integer
-                        ? RegExp(r'^-?\d*')
-                        : RegExp(r'^-?\d*\.?\d*'),
-                  ),
-                ],
-                onFocusChanged: (focused) {
-                  if (focused) _valueSession = Object();
-                },
-                onChanged: (text) => editor.setVariableInitialText(
-                    variable.id, text,
-                    mergeKey: _valueSession),
-              ),
-          },
+          ),
         ],
       ),
     );
   }
+}
+
+/// The type before ([direction] -1) or after (1) [type], wrapping around.
+VariableType _stepType(VariableType type, int direction) =>
+    VariableType.values[(type.index + direction) % VariableType.values.length];
+
+/// Only lets through text on the way to a number of [type]: digits, a
+/// leading minus and, for decimals, one decimal point or comma.
+TextInputFormatter _numberFilter(VariableType type) {
+  final valid = type == VariableType.integer
+      ? RegExp(r'^-?\d*$')
+      : RegExp(r'^-?\d*[.,]?\d*$');
+  return TextInputFormatter.withFunction(
+    (old, next) => valid.hasMatch(next.text) ? next : old,
+  );
 }

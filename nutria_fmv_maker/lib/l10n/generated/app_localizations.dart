@@ -196,6 +196,12 @@ abstract class AppLocalizations {
   /// **'Float'**
   String get variableTypeFloat;
 
+  /// No description provided for @variableType.
+  ///
+  /// In en, this message translates to:
+  /// **'Type'**
+  String get variableType;
+
   /// No description provided for @variableTrue.
   ///
   /// In en, this message translates to:

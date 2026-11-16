@@ -4,6 +4,7 @@ import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 
 import 'app_tester.dart';
 
@@ -28,17 +29,25 @@ void main() {
     final name = find.ancestor(
         of: find.text('variable 1'), matching: find.byType(TextField));
     await tester.enterText(name.first, 'score');
-    await tester.tap(find.text('Float'));
-    await tester.pumpAndSettle();
+    // The type stepper's right half: Bool → Int → Float.
+    for (var i = 0; i < 2; i++) {
+      final stepper = tester.getRect(find
+          .ancestor(of: find.text(i == 0 ? 'Bool' : 'Int'),
+              matching: find.byType(NutriaButton))
+          .first);
+      await tester.tapAt(stepper.centerRight - const Offset(6, 0));
+      await tester.pumpAndSettle();
+    }
     expect(variables().single,
         const Variable.decimal(id: 'x', name: 'score', initial: 1)
             .copyWith(id: variables().single.id));
 
     final value = find.ancestor(
         of: find.text('1.0'), matching: find.byType(TextField));
-    await tester.enterText(value.first, '2.5');
+    await tester.enterText(value.first, '2,5');
     await tester.pumpAndSettle();
-    expect((variables().single as DecimalVariable).initial, 2.5);
+    expect((variables().single as DecimalVariable).initial, 2.5,
+        reason: 'a comma works as the decimal point');
 
     // Done typing (a field being typed in keeps its text), then undo.
     await tester.tapAt(kCanvasPoint);

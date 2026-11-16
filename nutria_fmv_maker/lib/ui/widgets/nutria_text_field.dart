@@ -48,9 +48,22 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
   /// Single-key app shortcuts (panels, zoom, framing, play) must not fire
   /// while typing, so the field swallows every key that types a character
   /// before it reaches the app. Keys with Ctrl or Alt still get through.
+  ///
+  /// Clipboard keys act on the text, not on the app (which would copy or
+  /// paste nodes), and Ctrl+D (duplicate nodes) does nothing.
   static final Map<ShortcutActivator, Intent> _blockedShortcuts = {
     for (final key in _typingKeys)
       SingleActivator(key): const DoNothingAndStopPropagationIntent(),
+    const SingleActivator(LogicalKeyboardKey.keyC, control: true):
+        CopySelectionTextIntent.copy,
+    const SingleActivator(LogicalKeyboardKey.keyX, control: true):
+        const CopySelectionTextIntent.cut(SelectionChangedCause.keyboard),
+    const SingleActivator(LogicalKeyboardKey.keyV, control: true):
+        const PasteTextIntent(SelectionChangedCause.keyboard),
+    const SingleActivator(LogicalKeyboardKey.keyA, control: true):
+        const SelectAllTextIntent(SelectionChangedCause.keyboard),
+    const SingleActivator(LogicalKeyboardKey.keyD, control: true):
+        const DoNothingAndStopPropagationIntent(),
   };
 
   static final List<LogicalKeyboardKey> _typingKeys = [

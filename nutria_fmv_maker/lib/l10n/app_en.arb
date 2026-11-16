@@ -15,6 +15,7 @@
   "variableTypeBool": "Bool",
   "variableTypeInt": "Int",
   "variableTypeFloat": "Float",
+  "variableType": "Type",
   "variableTrue": "True",
   "variableFalse": "False",
   "tooltipAddVariable": "Add a variable",

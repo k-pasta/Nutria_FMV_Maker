@@ -15,6 +15,7 @@
   "variableTypeBool": "Λογική",
   "variableTypeInt": "Ακέραια",
   "variableTypeFloat": "Δεκαδική",
+  "variableType": "Τύπος",
   "variableTrue": "Αληθής",
   "variableFalse": "Ψευδής",
   "tooltipAddVariable": "Προσθήκη μεταβλητής",

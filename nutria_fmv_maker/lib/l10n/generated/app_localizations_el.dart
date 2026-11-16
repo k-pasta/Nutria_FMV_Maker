@@ -58,6 +58,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get variableTypeFloat => 'Δεκαδική';
 
   @override
+  String get variableType => 'Τύπος';
+
+  @override
   String get variableTrue => 'Αληθής';
 
   @override

@@ -57,4 +57,4 @@ final class ThumbnailServiceProvider
   }
 }
 
-String _$thumbnailServiceHash() => r'1480c7910bb91e728697ca4522d5bab72f7de566';
+String _$thumbnailServiceHash() => r'36d9619b5f06c7f64a467d216b3847f7868a9d61';

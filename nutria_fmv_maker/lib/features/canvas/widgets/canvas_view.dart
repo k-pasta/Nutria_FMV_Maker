@@ -13,6 +13,7 @@ import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
@@ -206,11 +207,12 @@ class _EmptyCanvasArea extends ConsumerWidget {
             type: DefaultNodeType.branchedVideo,
           ),
         ),
-        NutriaContextMenuItem(
-          icon: Icons.content_paste,
-          label: t.editPaste,
-          onSelected: () => editor.paste(local - kCanvasCenter),
-        ),
+        if (ref.read(clipboardHasNodesProvider))
+          NutriaContextMenuItem(
+            icon: Icons.content_paste,
+            label: t.editPaste,
+            onSelected: () => editor.paste(local - kCanvasCenter),
+          ),
       ],
       // Empty space paints nothing, so it has to catch clicks explicitly.
       behavior: HitTestBehavior.opaque,
