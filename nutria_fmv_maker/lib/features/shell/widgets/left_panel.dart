@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/preferences/widgets/preferences_panel.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/project_settings_panel.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/features/variables/widgets/variables_panel.dart';
 import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -33,6 +34,10 @@ class LeftPanel extends ConsumerWidget {
                       icon: Icons.camera_roll,
                       text: t.boardImportedVideos,
                     ),
+                    LeftPanelSection.variables => NutriaDropdownOption(
+                      icon: Icons.data_object,
+                      text: t.boardVariables,
+                    ),
                     LeftPanelSection.projectSettings => NutriaDropdownOption(
                       icon: Icons.tune,
                       text: t.boardProjectSettings,
@@ -59,6 +64,7 @@ class LeftPanel extends ConsumerWidget {
                 key: ValueKey(section),
                 child: switch (section) {
                   LeftPanelSection.videos => const VideoLibraryPanel(),
+                  LeftPanelSection.variables => const VariablesPanel(),
                   LeftPanelSection.projectSettings =>
                     const ProjectSettingsPanel(),
                   LeftPanelSection.preferences => const PreferencesPanel(),

@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 
 part 'project_document.freezed.dart';
@@ -72,6 +73,9 @@ abstract class ProjectDocument with _$ProjectDocument {
     @Default(<String, Node>{}) Map<String, Node> nodes,
     @Default(<Edge>[]) List<Edge> edges,
     @Default(<VideoAsset>[]) List<VideoAsset> videos,
+
+    /// Named values for the story. Missing in older files, hence empty.
+    @Default(<Variable>[]) List<Variable> variables,
   }) = _ProjectDocument;
 
   factory ProjectDocument.fromJson(Map<String, dynamic> json) =>

@@ -584,6 +584,99 @@ final class VideoAssetsProvider
 
 String _$videoAssetsHash() => r'82f0cc1fae22de46b49398173998b2b281b3ceb8';
 
+/// The project's variables, in the order they were added.
+
+@ProviderFor(variables)
+final variablesProvider = VariablesProvider._();
+
+/// The project's variables, in the order they were added.
+
+final class VariablesProvider
+    extends $FunctionalProvider<List<Variable>, List<Variable>, List<Variable>>
+    with $Provider<List<Variable>> {
+  /// The project's variables, in the order they were added.
+  VariablesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'variablesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$variablesHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<Variable>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  List<Variable> create(Ref ref) {
+    return variables(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<Variable> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<Variable>>(value),
+    );
+  }
+}
+
+String _$variablesHash() => r'fd405b21337284a28dd03bc629b8371ddc98c420';
+
+/// Variable names that are empty or used twice.
+
+@ProviderFor(conflictingVariableNames)
+final conflictingVariableNamesProvider = ConflictingVariableNamesProvider._();
+
+/// Variable names that are empty or used twice.
+
+final class ConflictingVariableNamesProvider
+    extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
+    with $Provider<Set<String>> {
+  /// Variable names that are empty or used twice.
+  ConflictingVariableNamesProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'conflictingVariableNamesProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$conflictingVariableNamesHash();
+
+  @$internal
+  @override
+  $ProviderElement<Set<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Set<String> create(Ref ref) {
+    return conflictingVariableNames(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
+String _$conflictingVariableNamesHash() =>
+    r'61ff37f013458097631de7cc97c1f28177b7cbf0';
+
 /// Project title and description.
 
 @ProviderFor(projectInfo)

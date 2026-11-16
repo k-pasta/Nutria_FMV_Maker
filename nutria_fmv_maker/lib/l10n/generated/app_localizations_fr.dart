@@ -33,6 +33,43 @@ class AppLocalizationsFr extends AppLocalizations {
   String get boardProjectSettings => 'Paramètres du Projet';
 
   @override
+  String get variablesEmpty =>
+      'Aucune variable pour l’instant. Ajoutez-en une avec +.';
+
+  @override
+  String get variableDefaultName => 'variable';
+
+  @override
+  String get variableName => 'Nom';
+
+  @override
+  String get variableNameError => 'Chaque variable a besoin de son propre nom';
+
+  @override
+  String get variableInitialValue => 'Valeur initiale';
+
+  @override
+  String get variableTypeBool => 'Booléen';
+
+  @override
+  String get variableTypeInt => 'Entier';
+
+  @override
+  String get variableTypeFloat => 'Décimal';
+
+  @override
+  String get variableTrue => 'Vrai';
+
+  @override
+  String get variableFalse => 'Faux';
+
+  @override
+  String get tooltipAddVariable => 'Ajouter une variable';
+
+  @override
+  String get tooltipDeleteVariable => 'Supprimer la variable';
+
+  @override
   String get boardVariables => 'Variables';
 
   @override

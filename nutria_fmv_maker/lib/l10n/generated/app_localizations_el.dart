@@ -33,6 +33,43 @@ class AppLocalizationsEl extends AppLocalizations {
   String get boardProjectSettings => 'Ρυθμίσεις Πρότζεκτ';
 
   @override
+  String get variablesEmpty =>
+      'Δεν υπάρχουν μεταβλητές ακόμα. Προσθέστε μία με το +.';
+
+  @override
+  String get variableDefaultName => 'μεταβλητή';
+
+  @override
+  String get variableName => 'Όνομα';
+
+  @override
+  String get variableNameError => 'Κάθε μεταβλητή χρειάζεται δικό της όνομα';
+
+  @override
+  String get variableInitialValue => 'Αρχική τιμή';
+
+  @override
+  String get variableTypeBool => 'Λογική';
+
+  @override
+  String get variableTypeInt => 'Ακέραια';
+
+  @override
+  String get variableTypeFloat => 'Δεκαδική';
+
+  @override
+  String get variableTrue => 'Αληθής';
+
+  @override
+  String get variableFalse => 'Ψευδής';
+
+  @override
+  String get tooltipAddVariable => 'Προσθήκη μεταβλητής';
+
+  @override
+  String get tooltipDeleteVariable => 'Διαγραφή της μεταβλητής';
+
+  @override
   String get boardVariables => 'Μεταβλητές';
 
   @override

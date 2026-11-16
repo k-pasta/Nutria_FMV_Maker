@@ -3,9 +3,11 @@ import 'package:flutter/painting.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
@@ -188,6 +190,45 @@ class GraphEditor {
   void editProjectSettings(VideoSettings Function(VideoSettings s) edit) =>
       _document.apply('Change project settings',
           (d) => d.copyWith(settings: edit(d.settings)));
+
+  // -------------------------------------------------------------- variables
+
+  /// Adds a true/false variable named [baseName] plus a free number, and
+  /// returns its id.
+  String addVariable(String baseName) {
+    final id = _newId();
+    _document.apply(
+        'Add variable',
+        (d) => d.addVariable(
+            Variable.boolean(id: id, name: d.freeVariableName(baseName))));
+    return id;
+  }
+
+  void removeVariable(String id) =>
+      _document.apply('Delete variable', (d) => d.removeVariable(id));
+
+  /// Pass the same [mergeKey] for every keystroke of one editing session.
+  void renameVariable(String id, String name, {Object? mergeKey}) =>
+      _document.apply('Rename variable', (d) => d.renameVariable(id, name),
+          mergeKey: mergeKey);
+
+  /// Changes the type, converting the starting value.
+  void setVariableType(String id, VariableType type) => _document.apply(
+      'Change variable type', (d) => d.setVariableType(id, type));
+
+  /// Sets the starting value from typed [text]. Text that isn't a value of
+  /// the variable's type (e.g. half-typed "-") changes nothing.
+  void setVariableInitialText(String id, String text, {Object? mergeKey}) =>
+      _document.apply(
+          'Edit variable',
+          (d) => d.updateVariable(id, (v) => v.withInitialText(text) ?? v),
+          mergeKey: mergeKey);
+
+  /// Flips a true/false variable's starting value.
+  void toggleVariable(String id) => _document.apply(
+      'Edit variable',
+      (d) => d.updateVariable(
+          id, (v) => v is BoolVariable ? v.copyWith(initial: !v.initial) : v));
 
   // ----------------------------------------------------------------- videos
 

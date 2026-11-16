@@ -148,6 +148,78 @@ abstract class AppLocalizations {
   /// **'Project Settings'**
   String get boardProjectSettings;
 
+  /// No description provided for @variablesEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'No variables yet. Add one with +.'**
+  String get variablesEmpty;
+
+  /// No description provided for @variableDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'variable'**
+  String get variableDefaultName;
+
+  /// No description provided for @variableName.
+  ///
+  /// In en, this message translates to:
+  /// **'Name'**
+  String get variableName;
+
+  /// No description provided for @variableNameError.
+  ///
+  /// In en, this message translates to:
+  /// **'Each variable needs its own name'**
+  String get variableNameError;
+
+  /// No description provided for @variableInitialValue.
+  ///
+  /// In en, this message translates to:
+  /// **'Initial value'**
+  String get variableInitialValue;
+
+  /// No description provided for @variableTypeBool.
+  ///
+  /// In en, this message translates to:
+  /// **'Bool'**
+  String get variableTypeBool;
+
+  /// No description provided for @variableTypeInt.
+  ///
+  /// In en, this message translates to:
+  /// **'Int'**
+  String get variableTypeInt;
+
+  /// No description provided for @variableTypeFloat.
+  ///
+  /// In en, this message translates to:
+  /// **'Float'**
+  String get variableTypeFloat;
+
+  /// No description provided for @variableTrue.
+  ///
+  /// In en, this message translates to:
+  /// **'True'**
+  String get variableTrue;
+
+  /// No description provided for @variableFalse.
+  ///
+  /// In en, this message translates to:
+  /// **'False'**
+  String get variableFalse;
+
+  /// No description provided for @tooltipAddVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a variable'**
+  String get tooltipAddVariable;
+
+  /// No description provided for @tooltipDeleteVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete the variable'**
+  String get tooltipDeleteVariable;
+
   /// No description provided for @boardVariables.
   ///
   /// In en, this message translates to:

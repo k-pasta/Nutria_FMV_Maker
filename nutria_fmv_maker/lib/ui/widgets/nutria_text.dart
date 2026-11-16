@@ -3,7 +3,14 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
 /// Which theme color the text uses.
-enum NutriaTextState { normal, accented, inactive }
+enum NutriaTextState {
+  normal,
+  accented,
+  inactive,
+
+  /// On an accent-filled button.
+  onAccent,
+}
 
 enum NutriaTextStyle { normal, bold, italic, boldItalic }
 
@@ -49,6 +56,7 @@ class NutriaText extends StatelessWidget {
           NutriaTextState.accented => theme.cTextActive,
           NutriaTextState.inactive => theme.cTextInactive,
           NutriaTextState.normal => theme.cText,
+          NutriaTextState.onAccent => theme.cOnAccent,
         },
         fontSize: theme.dTextHeight * sizeMultiplier,
         fontFamily: 'SourceSans',

@@ -11,7 +11,7 @@ part 'panel_layout_provider.g.dart';
 enum PanelSide { left, right }
 
 /// Tabs of the left panel.
-enum LeftPanelSection { videos, projectSettings, preferences }
+enum LeftPanelSection { videos, variables, projectSettings, preferences }
 
 /// Width of one split-view drag handle.
 const kPanelHandleWidth = 10.0;

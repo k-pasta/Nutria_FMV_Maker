@@ -18,6 +18,8 @@ class NutriaTextField extends StatefulWidget {
     this.onFocusChanged,
     this.maxLines = 1,
     this.textAlign = TextAlign.left,
+    this.isError = false,
+    this.inputFormatters,
   });
 
   final String text;
@@ -26,6 +28,12 @@ class NutriaTextField extends StatefulWidget {
   final ValueChanged<bool>? onFocusChanged;
   final int maxLines;
   final TextAlign textAlign;
+
+  /// Shows the text in the accent color, e.g. for a name that's taken.
+  final bool isError;
+
+  /// Limits what can be typed, e.g. to digits.
+  final List<TextInputFormatter>? inputFormatters;
 
   @override
   State<NutriaTextField> createState() => _NutriaTextFieldState();
@@ -115,13 +123,16 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
         controller: _controller,
         focusNode: _focus,
         onChanged: widget.onChanged,
+        inputFormatters: widget.inputFormatters,
         // Clicking elsewhere ends editing, so the app's keyboard shortcuts
         // work again (desktop fields keep focus by default).
         onTapOutside: (_) => _focus.unfocus(),
         textInputAction: TextInputAction.next,
         cursorColor: theme.cText,
         style: TextStyle(
-          color: focused ? theme.cTextActive : theme.cText,
+          color: widget.isError
+              ? theme.cAccent
+              : (focused ? theme.cTextActive : theme.cText),
           fontSize: theme.dTextHeight,
         ),
         maxLines: widget.maxLines,

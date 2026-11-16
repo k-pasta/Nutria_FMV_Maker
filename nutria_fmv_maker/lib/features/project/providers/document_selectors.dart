@@ -6,8 +6,10 @@ import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:path/path.dart' as p;
@@ -86,6 +88,16 @@ VideoAsset? videoAsset(Ref ref, String id) =>
 @riverpod
 List<VideoAsset> videoAssets(Ref ref) =>
     ref.watch(documentProvider.select((s) => s.document.videos));
+
+/// The project's variables, in the order they were added.
+@riverpod
+List<Variable> variables(Ref ref) =>
+    ref.watch(documentProvider.select((s) => s.document.variables));
+
+/// Variable names that are empty or used twice.
+@riverpod
+Set<String> conflictingVariableNames(Ref ref) =>
+    ref.watch(projectDocumentProvider).conflictingVariableNames;
 
 /// Project title and description.
 @riverpod

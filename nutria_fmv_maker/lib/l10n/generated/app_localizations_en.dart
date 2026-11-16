@@ -33,6 +33,42 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boardProjectSettings => 'Project Settings';
 
   @override
+  String get variablesEmpty => 'No variables yet. Add one with +.';
+
+  @override
+  String get variableDefaultName => 'variable';
+
+  @override
+  String get variableName => 'Name';
+
+  @override
+  String get variableNameError => 'Each variable needs its own name';
+
+  @override
+  String get variableInitialValue => 'Initial value';
+
+  @override
+  String get variableTypeBool => 'Bool';
+
+  @override
+  String get variableTypeInt => 'Int';
+
+  @override
+  String get variableTypeFloat => 'Float';
+
+  @override
+  String get variableTrue => 'True';
+
+  @override
+  String get variableFalse => 'False';
+
+  @override
+  String get tooltipAddVariable => 'Add a variable';
+
+  @override
+  String get tooltipDeleteVariable => 'Delete the variable';
+
+  @override
   String get boardVariables => 'Variables';
 
   @override
