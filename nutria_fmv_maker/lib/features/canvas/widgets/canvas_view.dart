@@ -56,14 +56,17 @@ class CanvasView extends ConsumerWidget {
             children: [
               Positioned.fill(
                 child: IgnorePointer(
-                  child: ColoredBox(
-                    color: theme.cBackground,
-                    child: CustomPaint(
-                      painter: DotGridPainter(
-                        transform: controller,
-                        origin: kCanvasCenter,
-                        spacing: gridSize,
-                        color: theme.cBackgroundDots,
+                  // Repaints only when the view moves, not with the nodes.
+                  child: RepaintBoundary(
+                    child: ColoredBox(
+                      color: theme.cBackground,
+                      child: CustomPaint(
+                        painter: DotGridPainter(
+                          transform: controller,
+                          origin: kCanvasCenter,
+                          spacing: gridSize,
+                          color: theme.cBackgroundDots,
+                        ),
                       ),
                     ),
                   ),

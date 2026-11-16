@@ -79,7 +79,6 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final highlighted = _hovered || widget.isPreviewed;
     final thumbnail = LibraryThumbnail(path: widget.video.path);
     return Draggable<String>(
       data: widget.video.id,
@@ -99,12 +98,12 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
               .showVideo(widget.video.id),
           child: Container(
             padding: EdgeInsets.all(theme.dPanelPadding),
+            // Flat: blends into the panel, a fill shows hover and preview.
             decoration: BoxDecoration(
               color: widget.isPreviewed
                   ? theme.cButtonPressed
-                  : (highlighted ? theme.cCardHovered : theme.cCard),
-              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-              boxShadow: theme.cardShadow(),
+                  : (_hovered ? theme.cButtonHovered : null),
+              borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

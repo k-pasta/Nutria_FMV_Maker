@@ -78,7 +78,7 @@ class NodeThumbnail extends ConsumerWidget {
                 child: Icon(
                   Icons.play_arrow,
                   size: theme.dButtonHeight * 1.5,
-                  color: theme.cSwatches[node.swatch % theme.cSwatches.length],
+                  color: theme.swatch(node.swatch),
                 ),
               ),
           ],

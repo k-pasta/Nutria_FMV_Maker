@@ -6,6 +6,7 @@ import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'connection_drag_provider.freezed.dart';
@@ -94,9 +95,7 @@ PotentialConnection? potentialConnection(Ref ref) {
   final anchor = interaction.anchor;
   if (anchor == null) return null;
   return resolveConnection(
-      ref.watch(documentProvider.select((s) => s.document)),
-      anchor,
-      interaction.hover);
+      ref.watch(projectDocumentProvider), anchor, interaction.hover);
 }
 
 /// Whether [port] is the anchor or the target of the drag in progress, so its

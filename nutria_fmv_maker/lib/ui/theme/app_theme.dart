@@ -55,6 +55,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.dPanelBorderRadius = 8,
     this.dOutlinesWidth = 1,
     this.dSwatchHeight = 6,
+    this.dSelectionWidth = 2,
     this.dSectionPadding = 10,
     this.dDividerWidth = 1,
     this.dShadowBlur = 14,
@@ -119,6 +120,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final double dOutlinesWidth;
   /// Height of the colored strip on top of nodes.
   final double dSwatchHeight;
+  /// Outline of selected nodes, drawn inside them in their color.
+  final double dSelectionWidth;
   final double dSectionPadding;
   final double dDividerWidth;
   /// Blur of card shadows; selected nodes use more.
@@ -146,6 +149,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
         fontSize: dTextHeight,
         height: 1.0,
       );
+
+  /// Node color [index] (`Node.swatch`). Themes may have different numbers
+  /// of colors, so the index wraps around.
+  Color swatch(int index) => cSwatches[index % cSwatches.length];
 
   /// The soft shadow under a raised surface; [lifted] for selected nodes.
   List<BoxShadow> cardShadow({bool lifted = false}) => [
@@ -191,6 +198,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     double? dPanelBorderRadius,
     double? dOutlinesWidth,
     double? dSwatchHeight,
+    double? dSelectionWidth,
     double? dSectionPadding,
     double? dDividerWidth,
     double? dShadowBlur,
@@ -235,6 +243,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
         dPanelBorderRadius: dPanelBorderRadius ?? this.dPanelBorderRadius,
         dOutlinesWidth: dOutlinesWidth ?? this.dOutlinesWidth,
         dSwatchHeight: dSwatchHeight ?? this.dSwatchHeight,
+        dSelectionWidth: dSelectionWidth ?? this.dSelectionWidth,
         dSectionPadding: dSectionPadding ?? this.dSectionPadding,
         dDividerWidth: dDividerWidth ?? this.dDividerWidth,
         dShadowBlur: dShadowBlur ?? this.dShadowBlur,

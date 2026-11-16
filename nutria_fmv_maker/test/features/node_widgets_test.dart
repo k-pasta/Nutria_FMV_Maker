@@ -1,11 +1,12 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:material_ui/material_ui.dart' show TextField, Widget;
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -88,6 +89,35 @@ void main() {
     container.read(documentProvider.notifier).undo();
     await tester.pumpAndSettle();
     expect(nodeOf(container, id).position, Position.zero);
+  });
+
+  testWidgets('moving a node rebuilds no node content', (tester) async {
+    final container = await pumpApp(tester);
+    await addNode(tester, container);
+    container
+        .read(graphEditorProvider)
+        .addVideoNode(const Position(-400, -200));
+    await tester.pumpAndSettle();
+    // Same widget instances afterwards means Flutter skipped rebuilding them.
+    List<Widget> frames() =>
+        tester.widgetList(find.byType(NodeFrame)).toList();
+    final before = frames();
+
+    final gesture = await tester.startGesture(
+        tester.getCenter(find.text(kNoVideo).first),
+        kind: PointerDeviceKind.mouse);
+    for (var i = 0; i < 10; i++) {
+      await gesture.moveBy(const Offset(10, 5));
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pumpAndSettle();
+
+    final after = frames();
+    expect(after, hasLength(before.length));
+    for (final frame in before) {
+      expect(after.any((f) => identical(f, frame)), isTrue);
+    }
   });
 
   testWidgets('dragging the right edge resizes the node', (tester) async {

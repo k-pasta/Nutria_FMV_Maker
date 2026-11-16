@@ -35,6 +35,20 @@ void main() {
       expect(doc.edgeFrom(fromC)?.to, PortRef.input('D'));
     });
 
+    test('lookups stay right across edits (they are cached per document)',
+        () {
+      final before = storyFixture();
+      expect(before.edgeFrom(fromC), isNull); // builds the cache
+      final connected = before.connect(fromC, PortRef.input('D'));
+      expect(connected.edgeFrom(fromC)?.to, PortRef.input('D'));
+      expect(connected.disconnect(fromC).edgeFrom(fromC), isNull);
+      expect(before.edgeFrom(fromC), isNull);
+
+      final video = before.videos.first;
+      expect(before.videoById(video.id), video);
+      expect(before.copyWith(videos: const []).videoById(video.id), isNull);
+    });
+
     test('replaces the existing edge of the same output', () {
       const fromB = PortRef(nodeId: 'B', port: kNextPortKey);
       final doc = storyFixture().connect(fromB, PortRef.input('D'));

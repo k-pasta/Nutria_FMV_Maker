@@ -15,25 +15,32 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
-import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 
-/// The node card's color. A selected node is tinted with its own color
-/// (the accent for near-black swatches, where a tint wouldn't show) and gets
-/// a deeper shadow, instead of an outline.
-Color _cardColor(
-  AppTheme theme,
-  Node node, {
-  required bool selected,
-  required bool hovered,
-}) {
-  if (selected) {
-    final swatch = theme.cSwatches[node.swatch % theme.cSwatches.length];
-    final tint = swatch.computeLuminance() < 0.02 ? theme.cAccent : swatch;
-    return Color.alphaBlend(tint.withValues(alpha: 0.14), theme.cCard);
-  }
-  return hovered ? theme.cCardHovered : theme.cCard;
-}
+/// A node card: flat (shadows are too slow to draw on hundreds of nodes)
+/// and, when [selected], outlined in the node's color. The outline is drawn
+/// inside the card, over its content, so it lines up with the color strip,
+/// never changes the layout and never sticks out of the node at any zoom.
+BoxDecoration _card(AppTheme theme, {required bool hovered}) => BoxDecoration(
+      color: hovered ? theme.cCardHovered : theme.cCard,
+      borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+    );
+
+/// Never `null`, even when not [selected]: a `Container` only inserts its
+/// foreground layer when it has one, and that change of tree shape would
+/// recreate the node's content (dropping text-field focus) on selection.
+BoxDecoration _selectionOutline(AppTheme theme, Node node,
+        {required bool selected}) =>
+    BoxDecoration(
+      borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+      border: selected
+          ? Border.all(
+              color: theme.swatch(node.swatch),
+              width: theme.dSelectionWidth,
+              strokeAlign: BorderSide.strokeAlignInside,
+            )
+          : null,
+    );
 
 /// Ctrl or Shift: add to / remove from the selection.
 bool get _additive =>
@@ -206,19 +213,10 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           child: Stack(
             children: [
               // One rounded card: color strip on top, content below.
-              AnimatedContainer(
-                duration: kShortAnimation,
-                clipBehavior: Clip.antiAlias,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                  color: _cardColor(
-                    theme,
-                    node,
-                    selected: widget.selected,
-                    hovered: _hovered || dropping,
-                  ),
-                  boxShadow: theme.cardShadow(lifted: widget.selected),
-                ),
+              Container(
+                decoration: _card(theme, hovered: _hovered || dropping),
+                foregroundDecoration:
+                    _selectionOutline(theme, node, selected: widget.selected),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -247,11 +245,17 @@ class _SwatchStrip extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final name = node.name;
+    final radius = Radius.circular(theme.dPanelBorderRadius);
     return Container(
       height: NodeMetrics.of(context).stripHeight(node),
       padding: EdgeInsets.symmetric(horizontal: theme.dPanelPadding * 2),
       alignment: Alignment.centerLeft,
-      color: theme.cSwatches[node.swatch % theme.cSwatches.length],
+      // Rounded itself rather than clipped by the card: clipping every node
+      // costs more to draw.
+      decoration: BoxDecoration(
+        color: theme.swatch(node.swatch),
+        borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
+      ),
       child: name == null
           ? null
           : Text(
@@ -311,13 +315,9 @@ class _Expansion extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    return AnimatedContainer(
-      duration: kShortAnimation,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-        color: _cardColor(theme, node, selected: selected, hovered: false),
-        boxShadow: theme.cardShadow(lifted: selected),
-      ),
+    return Container(
+      decoration: _card(theme, hovered: false),
+      foregroundDecoration: _selectionOutline(theme, node, selected: selected),
       padding: EdgeInsets.all(theme.dPanelPadding),
       child: child,
     );

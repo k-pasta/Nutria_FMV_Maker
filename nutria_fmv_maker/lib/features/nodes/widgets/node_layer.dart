@@ -22,23 +22,50 @@ class NodeLayer extends ConsumerWidget {
   }
 }
 
-class _NodeView extends ConsumerWidget {
+/// Places one node. Moving it only rebuilds this [Positioned]: the content
+/// is the same widget instance every time, so Flutter skips rebuilding it,
+/// and its [RepaintBoundary] lets the moved node be drawn from its last
+/// picture instead of repainting every node.
+class _NodeView extends ConsumerStatefulWidget {
   const _NodeView({super.key, required this.id});
 
   final String id;
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final node = ref.watch(nodeProvider(id));
-    if (node == null) return const SizedBox.shrink();
+  ConsumerState<_NodeView> createState() => _NodeViewState();
+}
+
+class _NodeViewState extends ConsumerState<_NodeView> {
+  late final Widget _content =
+      RepaintBoundary(child: _NodeContent(id: widget.id));
+
+  @override
+  Widget build(BuildContext context) {
+    final position =
+        ref.watch(nodeProvider(widget.id).select((n) => n?.position));
+    if (position == null) return const SizedBox.shrink();
     return Positioned(
-      left: kCanvasCenter.dx + node.position.x,
-      top: kCanvasCenter.dy + node.position.y,
-      child: NodeFrame(
-        node: node,
-        body: nodeBodyOf(node),
-        expansion: nodeExpansionOf(node),
-      ),
+      left: kCanvasCenter.dx + position.x,
+      top: kCanvasCenter.dy + position.y,
+      child: _content,
+    );
+  }
+}
+
+/// Everything about a node except where it is.
+class _NodeContent extends ConsumerWidget {
+  const _NodeContent({required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final node = ref.watch(nodeContentProvider(id));
+    if (node == null) return const SizedBox.shrink();
+    return NodeFrame(
+      node: node,
+      body: nodeBodyOf(node),
+      expansion: nodeExpansionOf(node),
     );
   }
 }

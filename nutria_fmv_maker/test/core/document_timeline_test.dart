@@ -75,6 +75,16 @@ void main() {
     expect(timeline.canUndo, isFalse);
   });
 
+  test('a gesture that changes nothing keeps the original document', () {
+    // Dirtiness is checked by identity, so it must be the same instance.
+    final start = storyFixture();
+    final timeline = DocumentTimeline.start(start)
+        .beginTransaction('Drag')
+        .apply('x', (d) => d.moveNodes({'B': const Position(700, 100)}))
+        .commit();
+    expect(timeline.current, same(start));
+  });
+
   test('history is capped', () {
     var timeline = DocumentTimeline.start(storyFixture(), capacity: 3);
     for (var x = 1.0; x <= 10; x++) {

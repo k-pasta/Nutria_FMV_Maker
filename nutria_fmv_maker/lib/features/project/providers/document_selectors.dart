@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
@@ -15,9 +16,24 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'document_selectors.g.dart';
 
 /// The current document. Prefer the narrower providers below in widgets.
+///
+/// Compared by identity: every edit makes a new document, and comparing two
+/// documents field by field on every frame of a drag is slow.
 @riverpod
-ProjectDocument projectDocument(Ref ref) =>
-    ref.watch(documentProvider.select((s) => s.document));
+class ProjectDocumentNotifier extends _$ProjectDocumentNotifier {
+  @override
+  ProjectDocument build() => ref.watch(documentProvider).document;
+
+  @override
+  bool updateShouldNotify(ProjectDocument previous, ProjectDocument next) =>
+      !identical(previous, next);
+}
+
+/// Node [id] without its position: it stays equal while the node is dragged,
+/// so the node's content doesn't rebuild on every frame of a move.
+@riverpod
+Node? nodeContent(Ref ref, String id) => ref.watch(
+    nodeProvider(id).select((n) => n?.copyWith(position: Position.zero)));
 
 /// Node [id], or `null` once it has been removed.
 @riverpod

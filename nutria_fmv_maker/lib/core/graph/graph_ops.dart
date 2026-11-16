@@ -23,6 +23,9 @@ BranchedVideoNode newBranchedVideoNode({
       choices: [for (var i = 0; i < kMinChoices; i++) Choice(id: newId())],
     );
 
+/// Edges by output port, built once per document (documents never change).
+final _edgeIndex = Expando<Map<PortRef, Edge>>('edges by output');
+
 /// Edit operations. Each returns a new document; the receiver is never changed.
 extension GraphOps on ProjectDocument {
   // ---------------------------------------------------------------- queries
@@ -31,12 +34,14 @@ extension GraphOps on ProjectDocument {
   Node node(String id) =>
       nodes[id] ?? (throw StateError('Node "$id" does not exist'));
 
-  /// The edge leaving [from], if that output is connected.
+  /// The edge leaving [from], if that output is connected. Indexed, since
+  /// it's asked for every output while drawing.
   Edge? edgeFrom(PortRef from) {
-    for (final edge in edges) {
-      if (edge.from == from) return edge;
-    }
-    return null;
+    final index = _edgeIndex[this] ??= {
+      // An output has at most one edge; keep the first like a scan would.
+      for (final edge in edges.reversed) edge.from: edge,
+    };
+    return index[from];
   }
 
   /// Every edge entering [nodeId]'s input.

@@ -9,18 +9,24 @@ part of 'document_selectors.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
 /// The current document. Prefer the narrower providers below in widgets.
+///
+/// Compared by identity: every edit makes a new document, and comparing two
+/// documents field by field on every frame of a drag is slow.
 
-@ProviderFor(projectDocument)
-final projectDocumentProvider = ProjectDocumentProvider._();
+@ProviderFor(ProjectDocumentNotifier)
+final projectDocumentProvider = ProjectDocumentNotifierProvider._();
 
 /// The current document. Prefer the narrower providers below in widgets.
-
-final class ProjectDocumentProvider
-    extends
-        $FunctionalProvider<ProjectDocument, ProjectDocument, ProjectDocument>
-    with $Provider<ProjectDocument> {
+///
+/// Compared by identity: every edit makes a new document, and comparing two
+/// documents field by field on every frame of a drag is slow.
+final class ProjectDocumentNotifierProvider
+    extends $NotifierProvider<ProjectDocumentNotifier, ProjectDocument> {
   /// The current document. Prefer the narrower providers below in widgets.
-  ProjectDocumentProvider._()
+  ///
+  /// Compared by identity: every edit makes a new document, and comparing two
+  /// documents field by field on every frame of a drag is slow.
+  ProjectDocumentNotifierProvider._()
     : super(
         from: null,
         argument: null,
@@ -32,17 +38,11 @@ final class ProjectDocumentProvider
       );
 
   @override
-  String debugGetCreateSourceHash() => _$projectDocumentHash();
+  String debugGetCreateSourceHash() => _$projectDocumentNotifierHash();
 
   @$internal
   @override
-  $ProviderElement<ProjectDocument> $createElement($ProviderPointer pointer) =>
-      $ProviderElement(pointer);
-
-  @override
-  ProjectDocument create(Ref ref) {
-    return projectDocument(ref);
-  }
+  ProjectDocumentNotifier create() => ProjectDocumentNotifier();
 
   /// {@macro riverpod.override_with_value}
   Override overrideWithValue(ProjectDocument value) {
@@ -53,7 +53,121 @@ final class ProjectDocumentProvider
   }
 }
 
-String _$projectDocumentHash() => r'4edcf0dbad7b7c39d11f0df32e239aa93405efe5';
+String _$projectDocumentNotifierHash() =>
+    r'd843e5a187aad069ee586ecb130857b60d8c6585';
+
+/// The current document. Prefer the narrower providers below in widgets.
+///
+/// Compared by identity: every edit makes a new document, and comparing two
+/// documents field by field on every frame of a drag is slow.
+
+abstract class _$ProjectDocumentNotifier extends $Notifier<ProjectDocument> {
+  ProjectDocument build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<ProjectDocument, ProjectDocument>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ProjectDocument, ProjectDocument>,
+              ProjectDocument,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// Node [id] without its position: it stays equal while the node is dragged,
+/// so the node's content doesn't rebuild on every frame of a move.
+
+@ProviderFor(nodeContent)
+final nodeContentProvider = NodeContentFamily._();
+
+/// Node [id] without its position: it stays equal while the node is dragged,
+/// so the node's content doesn't rebuild on every frame of a move.
+
+final class NodeContentProvider extends $FunctionalProvider<Node?, Node?, Node?>
+    with $Provider<Node?> {
+  /// Node [id] without its position: it stays equal while the node is dragged,
+  /// so the node's content doesn't rebuild on every frame of a move.
+  NodeContentProvider._({
+    required NodeContentFamily super.from,
+    required String super.argument,
+  }) : super(
+         retry: null,
+         name: r'nodeContentProvider',
+         isAutoDispose: true,
+         dependencies: null,
+         $allTransitiveDependencies: null,
+       );
+
+  @override
+  String debugGetCreateSourceHash() => _$nodeContentHash();
+
+  @override
+  String toString() {
+    return r'nodeContentProvider'
+        ''
+        '($argument)';
+  }
+
+  @$internal
+  @override
+  $ProviderElement<Node?> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Node? create(Ref ref) {
+    final argument = this.argument as String;
+    return nodeContent(ref, argument);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Node? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Node?>(value),
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return other is NodeContentProvider && other.argument == argument;
+  }
+
+  @override
+  int get hashCode {
+    return argument.hashCode;
+  }
+}
+
+String _$nodeContentHash() => r'5fec9a82d8fde8352b4e1e6cb66075a4b0497320';
+
+/// Node [id] without its position: it stays equal while the node is dragged,
+/// so the node's content doesn't rebuild on every frame of a move.
+
+final class NodeContentFamily extends $Family
+    with $FunctionalFamilyOverride<Node?, String> {
+  NodeContentFamily._()
+    : super(
+        retry: null,
+        name: r'nodeContentProvider',
+        dependencies: null,
+        $allTransitiveDependencies: null,
+        isAutoDispose: true,
+      );
+
+  /// Node [id] without its position: it stays equal while the node is dragged,
+  /// so the node's content doesn't rebuild on every frame of a move.
+
+  NodeContentProvider call(String id) =>
+      NodeContentProvider._(argument: id, from: this);
+
+  @override
+  String toString() => r'nodeContentProvider';
+}
 
 /// Node [id], or `null` once it has been removed.
 

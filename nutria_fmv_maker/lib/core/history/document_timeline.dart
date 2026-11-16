@@ -80,8 +80,11 @@ class DocumentTimeline {
     Object? mergeKey,
   }) {
     final next = edit(current);
-    if (identical(next, current) || next == current) return this;
+    if (identical(next, current)) return this;
+    // Gestures apply an edit on every frame; comparing whole documents each
+    // time is too slow for large projects. [commit] compares once instead.
     if (inTransaction) return _copy(current: next);
+    if (next == current) return this;
     final mergesWithLast = mergeKey != null &&
         redoStack.isEmpty &&
         undoStack.isNotEmpty &&
@@ -106,7 +109,11 @@ class DocumentTimeline {
   DocumentTimeline commit() {
     final open = transaction;
     if (open == null) return this;
-    if (open.document == current) return _copy(clearTransaction: true);
+    // Unchanged: restore the original instance, so the project isn't marked
+    // as edited (dirtiness is checked by identity).
+    if (open.document == current) {
+      return _copy(current: open.document, clearTransaction: true);
+    }
     return _copy(
       clearTransaction: true,
       undoStack: _pushCapped(undoStack, open),

@@ -137,7 +137,7 @@ final class PotentialConnectionProvider
 }
 
 String _$potentialConnectionHash() =>
-    r'e1bf4ff053f3d777a1600e38dbd44a92bfedad13';
+    r'bcfd3b1532d09eef56488989f477679dcb905172';
 
 /// Whether [port] is the anchor or the target of the drag in progress, so its
 /// knot is drawn enlarged. Inputs use [PortRef.input].

@@ -52,6 +52,9 @@ abstract class VideoAsset with _$VideoAsset {
   }
 }
 
+/// Videos by id, built once per document (documents never change).
+final _videoIndex = Expando<Map<String, VideoAsset>>('videos by id');
+
 /// Everything that is saved to `.nfmv`, undone by undo, and exported to `.fmv`.
 ///
 /// Immutable: every edit produces a new document (see `core/graph/graph_ops.dart`),
@@ -89,11 +92,12 @@ abstract class ProjectDocument with _$ProjectDocument {
   OriginNode get origin => nodes.values.whereType<OriginNode>().first;
 
   /// Looks up a video asset, or `null` if [id] is null or unknown.
+  /// Indexed: widgets and noodles look videos up on every frame of a drag.
   VideoAsset? videoById(String? id) {
     if (id == null) return null;
-    for (final video in videos) {
-      if (video.id == id) return video;
-    }
-    return null;
+    final index = _videoIndex[this] ??= {
+      for (final video in videos) video.id: video,
+    };
+    return index[id];
   }
 }
