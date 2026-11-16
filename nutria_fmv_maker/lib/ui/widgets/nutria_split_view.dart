@@ -1,4 +1,6 @@
 // Three-column layout with draggable dividers and collapsible side panels.
+import 'dart:math' as math;
+
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/panel_edge_button.dart';
@@ -35,7 +37,8 @@ class NutriaSplitView extends StatefulWidget {
   final Widget? right;
 
   /// A divider was dragged by `dx` pixels in a view `totalWidth` wide.
-  final void Function(SplitSide side, double dx, double totalWidth) onDividerDrag;
+  final void Function(SplitSide side, double dx, double totalWidth)
+  onDividerDrag;
 
   /// The user let go of the divider next to `side`.
   final void Function(SplitSide side) onDividerDragEnd;
@@ -56,71 +59,96 @@ class _NutriaSplitViewState extends State<NutriaSplitView> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    return LayoutBuilder(builder: (context, constraints) {
-      final total = constraints.maxWidth;
-      final last = _lastWidth;
-      if (last != null && last != total) {
-        // Report after the frame: providers can't change during build.
-        WidgetsBinding.instance.addPostFrameCallback(
-            (_) => widget.onWindowResized(last - total, total));
-      }
-      _lastWidth = total;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final total = constraints.maxWidth;
+        final last = _lastWidth;
+        if (last != null && last != total) {
+          // Report after the frame: providers can't change during build.
+          WidgetsBinding.instance.addPostFrameCallback(
+            (_) => widget.onWindowResized(last - total, total),
+          );
+        }
+        _lastWidth = total;
 
-      Widget divider(SplitSide side, bool open) => GestureDetector(
-            onHorizontalDragUpdate: (d) =>
-                widget.onDividerDrag(side, d.delta.dx, total),
-            onHorizontalDragEnd: (_) => widget.onDividerDragEnd(side),
-            child: MouseRegion(
-              cursor: SystemMouseCursors.resizeLeftRight,
-              child: Container(
-                width: open ? widget.handleWidth : 0,
-                decoration: BoxDecoration(
-                  color: theme.cPanel,
-                  border: Border(
-                    left: side == SplitSide.right
-                        ? BorderSide(
-                            color: theme.cOutlines,
-                            width: theme.dSectionOutlineWidth)
-                        : BorderSide.none,
-                    right: side == SplitSide.left
-                        ? BorderSide(
-                            color: theme.cOutlines,
-                            width: theme.dSectionOutlineWidth)
-                        : BorderSide.none,
-                  ),
+        Widget divider(SplitSide side, bool open) => GestureDetector(
+          onHorizontalDragUpdate: (d) =>
+              widget.onDividerDrag(side, d.delta.dx, total),
+          onHorizontalDragEnd: (_) => widget.onDividerDragEnd(side),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.resizeLeftRight,
+            child: Container(
+              width: open ? widget.handleWidth : 0,
+              decoration: BoxDecoration(
+                color: theme.cPanel,
+                border: Border(
+                  left: side == SplitSide.right
+                      ? BorderSide(
+                          color: theme.cOutlines,
+                          width: theme.dSectionOutlineWidth,
+                        )
+                      : BorderSide.none,
+                  right: side == SplitSide.left
+                      ? BorderSide(
+                          color: theme.cOutlines,
+                          width: theme.dSectionOutlineWidth,
+                        )
+                      : BorderSide.none,
                 ),
               ),
             ),
-          );
+          ),
+        );
 
-      Widget panel(double width, bool open, Widget? child) => Offstage(
-            offstage: !open,
-            child: Container(
-                width: width,
-                height: double.infinity,
-                color: theme.cPanel,
-                child: child),
-          );
+        Widget panel(double width, bool open, Widget? child) => Offstage(
+          offstage: !open,
+          child: Container(
+            width: width,
+            height: double.infinity,
+            color: theme.cPanel,
+            child: child,
+          ),
+        );
 
-      return Stack(children: [
-        Row(children: [
-          panel(widget.leftWidth, widget.leftOpen, widget.left),
-          divider(SplitSide.left, widget.leftOpen),
-          Expanded(child: widget.center ?? const SizedBox.expand()),
-          divider(SplitSide.right, widget.rightOpen),
-          panel(widget.rightWidth, widget.rightOpen, widget.right),
-        ]),
-        PanelEdgeButton(
-          side: PanelEdge.left,
-          enabled: !widget.leftOpen,
-          onTap: () => widget.onOpenRequested(SplitSide.left, total),
-        ),
-        PanelEdgeButton(
-          side: PanelEdge.right,
-          enabled: !widget.rightOpen,
-          onTap: () => widget.onOpenRequested(SplitSide.right, total),
-        ),
-      ]);
-    });
+        // The stored widths can be wider than the window (they shrink a frame
+        // later, and never below their minimum), so squeeze both panels
+        // proportionally until they fit.
+        final handles =
+            (widget.leftOpen ? widget.handleWidth : 0) +
+            (widget.rightOpen ? widget.handleWidth : 0);
+        final room = math.max(0.0, total - handles);
+        var left = widget.leftOpen ? widget.leftWidth : 0.0;
+        var right = widget.rightOpen ? widget.rightWidth : 0.0;
+        if (left + right > room) {
+          final factor = room / (left + right);
+          left *= factor;
+          right *= factor;
+        }
+
+        return Stack(
+          children: [
+            Row(
+              children: [
+                panel(left, widget.leftOpen, widget.left),
+                divider(SplitSide.left, widget.leftOpen),
+                Expanded(child: widget.center ?? const SizedBox.expand()),
+                divider(SplitSide.right, widget.rightOpen),
+                panel(right, widget.rightOpen, widget.right),
+              ],
+            ),
+            PanelEdgeButton(
+              side: PanelEdge.left,
+              enabled: !widget.leftOpen,
+              onTap: () => widget.onOpenRequested(SplitSide.left, total),
+            ),
+            PanelEdgeButton(
+              side: PanelEdge.right,
+              enabled: !widget.rightOpen,
+              onTap: () => widget.onOpenRequested(SplitSide.right, total),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

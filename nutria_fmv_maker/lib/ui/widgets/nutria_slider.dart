@@ -25,22 +25,31 @@ class NutriaSlider extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final safeMax = max > 0 ? max : 1.0;
-    return SliderTheme(
-      data: SliderTheme.of(context).copyWith(
-        // Rounded outer ends, flat where the filled part stops.
-        trackShape: const RoundedRectSliderTrackShape(),
-        thumbShape: SliderComponentShape.noThumb,
-        overlayShape: SliderComponentShape.noOverlay,
-        trackHeight: theme.dPanelPadding + 1,
-      ),
-      child: Slider(
-        value: value.clamp(0, safeMax),
-        max: safeMax,
-        onChanged: max > 0 ? onChanged : null,
-        onChangeEnd: onChangeEnd,
-        activeColor: isAccented ? theme.cAccent : theme.cButtonPressed,
-        inactiveColor: theme.cButton,
-      ),
+    final trackHeight = theme.dPanelPadding + 1;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Squeezed narrower than its rounded ends, Slider fails an assertion.
+        if (constraints.maxWidth < trackHeight * 2) {
+          return SizedBox(height: trackHeight);
+        }
+        return SliderTheme(
+          data: SliderTheme.of(context).copyWith(
+            // Rounded outer ends, flat where the filled part stops.
+            trackShape: const RoundedRectSliderTrackShape(),
+            thumbShape: SliderComponentShape.noThumb,
+            overlayShape: SliderComponentShape.noOverlay,
+            trackHeight: trackHeight,
+          ),
+          child: Slider(
+            value: value.clamp(0, safeMax),
+            max: safeMax,
+            onChanged: max > 0 ? onChanged : null,
+            onChangeEnd: onChangeEnd,
+            activeColor: isAccented ? theme.cAccent : theme.cButtonPressed,
+            inactiveColor: theme.cButton,
+          ),
+        );
+      },
     );
   }
 }

@@ -127,10 +127,11 @@ class _TransportState extends ConsumerState<_Transport> {
         ),
       ]),
       SizedBox(height: theme.dPanelPadding),
-      // Buttons in a Row keep their natural square size.
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      // Wraps onto more lines when the panel is narrow.
+      Wrap(
+        alignment: WrapAlignment.center,
         spacing: theme.dPanelPadding,
+        runSpacing: theme.dPanelPadding,
         children: [
           NutriaButton.icon(
             icon: Icons.replay_5,

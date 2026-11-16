@@ -18,8 +18,9 @@ import 'harness.dart';
 const kCanvasPoint = Offset(800, 450);
 
 /// Pumps [NutriaApp] in a 1600x900 window and returns its container.
+/// [mediaInfo] replaces the default, which knows nothing about any file.
 Future<ProviderContainer> pumpApp(WidgetTester tester,
-    {List<Override> overrides = const []}) async {
+    {List<Override> overrides = const [], MediaInfoService? mediaInfo}) async {
   tester.view.physicalSize = const Size(1600, 900);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -29,7 +30,8 @@ Future<ProviderContainer> pumpApp(WidgetTester tester,
     sharedPreferencesProvider.overrideWithValue(prefs),
     previewPlayerProvider.overrideWithValue(FakePlayer()),
     thumbnailServiceProvider.overrideWithValue(const _NoThumbnails()),
-    mediaInfoServiceProvider.overrideWithValue(const _NoMediaInfo()),
+    mediaInfoServiceProvider
+        .overrideWithValue(mediaInfo ?? const _NoMediaInfo()),
     ...overrides,
   ]);
   await tester.pumpWidget(
