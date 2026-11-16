@@ -21,7 +21,7 @@ class NoodleLayer extends ConsumerWidget {
     final style = ref.watch(preferencesProvider.select((p) => p.noodleStyle));
     final noodles = noodlesFor(
       ref.watch(projectDocumentProvider),
-      NodeMetrics.of(theme),
+      NodeMetrics.of(context),
       ref.watch(connectionDragProvider),
       ref.watch(potentialConnectionProvider),
     );

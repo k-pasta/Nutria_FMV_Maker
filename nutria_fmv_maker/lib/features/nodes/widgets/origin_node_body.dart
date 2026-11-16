@@ -34,7 +34,7 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
       // Rough preview of the player's main menu.
       Container(
-        height: NodeMetrics.of(theme).thumbnailHeight,
+        height: NodeMetrics.of(context).thumbnailHeight,
         color: theme.cBackground,
         padding: EdgeInsets.all(theme.dPanelPadding),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [

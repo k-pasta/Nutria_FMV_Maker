@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/app/app.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
@@ -13,6 +14,9 @@ import 'package:nutria_fmv_maker/services/thumbnail_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'harness.dart';
+
+/// "No Video" as nodes draw it (with invisible wrap points between letters).
+final kNoVideo = NodeMetrics.wrappable('No Video');
 
 /// A point on the canvas that no panel covers (window 1600x900).
 const kCanvasPoint = Offset(800, 450);

@@ -23,7 +23,7 @@ class NodeThumbnail extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
-    final height = NodeMetrics.of(theme).thumbnailHeight;
+    final height = NodeMetrics.of(context).thumbnailHeight;
     final videoId = node.videoIdOrNull;
     final path = videoId == null
         ? null
@@ -88,7 +88,9 @@ class NodeThumbnail extends ConsumerWidget {
   }
 }
 
-/// The video's file name, on one line under the thumbnail.
+/// The video's file name under the thumbnail. It wraps (anywhere, up to
+/// [kFileNameMaxLines] lines), and its height comes from [NodeMetrics] so the
+/// knots below it stay in place.
 class NodeFileName extends ConsumerWidget {
   const NodeFileName({super.key, required this.node});
 
@@ -96,21 +98,22 @@ class NodeFileName extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.appTheme;
+    final metrics = NodeMetrics.of(context);
     final videoId = node.videoIdOrNull;
     final name = videoId == null
         ? null
         : ref.watch(videoAssetProvider(videoId).select((v) => v?.fileName));
     return Padding(
-      padding: EdgeInsets.all(theme.dPanelPadding),
+      padding: EdgeInsets.all(metrics.panelPadding),
       child: SizedBox(
-        height: theme.dButtonHeight,
-        child: Center(
-          child: NutriaText(
-            text: name ?? AppLocalizations.of(context).nodeNoVideo,
-            textAlign: TextAlign.center,
-            textStyle: NutriaTextStyle.italic,
-          ),
+        height: metrics.fileNameHeight(name, node.width),
+        child: Text(
+          NodeMetrics.wrappable(name ?? metrics.noVideoText),
+          style: metrics.fileNameStyle,
+          textAlign: TextAlign.center,
+          maxLines: kFileNameMaxLines,
+          overflow: TextOverflow.ellipsis,
+          textScaler: TextScaler.noScaling,
         ),
       ),
     );

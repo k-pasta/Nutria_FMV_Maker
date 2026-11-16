@@ -2,6 +2,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
@@ -30,7 +31,7 @@ void main() {
   testWidgets('nodes appear on the canvas', (tester) async {
     final container = await pumpApp(tester);
     await addNode(tester, container);
-    expect(find.text('No Video'), findsOneWidget);
+    expect(find.text(kNoVideo), findsOneWidget);
     expect(find.text('Convert to Branching Node'), findsOneWidget);
   });
 
@@ -39,7 +40,7 @@ void main() {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
 
-    await tester.tap(find.text('No Video'));
+    await tester.tap(find.text(kNoVideo));
     await tester.pumpAndSettle();
     expect(container.read(selectionProvider).selected, {id});
 
@@ -70,7 +71,7 @@ void main() {
     }
 
     final gesture = await tester.startGesture(
-        tester.getCenter(find.text('No Video')),
+        tester.getCenter(find.text(kNoVideo)),
         kind: PointerDeviceKind.mouse);
     for (var i = 0; i < 10; i++) {
       await gesture.moveBy(const Offset(10, 5));
@@ -92,9 +93,9 @@ void main() {
   testWidgets('dragging the right edge resizes the node', (tester) async {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
-    final edge = tester.getTopRight(find.text('No Video'));
+    final edge = tester.getTopRight(find.text(kNoVideo));
     // The file name is centered; aim at the node's right border instead.
-    final nodeRight = tester.getCenter(find.text('No Video')).dx +
+    final nodeRight = tester.getCenter(find.text(kNoVideo)).dx +
         kDefaultNodeWidth / 2 -
         2;
     await tester.dragFrom(
@@ -103,6 +104,28 @@ void main() {
     await tester.pumpAndSettle();
     expect(nodeOf(container, id).width, greaterThan(kDefaultNodeWidth + 50));
   });
+
+  for (final name in ['a.mp4', 'Recording 2026-04-01 12-54-49 final v2.mp4']) {
+    testWidgets('choice knots line up with their rows (file name "$name")',
+        (tester) async {
+      final container = await pumpApp(tester);
+      final editor = container.read(graphEditorProvider);
+      final video = editor.importVideos(['C:/v/$name']).single;
+      final id = editor.addVideoNode(const Position(-100, -300),
+          videoId: video, type: DefaultNodeType.branchedVideo);
+      await tester.pumpAndSettle();
+
+      final node = nodeOf(container, id) as BranchedVideoNode;
+      for (final (i, choice) in node.choices.indexed) {
+        final knot = find.byWidgetPredicate((w) =>
+            w is Knot && w.port == PortRef(nodeId: id, port: choice.id));
+        final field = find.ancestor(
+            of: find.text('Option ${i + 1}'), matching: find.byType(TextField));
+        expect(tester.getCenter(knot).dy,
+            moreOrLessEquals(tester.getCenter(field).dy, epsilon: 0.5));
+      }
+    });
+  }
 
   testWidgets('a branched node has a knot per choice plus its input',
       (tester) async {

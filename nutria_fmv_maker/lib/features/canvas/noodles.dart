@@ -13,7 +13,9 @@ import 'package:nutria_fmv_maker/ui/painters/noodle_painter.dart';
 Offset? knotPosition(ProjectDocument doc, NodeMetrics metrics, PortRef port) {
   final node = doc.nodes[port.nodeId];
   if (node == null) return null;
-  final layout = NodeLayout(node, metrics);
+  final videoId = node.videoIdOrNull;
+  final layout = NodeLayout(node, metrics,
+      fileName: videoId == null ? null : doc.videoById(videoId)?.fileName);
   final offset = port.port == PortRef.inputPortKey
       ? layout.input
       : layout.output(port.port);

@@ -118,7 +118,7 @@ void main() {
     final knot = find.byWidgetPredicate((w) => w is Knot && w.port == originOut);
     final gesture = await tester.startGesture(tester.getCenter(knot),
         kind: PointerDeviceKind.mouse);
-    final target = tester.getCenter(find.text('No Video'));
+    final target = tester.getCenter(find.text(kNoVideo));
     final start = tester.getCenter(knot);
     for (var i = 1; i <= 10; i++) {
       await gesture.moveTo(Offset.lerp(start, target, i / 10)!);

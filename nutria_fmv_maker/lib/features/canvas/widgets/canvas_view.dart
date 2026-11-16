@@ -115,7 +115,7 @@ class _EmptyCanvasArea extends ConsumerWidget {
     void dropVideo(DragTargetDetails<String> details) {
       final point = CanvasSpace.maybeOf(context)?.fromGlobal(details.offset);
       if (point == null) return;
-      final metrics = NodeMetrics.of(context.appTheme);
+      final metrics = NodeMetrics.of(context);
       editor.addVideoNode(
         Position(
           point.dx - kNodePadding - kDefaultNodeWidth / 2,

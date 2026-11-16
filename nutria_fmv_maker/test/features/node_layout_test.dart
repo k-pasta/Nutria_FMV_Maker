@@ -29,8 +29,25 @@ void main() {
     expect(second.dy - first.dy, 25 + 5);
     // Below the thumbnail, the file name row and the list padding.
     expect(first.dy,
-        layout.input!.dy + (25 + 5 * 2) + 5 + 25 / 2);
+        layout.input!.dy + metrics.fileNameRowHeight(null, 300) + 5 + 25 / 2);
     expect(layout.output('missing'), isNull);
+  });
+
+  test('a long file name wraps and moves the choice knots down', () {
+    final short = NodeLayout(branched, metrics, fileName: 'a.mp4');
+    final long = NodeLayout(branched, metrics,
+        fileName: 'Recording 2026-04-01 12-54-49 final final v2.mp4');
+    final lines = metrics.fileNameHeight('a.mp4', 300);
+    expect(metrics.fileNameHeight(long.fileName, 300), greaterThan(lines * 1.5));
+    expect(long.output('c1')!.dy, greaterThan(short.output('c1')!.dy));
+    // The input stays at the bottom of the thumbnail.
+    expect(long.input, short.input);
+  });
+
+  test('file names wrap onto at most three lines', () {
+    final one = metrics.fileNameHeight('a', 300);
+    final huge = metrics.fileNameHeight('x' * 500, 300);
+    expect(huge, moreOrLessEquals(one * kFileNameMaxLines, epsilon: 1));
   });
 
   test('a node name makes the strip taller and moves every knot down', () {

@@ -9,6 +9,7 @@ import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provi
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
@@ -40,7 +41,12 @@ class NodeFrame extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
     final selected = ref.watch(isNodeSelectedProvider(node.id));
-    final layout = NodeLayout(node, NodeMetrics.of(theme));
+    final videoId = node.videoIdOrNull;
+    final fileName = videoId == null
+        ? null
+        : ref.watch(videoAssetProvider(videoId).select((v) => v?.fileName));
+    final layout =
+        NodeLayout(node, NodeMetrics.of(context), fileName: fileName);
     final expansion = this.expansion;
     return SizedBox(
       width: node.width + kNodePadding * 2,
@@ -231,7 +237,7 @@ class _SwatchStrip extends StatelessWidget {
     final radius = Radius.circular(theme.dPanelBorderRadius);
     final name = node.name;
     return Container(
-      height: NodeMetrics.of(theme).stripHeight(node),
+      height: NodeMetrics.of(context).stripHeight(node),
       padding: EdgeInsets.symmetric(horizontal: theme.dPanelPadding * 2),
       alignment: Alignment.centerLeft,
       decoration: BoxDecoration(

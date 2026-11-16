@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart' show Icons;
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
@@ -89,13 +90,13 @@ void main() {
     await tester.pumpAndSettle();
 
     await dragEntry(
-        tester, 'ending.mp4', tester.getCenter(find.text('No Video')));
+        tester, 'ending.mp4', tester.getCenter(find.text(kNoVideo)));
 
     final node = container.read(projectDocumentProvider).nodes[id]!;
     expect(container.read(videoAssetProvider(node.videoIdOrNull!))!.path,
         videos[1]);
     // On the node, the file name replaces "No Video".
-    expect(find.text('No Video'), findsNothing);
+    expect(find.text(kNoVideo), findsNothing);
   });
 
   testWidgets('project settings change and undo from the panel',
@@ -142,7 +143,8 @@ void main() {
     await tester.pumpAndSettle();
     expect(
         find.descendant(
-            of: find.byType(NodeFrame), matching: find.text('intro.mp4')),
+            of: find.byType(NodeFrame),
+            matching: find.text(NodeMetrics.wrappable('intro.mp4'))),
         findsOneWidget);
     expect(
         container
