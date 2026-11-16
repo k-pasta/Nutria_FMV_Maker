@@ -47,6 +47,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cShadow = const Color(0x99000000),
     this.cMenuBar = const Color(0xff212128),
     this.cMenuBarText = const Color(0xffffffff),
+    this.cLogoBadge = const Color(0x00000000),
+    this.logoAsset = 'assets/icons/nutria_logo_top.svg',
     this.cDimmer = const Color(0x73000000),
     this.cSwatches = kDefaultSwatches,
     this.dTextHeight = 14,
@@ -108,6 +110,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color cShadow;
   final Color cMenuBar;
   final Color cMenuBarText;
+  /// Backing behind the logo; transparent when the logo art suits the menu bar.
+  final Color cLogoBadge;
+  /// The mascot in the menu bar. Themes can ship their own artwork.
+  final String logoAsset;
   /// Darkens the editor behind open menus and dialogs.
   final Color cDimmer;
   /// Node color swatches, indexed by `Node.swatch`.
@@ -190,6 +196,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cShadow,
     Color? cMenuBar,
     Color? cMenuBarText,
+    Color? cLogoBadge,
+    String? logoAsset,
     Color? cDimmer,
     List<Color>? cSwatches,
     double? dTextHeight,
@@ -235,6 +243,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
         cShadow: cShadow ?? this.cShadow,
         cMenuBar: cMenuBar ?? this.cMenuBar,
         cMenuBarText: cMenuBarText ?? this.cMenuBarText,
+        cLogoBadge: cLogoBadge ?? this.cLogoBadge,
+        logoAsset: logoAsset ?? this.logoAsset,
         cDimmer: cDimmer ?? this.cDimmer,
         cSwatches: cSwatches ?? this.cSwatches,
         dTextHeight: dTextHeight ?? this.dTextHeight,

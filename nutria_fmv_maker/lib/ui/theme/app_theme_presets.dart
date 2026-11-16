@@ -39,6 +39,9 @@ const kLightTheme = AppTheme(
   cShadow: Color(0x24252a3a),
   cMenuBar: Color(0xfff5f6f8),
   cMenuBarText: Color(0xff1b1b22),
+  // The mascot's face is cut out of the art; until there is light-theme
+  // artwork, it sits on a dark backing so the face doesn't read inverted.
+  cLogoBadge: Color(0xff212128),
   cDimmer: Color(0x40000000),
   cSwatches: kLightSwatches,
 );

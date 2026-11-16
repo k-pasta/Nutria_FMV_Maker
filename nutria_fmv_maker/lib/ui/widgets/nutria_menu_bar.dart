@@ -44,8 +44,6 @@ class NutriaMenuBar extends StatelessWidget {
     this.onOpenChanged,
   });
 
-  static const _logoAsset = 'assets/icons/nutria_logo_top.svg';
-
   final List<NutriaMenu> menus;
   final VoidCallback? onLogoTap;
   final ValueChanged<bool>? onOpenChanged;
@@ -94,12 +92,22 @@ class NutriaMenuBar extends StatelessWidget {
           top: theme.dLogoPadding,
           left: theme.dLogoPadding,
           child: IgnorePointer(
-            child: SvgPicture.asset(
-              _logoAsset,
-              width: theme.dMenuBarHeight * 2.2,
-              height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
-              colorFilter:
-                  ColorFilter.mode(theme.cAccentButton, BlendMode.srcIn),
+            // The art is a silhouette with the face cut out, so the cut-outs
+            // show what is behind it: themes whose menu bar is too light for
+            // that give the logo a darker backing.
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                color: theme.cLogoBadge,
+                borderRadius:
+                    BorderRadius.circular(theme.dPanelBorderRadius),
+              ),
+              child: SvgPicture.asset(
+                theme.logoAsset,
+                width: theme.dMenuBarHeight * 2.2,
+                height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
+                colorFilter:
+                    ColorFilter.mode(theme.cAccentButton, BlendMode.srcIn),
+              ),
             ),
           ),
         ),
