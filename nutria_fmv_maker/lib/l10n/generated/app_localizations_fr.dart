@@ -232,6 +232,15 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prefGridSnapping => 'Aimanter à la grille';
 
   @override
+  String get prefNoodleCurved => 'Courbes';
+
+  @override
+  String get prefNoodleStraight => 'Droites';
+
+  @override
+  String get prefNoodleStyle => 'Connexions';
+
+  @override
   String get statusUnsavedFile => 'Fichier non enregistré';
 
   @override

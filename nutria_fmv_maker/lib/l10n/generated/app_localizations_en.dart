@@ -230,6 +230,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prefGridSnapping => 'Grid Snapping';
 
   @override
+  String get prefNoodleCurved => 'Curved';
+
+  @override
+  String get prefNoodleStraight => 'Straight';
+
+  @override
+  String get prefNoodleStyle => 'Connections';
+
+  @override
   String get statusUnsavedFile => 'Unsaved File';
 
   @override

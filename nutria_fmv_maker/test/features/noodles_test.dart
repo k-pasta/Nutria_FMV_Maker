@@ -62,7 +62,9 @@ void main() {
         (from: originOut, to: PortRef.input('a')),
       );
       expect(noodles.single.end, knotPosition(doc, metrics, PortRef.input('a')));
-      expect(noodles.single.endLocked, isTrue);
+      // The straight piece on that side only appears once connected.
+      expect(noodles.single.endLocked, isFalse);
+      expect(noodles.single.startLocked, isTrue);
     });
 
     test('dragging from an input draws from the pointer to that input', () {
@@ -75,6 +77,29 @@ void main() {
       );
       expect(noodles.single.start, const Offset(-5, -5));
       expect(noodles.single.end, knotPosition(doc, metrics, PortRef.input('a')));
+    });
+  });
+
+  group('straight noodles', () {
+    test('locked ends get a horizontal piece, unlocked ends none', () {
+      const connected = Noodle(Offset(0, 0), Offset(200, 100));
+      final metrics = NoodlePainter.pathOf(connected).computeMetrics().toList();
+      // Two 25 px pieces plus the diagonal between (150, 100).
+      final length = metrics.fold(0.0, (sum, m) => sum + m.length);
+      expect(length, moreOrLessEquals(25 + 25 + const Offset(150, 100).distance,
+          epsilon: 0.01));
+
+      const dragging =
+          Noodle(Offset(0, 0), Offset(200, 100), endLocked: false);
+      final dragLength = NoodlePainter.pathOf(dragging)
+          .computeMetrics()
+          .fold(0.0, (sum, m) => sum + m.length);
+      expect(dragLength,
+          moreOrLessEquals(25 + const Offset(175, 100).distance, epsilon: 0.01));
+    });
+
+    test('straight is the default style', () {
+      expect(const Preferences().noodleStyle, NoodleStyle.straight);
     });
   });
 

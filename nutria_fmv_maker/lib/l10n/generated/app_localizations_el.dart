@@ -230,6 +230,15 @@ class AppLocalizationsEl extends AppLocalizations {
   String get prefGridSnapping => 'Κούμπωμα στο πλέγμα';
 
   @override
+  String get prefNoodleCurved => 'Καμπύλες';
+
+  @override
+  String get prefNoodleStraight => 'Ευθείες';
+
+  @override
+  String get prefNoodleStyle => 'Συνδέσεις';
+
+  @override
   String get statusUnsavedFile => 'Μη αποθηκευμένο αρχείο';
 
   @override

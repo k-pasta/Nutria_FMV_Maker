@@ -52,6 +52,15 @@ class PreferencesPanel extends ConsumerWidget {
             _cycle(DefaultNodeType.values, prefs.defaultNodeType, 1)),
       ),
       NutriaSettingRow(
+        label: t.prefNoodleStyle,
+        value: switch (prefs.noodleStyle) {
+          NoodleStyle.straight => t.prefNoodleStraight,
+          NoodleStyle.curved => t.prefNoodleCurved,
+        },
+        onTap: () => notifier
+            .setNoodleStyle(_cycle(NoodleStyle.values, prefs.noodleStyle, 1)),
+      ),
+      NutriaSettingRow(
         label: t.viewTheme,
         value: themeName(prefs.theme),
         onPrevious: () => stepTheme(-1),

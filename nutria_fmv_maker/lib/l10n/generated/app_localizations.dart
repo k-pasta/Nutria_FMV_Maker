@@ -520,6 +520,24 @@ abstract class AppLocalizations {
   /// **'Grid Snapping'**
   String get prefGridSnapping;
 
+  /// No description provided for @prefNoodleCurved.
+  ///
+  /// In en, this message translates to:
+  /// **'Curved'**
+  String get prefNoodleCurved;
+
+  /// No description provided for @prefNoodleStraight.
+  ///
+  /// In en, this message translates to:
+  /// **'Straight'**
+  String get prefNoodleStraight;
+
+  /// No description provided for @prefNoodleStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Connections'**
+  String get prefNoodleStyle;
+
   /// No description provided for @statusUnsavedFile.
   ///
   /// In en, this message translates to:

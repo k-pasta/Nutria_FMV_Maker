@@ -16,6 +16,9 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
       $enumDecodeNullable(_$ThemeChoiceEnumMap, json['theme']) ??
       ThemeChoice.dark,
   languageCode: json['languageCode'] as String? ?? 'en',
+  noodleStyle:
+      $enumDecodeNullable(_$NoodleStyleEnumMap, json['noodleStyle']) ??
+      NoodleStyle.straight,
 );
 
 Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
@@ -25,6 +28,7 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'defaultNodeType': _$DefaultNodeTypeEnumMap[instance.defaultNodeType]!,
       'theme': _$ThemeChoiceEnumMap[instance.theme]!,
       'languageCode': instance.languageCode,
+      'noodleStyle': _$NoodleStyleEnumMap[instance.noodleStyle]!,
     };
 
 const _$DefaultNodeTypeEnumMap = {
@@ -36,6 +40,11 @@ const _$ThemeChoiceEnumMap = {
   ThemeChoice.dark: 'dark',
   ThemeChoice.light: 'light',
   ThemeChoice.custom: 'custom',
+};
+
+const _$NoodleStyleEnumMap = {
+  NoodleStyle.straight: 'straight',
+  NoodleStyle.curved: 'curved',
 };
 
 // **************************************************************************
@@ -136,7 +145,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'e9a36099a6531020d271ccd35d0dd14dfcbdff59';
+    r'365a910bcf6cd0e47dfc9aee980998c07a7979f2';
 
 /// Reads and persists [Preferences].
 

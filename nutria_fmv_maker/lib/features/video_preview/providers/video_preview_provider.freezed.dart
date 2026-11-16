@@ -13,7 +13,7 @@ part of 'video_preview_provider.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$PreviewTarget {
+mixin _$PreviewTarget implements DiagnosticableTreeMixin {
 
  String get videoId;/// The node being previewed, if the preview came from a node.
  String? get nodeId;
@@ -24,6 +24,13 @@ mixin _$PreviewTarget {
 $PreviewTargetCopyWith<PreviewTarget> get copyWith => _$PreviewTargetCopyWithImpl<PreviewTarget>(this as PreviewTarget, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  final _this = this as PreviewTarget;
+  properties
+    ..add(DiagnosticsProperty('type', 'PreviewTarget'))
+    ..add(DiagnosticsProperty('videoId', _this.videoId))..add(DiagnosticsProperty('nodeId', _this.nodeId));
+}
 
 @override
 bool operator ==(Object other) {
@@ -39,7 +46,7 @@ int get hashCode {
 }
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as PreviewTarget;
   return 'PreviewTarget(videoId: ${_this.videoId}, nodeId: ${_this.nodeId})';
 }
@@ -213,7 +220,7 @@ return $default(_that.videoId,_that.nodeId);case _:
 /// @nodoc
 
 
-class _PreviewTarget implements PreviewTarget {
+class _PreviewTarget with DiagnosticableTreeMixin implements PreviewTarget {
   const _PreviewTarget({required this.videoId, this.nodeId});
   
 
@@ -228,6 +235,12 @@ class _PreviewTarget implements PreviewTarget {
 _$PreviewTargetCopyWith<_PreviewTarget> get copyWith => __$PreviewTargetCopyWithImpl<_PreviewTarget>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    properties
+    ..add(DiagnosticsProperty('type', 'PreviewTarget'))
+    ..add(DiagnosticsProperty('videoId', videoId))..add(DiagnosticsProperty('nodeId', nodeId));
+}
 
 @override
 bool operator ==(Object other) {
@@ -241,7 +254,7 @@ int get hashCode {
 }
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
     return 'PreviewTarget(videoId: $videoId, nodeId: $nodeId)';
 }
 

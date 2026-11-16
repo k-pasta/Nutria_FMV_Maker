@@ -13,6 +13,15 @@ part 'preferences_provider.g.dart';
 /// The node type created when a video is dropped on the canvas.
 enum DefaultNodeType { simpleVideo, branchedVideo }
 
+/// How connections between nodes are drawn.
+enum NoodleStyle {
+  /// A straight line with a short horizontal piece at each knot.
+  straight,
+
+  /// A smooth curve.
+  curved,
+}
+
 /// The app's color theme.
 enum ThemeChoice { dark, light, custom }
 
@@ -34,6 +43,7 @@ abstract class Preferences with _$Preferences {
     @Default(DefaultNodeType.branchedVideo) DefaultNodeType defaultNodeType,
     @Default(ThemeChoice.dark) ThemeChoice theme,
     @Default('en') String languageCode,
+    @Default(NoodleStyle.straight) NoodleStyle noodleStyle,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -77,6 +87,9 @@ class PreferencesNotifier extends _$PreferencesNotifier {
 
   void setDefaultNodeType(DefaultNodeType type) =>
       _update(state.copyWith(defaultNodeType: type));
+
+  void setNoodleStyle(NoodleStyle style) =>
+      _update(state.copyWith(noodleStyle: style));
 
   void setTheme(ThemeChoice theme) => _update(state.copyWith(theme: theme));
 

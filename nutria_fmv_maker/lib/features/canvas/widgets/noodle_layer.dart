@@ -5,6 +5,7 @@ import 'package:nutria_fmv_maker/features/canvas/noodles.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
+import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/ui/painters/noodle_painter.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -17,6 +18,7 @@ class NoodleLayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
+    final style = ref.watch(preferencesProvider.select((p) => p.noodleStyle));
     final noodles = noodlesFor(
       ref.watch(projectDocumentProvider),
       NodeMetrics.of(theme),
@@ -27,7 +29,11 @@ class NoodleLayer extends ConsumerWidget {
       child: IgnorePointer(
         child: CustomPaint(
           painter: NoodlePainter(
-              noodles: noodles, color: theme.cAccent, origin: kCanvasCenter),
+            noodles: noodles,
+            color: theme.cAccent,
+            curved: style == NoodleStyle.curved,
+            origin: kCanvasCenter,
+          ),
         ),
       ),
     );

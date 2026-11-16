@@ -25,7 +25,8 @@ Offset? knotPosition(ProjectDocument doc, NodeMetrics metrics, PortRef port) {
 ///
 /// While a noodle is dragged, its free end follows the pointer, or jumps to
 /// the knot it would connect to ([potential]) so users see the result before
-/// they let go.
+/// they let go. The free end stays unlocked until the drop: straight noodles
+/// get their horizontal piece on that side only once connected.
 List<Noodle> noodlesFor(
   ProjectDocument doc,
   NodeMetrics metrics,
@@ -54,9 +55,9 @@ List<Noodle> noodlesFor(
       // Noodles always run from an output to an input.
       noodles.add(switch (anchor) {
         AnchorOutput() =>
-          Noodle(fixed, free ?? interaction.pointer, endLocked: free != null),
-        AnchorInput() => Noodle(free ?? interaction.pointer, fixed,
-            startLocked: free != null),
+          Noodle(fixed, free ?? interaction.pointer, endLocked: false),
+        AnchorInput() =>
+          Noodle(free ?? interaction.pointer, fixed, startLocked: false),
       });
     }
   }

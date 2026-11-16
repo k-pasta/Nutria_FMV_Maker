@@ -48,7 +48,7 @@ final class NodeGestureNotifierProvider
 }
 
 String _$nodeGestureNotifierHash() =>
-    r'fb01a782d05e0bac0847bc73f0cfe425b95b1a41';
+    r'acb81f52b71efcc3efac625f920ffafca4f71bdf';
 
 /// Handles clicks and drags on nodes. Each widget callback calls exactly one
 /// method here. Modifier keys are passed in by the widget.
