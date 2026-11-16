@@ -151,7 +151,11 @@ class VideoPreviewNotifier extends _$VideoPreviewNotifier {
   @override
   PreviewTarget? build() {
     ref.watch(documentProvider.select((s) => s.generation));
-    ref.listen(documentProvider.select((s) => s.document), (_, doc) {
+    // Documents are compared by identity: comparing them field by field on
+    // every frame of a drag is slow.
+    ref.listen(documentProvider, (previous, next) {
+      if (identical(previous?.document, next.document)) return;
+      final doc = next.document;
       final target = state;
       if (target != null) _show(_retarget(target, doc));
     });

@@ -27,11 +27,19 @@ class VideoLibraryPanel extends ConsumerWidget {
     final previewed = ref.watch(videoPreviewProvider.select((p) => p?.videoId));
     return Stack(
       children: [
+        // The list runs the full height; the import button floats over it,
+        // and the bottom padding lets the last row scroll clear of it.
         Positioned.fill(
-          bottom: theme.dButtonHeight + theme.dSectionPadding,
           child: NutriaScrollArea(
-            padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
+            padding: EdgeInsets.fromLTRB(
+              theme.dSectionPadding,
+              0,
+              theme.dSectionPadding,
+              theme.dButtonHeight + theme.dSectionPadding * 2,
+            ),
             child: Wrap(
+              spacing: theme.dPanelPadding,
+              runSpacing: theme.dPanelPadding,
               children: [
                 for (final video in videos)
                   VideoLibraryEntry(
@@ -44,7 +52,8 @@ class VideoLibraryPanel extends ConsumerWidget {
           ),
         ),
         Positioned(
-          right: theme.dSectionPadding,
+          // Left of the scrollbar, so it never covers the scroll thumb.
+          right: theme.dSectionPadding + theme.dScrollbarWidth,
           bottom: theme.dSectionPadding,
           child: NutriaButton.icon(
             icon: Icons.add,
@@ -98,12 +107,16 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
               .showVideo(widget.video.id),
           child: Container(
             padding: EdgeInsets.all(theme.dPanelPadding),
-            // Flat: blends into the panel, a fill shows hover and preview.
+            // Blends into the panel; a fill shows hover. The previewed video
+            // is filled too, and raised in themes with elevation.
             decoration: BoxDecoration(
               color: widget.isPreviewed
-                  ? theme.cButtonPressed
+                  ? theme.cListSelected
                   : (_hovered ? theme.cButtonHovered : null),
-              borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+              boxShadow: widget.isPreviewed && theme.dElevation > 0
+                  ? theme.cardShadow()
+                  : null,
             ),
             child: Column(
               mainAxisSize: MainAxisSize.min,

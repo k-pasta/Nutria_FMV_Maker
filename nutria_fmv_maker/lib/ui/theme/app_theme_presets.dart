@@ -18,7 +18,8 @@ const kLightSwatches = <Color>[
   Color(0xff3a3a44),
 ];
 
-/// Light theme: grey canvas, off-white panels, white nodes.
+/// Light theme: grey canvas, off-white panels, white nodes raised by soft
+/// shadows.
 const kLightTheme = AppTheme(
   cBackground: Color(0xffcdd1d8),
   cBackgroundDots: Color(0xff9ea4b0),
@@ -39,19 +40,19 @@ const kLightTheme = AppTheme(
   cShadow: Color(0x24252a3a),
   cMenuBar: Color(0xfff5f6f8),
   cMenuBarText: Color(0xff1b1b22),
-  // The mascot's face is cut out of the art; until there is light-theme
-  // artwork, it sits on a dark backing so the face doesn't read inverted.
-  cLogoBadge: Color(0xff212128),
   cDimmer: Color(0x40000000),
   cSwatches: kLightSwatches,
+  cListSelected: Color(0xffffffff),
+  // Light surfaces are told apart by soft shadows more than by fill.
+  dElevation: 1,
 );
 
 /// The roomier sizes the app started with: the seed of a future, more
 /// accessible theme (larger targets, stronger contrast).
 const kCustomTheme = AppTheme(
   dButtonHeight: 45,
-  dPanelBorderRadius: 8,
-  dButtonBorderRadius: 6,
+  dPanelBorderRadius: 6,
+  dButtonBorderRadius: 5,
 );
 
 /// Builds the Material [ThemeData] that carries [appTheme], so Material

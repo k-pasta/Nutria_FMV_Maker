@@ -32,65 +32,75 @@ void main() {
   final binding = IntegrationTestWidgetsFlutterBinding.ensureInitialized();
   binding.framePolicy = LiveTestWidgetsFlutterBindingFramePolicy.fullyLive;
 
-  testWidgets('dragging and hovering on 300 nodes', (tester) async {
-    final container = await _openLargeProject(tester);
-    final controller = container.read(canvasViewProvider);
-    // Zoomed out so many nodes are on screen at once.
-    for (var i = 0; i < 6; i++) {
-      controller.zoomCentered(zoomIn: false);
-    }
-    await _settle(tester);
-    debugPrint('zoom ${controller.scale.toStringAsFixed(2)}, '
-        '${find.byType(NodeThumbnail).evaluate().length} nodes built, '
-        '${_visibleThumbnails(tester).length} in the middle of the screen');
+  // The light theme draws shadows under nodes, so it's measured separately.
+  for (final theme in [ThemeChoice.dark, ThemeChoice.light]) {
+    testWidgets('dragging and hovering on 300 nodes (${theme.name})',
+        (tester) async {
+      final container = await _openLargeProject(tester);
+      container.read(preferencesProvider.notifier).setTheme(theme);
+      final controller = container.read(canvasViewProvider);
+      // A fixed view, zoomed out so many nodes are on screen at once.
+      const scale = 0.53;
+      final middle = controller.viewportSize.center(Offset.zero);
+      controller.value = Matrix4.identity()
+        ..translateByDouble(middle.dx - kCanvasCenter.dx * scale,
+            middle.dy - kCanvasCenter.dy * scale, 0, 1)
+        ..scaleByDouble(scale, scale, 1, 1);
+      await _settle(tester);
+      debugPrint('${theme.name}: zoom ${controller.scale.toStringAsFixed(2)}, '
+          '${find.byType(NodeThumbnail).evaluate().length} nodes built, '
+          '${_visibleThumbnails(tester).length} in the middle of the screen');
+      final key = theme.name;
 
-    final thumbnails = _visibleThumbnails(tester);
+      final thumbnails = _visibleThumbnails(tester);
 
-    // 1. Grab nodes that are not selected (selection changes on press).
-    await binding.watchPerformance(() async {
-      for (final at in thumbnails.take(6)) {
-        await _drag(tester, at, const Offset(3, 2), steps: 40);
+      // 1. Grab nodes that are not selected (selection changes on press).
+      await binding.watchPerformance(() async {
+        for (final at in thumbnails.take(6)) {
+          await _drag(tester, at, const Offset(3, 2), steps: 40);
+        }
+      }, reportKey: '${key}_drag_unselected');
+
+      // 2. Move a selection of 20.
+      final selection = container.read(selectionProvider.notifier);
+      final ids = container
+          .read(documentProvider)
+          .document
+          .nodes
+          .keys
+          .where((id) => id.startsWith('n'))
+          .take(20);
+      for (final id in ids) {
+        selection.add(id);
       }
-    }, reportKey: 'drag_unselected');
+      await _settle(tester);
+      final selectedAt = _visibleThumbnails(tester).first;
+      await binding.watchPerformance(() async {
+        await _drag(tester, selectedAt, const Offset(-3, 1), steps: 60);
+      }, reportKey: '${key}_drag_selection');
 
-    // 2. Move a selection of 20.
-    final selection = container.read(selectionProvider.notifier);
-    final ids = container
-        .read(documentProvider)
-        .document
-        .nodes
-        .keys
-        .where((id) => id.startsWith('n'))
-        .take(20);
-    for (final id in ids) {
-      selection.add(id);
-    }
-    await _settle(tester);
-    final selectedAt = _visibleThumbnails(tester).first;
-    await binding.watchPerformance(() async {
-      await _drag(tester, selectedAt, const Offset(-3, 1), steps: 60);
-    }, reportKey: 'drag_selection');
-
-    // 3. Sweep the mouse over knots (they grow on hover).
-    final knots = find
-        .byType(Knot)
-        .evaluate()
-        .map((e) => tester.getCenter(find.byWidget(e.widget)))
-        .where(_onCanvas(tester))
-        .take(40)
-        .toList();
-    await binding.watchPerformance(() async {
-      final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
-      await mouse.addPointer(location: knots.first);
-      for (final at in knots) {
-        await mouse.moveTo(at);
-        await tester.pump(const Duration(milliseconds: 16));
-        await mouse.moveTo(at + const Offset(40, 0));
-        await tester.pump(const Duration(milliseconds: 16));
-      }
-      await mouse.removePointer();
-    }, reportKey: 'hover_knots');
-  });
+      // 3. Sweep the mouse over knots (they grow on hover).
+      final knots = find
+          .byType(Knot)
+          .evaluate()
+          .map((e) => tester.getCenter(find.byWidget(e.widget)))
+          .where(_onCanvas(tester))
+          .take(40)
+          .toList();
+      await binding.watchPerformance(() async {
+        final mouse =
+            await tester.createGesture(kind: PointerDeviceKind.mouse);
+        await mouse.addPointer(location: knots.first);
+        for (final at in knots) {
+          await mouse.moveTo(at);
+          await tester.pump(const Duration(milliseconds: 16));
+          await mouse.moveTo(at + const Offset(40, 0));
+          await tester.pump(const Duration(milliseconds: 16));
+        }
+        await mouse.removePointer();
+      }, reportKey: '${key}_hover_knots');
+    });
+  }
 }
 
 Future<ProviderContainer> _openLargeProject(WidgetTester tester) async {

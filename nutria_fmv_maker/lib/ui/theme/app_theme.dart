@@ -40,6 +40,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cButtonHovered = const Color(0xff50505a),
     this.cButtonPressed = const Color(0xff5b5b66),
     this.cButtonContentUnhovered = const Color(0x99ffffff),
+    this.cListSelected = const Color(0xff5b5b66),
     this.cTextField = const Color(0xff46464f),
     this.cTextFieldActive = const Color(0xff50505a),
     this.cDivider = const Color(0x26ffffff),
@@ -55,7 +56,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.dTextfieldPadding = 8,
     this.dPanelPadding = 7,
     this.dPanelRowDistance = 7,
-    this.dPanelBorderRadius = 10,
+    this.dPanelBorderRadius = 5,
+    this.dNodeBorderRadius = 10,
+    this.dElevation = 0,
     this.dOutlinesWidth = 1,
     this.dSwatchHeight = 6,
     this.dSelectionWidth = 2,
@@ -63,7 +66,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.dDividerWidth = 1,
     this.dShadowBlur = 14,
     this.dButtonHeight = 32,
-    this.dButtonBorderRadius = 8,
+    this.dButtonBorderRadius = 4,
     this.dScrollbarWidth = 11,
     this.dMenuBarHeight = 45,
     this.dLogoPadding = 10,
@@ -99,6 +102,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color cButtonPressed;
   /// Icons on buttons that are not hovered.
   final Color cButtonContentUnhovered;
+  /// The selected entry of a list, such as the previewed video.
+  final Color cListSelected;
   /// Filled text fields (no outline).
   final Color cTextField;
   final Color cTextFieldActive;
@@ -123,7 +128,12 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final double dTextfieldPadding;
   final double dPanelPadding;
   final double dPanelRowDistance;
+  /// Corners of panels, menus, dialogs, list entries.
   final double dPanelBorderRadius;
+  /// Corners of nodes; rounder than the rest of the UI.
+  final double dNodeBorderRadius;
+  /// Above 0, nodes and selected list entries cast a soft shadow.
+  final double dElevation;
   final double dOutlinesWidth;
   /// Height of the colored strip on top of nodes.
   final double dSwatchHeight;
@@ -189,6 +199,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cButtonHovered,
     Color? cButtonPressed,
     Color? cButtonContentUnhovered,
+    Color? cListSelected,
     Color? cTextField,
     Color? cTextFieldActive,
     Color? cDivider,
@@ -205,6 +216,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     double? dPanelPadding,
     double? dPanelRowDistance,
     double? dPanelBorderRadius,
+    double? dNodeBorderRadius,
+    double? dElevation,
     double? dOutlinesWidth,
     double? dSwatchHeight,
     double? dSelectionWidth,
@@ -236,6 +249,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
         cButtonHovered: cButtonHovered ?? this.cButtonHovered,
         cButtonPressed: cButtonPressed ?? this.cButtonPressed,
         cButtonContentUnhovered: cButtonContentUnhovered ?? this.cButtonContentUnhovered,
+        cListSelected: cListSelected ?? this.cListSelected,
         cTextField: cTextField ?? this.cTextField,
         cTextFieldActive: cTextFieldActive ?? this.cTextFieldActive,
         cDivider: cDivider ?? this.cDivider,
@@ -252,6 +266,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
         dPanelPadding: dPanelPadding ?? this.dPanelPadding,
         dPanelRowDistance: dPanelRowDistance ?? this.dPanelRowDistance,
         dPanelBorderRadius: dPanelBorderRadius ?? this.dPanelBorderRadius,
+        dNodeBorderRadius: dNodeBorderRadius ?? this.dNodeBorderRadius,
+        dElevation: dElevation ?? this.dElevation,
         dOutlinesWidth: dOutlinesWidth ?? this.dOutlinesWidth,
         dSwatchHeight: dSwatchHeight ?? this.dSwatchHeight,
         dSelectionWidth: dSelectionWidth ?? this.dSelectionWidth,
