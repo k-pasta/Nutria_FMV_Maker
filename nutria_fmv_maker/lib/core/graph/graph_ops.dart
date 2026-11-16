@@ -101,6 +101,16 @@ extension GraphOps on ProjectDocument {
   ProjectDocument toggleExpanded(String id) =>
       updateNode(id, (n) => n.copyWith(isExpanded: !n.isExpanded));
 
+  /// Closes the settings of every node. Unchanged (the same instance) if
+  /// none was open, so it records no undo step.
+  ProjectDocument collapseAll() {
+    if (!nodes.values.any((n) => n.isExpanded)) return this;
+    return copyWith(nodes: {
+      for (final MapEntry(:key, :value) in nodes.entries)
+        key: value.isExpanded ? value.copyWith(isExpanded: false) : value,
+    });
+  }
+
   /// Points a video node at [videoId]. No-op for non-video nodes.
   ProjectDocument setVideo(String nodeId, String videoId) =>
       updateNode(nodeId, (n) => switch (n) {

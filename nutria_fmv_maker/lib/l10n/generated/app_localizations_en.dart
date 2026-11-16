@@ -51,6 +51,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editRedo => 'Redo';
 
   @override
+  String get editCopy => 'Copy';
+
+  @override
+  String get editPaste => 'Paste';
+
+  @override
+  String get editDuplicate => 'Duplicate';
+
+  @override
+  String get editSelectAll => 'Select All';
+
+  @override
+  String get editCollapseAll => 'Collapse All Nodes';
+
+  @override
   String get editToggleGridSnapping => 'Toggle Grid Snapping';
 
   @override

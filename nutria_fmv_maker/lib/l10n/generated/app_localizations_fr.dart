@@ -52,6 +52,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editRedo => 'Rétablir';
 
   @override
+  String get editCopy => 'Copier';
+
+  @override
+  String get editPaste => 'Coller';
+
+  @override
+  String get editDuplicate => 'Dupliquer';
+
+  @override
+  String get editSelectAll => 'Tout sélectionner';
+
+  @override
+  String get editCollapseAll => 'Replier tous les nœuds';
+
+  @override
   String get editToggleGridSnapping =>
       'Activer/Désactiver l\'Alignement sur la Grille';
 

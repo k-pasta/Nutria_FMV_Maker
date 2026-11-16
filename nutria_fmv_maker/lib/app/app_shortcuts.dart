@@ -16,6 +16,12 @@ const kShortcutRedo = SingleActivator(LogicalKeyboardKey.keyY, control: true);
 const kShortcutRedoAlt =
     SingleActivator(LogicalKeyboardKey.keyZ, control: true, shift: true);
 const kShortcutDelete = SingleActivator(LogicalKeyboardKey.delete);
+const kShortcutCopy = SingleActivator(LogicalKeyboardKey.keyC, control: true);
+const kShortcutPaste = SingleActivator(LogicalKeyboardKey.keyV, control: true);
+const kShortcutDuplicate =
+    SingleActivator(LogicalKeyboardKey.keyD, control: true);
+const kShortcutSelectAll =
+    SingleActivator(LogicalKeyboardKey.keyA, control: true);
 const kShortcutGridSnapping =
     SingleActivator(LogicalKeyboardKey.keyG, control: true);
 
@@ -55,6 +61,10 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutRedo: commands.redo,
       kShortcutRedoAlt: commands.redo,
       kShortcutDelete: commands.deleteSelection,
+      kShortcutCopy: commands.copy,
+      kShortcutPaste: commands.paste,
+      kShortcutDuplicate: commands.duplicate,
+      kShortcutSelectAll: commands.selectAll,
       kShortcutGridSnapping: commands.toggleGridSnapping,
       kShortcutLeftPanel: () => commands.togglePanel(PanelSide.left),
       kShortcutRightPanel: () => commands.togglePanel(PanelSide.right),

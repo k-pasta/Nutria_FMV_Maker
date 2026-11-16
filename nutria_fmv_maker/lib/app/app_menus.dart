@@ -62,6 +62,30 @@ List<NutriaMenu> buildAppMenus({
             shortcut: kShortcutRedo,
             onPressed: canRedo ? commands.redo : null),
         NutriaMenuEntry(
+            label: t.editCopy,
+            icon: Icons.content_copy,
+            shortcut: kShortcutCopy,
+            onPressed: commands.copy),
+        NutriaMenuEntry(
+            label: t.editPaste,
+            icon: Icons.content_paste,
+            shortcut: kShortcutPaste,
+            onPressed: commands.paste),
+        NutriaMenuEntry(
+            label: t.editDuplicate,
+            icon: Icons.copy_all,
+            shortcut: kShortcutDuplicate,
+            onPressed: commands.duplicate),
+        NutriaMenuEntry(
+            label: t.editSelectAll,
+            icon: Icons.select_all,
+            shortcut: kShortcutSelectAll,
+            onPressed: commands.selectAll),
+        NutriaMenuEntry(
+            label: t.editCollapseAll,
+            icon: Icons.unfold_less,
+            onPressed: commands.collapseAll),
+        NutriaMenuEntry(
             label: t.editDeleteSelectedNodes,
             icon: Icons.delete_forever,
             shortcut: kShortcutDelete,

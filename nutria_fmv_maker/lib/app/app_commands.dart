@@ -101,6 +101,18 @@ class AppCommands {
   void undo() => _document.undo();
   void redo() => _document.redo();
   void deleteSelection() => _ref.read(graphEditorProvider).removeSelection();
+  Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
+  void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();
+  void selectAll() => _ref.read(graphEditorProvider).selectAll();
+  void collapseAll() => _ref.read(graphEditorProvider).collapseAll();
+
+  /// Pastes under the mouse if it's over the canvas, otherwise in the middle
+  /// of the view.
+  Future<void> paste() {
+    final view = _ref.read(canvasViewProvider);
+    return _ref.read(graphEditorProvider).paste(view.pointer ?? view.center);
+  }
+
   void toggleGridSnapping() =>
       _ref.read(preferencesProvider.notifier).toggleGridSnapping();
 

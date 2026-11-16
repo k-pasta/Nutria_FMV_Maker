@@ -184,6 +184,36 @@ abstract class AppLocalizations {
   /// **'Redo'**
   String get editRedo;
 
+  /// No description provided for @editCopy.
+  ///
+  /// In en, this message translates to:
+  /// **'Copy'**
+  String get editCopy;
+
+  /// No description provided for @editPaste.
+  ///
+  /// In en, this message translates to:
+  /// **'Paste'**
+  String get editPaste;
+
+  /// No description provided for @editDuplicate.
+  ///
+  /// In en, this message translates to:
+  /// **'Duplicate'**
+  String get editDuplicate;
+
+  /// No description provided for @editSelectAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Select All'**
+  String get editSelectAll;
+
+  /// No description provided for @editCollapseAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Collapse All Nodes'**
+  String get editCollapseAll;
+
   /// No description provided for @editToggleGridSnapping.
   ///
   /// In en, this message translates to:

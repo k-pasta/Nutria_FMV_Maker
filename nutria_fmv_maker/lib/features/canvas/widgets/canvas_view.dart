@@ -45,9 +45,13 @@ class CanvasView extends ConsumerWidget {
         .toDouble();
 
     // After layout, so the nodes have been measured.
-    void frameAll() => WidgetsBinding.instance.addPostFrameCallback((_) =>
-        frameNodes(controller, ref.read(documentProvider).document,
-            ref.read(nodeBoundsProvider)));
+    void frameAll() => WidgetsBinding.instance.addPostFrameCallback(
+      (_) => frameNodes(
+        controller,
+        ref.read(documentProvider).document,
+        ref.read(nodeBoundsProvider),
+      ),
+    );
     ref.listen(documentProvider.select((s) => s.generation), (_, _) {
       frameAll();
     });
@@ -63,68 +67,75 @@ class CanvasView extends ConsumerWidget {
             if (first) frameAll();
           });
         }
-        return Listener(
-          // The middle button pans everywhere, over nodes too.
-          onPointerMove: (event) {
-            if (event.buttons & kMiddleMouseButton != 0) {
-              controller.panBy(event.delta);
-            }
-          },
-          onPointerSignal: (event) {
-            if (event is PointerScrollEvent && event.scrollDelta.dy != 0) {
-              controller.zoomAt(
-                event.localPosition,
-                zoomIn: event.scrollDelta.dy < 0,
-              );
-            }
-          },
-          child: Stack(
-            children: [
-              Positioned.fill(
-                child: IgnorePointer(
-                  // Repaints only when the view moves, not with the nodes.
-                  child: RepaintBoundary(
-                    child: ColoredBox(
-                      color: theme.cBackground,
-                      child: CustomPaint(
-                        painter: DotGridPainter(
-                          transform: controller,
-                          origin: kCanvasCenter,
-                          spacing: gridSize,
-                          color: theme.cBackgroundDots,
+        void track(PointerEvent event) => controller.pointer = controller
+            .toCanvasPosition(event.localPosition);
+        return MouseRegion(
+          onExit: (_) => controller.pointer = null,
+          child: Listener(
+            onPointerHover: track,
+            // The middle button pans everywhere, over nodes too.
+            onPointerMove: (event) {
+              track(event);
+              if (event.buttons & kMiddleMouseButton != 0) {
+                controller.panBy(event.delta);
+              }
+            },
+            onPointerSignal: (event) {
+              if (event is PointerScrollEvent && event.scrollDelta.dy != 0) {
+                controller.zoomAt(
+                  event.localPosition,
+                  zoomIn: event.scrollDelta.dy < 0,
+                );
+              }
+            },
+            child: Stack(
+              children: [
+                Positioned.fill(
+                  child: IgnorePointer(
+                    // Repaints only when the view moves, not with the nodes.
+                    child: RepaintBoundary(
+                      child: ColoredBox(
+                        color: theme.cBackground,
+                        child: CustomPaint(
+                          painter: DotGridPainter(
+                            transform: controller,
+                            origin: kCanvasCenter,
+                            spacing: gridSize,
+                            color: theme.cBackgroundDots,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Positioned.fill(
-                child: InteractiveViewer(
-                  transformationController: controller,
-                  // Zoom is handled above, one step per scroll notch, and
-                  // panning by the middle button and by Shift-drag.
-                  scaleEnabled: false,
-                  panEnabled: false,
-                  // Pans stop when the mouse is released.
-                  interactionEndFrictionCoefficient: double.minPositive,
-                  boundaryMargin: const EdgeInsets.all(double.infinity),
-                  clipBehavior: Clip.none,
-                  constrained: false,
-                  child: SizedBox.square(
-                    dimension: kCanvasSize,
-                    child: CanvasSpace(
-                      child: Stack(
-                        clipBehavior: Clip.none,
-                        children: [
-                          const Positioned.fill(child: _EmptyCanvasArea()),
-                          ...layers,
-                        ],
+                Positioned.fill(
+                  child: InteractiveViewer(
+                    transformationController: controller,
+                    // Zoom is handled above, one step per scroll notch, and
+                    // panning by the middle button and by Shift-drag.
+                    scaleEnabled: false,
+                    panEnabled: false,
+                    // Pans stop when the mouse is released.
+                    interactionEndFrictionCoefficient: double.minPositive,
+                    boundaryMargin: const EdgeInsets.all(double.infinity),
+                    clipBehavior: Clip.none,
+                    constrained: false,
+                    child: SizedBox.square(
+                      dimension: kCanvasSize,
+                      child: CanvasSpace(
+                        child: Stack(
+                          clipBehavior: Clip.none,
+                          children: [
+                            const Positioned.fill(child: _EmptyCanvasArea()),
+                            ...layers,
+                          ],
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         );
       },
@@ -195,6 +206,11 @@ class _EmptyCanvasArea extends ConsumerWidget {
             type: DefaultNodeType.branchedVideo,
           ),
         ),
+        NutriaContextMenuItem(
+          icon: Icons.content_paste,
+          label: t.editPaste,
+          onSelected: () => editor.paste(local - kCanvasCenter),
+        ),
       ],
       // Empty space paints nothing, so it has to catch clicks explicitly.
       behavior: HitTestBehavior.opaque,
@@ -208,8 +224,10 @@ class _EmptyCanvasArea extends ConsumerWidget {
         onPanStart: (details) {
           panning = HardwareKeyboard.instance.isShiftPressed;
           if (!panning) {
-            marquee.begin(details.localPosition - kCanvasCenter,
-                additive: HardwareKeyboard.instance.isControlPressed);
+            marquee.begin(
+              details.localPosition - kCanvasCenter,
+              additive: HardwareKeyboard.instance.isControlPressed,
+            );
           }
         },
         onPanUpdate: (details) => panning

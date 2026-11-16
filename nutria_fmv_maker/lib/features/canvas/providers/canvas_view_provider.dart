@@ -88,6 +88,10 @@ class CanvasViewController extends TransformationController {
   Offset toCanvasPosition(Offset viewportPoint) =>
       toScene(viewportPoint) - kCanvasCenter;
 
+  /// Where the mouse is on the canvas (node coordinates), or `null` when
+  /// it's elsewhere. Pasting puts nodes there.
+  Offset? pointer;
+
   /// The node position in the middle of the viewport.
   Offset get center => toCanvasPosition(viewportSize.center(Offset.zero));
 

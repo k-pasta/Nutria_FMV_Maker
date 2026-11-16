@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
+import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
@@ -194,6 +195,27 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           label: t.nodeConvertToSimple,
           onSelected: () => editor.convertNode(node.id),
         ),
+      // Right-clicking selected the node, so these act on the selection.
+      if (node is! OriginNode) ...[
+        NutriaContextMenuItem(
+          icon: Icons.content_copy,
+          label: t.editCopy,
+          onSelected: editor.copySelection,
+        ),
+        NutriaContextMenuItem(
+          icon: Icons.copy_all,
+          label: t.editDuplicate,
+          onSelected: editor.duplicateSelection,
+        ),
+      ],
+      NutriaContextMenuItem(
+        icon: Icons.content_paste,
+        label: t.editPaste,
+        onSelected: () {
+          final view = ref.read(canvasViewProvider);
+          editor.paste(view.pointer ?? view.center);
+        },
+      ),
       if (node is! OriginNode)
         NutriaContextMenuItem(
           icon: Icons.delete,

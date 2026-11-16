@@ -1,12 +1,15 @@
 // Named, undoable editing commands for the node graph and project.
+import 'package:flutter/painting.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
+import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
+import 'package:nutria_fmv_maker/services/clipboard_service.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -56,6 +59,62 @@ class GraphEditor {
       selection.selectOnly(id);
     }
     removeSelection();
+  }
+
+  /// Selects every node.
+  void selectAll() => _ref
+      .read(selectionProvider.notifier)
+      .setSelected(_current.nodes.keys.toSet());
+
+  /// Closes the settings of every node.
+  void collapseAll() =>
+      _document.apply('Collapse all', (d) => d.collapseAll());
+
+  // -------------------------------------------------------------- clipboard
+
+  /// Puts the selected nodes (not the origin) on the clipboard, with their
+  /// connections among each other and their videos.
+  Future<void> copySelection() async {
+    final fragment =
+        _current.copyFragment(_ref.read(selectionProvider).selected);
+    if (fragment.isEmpty) return;
+    await _ref.read(clipboardServiceProvider).write(fragment.encode());
+  }
+
+  /// Pastes copied nodes centered on [at] (node coordinates) and selects
+  /// them. Clipboard text that isn't copied nodes is ignored.
+  Future<void> paste(Offset at) async {
+    final fragment =
+        NodeFragment.decode(await _ref.read(clipboardServiceProvider).read());
+    if (fragment == null || fragment.isEmpty) return;
+    final center = fragment.center;
+    _insert('Paste nodes', fragment,
+        Position(at.dx - center.x, at.dy - center.y));
+  }
+
+  /// Copies the selected nodes in place, one grid step down and right, and
+  /// selects the copies. Doesn't touch the clipboard.
+  void duplicateSelection() {
+    final fragment =
+        _current.copyFragment(_ref.read(selectionProvider).selected);
+    if (fragment.isEmpty) return;
+    final step = _ref.read(preferencesProvider).gridSize;
+    _insert('Duplicate nodes', fragment, Position(step, step));
+  }
+
+  void _insert(String label, NodeFragment fragment, Position offset) {
+    var pasted = const <String>[];
+    _document.apply(label, (d) {
+      final (doc, ids) =
+          d.pasteFragment(fragment, offset: offset, newId: _newId);
+      pasted = ids;
+      return doc;
+    });
+    final selection = _ref.read(selectionProvider.notifier)
+      ..setSelected(pasted.toSet());
+    for (final id in pasted) {
+      selection.raise(id);
+    }
   }
 
   /// Switches a video node between simple and branched.

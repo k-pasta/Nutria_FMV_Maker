@@ -51,6 +51,21 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editRedo => 'Επανάληψη';
 
   @override
+  String get editCopy => 'Αντιγραφή';
+
+  @override
+  String get editPaste => 'Επικόλληση';
+
+  @override
+  String get editDuplicate => 'Διπλασιασμός';
+
+  @override
+  String get editSelectAll => 'Επιλογή Όλων';
+
+  @override
+  String get editCollapseAll => 'Σύμπτυξη Όλων των Κόμβων';
+
+  @override
   String get editToggleGridSnapping => 'Ενεργοποίηση/Απενεργοποίηση Πλέγματος';
 
   @override
