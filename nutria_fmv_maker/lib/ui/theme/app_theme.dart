@@ -1,14 +1,15 @@
 // The app's design tokens (colors and sizes), as a Material ThemeExtension.
 import 'package:material_ui/material_ui.dart';
 
-/// Default node color swatches.
+/// Node colors of the dark theme. Each theme has its own set; nodes store
+/// an index into it, see [AppTheme.swatch].
 const kDefaultSwatches = <Color>[
   Color(0xffff4e6a),
   Color(0xffff664d),
   Color(0xffffae4d),
   Color(0xff33d56a),
   Color(0xff4da5ff),
-  Color(0xff000000),
+  Color(0xffa47bff),
 ];
 
 /// Every color (`c…`) and dimension (`d…`) the UI uses. Widgets read it with
@@ -22,8 +23,8 @@ const kDefaultSwatches = <Color>[
 @immutable
 class AppTheme extends ThemeExtension<AppTheme> {
   const AppTheme({
-    this.cBackground = const Color(0xff0f0f12),
-    this.cBackgroundDots = const Color(0xff2a2a31),
+    this.cBackground = const Color(0xff0b0b0e),
+    this.cBackgroundDots = const Color(0xff3c3c46),
     this.cAccent = const Color(0xffff4e6a),
     this.cAccentButton = const Color(0xffe8455f),
     this.cAccentButtonHovered = const Color(0xffff4e6a),
@@ -31,20 +32,20 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cOnAccent = const Color(0xffffffff),
     this.cText = const Color(0xbfffffff),
     this.cTextActive = const Color(0xffffffff),
-    this.cTextInactive = const Color(0x59ffffff),
-    this.cPanel = const Color(0xff17171b),
-    this.cCard = const Color(0xff202026),
-    this.cCardHovered = const Color(0xff26262d),
-    this.cButton = const Color(0xff2b2b32),
-    this.cButtonHovered = const Color(0xff34343c),
-    this.cButtonPressed = const Color(0xff3e3e47),
+    this.cTextInactive = const Color(0x80ffffff),
+    this.cPanel = const Color(0xff212128),
+    this.cCard = const Color(0xff32323c),
+    this.cCardHovered = const Color(0xff3a3a45),
+    this.cButton = const Color(0xff46464f),
+    this.cButtonHovered = const Color(0xff50505a),
+    this.cButtonPressed = const Color(0xff5b5b66),
     this.cButtonContentUnhovered = const Color(0x99ffffff),
-    this.cTextField = const Color(0xff2b2b32),
-    this.cTextFieldActive = const Color(0xff34343c),
-    this.cDivider = const Color(0x12ffffff),
+    this.cTextField = const Color(0xff46464f),
+    this.cTextFieldActive = const Color(0xff50505a),
+    this.cDivider = const Color(0x26ffffff),
     this.cOutlines = const Color(0x29ffffff),
     this.cShadow = const Color(0x99000000),
-    this.cMenuBar = const Color(0xff17171b),
+    this.cMenuBar = const Color(0xff212128),
     this.cMenuBarText = const Color(0xffffffff),
     this.cDimmer = const Color(0x73000000),
     this.cSwatches = kDefaultSwatches,
@@ -52,15 +53,15 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.dTextfieldPadding = 8,
     this.dPanelPadding = 7,
     this.dPanelRowDistance = 7,
-    this.dPanelBorderRadius = 8,
+    this.dPanelBorderRadius = 10,
     this.dOutlinesWidth = 1,
     this.dSwatchHeight = 6,
     this.dSelectionWidth = 2,
     this.dSectionPadding = 10,
     this.dDividerWidth = 1,
     this.dShadowBlur = 14,
-    this.dButtonHeight = 45,
-    this.dButtonBorderRadius = 6,
+    this.dButtonHeight = 32,
+    this.dButtonBorderRadius = 8,
     this.dScrollbarWidth = 11,
     this.dMenuBarHeight = 45,
     this.dLogoPadding = 10,
