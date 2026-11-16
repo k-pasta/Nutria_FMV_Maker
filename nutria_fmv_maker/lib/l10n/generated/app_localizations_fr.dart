@@ -12,6 +12,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get boardImportedVideos => 'Vidéos Importées';
 
   @override
+  String get libraryLargeThumbnails => 'Grandes miniatures';
+
+  @override
+  String get libraryThumbnails => 'Miniatures moyennes';
+
+  @override
+  String get librarySmallThumbnails => 'Petites miniatures';
+
+  @override
+  String get libraryListWithThumbnails => 'Liste avec miniatures';
+
+  @override
+  String get libraryList => 'Liste';
+
+  @override
   String get boardPreferences => 'Préférences';
 
   @override

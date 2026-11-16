@@ -106,6 +106,36 @@ abstract class AppLocalizations {
   /// **'Imported Videos'**
   String get boardImportedVideos;
 
+  /// No description provided for @libraryLargeThumbnails.
+  ///
+  /// In en, this message translates to:
+  /// **'Large Thumbnails'**
+  String get libraryLargeThumbnails;
+
+  /// No description provided for @libraryThumbnails.
+  ///
+  /// In en, this message translates to:
+  /// **'Medium Thumbnails'**
+  String get libraryThumbnails;
+
+  /// No description provided for @librarySmallThumbnails.
+  ///
+  /// In en, this message translates to:
+  /// **'Small Thumbnails'**
+  String get librarySmallThumbnails;
+
+  /// No description provided for @libraryListWithThumbnails.
+  ///
+  /// In en, this message translates to:
+  /// **'List with Thumbnails'**
+  String get libraryListWithThumbnails;
+
+  /// No description provided for @libraryList.
+  ///
+  /// In en, this message translates to:
+  /// **'List'**
+  String get libraryList;
+
   /// No description provided for @boardPreferences.
   ///
   /// In en, this message translates to:

@@ -12,6 +12,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boardImportedVideos => 'Imported Videos';
 
   @override
+  String get libraryLargeThumbnails => 'Large Thumbnails';
+
+  @override
+  String get libraryThumbnails => 'Medium Thumbnails';
+
+  @override
+  String get librarySmallThumbnails => 'Small Thumbnails';
+
+  @override
+  String get libraryListWithThumbnails => 'List with Thumbnails';
+
+  @override
+  String get libraryList => 'List';
+
+  @override
   String get boardPreferences => 'Preferences';
 
   @override

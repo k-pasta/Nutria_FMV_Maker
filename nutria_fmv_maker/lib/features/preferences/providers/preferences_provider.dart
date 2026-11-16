@@ -22,6 +22,19 @@ enum NoodleStyle {
   curved,
 }
 
+/// How the video library shows videos, from largest to most compact.
+enum LibraryView {
+  largeThumbnails,
+  thumbnails,
+  smallThumbnails,
+
+  /// One video per row: a small thumbnail and the name.
+  listWithThumbnails,
+
+  /// One name per row.
+  list,
+}
+
 /// The app's color theme.
 enum ThemeChoice { dark, light, custom }
 
@@ -44,6 +57,7 @@ abstract class Preferences with _$Preferences {
     @Default(ThemeChoice.dark) ThemeChoice theme,
     @Default('en') String languageCode,
     @Default(NoodleStyle.straight) NoodleStyle noodleStyle,
+    @Default(LibraryView.thumbnails) LibraryView libraryView,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -90,6 +104,14 @@ class PreferencesNotifier extends _$PreferencesNotifier {
 
   void setNoodleStyle(NoodleStyle style) =>
       _update(state.copyWith(noodleStyle: style));
+
+  void setLibraryView(LibraryView view) =>
+      _update(state.copyWith(libraryView: view));
+
+  /// The next more compact ([direction] 1) or larger (-1) library view.
+  void stepLibraryView(int direction) => setLibraryView(LibraryView.values[
+      (state.libraryView.index + direction)
+          .clamp(0, LibraryView.values.length - 1)]);
 
   void setTheme(ThemeChoice theme) => _update(state.copyWith(theme: theme));
 

@@ -1,5 +1,10 @@
 {
   "boardImportedVideos": "Vidéos Importées",
+  "libraryLargeThumbnails": "Grandes miniatures",
+  "libraryThumbnails": "Miniatures moyennes",
+  "librarySmallThumbnails": "Petites miniatures",
+  "libraryListWithThumbnails": "Liste avec miniatures",
+  "libraryList": "Liste",
   "boardPreferences": "Préférences",
   "boardProjectSettings": "Paramètres du Projet",
   "boardVariables": "Variables",

@@ -19,6 +19,9 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
   noodleStyle:
       $enumDecodeNullable(_$NoodleStyleEnumMap, json['noodleStyle']) ??
       NoodleStyle.straight,
+  libraryView:
+      $enumDecodeNullable(_$LibraryViewEnumMap, json['libraryView']) ??
+      LibraryView.thumbnails,
 );
 
 Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
@@ -29,6 +32,7 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'theme': _$ThemeChoiceEnumMap[instance.theme]!,
       'languageCode': instance.languageCode,
       'noodleStyle': _$NoodleStyleEnumMap[instance.noodleStyle]!,
+      'libraryView': _$LibraryViewEnumMap[instance.libraryView]!,
     };
 
 const _$DefaultNodeTypeEnumMap = {
@@ -45,6 +49,14 @@ const _$ThemeChoiceEnumMap = {
 const _$NoodleStyleEnumMap = {
   NoodleStyle.straight: 'straight',
   NoodleStyle.curved: 'curved',
+};
+
+const _$LibraryViewEnumMap = {
+  LibraryView.largeThumbnails: 'largeThumbnails',
+  LibraryView.thumbnails: 'thumbnails',
+  LibraryView.smallThumbnails: 'smallThumbnails',
+  LibraryView.listWithThumbnails: 'listWithThumbnails',
+  LibraryView.list: 'list',
 };
 
 // **************************************************************************
@@ -145,7 +157,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'365a910bcf6cd0e47dfc9aee980998c07a7979f2';
+    r'6c80a80d59b99edfa54d7b824773aca87eaa6cd4';
 
 /// Reads and persists [Preferences].
 

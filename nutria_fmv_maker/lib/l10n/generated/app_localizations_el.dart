@@ -12,6 +12,21 @@ class AppLocalizationsEl extends AppLocalizations {
   String get boardImportedVideos => 'Εισαγόμενα βίντεο';
 
   @override
+  String get libraryLargeThumbnails => 'Μεγάλες Μικρογραφίες';
+
+  @override
+  String get libraryThumbnails => 'Μεσαίες Μικρογραφίες';
+
+  @override
+  String get librarySmallThumbnails => 'Μικρές Μικρογραφίες';
+
+  @override
+  String get libraryListWithThumbnails => 'Λίστα με Μικρογραφίες';
+
+  @override
+  String get libraryList => 'Λίστα';
+
+  @override
   String get boardPreferences => 'Προτιμήσεις';
 
   @override

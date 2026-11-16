@@ -1,5 +1,10 @@
 {
   "boardImportedVideos": "Εισαγόμενα βίντεο",
+  "libraryLargeThumbnails": "Μεγάλες Μικρογραφίες",
+  "libraryThumbnails": "Μεσαίες Μικρογραφίες",
+  "librarySmallThumbnails": "Μικρές Μικρογραφίες",
+  "libraryListWithThumbnails": "Λίστα με Μικρογραφίες",
+  "libraryList": "Λίστα",
   "boardPreferences": "Προτιμήσεις",
   "boardProjectSettings": "Ρυθμίσεις Πρότζεκτ",
   "boardVariables": "Μεταβλητές",
