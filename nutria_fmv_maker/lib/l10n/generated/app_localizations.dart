@@ -706,6 +706,18 @@ abstract class AppLocalizations {
   /// **'Properties Section'**
   String get viewProperties;
 
+  /// No description provided for @viewFrameAll.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame All Nodes'**
+  String get viewFrameAll;
+
+  /// No description provided for @viewFrameSelected.
+  ///
+  /// In en, this message translates to:
+  /// **'Frame Selected Nodes'**
+  String get viewFrameSelected;
+
   /// No description provided for @viewTheme.
   ///
   /// In en, this message translates to:

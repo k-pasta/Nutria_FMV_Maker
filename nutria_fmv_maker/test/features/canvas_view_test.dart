@@ -3,6 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_view.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 
 import 'app_tester.dart';
@@ -12,14 +13,15 @@ Offset viewportPoint(WidgetTester tester, Offset global) =>
     global - tester.getTopLeft(find.byType(CanvasView));
 
 void main() {
-  testWidgets('the view starts with (0, 0) in the middle of the canvas',
+  testWidgets('the view starts on the origin node, centered at 100%',
       (tester) async {
-    final container = await pumpApp(tester);
+    final container = await pumpApp(tester, startView: true);
     final view = container.read(canvasViewProvider);
-    final middle = view.viewportSize.center(Offset.zero);
-    final atMiddle = view.toCanvasPosition(middle);
-    expect(atMiddle.dx, moreOrLessEquals(0, epsilon: 1e-6));
-    expect(atMiddle.dy, moreOrLessEquals(0, epsilon: 1e-6));
+    final origin = container.read(projectDocumentProvider).origin;
+    final rect = container.read(nodeBoundsProvider).rectOf(origin);
+    expect(view.scale, 1);
+    expect(view.center.dx, moreOrLessEquals(rect.center.dx, epsilon: 1e-6));
+    expect(view.center.dy, moreOrLessEquals(rect.center.dy, epsilon: 1e-6));
   });
 
   testWidgets('the mouse wheel zooms around the pointer', (tester) async {

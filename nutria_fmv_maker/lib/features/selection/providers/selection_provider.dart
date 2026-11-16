@@ -1,4 +1,5 @@
 // Which nodes are selected, and which were raised to the front most recently.
+import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
@@ -30,6 +31,13 @@ class SelectionNotifier extends _$SelectionNotifier {
   /// Selects only [id].
   void selectOnly(String id) =>
       state = state.copyWith(selected: {id});
+
+  /// Selects exactly [ids].
+  void setSelected(Set<String> ids) {
+    if (!const SetEquality<String>().equals(ids, state.selected)) {
+      state = state.copyWith(selected: ids);
+    }
+  }
 
   /// Adds [id] to the selection.
   void add(String id) =>

@@ -44,7 +44,7 @@ final class SelectionNotifierProvider
   }
 }
 
-String _$selectionNotifierHash() => r'96bd47fffe25e027975c2f9add625513f001e315';
+String _$selectionNotifierHash() => r'7251c542907372aee6039c48d809706983a54f15';
 
 /// The node selection. Resets when another project is opened.
 

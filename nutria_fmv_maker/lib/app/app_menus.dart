@@ -94,6 +94,16 @@ List<NutriaMenu> buildAppMenus({
             ),
         ]),
         NutriaMenuEntry(
+            label: t.viewFrameAll,
+            icon: Icons.fit_screen,
+            shortcut: kShortcutFrameAll,
+            onPressed: commands.frameAll),
+        NutriaMenuEntry(
+            label: t.viewFrameSelected,
+            icon: Icons.center_focus_strong,
+            shortcut: kShortcutFrameSelected,
+            onPressed: commands.frameSelected),
+        NutriaMenuEntry(
             label: t.viewProperties,
             icon: Icons.tab,
             shortcut: kShortcutLeftPanel,

@@ -5,11 +5,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
+import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
@@ -109,6 +112,19 @@ class AppCommands {
 
   void zoomCanvas({required bool zoomIn}) =>
       _ref.read(canvasViewProvider).zoomCentered(zoomIn: zoomIn);
+
+  /// Glides the view so every node is on screen.
+  void frameAll() => frameNodes(_ref.read(canvasViewProvider),
+      _ref.read(documentProvider).document, _ref.read(nodeBoundsProvider),
+      animate: true);
+
+  /// Glides the view to the selected nodes (all nodes if none is selected).
+  void frameSelected() {
+    final selected = _ref.read(selectionProvider).selected;
+    frameNodes(_ref.read(canvasViewProvider),
+        _ref.read(documentProvider).document, _ref.read(nodeBoundsProvider),
+        ids: selected.isEmpty ? null : selected, animate: true);
+  }
 
   void togglePanel(PanelSide side) => _ref
       .read(panelLayoutProvider.notifier)

@@ -128,6 +128,8 @@
   "viewLanguage": "Language",
   "viewLightTheme": "Light Theme",
   "viewProperties": "Properties Section",
+  "viewFrameAll": "Frame All Nodes",
+  "viewFrameSelected": "Frame Selected Nodes",
   "viewTheme": "Theme",
   "viewVideoPlayer": "Video Player Section",
   "z": "z"

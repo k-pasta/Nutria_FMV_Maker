@@ -100,6 +100,8 @@
   "viewLanguage": "Γλώσσα",
   "viewLightTheme": "Ανοιχτό Θέμα",
   "viewProperties": "Στήλη Προτιμήσεων",
+  "viewFrameAll": "Προβολή Όλων των Κόμβων",
+  "viewFrameSelected": "Προβολή Επιλεγμένων Κόμβων",
   "viewTheme": "Θέμα",
   "viewVideoPlayer": "Στήλη Βίντεο",
   "z": "z"

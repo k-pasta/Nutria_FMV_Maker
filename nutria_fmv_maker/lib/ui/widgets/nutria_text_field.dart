@@ -37,24 +37,41 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
   );
   final FocusNode _focus = FocusNode();
 
-  /// Single-key app shortcuts (toggle panels, zoom) must not fire while
-  /// typing, so the field swallows them before they reach the app.
-  static const _blockedShortcuts = <ShortcutActivator, Intent>{
-    SingleActivator(LogicalKeyboardKey.keyT):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.keyN):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.add):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.numpadAdd):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.equal):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.minus):
-        DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.numpadSubtract):
-        DoNothingAndStopPropagationIntent(),
+  /// Single-key app shortcuts (panels, zoom, framing, play) must not fire
+  /// while typing, so the field swallows every key that types a character
+  /// before it reaches the app. Keys with Ctrl or Alt still get through.
+  static final Map<ShortcutActivator, Intent> _blockedShortcuts = {
+    for (final key in _typingKeys)
+      SingleActivator(key): const DoNothingAndStopPropagationIntent(),
   };
+
+  static final List<LogicalKeyboardKey> _typingKeys = [
+    for (final (first, count) in [
+      (LogicalKeyboardKey.keyA, 26),
+      (LogicalKeyboardKey.digit0, 10),
+      (LogicalKeyboardKey.numpad0, 10),
+    ])
+      for (var i = 0; i < count; i++)
+        ?LogicalKeyboardKey.findKeyByKeyId(first.keyId + i),
+    LogicalKeyboardKey.space,
+    LogicalKeyboardKey.minus,
+    LogicalKeyboardKey.equal,
+    LogicalKeyboardKey.add,
+    LogicalKeyboardKey.comma,
+    LogicalKeyboardKey.period,
+    LogicalKeyboardKey.slash,
+    LogicalKeyboardKey.backslash,
+    LogicalKeyboardKey.semicolon,
+    LogicalKeyboardKey.quote,
+    LogicalKeyboardKey.bracketLeft,
+    LogicalKeyboardKey.bracketRight,
+    LogicalKeyboardKey.backquote,
+    LogicalKeyboardKey.numpadAdd,
+    LogicalKeyboardKey.numpadSubtract,
+    LogicalKeyboardKey.numpadMultiply,
+    LogicalKeyboardKey.numpadDivide,
+    LogicalKeyboardKey.numpadDecimal,
+  ];
 
   @override
   void initState() {

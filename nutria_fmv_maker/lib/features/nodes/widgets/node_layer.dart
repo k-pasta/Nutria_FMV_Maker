@@ -2,6 +2,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_registry.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -62,10 +63,14 @@ class _NodeContent extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final node = ref.watch(nodeContentProvider(id));
     if (node == null) return const SizedBox.shrink();
-    return NodeFrame(
-      node: node,
-      body: nodeBodyOf(node),
-      expansion: nodeExpansionOf(node),
+    return NodeSizeReporter(
+      id: id,
+      bounds: ref.watch(nodeBoundsProvider),
+      child: NodeFrame(
+        node: node,
+        body: nodeBodyOf(node),
+        expansion: nodeExpansionOf(node),
+      ),
     );
   }
 }

@@ -323,6 +323,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewProperties => 'Properties Section';
 
   @override
+  String get viewFrameAll => 'Frame All Nodes';
+
+  @override
+  String get viewFrameSelected => 'Frame Selected Nodes';
+
+  @override
   String get viewTheme => 'Theme';
 
   @override

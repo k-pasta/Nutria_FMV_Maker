@@ -97,7 +97,7 @@ final class VideoPreviewNotifierProvider
 }
 
 String _$videoPreviewNotifierHash() =>
-    r'a5d8f8bf26d65a6245cfbd7e41951bf61eafe1f6';
+    r'7577b2ae92c92c6184e427a5bccf9d7f2f8b7571';
 
 /// The preview's target (`null` when empty). Follows the document: if the
 /// previewed node gets another video (also via undo) the preview switches, and

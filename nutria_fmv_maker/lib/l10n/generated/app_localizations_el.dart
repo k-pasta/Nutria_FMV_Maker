@@ -323,6 +323,12 @@ class AppLocalizationsEl extends AppLocalizations {
   String get viewProperties => 'Στήλη Προτιμήσεων';
 
   @override
+  String get viewFrameAll => 'Προβολή Όλων των Κόμβων';
+
+  @override
+  String get viewFrameSelected => 'Προβολή Επιλεγμένων Κόμβων';
+
+  @override
   String get viewTheme => 'Θέμα';
 
   @override

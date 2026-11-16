@@ -22,6 +22,8 @@ const kShortcutGridSnapping =
 /// Single-key shortcuts. `NutriaTextField` blocks these while typing.
 const kShortcutLeftPanel = SingleActivator(LogicalKeyboardKey.keyT);
 const kShortcutRightPanel = SingleActivator(LogicalKeyboardKey.keyN);
+const kShortcutFrameSelected = SingleActivator(LogicalKeyboardKey.keyF);
+const kShortcutFrameAll = SingleActivator(LogicalKeyboardKey.home);
 const kShortcutZoomIn = [
   SingleActivator(LogicalKeyboardKey.add),
   SingleActivator(LogicalKeyboardKey.numpadAdd),
@@ -56,6 +58,8 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutGridSnapping: commands.toggleGridSnapping,
       kShortcutLeftPanel: () => commands.togglePanel(PanelSide.left),
       kShortcutRightPanel: () => commands.togglePanel(PanelSide.right),
+      kShortcutFrameSelected: commands.frameSelected,
+      kShortcutFrameAll: commands.frameAll,
       for (final key in kShortcutZoomIn)
         key: () => commands.zoomCanvas(zoomIn: true),
       for (final key in kShortcutZoomOut)

@@ -325,6 +325,12 @@ class AppLocalizationsFr extends AppLocalizations {
   String get viewProperties => 'Section Propriétés';
 
   @override
+  String get viewFrameAll => 'Cadrer tous les nœuds';
+
+  @override
+  String get viewFrameSelected => 'Cadrer les nœuds sélectionnés';
+
+  @override
   String get viewTheme => 'Thème';
 
   @override

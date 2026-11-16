@@ -1,5 +1,6 @@
 // What every node has: color strip, selection outline, move/resize gestures,
 // context menu, settings expansion and knots.
+import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
@@ -100,10 +101,14 @@ class _NodeFrameState extends ConsumerState<NodeFrame> {
             padding: const EdgeInsets.all(kNodePadding),
             // Sees every press on the node, even ones its buttons and text
             // fields handle, so using any part of a node selects it.
+            // The middle button pans the canvas; it doesn't select.
             child: Listener(
-              onPointerDown: (_) => ref
-                  .read(nodeGestureProvider.notifier)
-                  .pointerDown(node.id, additive: _additive),
+              onPointerDown: (event) {
+                if (event.buttons & kMiddleMouseButton != 0) return;
+                ref
+                    .read(nodeGestureProvider.notifier)
+                    .pointerDown(node.id, additive: _additive);
+              },
               child: MouseRegion(
                 onEnter: (_) => setState(() => _hovered = true),
                 onExit: (_) {

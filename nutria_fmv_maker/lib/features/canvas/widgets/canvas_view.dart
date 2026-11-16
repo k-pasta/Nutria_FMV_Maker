@@ -1,14 +1,19 @@
 // The node canvas: dot grid, pan/zoom, and the surface nodes are placed on.
 import 'package:flutter/gestures.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
+import 'package:nutria_fmv_maker/features/canvas/providers/marquee_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
@@ -18,8 +23,12 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 
 /// The whole editing surface. Scrolling zooms around the mouse; dragging
-/// empty space pans. Children of [CanvasSpace] are laid out in canvas
-/// coordinates, where (0, 0) is the middle of the canvas.
+/// with the middle button (anywhere) or with Shift (on empty space) pans;
+/// dragging empty space draws a selection box. Children of [CanvasSpace] are
+/// laid out in canvas coordinates, where (0, 0) is the middle of the canvas.
+///
+/// At startup and whenever a project is opened or created, the view frames
+/// its nodes (a new project: the origin, centered at 100%).
 class CanvasView extends ConsumerWidget {
   const CanvasView({super.key, this.layers = const []});
 
@@ -34,16 +43,33 @@ class CanvasView extends ConsumerWidget {
     final gridSize = ref
         .watch(preferencesProvider.select((p) => p.gridSize))
         .toDouble();
+
+    // After layout, so the nodes have been measured.
+    void frameAll() => WidgetsBinding.instance.addPostFrameCallback((_) =>
+        frameNodes(controller, ref.read(documentProvider).document,
+            ref.read(nodeBoundsProvider)));
+    ref.listen(documentProvider.select((s) => s.generation), (_, _) {
+      frameAll();
+    });
+
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
         if (size != controller.viewportSize) {
           // After layout: moving the view rebuilds the InteractiveViewer.
-          WidgetsBinding.instance.addPostFrameCallback(
-            (_) => controller.setViewportSize(size),
-          );
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final first = controller.viewportSize == Size.zero;
+            controller.setViewportSize(size);
+            if (first) frameAll();
+          });
         }
         return Listener(
+          // The middle button pans everywhere, over nodes too.
+          onPointerMove: (event) {
+            if (event.buttons & kMiddleMouseButton != 0) {
+              controller.panBy(event.delta);
+            }
+          },
           onPointerSignal: (event) {
             if (event is PointerScrollEvent && event.scrollDelta.dy != 0) {
               controller.zoomAt(
@@ -75,8 +101,10 @@ class CanvasView extends ConsumerWidget {
               Positioned.fill(
                 child: InteractiveViewer(
                   transformationController: controller,
-                  // Zoom is handled above, one step per scroll notch.
+                  // Zoom is handled above, one step per scroll notch, and
+                  // panning by the middle button and by Shift-drag.
                   scaleEnabled: false,
+                  panEnabled: false,
                   // Pans stop when the mouse is released.
                   interactionEndFrictionCoefficient: double.minPositive,
                   boundaryMargin: const EdgeInsets.all(double.infinity),
@@ -144,6 +172,9 @@ class _EmptyCanvasArea extends ConsumerWidget {
       return Position(p.dx - kNodePadding, p.dy - kNodePadding);
     }
 
+    final view = ref.read(canvasViewProvider);
+    final marquee = ref.read(marqueeProvider.notifier);
+    var panning = false;
     return NutriaContextMenuArea(
       onTap: ref.read(selectionProvider.notifier).clear,
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
@@ -167,7 +198,27 @@ class _EmptyCanvasArea extends ConsumerWidget {
       ],
       // Empty space paints nothing, so it has to catch clicks explicitly.
       behavior: HitTestBehavior.opaque,
-      child: const SizedBox.expand(),
+      // Shift-drag pans; a plain drag draws a selection box (Ctrl adds to
+      // the selection). Positions here are canvas coordinates.
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        // From the press, so the box and the view follow the pointer exactly
+        // (not offset by the drag threshold).
+        dragStartBehavior: DragStartBehavior.down,
+        onPanStart: (details) {
+          panning = HardwareKeyboard.instance.isShiftPressed;
+          if (!panning) {
+            marquee.begin(details.localPosition - kCanvasCenter,
+                additive: HardwareKeyboard.instance.isControlPressed);
+          }
+        },
+        onPanUpdate: (details) => panning
+            ? view.panBy(details.delta * view.scale)
+            : marquee.update(details.localPosition - kCanvasCenter),
+        onPanEnd: (_) => marquee.end(),
+        onPanCancel: marquee.end,
+        child: const SizedBox.expand(),
+      ),
     );
   }
 }

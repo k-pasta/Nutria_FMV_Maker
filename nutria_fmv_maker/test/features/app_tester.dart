@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_riverpod/misc.dart' show Override;
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/app/app.dart';
+import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
@@ -23,8 +24,14 @@ const kCanvasPoint = Offset(800, 450);
 
 /// Pumps [NutriaApp] in a 1600x900 window and returns its container.
 /// [mediaInfo] replaces the default, which knows nothing about any file.
+///
+/// The view is then reset to canvas (0, 0) in the middle at 100%, which
+/// tests place their nodes around; with [startView] it stays as the app
+/// starts (framed on the origin node).
 Future<ProviderContainer> pumpApp(WidgetTester tester,
-    {List<Override> overrides = const [], MediaInfoService? mediaInfo}) async {
+    {List<Override> overrides = const [],
+    MediaInfoService? mediaInfo,
+    bool startView = false}) async {
   tester.view.physicalSize = const Size(1600, 900);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
@@ -41,6 +48,10 @@ Future<ProviderContainer> pumpApp(WidgetTester tester,
   await tester.pumpWidget(
       UncontrolledProviderScope(container: container, child: const NutriaApp()));
   await tester.pumpAndSettle();
+  if (!startView) {
+    container.read(canvasViewProvider).centerOn(Offset.zero, scale: 1);
+    await tester.pumpAndSettle();
+  }
   return container;
 }
 
