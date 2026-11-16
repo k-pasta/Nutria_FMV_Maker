@@ -109,7 +109,7 @@ class NodeFrame extends ConsumerWidget {
             Positioned(
               left: knot.offset.dx - kKnotHitSize / 2,
               top: knot.offset.dy - kKnotHitSize / 2,
-              child: Knot(port: knot.port),
+              child: Knot(port: knot.port, color: theme.swatch(node.swatch)),
             ),
         ],
       ),

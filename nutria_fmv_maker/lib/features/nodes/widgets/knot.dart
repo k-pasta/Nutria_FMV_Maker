@@ -8,7 +8,6 @@ import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
-import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
 /// How fast a knot grows and shrinks. Short, so it feels snappy.
 const kKnotAnimation = Duration(milliseconds: 30);
@@ -16,10 +15,13 @@ const kKnotAnimation = Duration(milliseconds: 30);
 /// A rotated square on the node edge for an input or output [port]. It grows
 /// while hovered, and while it's one end of the noodle being dragged.
 class Knot extends ConsumerStatefulWidget {
-  const Knot({super.key, required this.port});
+  const Knot({super.key, required this.port, required this.color});
 
   /// An output port, or [PortRef.input] for the node's input.
   final PortRef port;
+
+  /// The node's color.
+  final Color color;
 
   bool get isInput => port.port == PortRef.inputPortKey;
 
@@ -52,7 +54,6 @@ class _KnotState extends ConsumerState<Knot> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = context.appTheme;
     final active = ref.watch(isKnotActiveProvider(widget.port));
     final dragging =
         ref.watch(connectionDragProvider.select((s) => s.anchor != null));
@@ -84,7 +85,7 @@ class _KnotState extends ConsumerState<Knot> {
               height: size,
               transform: Matrix4.rotationZ(math.pi / 4),
               transformAlignment: Alignment.center,
-              color: theme.cAccent,
+              color: widget.color,
             ),
           ),
         ),

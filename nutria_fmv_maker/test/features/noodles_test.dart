@@ -35,7 +35,8 @@ void main() {
           noodlesFor(connected, metrics, const CanvasInteraction(), null);
       expect(noodles, [
         Noodle(knotPosition(connected, metrics, originOut)!,
-            knotPosition(connected, metrics, PortRef.input('a'))!),
+            knotPosition(connected, metrics, PortRef.input('a'))!,
+            startSwatch: 1, endSwatch: 0),
       ]);
       expect(noodles.single.end,
           const Offset(400, 100) + NodeLayout(connected.nodes['a']!, metrics).input!);
@@ -51,6 +52,8 @@ void main() {
       );
       expect(noodles.single.end, const Offset(7, 8));
       expect(noodles.single.endLocked, isFalse);
+      // Solid in the origin's color while it isn't over a knot.
+      expect((noodles.single.startSwatch, noodles.single.endSwatch), (1, 1));
     });
 
     test('a dragged noodle jumps to the knot it would connect to', () {
@@ -65,6 +68,8 @@ void main() {
       // The straight piece on that side only appears once connected.
       expect(noodles.single.endLocked, isFalse);
       expect(noodles.single.startLocked, isTrue);
+      // Fades into the target node's color, as it will once connected.
+      expect((noodles.single.startSwatch, noodles.single.endSwatch), (1, 0));
     });
 
     test('dragging from an input draws from the pointer to that input', () {

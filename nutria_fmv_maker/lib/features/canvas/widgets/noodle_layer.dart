@@ -37,7 +37,7 @@ class NoodleLayer extends ConsumerWidget {
         child: RepaintBoundary(child: CustomPaint(
           painter: NoodlePainter(
             noodles: noodles,
-            color: theme.cAccent,
+            swatches: theme.cSwatches,
             curved: style == NoodleStyle.curved,
             origin: kCanvasCenter,
           ),
