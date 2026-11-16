@@ -70,7 +70,8 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     final window = MediaQuery.sizeOf(context);
     var x = position.dx;
     var y = position.dy;
-    if (x + kContextMenuWidth > window.width && kContextMenuWidth < window.width) {
+    if (x + kContextMenuWidth > window.width &&
+        kContextMenuWidth < window.width) {
       x = window.width - kContextMenuWidth;
     }
     if (y + kContextMenuHeight > window.height &&
@@ -89,48 +90,52 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     final itemStyle = NutriaMenuStyles(theme).item;
 
     _entry = OverlayEntry(
-      builder: (_) => Stack(children: [
-        // Any click outside the menu closes it and still reaches the app.
-        Positioned.fill(
-          child: Listener(
-            behavior: HitTestBehavior.translucent,
-            onPointerDown: (_) => _close(),
+      builder: (_) => Stack(
+        children: [
+          // Any click outside the menu closes it and still reaches the app.
+          Positioned.fill(
+            child: Listener(
+              behavior: HitTestBehavior.translucent,
+              onPointerDown: (_) => _close(),
+            ),
           ),
-        ),
-        Positioned(
-          left: position.dx,
-          top: position.dy,
-          child: IntrinsicWidth(
-            child: Container(
-              decoration: BoxDecoration(
-                color: theme.cCard,
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                boxShadow: theme.cardShadow(lifted: true),
-              ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    for (final item in items)
-                      MenuItemButton(
-                        leadingIcon: Icon(item.icon),
-                        style: itemStyle,
-                        onPressed: () {
-                          _close();
-                          item.onSelected();
-                        },
-                        child: NutriaText(
-                            text: item.label, state: NutriaTextState.accented),
-                      ),
-                  ],
+          Positioned(
+            left: position.dx,
+            top: position.dy,
+            child: IntrinsicWidth(
+              child: Container(
+                decoration: BoxDecoration(
+                  color: theme.cCard,
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  boxShadow: theme.cardShadow(lifted: true),
+                ),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      for (final item in items)
+                        MenuItemButton(
+                          leadingIcon: Icon(item.icon),
+                          style: itemStyle,
+                          onPressed: () {
+                            _close();
+                            item.onSelected();
+                          },
+                          child: NutriaText(
+                            text: item.label,
+                            state: NutriaTextState.accented,
+                          ),
+                        ),
+                    ],
+                  ),
                 ),
               ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
     Overlay.of(context).insert(_entry!);
     widget.onOpenChanged?.call(true);
@@ -146,9 +151,9 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
 
   @override
   Widget build(BuildContext context) => GestureDetector(
-        behavior: widget.behavior,
-        onTap: widget.onTap,
-        onSecondaryTapUp: _open,
-        child: widget.child,
-      );
+    behavior: widget.behavior,
+    onTap: widget.onTap,
+    onSecondaryTapUp: _open,
+    child: widget.child,
+  );
 }

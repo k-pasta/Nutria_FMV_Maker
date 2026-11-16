@@ -23,26 +23,38 @@ Future<bool> showNutriaConfirmDialog(
         elevation: 0,
         child: NutriaModal(
           onClose: () => close(false),
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
-            NutriaText(
-                text: message, maxLines: 5, state: NutriaTextState.accented),
-            SizedBox(height: theme.dSectionPadding * 2),
-            Row(children: [
-              Expanded(
-                child: NutriaButton(
-                    onTap: () => close(false),
-                    child: NutriaText(text: cancelLabel)),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              NutriaText(
+                text: message,
+                maxLines: 5,
+                state: NutriaTextState.accented,
               ),
-              SizedBox(width: theme.dSectionPadding),
-              Expanded(
-                child: NutriaButton(
-                    isAccented: true,
-                    onTap: () => close(true),
-                    child: NutriaText(
-                        text: confirmLabel, state: NutriaTextState.accented)),
+              SizedBox(height: theme.dSectionPadding * 2),
+              Row(
+                children: [
+                  Expanded(
+                    child: NutriaButton(
+                      onTap: () => close(false),
+                      child: NutriaText(text: cancelLabel),
+                    ),
+                  ),
+                  SizedBox(width: theme.dSectionPadding),
+                  Expanded(
+                    child: NutriaButton(
+                      isAccented: true,
+                      onTap: () => close(true),
+                      child: NutriaText(
+                        text: confirmLabel,
+                        state: NutriaTextState.accented,
+                      ),
+                    ),
+                  ),
+                ],
               ),
-            ]),
-          ]),
+            ],
+          ),
         ),
       );
     },

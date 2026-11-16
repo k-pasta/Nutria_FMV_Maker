@@ -16,6 +16,7 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_confirm_dialog.dart';
@@ -115,6 +116,28 @@ class AppCommands {
 
   void toggleGridSnapping() =>
       _ref.read(preferencesProvider.notifier).toggleGridSnapping();
+
+  // ----------------------------------------------------------------- player
+
+  /// The preview player, if a video is loaded in it.
+  PreviewPlayer? get _loadedPlayer => _ref.read(videoPreviewProvider) == null
+      ? null
+      : _ref.read(previewPlayerProvider);
+
+  void playPause() => _loadedPlayer?.playOrPause();
+
+  /// Jumps [by] forward (or back, if negative) in the previewed video.
+  void seekBy(Duration by) {
+    final player = _loadedPlayer;
+    if (player != null) player.seek(player.status.value.position + by);
+  }
+
+  /// Changes the preview volume by [delta] percentage points.
+  void changeVolume(double delta) {
+    final player = _loadedPlayer;
+    if (player == null) return;
+    player.setVolume((player.status.value.volume + delta).clamp(0, 100));
+  }
 
   // ------------------------------------------------------------------- view
 

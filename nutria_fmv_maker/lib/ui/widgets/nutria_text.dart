@@ -31,9 +31,11 @@ class NutriaText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final bold = textStyle == NutriaTextStyle.bold ||
+    final bold =
+        textStyle == NutriaTextStyle.bold ||
         textStyle == NutriaTextStyle.boldItalic;
-    final italic = textStyle == NutriaTextStyle.italic ||
+    final italic =
+        textStyle == NutriaTextStyle.italic ||
         textStyle == NutriaTextStyle.boldItalic;
     return Text(
       text,

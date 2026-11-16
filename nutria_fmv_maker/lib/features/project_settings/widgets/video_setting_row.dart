@@ -77,6 +77,7 @@ class VideoSettingRow extends StatelessWidget {
       value: videoSettingValue(t, type, settings),
       isAccented: isOverridden,
       onReset: isOverridden ? onReset : null,
+      resetTooltip: t.tooltipResetOverride,
       onTap: toggle ? () => onStep(1) : null,
       onPrevious: toggle ? null : () => onStep(-1),
       onNext: toggle ? null : () => onStep(1),

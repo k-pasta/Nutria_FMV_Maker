@@ -22,6 +22,8 @@ class NutriaSplitView extends StatefulWidget {
     required this.onOpenRequested,
     required this.onWindowResized,
     this.handleWidth = 10,
+    this.leftOpenTooltip,
+    this.rightOpenTooltip,
     this.left,
     this.center,
     this.right,
@@ -32,6 +34,10 @@ class NutriaSplitView extends StatefulWidget {
   final bool leftOpen;
   final bool rightOpen;
   final double handleWidth;
+
+  /// Hints on the tabs that open a closed panel.
+  final String? leftOpenTooltip;
+  final String? rightOpenTooltip;
   final Widget? left;
   final Widget? center;
   final Widget? right;
@@ -139,11 +145,13 @@ class _NutriaSplitViewState extends State<NutriaSplitView> {
             PanelEdgeButton(
               side: PanelEdge.left,
               enabled: !widget.leftOpen,
+              tooltip: widget.leftOpenTooltip,
               onTap: () => widget.onOpenRequested(SplitSide.left, total),
             ),
             PanelEdgeButton(
               side: PanelEdge.right,
               enabled: !widget.rightOpen,
+              tooltip: widget.rightOpenTooltip,
               onTap: () => widget.onOpenRequested(SplitSide.right, total),
             ),
           ],

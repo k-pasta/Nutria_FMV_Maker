@@ -13,6 +13,7 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 /// Thumbnail, file name, and a row with "convert" and the expand button.
 /// Its output knot is level with its input, at the bottom of the thumbnail.
@@ -225,7 +226,9 @@ class SwatchPicker extends StatelessWidget {
           for (var i = 0; i < swatches.length; i++) ...[
             if (i > 0) SizedBox(width: theme.dPanelPadding),
             Expanded(
-              child: MouseRegion(
+              child: NutriaTooltip(
+                message: AppLocalizations.of(context).tooltipNodeColor(i + 1),
+                child: MouseRegion(
                 cursor: SystemMouseCursors.click,
                 child: GestureDetector(
                   onTap: () => onSelected(i),
@@ -244,6 +247,7 @@ class SwatchPicker extends StatelessWidget {
                     ),
                   ),
                 ),
+              ),
               ),
             ),
           ],

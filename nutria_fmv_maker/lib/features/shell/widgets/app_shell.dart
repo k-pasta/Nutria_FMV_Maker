@@ -15,6 +15,7 @@ import 'package:nutria_fmv_maker/features/project/providers/document_selectors.d
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
+import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
@@ -86,6 +87,8 @@ class _AppShellState extends ConsumerState<AppShell> {
                 preferences: preferences,
                 canUndo: history.canUndo,
                 canRedo: history.canRedo,
+                canPlay: ref.watch(
+                    videoPreviewProvider.select((p) => p != null)),
               ),
               onLogoTap: commands.showAbout,
               onOpenChanged: overlays.setMenuOpen,

@@ -18,29 +18,34 @@ class NutriaModal extends StatelessWidget {
       child: ConstrainedBox(
         constraints: const BoxConstraints(maxWidth: kModalMaxWidth),
         child: SingleChildScrollView(
-          child: Stack(children: [
-            Container(
-              decoration: BoxDecoration(
-                color: theme.cPanel,
-                borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                boxShadow: theme.cardShadow(lifted: true),
+          child: Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  color: theme.cPanel,
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  boxShadow: theme.cardShadow(lifted: true),
+                ),
+                padding: EdgeInsets.all(theme.dSectionPadding * 3),
+                child: child,
               ),
-              padding: EdgeInsets.all(theme.dSectionPadding * 3),
-              child: child,
-            ),
-            Positioned(
-              right: theme.dSectionPadding * 2,
-              top: theme.dSectionPadding * 2,
-              child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: onClose,
-                  child: Icon(Icons.close,
-                      color: theme.cTextInactive, size: theme.dButtonHeight / 1.8),
+              Positioned(
+                right: theme.dSectionPadding * 2,
+                top: theme.dSectionPadding * 2,
+                child: MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: onClose,
+                    child: Icon(
+                      Icons.close,
+                      color: theme.cTextInactive,
+                      size: theme.dButtonHeight / 1.8,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ]),
+            ],
+          ),
         ),
       ),
     );

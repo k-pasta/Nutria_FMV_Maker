@@ -365,5 +365,47 @@ class AppLocalizationsEl extends AppLocalizations {
   String get viewVideoPlayer => 'Στήλη Βίντεο';
 
   @override
+  String get editPlayPause => 'Αναπαραγωγή / Παύση Βίντεο';
+
+  @override
+  String get tooltipPickVideo => 'Επιλογή βίντεο';
+
+  @override
+  String get tooltipNodeSettings => 'Ρυθμίσεις κόμβου';
+
+  @override
+  String get tooltipImportVideos => 'Εισαγωγή βίντεο';
+
+  @override
+  String get tooltipBack5 => 'Πίσω 5 δευτερόλεπτα (Ctrl+←)';
+
+  @override
+  String get tooltipPlayPause => 'Αναπαραγωγή / παύση (Space)';
+
+  @override
+  String get tooltipForward5 => 'Μπροστά 5 δευτερόλεπτα (Ctrl+→)';
+
+  @override
+  String get tooltipChoicesFromHere =>
+      'Εμφάνιση των επιλογών από αυτή τη στιγμή';
+
+  @override
+  String get tooltipVolume => 'Ένταση (Ctrl+↑ / Ctrl+↓)';
+
+  @override
+  String get tooltipShowLeftPanel => 'Εμφάνιση πλαϊνής στήλης (T)';
+
+  @override
+  String get tooltipShowRightPanel => 'Εμφάνιση προβολής βίντεο (N)';
+
+  @override
+  String get tooltipResetOverride => 'Χρήση της ρύθμισης του έργου';
+
+  @override
+  String tooltipNodeColor(int number) {
+    return 'Χρώμα $number';
+  }
+
+  @override
   String get z => 'z';
 }

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/left_panel.dart';
 import 'package:nutria_fmv_maker/features/video_preview/widgets/video_preview_panel.dart';
+import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_split_view.dart';
 
 PanelSide _side(SplitSide side) =>
@@ -22,6 +23,8 @@ class SidePanels extends ConsumerWidget {
       leftOpen: !layout.leftClosed,
       rightOpen: !layout.rightClosed,
       handleWidth: kPanelHandleWidth,
+      leftOpenTooltip: AppLocalizations.of(context).tooltipShowLeftPanel,
+      rightOpenTooltip: AppLocalizations.of(context).tooltipShowRightPanel,
       onDividerDrag: (side, dx, total) => panels.drag(_side(side), dx, total),
       onDividerDragEnd: (side) => panels.dragEnd(_side(side)),
       onOpenRequested: (side, total) => panels.toggle(_side(side), total),

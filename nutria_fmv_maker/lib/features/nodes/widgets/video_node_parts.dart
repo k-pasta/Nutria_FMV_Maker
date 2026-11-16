@@ -35,6 +35,7 @@ class NodeThumbnail extends ConsumerWidget {
           padding: EdgeInsets.all(theme.dPanelPadding),
           child: NutriaButton.icon(
             icon: Icons.add,
+            tooltip: AppLocalizations.of(context).tooltipPickVideo,
             onTap: () => ref.read(graphEditorProvider).pickVideoFor(node.id),
           ),
         ),
@@ -129,6 +130,7 @@ class NodeExpandButton extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) => NutriaButton.icon(
     icon: node.isExpanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+    tooltip: AppLocalizations.of(context).tooltipNodeSettings,
     onTap: () => ref.read(graphEditorProvider).toggleExpanded(node.id),
   );
 }

@@ -8,14 +8,16 @@ import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 
 
-/// Builds the menus. [canUndo]/[canRedo] grey out Undo/Redo; [preferences]
-/// marks the current language and theme.
+/// Builds the menus. [canUndo]/[canRedo] grey out Undo/Redo, [canPlay]
+/// Play/Pause (no video loaded); [preferences] marks the current language
+/// and theme.
 List<NutriaMenu> buildAppMenus({
   required AppCommands commands,
   required AppLocalizations t,
   required Preferences preferences,
   required bool canUndo,
   required bool canRedo,
+  required bool canPlay,
 }) =>
     [
       NutriaMenu(title: t.menuBarFile, entries: [
@@ -81,6 +83,11 @@ List<NutriaMenu> buildAppMenus({
             icon: Icons.select_all,
             shortcut: kShortcutSelectAll,
             onPressed: commands.selectAll),
+        NutriaMenuEntry(
+            label: t.editPlayPause,
+            icon: Icons.play_arrow,
+            shortcut: kShortcutPlayPause,
+            onPressed: canPlay ? commands.playPause : null),
         NutriaMenuEntry(
             label: t.editCollapseAll,
             icon: Icons.unfold_less,

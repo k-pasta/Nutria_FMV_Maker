@@ -142,5 +142,25 @@
   "viewFrameSelected": "Frame Selected Nodes",
   "viewTheme": "Theme",
   "viewVideoPlayer": "Video Player Section",
+  "editPlayPause": "Play / Pause Video",
+  "tooltipPickVideo": "Choose a video",
+  "tooltipNodeSettings": "Node settings",
+  "tooltipImportVideos": "Import videos",
+  "tooltipBack5": "Back 5 seconds (Ctrl+←)",
+  "tooltipPlayPause": "Play / pause (Space)",
+  "tooltipForward5": "Forward 5 seconds (Ctrl+→)",
+  "tooltipChoicesFromHere": "Show the choices from this moment on",
+  "tooltipVolume": "Volume (Ctrl+↑ / Ctrl+↓)",
+  "tooltipShowLeftPanel": "Show the side panel (T)",
+  "tooltipShowRightPanel": "Show the video player (N)",
+  "tooltipResetOverride": "Use the project setting",
+  "tooltipNodeColor": "Color {number}",
+  "@tooltipNodeColor": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "z": "z"
 }

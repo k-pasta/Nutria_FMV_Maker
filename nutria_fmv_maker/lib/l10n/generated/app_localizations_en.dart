@@ -365,5 +365,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get viewVideoPlayer => 'Video Player Section';
 
   @override
+  String get editPlayPause => 'Play / Pause Video';
+
+  @override
+  String get tooltipPickVideo => 'Choose a video';
+
+  @override
+  String get tooltipNodeSettings => 'Node settings';
+
+  @override
+  String get tooltipImportVideos => 'Import videos';
+
+  @override
+  String get tooltipBack5 => 'Back 5 seconds (Ctrl+←)';
+
+  @override
+  String get tooltipPlayPause => 'Play / pause (Space)';
+
+  @override
+  String get tooltipForward5 => 'Forward 5 seconds (Ctrl+→)';
+
+  @override
+  String get tooltipChoicesFromHere => 'Show the choices from this moment on';
+
+  @override
+  String get tooltipVolume => 'Volume (Ctrl+↑ / Ctrl+↓)';
+
+  @override
+  String get tooltipShowLeftPanel => 'Show the side panel (T)';
+
+  @override
+  String get tooltipShowRightPanel => 'Show the video player (N)';
+
+  @override
+  String get tooltipResetOverride => 'Use the project setting';
+
+  @override
+  String tooltipNodeColor(int number) {
+    return 'Color $number';
+  }
+
+  @override
   String get z => 'z';
 }

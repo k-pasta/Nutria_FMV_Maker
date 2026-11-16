@@ -53,79 +53,88 @@ class NutriaMenuBar extends StatelessWidget {
     final theme = context.appTheme;
     final styles = NutriaMenuStyles(theme);
     return Theme(
-      data: Theme.of(context)
-          .copyWith(menuTheme: MenuThemeData(style: styles.submenu)),
-      child: Stack(children: [
-        SizedBox(
-          height: theme.dMenuBarHeight,
-          width: double.infinity,
-          child: MenuBar(
-            style: styles.bar,
-            children: [
-              // Click target over the logo, which is drawn on top below.
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  // The box is empty, so it must catch clicks itself.
-                  behavior: HitTestBehavior.opaque,
-                  onTap: onLogoTap,
-                  child: SizedBox(
+      data: Theme.of(
+        context,
+      ).copyWith(menuTheme: MenuThemeData(style: styles.submenu)),
+      child: Stack(
+        children: [
+          SizedBox(
+            height: theme.dMenuBarHeight,
+            width: double.infinity,
+            child: MenuBar(
+              style: styles.bar,
+              children: [
+                // Click target over the logo, which is drawn on top below.
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    // The box is empty, so it must catch clicks itself.
+                    behavior: HitTestBehavior.opaque,
+                    onTap: onLogoTap,
+                    child: SizedBox(
                       width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
-                      height: theme.dMenuBarHeight),
+                      height: theme.dMenuBarHeight,
+                    ),
+                  ),
                 ),
-              ),
-              for (final menu in menus)
-                SubmenuButton(
-                  onOpen: () => onOpenChanged?.call(true),
-                  onClose: () => onOpenChanged?.call(false),
-                  style: styles.barButton,
-                  menuChildren: [
-                    for (final entry in menu.entries) _entry(entry, styles),
-                  ],
-                  child: NutriaText(
-                      text: menu.title, state: NutriaTextState.accented),
-                ),
-            ],
+                for (final menu in menus)
+                  SubmenuButton(
+                    onOpen: () => onOpenChanged?.call(true),
+                    onClose: () => onOpenChanged?.call(false),
+                    style: styles.barButton,
+                    menuChildren: [
+                      for (final entry in menu.entries) _entry(entry, styles),
+                    ],
+                    child: NutriaText(
+                      text: menu.title,
+                      state: NutriaTextState.accented,
+                    ),
+                  ),
+              ],
+            ),
           ),
-        ),
-        Positioned(
-          top: theme.dLogoPadding,
-          left: theme.dLogoPadding,
-          child: IgnorePointer(
-            // The art is a silhouette with the face cut out, so the cut-outs
-            // show what is behind it: themes whose menu bar is too light for
-            // that give the logo a darker backing.
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.cLogoBadge,
-                borderRadius:
-                    BorderRadius.circular(theme.dPanelBorderRadius),
-              ),
-              child: SvgPicture.asset(
-                theme.logoAsset,
-                width: theme.dMenuBarHeight * 2.2,
-                height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
-                colorFilter:
-                    ColorFilter.mode(theme.cAccentButton, BlendMode.srcIn),
+          Positioned(
+            top: theme.dLogoPadding,
+            left: theme.dLogoPadding,
+            child: IgnorePointer(
+              // The art is a silhouette with the face cut out, so the cut-outs
+              // show what is behind it: themes whose menu bar is too light for
+              // that give the logo a darker backing.
+              child: DecoratedBox(
+                decoration: BoxDecoration(
+                  color: theme.cLogoBadge,
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                ),
+                child: SvgPicture.asset(
+                  theme.logoAsset,
+                  width: theme.dMenuBarHeight * 2.2,
+                  height: (theme.dMenuBarHeight - theme.dLogoPadding) * 2,
+                  colorFilter: ColorFilter.mode(
+                    theme.cAccentButton,
+                    BlendMode.srcIn,
+                  ),
+                ),
               ),
             ),
           ),
-        ),
-      ]),
+        ],
+      ),
     );
   }
 
   Widget _entry(NutriaMenuEntry entry, NutriaMenuStyles styles) {
-    final label = Row(children: [
-      if (entry.icon != null) Icon(entry.icon, size: 16),
-      const SizedBox(width: 8),
-      NutriaText(
-        text: entry.label,
-        state: entry.onPressed == null && entry.children.isEmpty
-            ? NutriaTextState.inactive
-            : NutriaTextState.accented,
-      ),
-    ]);
+    final label = Row(
+      children: [
+        if (entry.icon != null) Icon(entry.icon, size: 16),
+        const SizedBox(width: 8),
+        NutriaText(
+          text: entry.label,
+          state: entry.onPressed == null && entry.children.isEmpty
+              ? NutriaTextState.inactive
+              : NutriaTextState.accented,
+        ),
+      ],
+    );
     if (entry.children.isNotEmpty) {
       return SubmenuButton(
         style: styles.item,

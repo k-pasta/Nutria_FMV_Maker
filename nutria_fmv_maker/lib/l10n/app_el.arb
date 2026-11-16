@@ -114,5 +114,18 @@
   "viewFrameSelected": "Προβολή Επιλεγμένων Κόμβων",
   "viewTheme": "Θέμα",
   "viewVideoPlayer": "Στήλη Βίντεο",
+  "editPlayPause": "Αναπαραγωγή / Παύση Βίντεο",
+  "tooltipPickVideo": "Επιλογή βίντεο",
+  "tooltipNodeSettings": "Ρυθμίσεις κόμβου",
+  "tooltipImportVideos": "Εισαγωγή βίντεο",
+  "tooltipBack5": "Πίσω 5 δευτερόλεπτα (Ctrl+←)",
+  "tooltipPlayPause": "Αναπαραγωγή / παύση (Space)",
+  "tooltipForward5": "Μπροστά 5 δευτερόλεπτα (Ctrl+→)",
+  "tooltipChoicesFromHere": "Εμφάνιση των επιλογών από αυτή τη στιγμή",
+  "tooltipVolume": "Ένταση (Ctrl+↑ / Ctrl+↓)",
+  "tooltipShowLeftPanel": "Εμφάνιση πλαϊνής στήλης (T)",
+  "tooltipShowRightPanel": "Εμφάνιση προβολής βίντεο (N)",
+  "tooltipResetOverride": "Χρήση της ρύθμισης του έργου",
+  "tooltipNodeColor": "Χρώμα {number}",
   "z": "z"
 }

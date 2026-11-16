@@ -23,7 +23,8 @@ final kNoVideo = NodeMetrics.wrappable('No Video');
 const kCanvasPoint = Offset(800, 450);
 
 /// Pumps [NutriaApp] in a 1600x900 window and returns its container.
-/// [mediaInfo] replaces the default, which knows nothing about any file.
+/// [mediaInfo] replaces the default, which knows nothing about any file;
+/// [player] lets a test see what the preview player was asked to do.
 ///
 /// The view is then reset to canvas (0, 0) in the middle at 100%, which
 /// tests place their nodes around; with [startView] it stays as the app
@@ -31,6 +32,7 @@ const kCanvasPoint = Offset(800, 450);
 Future<ProviderContainer> pumpApp(WidgetTester tester,
     {List<Override> overrides = const [],
     MediaInfoService? mediaInfo,
+    FakePlayer? player,
     bool startView = false}) async {
   tester.view.physicalSize = const Size(1600, 900);
   tester.view.devicePixelRatio = 1;
@@ -39,7 +41,7 @@ Future<ProviderContainer> pumpApp(WidgetTester tester,
   final prefs = await SharedPreferences.getInstance();
   final container = ProviderContainer.test(overrides: [
     sharedPreferencesProvider.overrideWithValue(prefs),
-    previewPlayerProvider.overrideWithValue(FakePlayer()),
+    previewPlayerProvider.overrideWithValue(player ?? FakePlayer()),
     thumbnailServiceProvider.overrideWithValue(const _NoThumbnails()),
     mediaInfoServiceProvider
         .overrideWithValue(mediaInfo ?? const _NoMediaInfo()),

@@ -5,34 +5,41 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 /// Styles for [MenuBar], submenus and menu items.
 class NutriaMenuStyles {
   NutriaMenuStyles(AppTheme theme)
-      : bar = MenuStyle(
-          backgroundColor: WidgetStatePropertyAll(theme.cMenuBar),
-          shape: const WidgetStatePropertyAll(
-              RoundedRectangleBorder(side: BorderSide.none)),
+    : bar = MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(theme.cMenuBar),
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(side: BorderSide.none),
         ),
-        submenu = MenuStyle(
-          backgroundColor: WidgetStatePropertyAll(theme.cCard),
-          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
-          shadowColor: WidgetStatePropertyAll(theme.cShadow),
-          elevation: const WidgetStatePropertyAll(8),
-          shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius))),
-          padding: WidgetStatePropertyAll(
-              EdgeInsets.symmetric(vertical: theme.dSectionPadding * 1.6)),
+      ),
+      submenu = MenuStyle(
+        backgroundColor: WidgetStatePropertyAll(theme.cCard),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+        shadowColor: WidgetStatePropertyAll(theme.cShadow),
+        elevation: const WidgetStatePropertyAll(8),
+        shape: WidgetStatePropertyAll<OutlinedBorder>(
+          RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+          ),
         ),
-        barButton = ButtonStyle(
-          overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
-          foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
-          fixedSize:
-              WidgetStatePropertyAll(Size.fromHeight(theme.dMenuBarHeight)),
+        padding: WidgetStatePropertyAll(
+          EdgeInsets.symmetric(vertical: theme.dSectionPadding * 1.6),
         ),
-        item = ButtonStyle(
-          iconColor: WidgetStatePropertyAll(theme.cAccent),
-          overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
-          foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
-          shape: const WidgetStatePropertyAll(
-              RoundedRectangleBorder(side: BorderSide.none)),
-        );
+      ),
+      barButton = ButtonStyle(
+        overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
+        foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
+        fixedSize: WidgetStatePropertyAll(
+          Size.fromHeight(theme.dMenuBarHeight),
+        ),
+      ),
+      item = ButtonStyle(
+        iconColor: WidgetStatePropertyAll(theme.cAccent),
+        overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
+        foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
+        shape: const WidgetStatePropertyAll(
+          RoundedRectangleBorder(side: BorderSide.none),
+        ),
+      );
 
   /// The menu bar itself.
   final MenuStyle bar;

@@ -14,6 +14,7 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_slider.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 /// Seconds skipped by the rewind / fast-forward buttons.
 const _kSkip = Duration(seconds: 5);
@@ -29,40 +30,45 @@ class VideoPreviewPanel extends ConsumerWidget {
     final path = target == null
         ? null
         : ref.watch(videoAssetProvider(target.videoId).select((v) => v?.path));
-    final info =
-        path == null ? null : ref.watch(videoInfoProvider(path)).value;
+    final info = path == null ? null : ref.watch(videoInfoProvider(path)).value;
     return NutriaScrollArea(
       padding: EdgeInsets.all(theme.dSectionPadding),
-      child: Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        AspectRatio(
-          aspectRatio: 16 / 9,
-          child: ColoredBox(
-            color: theme.cBackground,
-            child: player is MediaKitPreviewPlayer
-                ? Video(
-                    controller: player.controller,
-                    controls: NoVideoControls,
-                    fill: theme.cBackground,
-                  )
-                : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          AspectRatio(
+            aspectRatio: 16 / 9,
+            child: ColoredBox(
+              color: theme.cBackground,
+              child: player is MediaKitPreviewPlayer
+                  ? Video(
+                      controller: player.controller,
+                      controls: NoVideoControls,
+                      fill: theme.cBackground,
+                    )
+                  : null,
+            ),
           ),
-        ),
-        SizedBox(height: theme.dPanelPadding),
-        ValueListenableBuilder(
-          valueListenable: player.status,
-          builder: (context, status, _) => _Transport(
-            player: player,
-            status: status,
-            frameRate: info?.frameRate ?? kFallbackFrameRate,
-            nodeId: target?.nodeId,
+          SizedBox(height: theme.dPanelPadding),
+          ValueListenableBuilder(
+            valueListenable: player.status,
+            builder: (context, status, _) => _Transport(
+              player: player,
+              status: status,
+              frameRate: info?.frameRate ?? kFallbackFrameRate,
+              nodeId: target?.nodeId,
+            ),
           ),
-        ),
-        if (info != null) ...[
-          SizedBox(height: theme.dPanelPadding * 2),
-          for (final (label, value) in videoInfoRows(info, AppLocalizations.of(context)))
-            _InfoRow(label: label, value: value),
+          if (info != null) ...[
+            SizedBox(height: theme.dPanelPadding * 2),
+            for (final (label, value) in videoInfoRows(
+              info,
+              AppLocalizations.of(context),
+            ))
+              _InfoRow(label: label, value: value),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }
@@ -97,86 +103,123 @@ class _TransportState extends ConsumerState<_Transport> {
     final status = widget.status;
     final player = widget.player;
     final nodeId = widget.nodeId;
-    final isBranched = nodeId != null &&
+    final isBranched =
+        nodeId != null &&
         ref.watch(nodeProvider(nodeId).select((n) => n is BranchedVideoNode));
     final positionMs = _scrubMs ?? status.position.inMilliseconds.toDouble();
     final gap = SizedBox(width: theme.dPanelPadding);
-    return Column(children: [
-      // Full width; the panel can be too narrow for timecodes beside it.
-      NutriaSlider(
-        value: positionMs,
-        max: status.duration.inMilliseconds.toDouble(),
-        isAccented: true,
-        onChanged: (ms) => setState(() => _scrubMs = ms),
-        onChangeEnd: (ms) async {
-          await player.seek(Duration(milliseconds: ms.round()));
-          if (mounted) setState(() => _scrubMs = null);
-        },
-      ),
-      SizedBox(height: theme.dPanelPadding),
-      Row(children: [
-        Expanded(
-          child: NutriaText(
-              text: formatTimecode(Duration(milliseconds: positionMs.round()),
-                  frameRate: widget.frameRate)),
+    final t = AppLocalizations.of(context);
+    return Column(
+      children: [
+        // Full width; the panel can be too narrow for timecodes beside it.
+        NutriaSlider(
+          value: positionMs,
+          max: status.duration.inMilliseconds.toDouble(),
+          isAccented: true,
+          onChanged: (ms) => setState(() => _scrubMs = ms),
+          onChangeEnd: (ms) async {
+            await player.seek(Duration(milliseconds: ms.round()));
+            if (mounted) setState(() => _scrubMs = null);
+          },
         ),
-        Expanded(
-          child: NutriaText(
-              text: formatTimecode(status.duration, frameRate: widget.frameRate),
-              textAlign: TextAlign.right),
+        SizedBox(height: theme.dPanelPadding),
+        Row(
+          children: [
+            Expanded(
+              child: NutriaText(
+                text: formatTimecode(
+                  Duration(milliseconds: positionMs.round()),
+                  frameRate: widget.frameRate,
+                ),
+              ),
+            ),
+            Expanded(
+              child: NutriaText(
+                text: formatTimecode(
+                  status.duration,
+                  frameRate: widget.frameRate,
+                ),
+                textAlign: TextAlign.right,
+              ),
+            ),
+          ],
         ),
-      ]),
-      SizedBox(height: theme.dPanelPadding),
-      // Wraps onto more lines when the panel is narrow.
-      Wrap(
-        alignment: WrapAlignment.center,
-        spacing: theme.dPanelPadding,
-        runSpacing: theme.dPanelPadding,
-        children: [
-          NutriaButton.icon(
-            icon: Icons.replay_5,
-            onTap: () => player.seek(status.position - _kSkip),
+        SizedBox(height: theme.dPanelPadding),
+        // Wraps onto more lines when the panel is narrow.
+        Wrap(
+          alignment: WrapAlignment.center,
+          spacing: theme.dPanelPadding,
+          runSpacing: theme.dPanelPadding,
+          children: [
+            NutriaButton.icon(
+              icon: Icons.replay_5,
+              tooltip: t.tooltipBack5,
+              onTap: () => player.seek(status.position - _kSkip),
+            ),
+            NutriaButton.icon(
+              icon: status.playing ? Icons.pause : Icons.play_arrow,
+              tooltip: t.tooltipPlayPause,
+              onTap: player.playOrPause,
+            ),
+            NutriaButton.icon(
+              icon: Icons.forward_5,
+              tooltip: t.tooltipForward5,
+              onTap: () => player.seek(status.position + _kSkip),
+            ),
+            // The choices appear for the rest of the video from here on.
+            NutriaButton.icon(
+              icon: Icons.timer,
+              isAccented: true,
+              tooltip: t.tooltipChoicesFromHere,
+              isActive: isBranched,
+              onTap: () {
+                if (!isBranched) return;
+                final remaining = status.duration - status.position;
+                ref
+                    .read(graphEditorProvider)
+                    .editOverrides(
+                      nodeId,
+                      (o) =>
+                          o.copyWith(selectionTimeMs: remaining.inMilliseconds),
+                    );
+              },
+            ),
+          ],
+        ),
+        SizedBox(height: theme.dPanelPadding),
+        NutriaTooltip(
+          message: t.tooltipVolume,
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: theme.dButtonHeight * 4 + theme.dPanelPadding * 3,
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  Icons.volume_down,
+                  color: theme.cTextInactive,
+                  size: theme.dTextHeight,
+                ),
+                gap,
+                Expanded(
+                  child: NutriaSlider(
+                    value: status.volume,
+                    max: 100,
+                    onChanged: player.setVolume,
+                  ),
+                ),
+                gap,
+                Icon(
+                  Icons.volume_up,
+                  color: theme.cTextInactive,
+                  size: theme.dTextHeight,
+                ),
+              ],
+            ),
           ),
-          NutriaButton.icon(
-            icon: status.playing ? Icons.pause : Icons.play_arrow,
-            onTap: player.playOrPause,
-          ),
-          NutriaButton.icon(
-            icon: Icons.forward_5,
-            onTap: () => player.seek(status.position + _kSkip),
-          ),
-          // The choices appear for the rest of the video from here on.
-          NutriaButton.icon(
-            icon: Icons.timer,
-            isAccented: true,
-            isActive: isBranched,
-            onTap: () {
-              if (!isBranched) return;
-              final remaining = status.duration - status.position;
-              ref.read(graphEditorProvider).editOverrides(nodeId,
-                  (o) => o.copyWith(selectionTimeMs: remaining.inMilliseconds));
-            },
-          ),
-        ],
-      ),
-      SizedBox(height: theme.dPanelPadding),
-      ConstrainedBox(
-        constraints: BoxConstraints(
-            maxWidth: theme.dButtonHeight * 4 + theme.dPanelPadding * 3),
-        child: Row(children: [
-          Icon(Icons.volume_down,
-              color: theme.cTextInactive, size: theme.dTextHeight),
-          gap,
-          Expanded(
-            child: NutriaSlider(
-                value: status.volume, max: 100, onChanged: player.setVolume),
-          ),
-          gap,
-          Icon(Icons.volume_up,
-              color: theme.cTextInactive, size: theme.dTextHeight),
-        ]),
-      ),
-    ]);
+        ),
+      ],
+    );
   }
 }
 
@@ -194,22 +237,28 @@ class _InfoRow extends StatelessWidget {
         vertical: (theme.dButtonHeight - theme.dTextHeight) / 2,
         horizontal: theme.dTextfieldPadding,
       ),
-      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        Expanded(
-          flex: 2,
-          child: NutriaText(
-            text: '$label:',
-            maxLines: 4,
-            state: NutriaTextState.inactive,
-            textStyle: NutriaTextStyle.italic,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            flex: 2,
+            child: NutriaText(
+              text: '$label:',
+              maxLines: 4,
+              state: NutriaTextState.inactive,
+              textStyle: NutriaTextStyle.italic,
+            ),
           ),
-        ),
-        Expanded(
-          flex: 3,
-          child: NutriaText(
-              text: value, maxLines: 4, textStyle: NutriaTextStyle.italic),
-        ),
-      ]),
+          Expanded(
+            flex: 3,
+            child: NutriaText(
+              text: value,
+              maxLines: 4,
+              textStyle: NutriaTextStyle.italic,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

@@ -139,6 +139,7 @@ class VideoLibraryPanel extends ConsumerWidget {
           child: NutriaButton.icon(
             icon: Icons.add,
             isAccented: true,
+            tooltip: t.tooltipImportVideos,
             onTap: () => ref.read(graphEditorProvider).pickAndImportVideos(),
           ),
         ),

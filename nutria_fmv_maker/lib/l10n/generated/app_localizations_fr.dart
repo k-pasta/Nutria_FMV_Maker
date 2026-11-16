@@ -367,5 +367,47 @@ class AppLocalizationsFr extends AppLocalizations {
   String get viewVideoPlayer => 'Section Lecteur Vidéo';
 
   @override
+  String get editPlayPause => 'Lecture / pause de la vidéo';
+
+  @override
+  String get tooltipPickVideo => 'Choisir une vidéo';
+
+  @override
+  String get tooltipNodeSettings => 'Réglages du nœud';
+
+  @override
+  String get tooltipImportVideos => 'Importer des vidéos';
+
+  @override
+  String get tooltipBack5 => 'Reculer de 5 secondes (Ctrl+←)';
+
+  @override
+  String get tooltipPlayPause => 'Lecture / pause (Espace)';
+
+  @override
+  String get tooltipForward5 => 'Avancer de 5 secondes (Ctrl+→)';
+
+  @override
+  String get tooltipChoicesFromHere =>
+      'Afficher les choix à partir de ce moment';
+
+  @override
+  String get tooltipVolume => 'Volume (Ctrl+↑ / Ctrl+↓)';
+
+  @override
+  String get tooltipShowLeftPanel => 'Afficher le panneau latéral (T)';
+
+  @override
+  String get tooltipShowRightPanel => 'Afficher le lecteur vidéo (N)';
+
+  @override
+  String get tooltipResetOverride => 'Utiliser le réglage du projet';
+
+  @override
+  String tooltipNodeColor(int number) {
+    return 'Couleur $number';
+  }
+
+  @override
   String get z => 'z';
 }

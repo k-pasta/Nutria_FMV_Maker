@@ -2,6 +2,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 enum PanelEdge { left, right }
 
@@ -13,11 +14,13 @@ class PanelEdgeButton extends StatefulWidget {
     required this.side,
     required this.enabled,
     required this.onTap,
+    this.tooltip,
   });
 
   final PanelEdge side;
   final bool enabled;
   final VoidCallback onTap;
+  final String? tooltip;
 
   @override
   State<PanelEdgeButton> createState() => _PanelEdgeButtonState();
@@ -53,20 +56,25 @@ class _PanelEdgeButtonState extends State<PanelEdgeButton> {
               onTapCancel: () => setState(() => _pressed = false),
               onTap: widget.onTap,
               child: Center(
-                child: Container(
-                  height: theme.dButtonHeight,
-                  width: theme.dButtonHeight / 2,
-                  decoration: BoxDecoration(
-                    color: _pressed
-                        ? theme.cButtonPressed
-                        : (_hovered ? theme.cButtonHovered : theme.cButton),
-                    borderRadius: left
-                        ? BorderRadius.horizontal(right: round)
-                        : BorderRadius.horizontal(left: round),
-                    boxShadow: theme.cardShadow(),
+                child: NutriaTooltip(
+                  message: widget.tooltip,
+                  child: Container(
+                    height: theme.dButtonHeight,
+                    width: theme.dButtonHeight / 2,
+                    decoration: BoxDecoration(
+                      color: _pressed
+                          ? theme.cButtonPressed
+                          : (_hovered ? theme.cButtonHovered : theme.cButton),
+                      borderRadius: left
+                          ? BorderRadius.horizontal(right: round)
+                          : BorderRadius.horizontal(left: round),
+                      boxShadow: theme.cardShadow(),
+                    ),
+                    child: Icon(
+                      left ? Icons.arrow_right : Icons.arrow_left,
+                      color: theme.cText,
+                    ),
                   ),
-                  child: Icon(left ? Icons.arrow_right : Icons.arrow_left,
-                      color: theme.cText),
                 ),
               ),
             ),

@@ -25,6 +25,21 @@ const kShortcutSelectAll =
 const kShortcutGridSnapping =
     SingleActivator(LogicalKeyboardKey.keyG, control: true);
 
+/// Previewed video: play/pause, seek, volume.
+const kShortcutPlayPause = SingleActivator(LogicalKeyboardKey.space);
+const kShortcutSeekBack =
+    SingleActivator(LogicalKeyboardKey.arrowLeft, control: true);
+const kShortcutSeekForward =
+    SingleActivator(LogicalKeyboardKey.arrowRight, control: true);
+const kShortcutVolumeUp =
+    SingleActivator(LogicalKeyboardKey.arrowUp, control: true);
+const kShortcutVolumeDown =
+    SingleActivator(LogicalKeyboardKey.arrowDown, control: true);
+
+/// How far Ctrl+arrows seek and change the volume.
+const kSeekStep = Duration(seconds: 5);
+const kVolumeStep = 10.0;
+
 /// Single-key shortcuts. `NutriaTextField` blocks these while typing.
 const kShortcutLeftPanel = SingleActivator(LogicalKeyboardKey.keyT);
 const kShortcutRightPanel = SingleActivator(LogicalKeyboardKey.keyN);
@@ -70,6 +85,11 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutRightPanel: () => commands.togglePanel(PanelSide.right),
       kShortcutFrameSelected: commands.frameSelected,
       kShortcutFrameAll: commands.frameAll,
+      kShortcutPlayPause: commands.playPause,
+      kShortcutSeekBack: () => commands.seekBy(-kSeekStep),
+      kShortcutSeekForward: () => commands.seekBy(kSeekStep),
+      kShortcutVolumeUp: () => commands.changeVolume(kVolumeStep),
+      kShortcutVolumeDown: () => commands.changeVolume(-kVolumeStep),
       for (final key in kShortcutZoomIn)
         key: () => commands.zoomCanvas(zoomIn: true),
       for (final key in kShortcutZoomOut)

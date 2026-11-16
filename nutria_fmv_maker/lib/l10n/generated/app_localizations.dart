@@ -790,6 +790,84 @@ abstract class AppLocalizations {
   /// **'Video Player Section'**
   String get viewVideoPlayer;
 
+  /// No description provided for @editPlayPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Play / Pause Video'**
+  String get editPlayPause;
+
+  /// No description provided for @tooltipPickVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Choose a video'**
+  String get tooltipPickVideo;
+
+  /// No description provided for @tooltipNodeSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Node settings'**
+  String get tooltipNodeSettings;
+
+  /// No description provided for @tooltipImportVideos.
+  ///
+  /// In en, this message translates to:
+  /// **'Import videos'**
+  String get tooltipImportVideos;
+
+  /// No description provided for @tooltipBack5.
+  ///
+  /// In en, this message translates to:
+  /// **'Back 5 seconds (Ctrl+←)'**
+  String get tooltipBack5;
+
+  /// No description provided for @tooltipPlayPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Play / pause (Space)'**
+  String get tooltipPlayPause;
+
+  /// No description provided for @tooltipForward5.
+  ///
+  /// In en, this message translates to:
+  /// **'Forward 5 seconds (Ctrl+→)'**
+  String get tooltipForward5;
+
+  /// No description provided for @tooltipChoicesFromHere.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the choices from this moment on'**
+  String get tooltipChoicesFromHere;
+
+  /// No description provided for @tooltipVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume (Ctrl+↑ / Ctrl+↓)'**
+  String get tooltipVolume;
+
+  /// No description provided for @tooltipShowLeftPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the side panel (T)'**
+  String get tooltipShowLeftPanel;
+
+  /// No description provided for @tooltipShowRightPanel.
+  ///
+  /// In en, this message translates to:
+  /// **'Show the video player (N)'**
+  String get tooltipShowRightPanel;
+
+  /// No description provided for @tooltipResetOverride.
+  ///
+  /// In en, this message translates to:
+  /// **'Use the project setting'**
+  String get tooltipResetOverride;
+
+  /// No description provided for @tooltipNodeColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color {number}'**
+  String tooltipNodeColor(int number);
+
   /// No description provided for @z.
   ///
   /// In en, this message translates to:
