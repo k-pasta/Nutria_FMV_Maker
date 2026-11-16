@@ -2,40 +2,39 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
-/// The default theme.
+/// The default theme: near-black canvas, dark panels, lighter cards.
 const kDarkTheme = AppTheme();
 
-/// Experimental light theme.
+/// Light theme: light grey canvas, off-white panels, white cards with soft
+/// shadows.
 const kLightTheme = AppTheme(
-  cPanel: Color.fromARGB(255, 216, 216, 216),
-  cPanelTransparent: Color(0xf1d0d0d0),
-  cButton: Color(0xffe0e0e0),
-  cButtonHovered: Color(0xffe0e0e0),
-  cButtonPressed: Color.fromARGB(255, 243, 243, 243),
-  cMenuBar: Color(0xffbdbdbd),
-  cMenuBarText: Color(0xff000000),
-  cAccentButton: Color.fromARGB(170, 255, 255, 255),
-  cAccentButtonHovered: Color.fromARGB(204, 255, 255, 255),
-  cAccentButtonPressed: Color.fromARGB(255, 255, 255, 255),
-  cButtonContentUnhovered: Color.fromARGB(75, 0, 0, 0),
-  cBackground: Color.fromARGB(255, 173, 173, 173),
-  cBackgroundDots: Color(0xffbdbdbd),
-  cAccent: Color(0xffff4e6a),
-  cText: Color(0xe0000000),
-  cTextActive: Color(0xff000000),
-  cTextInactive: Color.fromARGB(204, 139, 139, 139),
-  cOutlines: Color(0x65000000),
-  cButtonOutlines: Color(0xf1bdbdbd),
-  cTextField: Color(0x00000000),
-  cTextFieldActive: Color(0xffe0e0e0),
-  dOutlinesWidth: 1.5,
+  cBackground: Color(0xffeceef2),
+  cBackgroundDots: Color(0xffcfd3db),
+  cText: Color(0xd91b1b22),
+  cTextActive: Color(0xff111116),
+  cTextInactive: Color(0x701b1b22),
+  cPanel: Color(0xfff7f8fa),
+  cCard: Color(0xffffffff),
+  cCardHovered: Color(0xfffafbfc),
+  cButton: Color(0xffeef0f4),
+  cButtonHovered: Color(0xffe5e8ee),
+  cButtonPressed: Color(0xffdbdfe6),
+  cButtonContentUnhovered: Color(0x991b1b22),
+  cTextField: Color(0xffeef0f4),
+  cTextFieldActive: Color(0xffe5e8ee),
+  cDivider: Color(0x14000000),
+  cOutlines: Color(0x26000000),
+  cShadow: Color(0x24252a3a),
+  cMenuBar: Color(0xfff7f8fa),
+  cMenuBarText: Color(0xff1b1b22),
+  cDimmer: Color(0x40000000),
 );
 
 /// Playground theme for trying out token changes.
 const kCustomTheme = AppTheme(
-  dButtonHeight: 21,
-  cBackgroundDots: Colors.white,
-  cBackground: Colors.white,
+  dButtonHeight: 32,
+  dPanelBorderRadius: 10,
+  dButtonBorderRadius: 8,
 );
 
 /// Builds the Material [ThemeData] that carries [appTheme], so Material

@@ -32,10 +32,16 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
     final editor = ref.read(graphEditorProvider);
     final isEmpty = title.isEmpty && description.isEmpty;
     return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // Rough preview of the player's main menu.
+      // Rough preview of the player's main menu, inset like a screen. The
+      // outer height stays the thumbnail height, which the knots rely on.
       Container(
-        height: NodeMetrics.of(context).thumbnailHeight,
-        color: theme.cBackground,
+        height: NodeMetrics.of(context).thumbnailHeight - theme.dPanelPadding,
+        margin: EdgeInsets.fromLTRB(
+            theme.dPanelPadding, theme.dPanelPadding, theme.dPanelPadding, 0),
+        decoration: BoxDecoration(
+          color: theme.cButton,
+          borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+        ),
         padding: EdgeInsets.all(theme.dPanelPadding),
         child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
           NutriaText(

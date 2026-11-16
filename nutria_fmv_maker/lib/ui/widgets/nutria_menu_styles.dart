@@ -11,21 +11,24 @@ class NutriaMenuStyles {
               RoundedRectangleBorder(side: BorderSide.none)),
         ),
         submenu = MenuStyle(
-          backgroundColor: WidgetStatePropertyAll(theme.cPanel),
-          shape: const WidgetStatePropertyAll<OutlinedBorder>(
-              RoundedRectangleBorder(borderRadius: BorderRadius.zero)),
+          backgroundColor: WidgetStatePropertyAll(theme.cCard),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          shadowColor: WidgetStatePropertyAll(theme.cShadow),
+          elevation: const WidgetStatePropertyAll(8),
+          shape: WidgetStatePropertyAll<OutlinedBorder>(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius))),
           padding: WidgetStatePropertyAll(
               EdgeInsets.symmetric(vertical: theme.dSectionPadding * 1.6)),
         ),
         barButton = ButtonStyle(
-          overlayColor: WidgetStatePropertyAll(theme.cPanel),
+          overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
           foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
           fixedSize:
               WidgetStatePropertyAll(Size.fromHeight(theme.dMenuBarHeight)),
         ),
         item = ButtonStyle(
           iconColor: WidgetStatePropertyAll(theme.cAccent),
-          overlayColor: WidgetStatePropertyAll(theme.cAccentButtonHovered),
+          overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
           foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
           shape: const WidgetStatePropertyAll(
               RoundedRectangleBorder(side: BorderSide.none)),

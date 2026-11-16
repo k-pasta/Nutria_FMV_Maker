@@ -84,14 +84,14 @@ class _NutriaSplitViewState extends State<NutriaSplitView> {
                 border: Border(
                   left: side == SplitSide.right
                       ? BorderSide(
-                          color: theme.cOutlines,
-                          width: theme.dSectionOutlineWidth,
+                          color: theme.cDivider,
+                          width: theme.dDividerWidth,
                         )
                       : BorderSide.none,
                   right: side == SplitSide.left
                       ? BorderSide(
-                          color: theme.cOutlines,
-                          width: theme.dSectionOutlineWidth,
+                          color: theme.cDivider,
+                          width: theme.dDividerWidth,
                         )
                       : BorderSide.none,
                 ),

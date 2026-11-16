@@ -130,12 +130,6 @@ class _NutriaButtonState extends State<NutriaButton> {
               minWidth: theme.dButtonHeight, minHeight: theme.dButtonHeight),
           decoration: BoxDecoration(
             color: _background(theme),
-            border: Border.all(
-              color: widget.isAccented && active
-                  ? theme.cAccentButtonHovered
-                  : theme.cOutlines,
-              width: theme.dOutlinesWidth,
-            ),
             borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
           ),
           child: IgnorePointer(
@@ -166,10 +160,12 @@ class _NutriaButtonState extends State<NutriaButton> {
                   widget.icon,
                   size: theme.dButtonHeight * widget.iconScale,
                   color: !active
-                      ? theme.cButton
-                      : _hovered
-                          ? theme.cText
-                          : theme.cButtonContentUnhovered,
+                      ? theme.cTextInactive
+                      : widget.isAccented
+                          ? theme.cOnAccent
+                          : _hovered
+                              ? theme.cText
+                              : theme.cButtonContentUnhovered,
                 ),
             ]),
           ),

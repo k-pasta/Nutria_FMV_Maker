@@ -103,10 +103,9 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
           child: IntrinsicWidth(
             child: Container(
               decoration: BoxDecoration(
-                color: theme.cPanel,
-                border:
-                    Border.all(color: theme.cOutlines, width: theme.dOutlinesWidth),
+                color: theme.cCard,
                 borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                boxShadow: theme.cardShadow(lifted: true),
               ),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),

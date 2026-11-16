@@ -14,46 +14,52 @@ const kDefaultSwatches = <Color>[
 /// Every color (`c…`) and dimension (`d…`) the UI uses. Widgets read it with
 /// `context.appTheme`; never hard-code colors or sizes in widgets.
 ///
+/// The look is flat: filled buttons and fields without outlines, and raised
+/// surfaces ([cCard]) separated by soft shadows ([cShadow]) rather than lines.
+///
 /// Registered on the app's [ThemeData] (see `app/app.dart`); presets are in
 /// `app_theme_presets.dart`. The defaults are the dark theme.
 @immutable
 class AppTheme extends ThemeExtension<AppTheme> {
   const AppTheme({
-    this.cBackground = const Color(0xff121212),
-    this.cBackgroundDots = const Color(0xff282828),
+    this.cBackground = const Color(0xff0f0f12),
+    this.cBackgroundDots = const Color(0xff2a2a31),
     this.cAccent = const Color(0xffff4e6a),
-    this.cAccentButton = const Color(0xaaff4e6a),
-    this.cAccentButtonHovered = const Color(0xccff4e6a),
-    this.cAccentButtonPressed = const Color(0xffff4e6a),
-    this.cText = const Color(0x91ffffff),
+    this.cAccentButton = const Color(0xffe8455f),
+    this.cAccentButtonHovered = const Color(0xffff4e6a),
+    this.cAccentButtonPressed = const Color(0xffff6b82),
+    this.cOnAccent = const Color(0xffffffff),
+    this.cText = const Color(0xbfffffff),
     this.cTextActive = const Color(0xffffffff),
-    this.cTextInactive = const Color.fromARGB(65, 255, 255, 255),
-    this.cPanel = const Color(0xff252525),
-    this.cPanelTransparent = const Color(0xf1252525),
-    this.cOutlines = const Color(0x45ffffff),
-    this.cButton = const Color(0xff383838),
-    this.cButtonHovered = const Color(0xff4a4a4a),
-    this.cButtonPressed = const Color(0xff555555),
-    this.cButtonContentUnhovered = const Color(0xff252525),
-    this.cButtonOutlines = const Color(0xf1252525),
-    this.cTextField = const Color(0x00000000),
-    this.cTextFieldActive = const Color(0x4a000000),
-    this.cMenuBar = const Color(0xff000000),
+    this.cTextInactive = const Color(0x59ffffff),
+    this.cPanel = const Color(0xff17171b),
+    this.cCard = const Color(0xff202026),
+    this.cCardHovered = const Color(0xff26262d),
+    this.cButton = const Color(0xff2b2b32),
+    this.cButtonHovered = const Color(0xff34343c),
+    this.cButtonPressed = const Color(0xff3e3e47),
+    this.cButtonContentUnhovered = const Color(0x99ffffff),
+    this.cTextField = const Color(0xff2b2b32),
+    this.cTextFieldActive = const Color(0xff34343c),
+    this.cDivider = const Color(0x12ffffff),
+    this.cOutlines = const Color(0x29ffffff),
+    this.cShadow = const Color(0x99000000),
+    this.cMenuBar = const Color(0xff17171b),
     this.cMenuBarText = const Color(0xffffffff),
     this.cDimmer = const Color(0x73000000),
     this.cSwatches = kDefaultSwatches,
     this.dTextHeight = 14,
-    this.dTextfieldPadding = 7,
+    this.dTextfieldPadding = 8,
     this.dPanelPadding = 7,
     this.dPanelRowDistance = 7,
-    this.dPanelBorderRadius = 7,
+    this.dPanelBorderRadius = 8,
     this.dOutlinesWidth = 1,
-    this.dSwatchHeight = 10,
+    this.dSwatchHeight = 6,
     this.dSectionPadding = 10,
-    this.dSectionOutlineWidth = 2,
+    this.dDividerWidth = 1,
+    this.dShadowBlur = 14,
     this.dButtonHeight = 45,
-    this.dButtonBorderRadius = 5,
-    this.dButtonOutlinesWidth = 1,
+    this.dButtonBorderRadius = 6,
     this.dScrollbarWidth = 11,
     this.dMenuBarHeight = 45,
     this.dLogoPadding = 10,
@@ -66,30 +72,40 @@ class AppTheme extends ThemeExtension<AppTheme> {
   final Color cBackgroundDots;
   /// Brand accent: knots, noodles, highlights.
   final Color cAccent;
+  /// Filled accent buttons (import, remove).
   final Color cAccentButton;
   final Color cAccentButtonHovered;
   final Color cAccentButtonPressed;
+  /// Icons and text on accent-filled buttons.
+  final Color cOnAccent;
   /// Default text.
   final Color cText;
   /// Emphasized or focused text.
   final Color cTextActive;
   /// Disabled text and placeholders.
   final Color cTextInactive;
-  /// Side panels, nodes, menus.
+  /// Side panels, status bar, menus and dialogs.
   final Color cPanel;
-  final Color cPanelTransparent;
-  final Color cOutlines;
+  /// Raised surfaces: nodes, the section dropdown, library entries.
+  final Color cCard;
+  final Color cCardHovered;
+  /// Filled buttons (no outline).
   final Color cButton;
   final Color cButtonHovered;
   final Color cButtonPressed;
   /// Icons on buttons that are not hovered.
   final Color cButtonContentUnhovered;
-  final Color cButtonOutlines;
+  /// Filled text fields (no outline).
   final Color cTextField;
   final Color cTextFieldActive;
+  /// Hairlines between panels and the canvas.
+  final Color cDivider;
+  /// The few remaining lines: stripes, swatch borders.
+  final Color cOutlines;
+  /// Shadows under cards, menus and dialogs.
+  final Color cShadow;
   final Color cMenuBar;
   final Color cMenuBarText;
-
   /// Darkens the editor behind open menus and dialogs.
   final Color cDimmer;
   /// Node color swatches, indexed by `Node.swatch`.
@@ -104,11 +120,12 @@ class AppTheme extends ThemeExtension<AppTheme> {
   /// Height of the colored strip on top of nodes.
   final double dSwatchHeight;
   final double dSectionPadding;
-  final double dSectionOutlineWidth;
+  final double dDividerWidth;
+  /// Blur of card shadows; selected nodes use more.
+  final double dShadowBlur;
   /// Height of buttons, text fields and node rows.
   final double dButtonHeight;
   final double dButtonBorderRadius;
-  final double dButtonOutlinesWidth;
   final double dScrollbarWidth;
   final double dMenuBarHeight;
   final double dLogoPadding;
@@ -130,6 +147,15 @@ class AppTheme extends ThemeExtension<AppTheme> {
         height: 1.0,
       );
 
+  /// The soft shadow under a raised surface; [lifted] for selected nodes.
+  List<BoxShadow> cardShadow({bool lifted = false}) => [
+        BoxShadow(
+          color: cShadow,
+          blurRadius: lifted ? dShadowBlur * 2 : dShadowBlur,
+          offset: Offset(0, lifted ? 6 : 2),
+        ),
+      ];
+
   @override
   AppTheme copyWith({
     Color? cBackground,
@@ -138,19 +164,22 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cAccentButton,
     Color? cAccentButtonHovered,
     Color? cAccentButtonPressed,
+    Color? cOnAccent,
     Color? cText,
     Color? cTextActive,
     Color? cTextInactive,
     Color? cPanel,
-    Color? cPanelTransparent,
-    Color? cOutlines,
+    Color? cCard,
+    Color? cCardHovered,
     Color? cButton,
     Color? cButtonHovered,
     Color? cButtonPressed,
     Color? cButtonContentUnhovered,
-    Color? cButtonOutlines,
     Color? cTextField,
     Color? cTextFieldActive,
+    Color? cDivider,
+    Color? cOutlines,
+    Color? cShadow,
     Color? cMenuBar,
     Color? cMenuBarText,
     Color? cDimmer,
@@ -163,10 +192,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
     double? dOutlinesWidth,
     double? dSwatchHeight,
     double? dSectionPadding,
-    double? dSectionOutlineWidth,
+    double? dDividerWidth,
+    double? dShadowBlur,
     double? dButtonHeight,
     double? dButtonBorderRadius,
-    double? dButtonOutlinesWidth,
     double? dScrollbarWidth,
     double? dMenuBarHeight,
     double? dLogoPadding,
@@ -179,19 +208,22 @@ class AppTheme extends ThemeExtension<AppTheme> {
         cAccentButton: cAccentButton ?? this.cAccentButton,
         cAccentButtonHovered: cAccentButtonHovered ?? this.cAccentButtonHovered,
         cAccentButtonPressed: cAccentButtonPressed ?? this.cAccentButtonPressed,
+        cOnAccent: cOnAccent ?? this.cOnAccent,
         cText: cText ?? this.cText,
         cTextActive: cTextActive ?? this.cTextActive,
         cTextInactive: cTextInactive ?? this.cTextInactive,
         cPanel: cPanel ?? this.cPanel,
-        cPanelTransparent: cPanelTransparent ?? this.cPanelTransparent,
-        cOutlines: cOutlines ?? this.cOutlines,
+        cCard: cCard ?? this.cCard,
+        cCardHovered: cCardHovered ?? this.cCardHovered,
         cButton: cButton ?? this.cButton,
         cButtonHovered: cButtonHovered ?? this.cButtonHovered,
         cButtonPressed: cButtonPressed ?? this.cButtonPressed,
         cButtonContentUnhovered: cButtonContentUnhovered ?? this.cButtonContentUnhovered,
-        cButtonOutlines: cButtonOutlines ?? this.cButtonOutlines,
         cTextField: cTextField ?? this.cTextField,
         cTextFieldActive: cTextFieldActive ?? this.cTextFieldActive,
+        cDivider: cDivider ?? this.cDivider,
+        cOutlines: cOutlines ?? this.cOutlines,
+        cShadow: cShadow ?? this.cShadow,
         cMenuBar: cMenuBar ?? this.cMenuBar,
         cMenuBarText: cMenuBarText ?? this.cMenuBarText,
         cDimmer: cDimmer ?? this.cDimmer,
@@ -204,10 +236,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
         dOutlinesWidth: dOutlinesWidth ?? this.dOutlinesWidth,
         dSwatchHeight: dSwatchHeight ?? this.dSwatchHeight,
         dSectionPadding: dSectionPadding ?? this.dSectionPadding,
-        dSectionOutlineWidth: dSectionOutlineWidth ?? this.dSectionOutlineWidth,
+        dDividerWidth: dDividerWidth ?? this.dDividerWidth,
+        dShadowBlur: dShadowBlur ?? this.dShadowBlur,
         dButtonHeight: dButtonHeight ?? this.dButtonHeight,
         dButtonBorderRadius: dButtonBorderRadius ?? this.dButtonBorderRadius,
-        dButtonOutlinesWidth: dButtonOutlinesWidth ?? this.dButtonOutlinesWidth,
         dScrollbarWidth: dScrollbarWidth ?? this.dScrollbarWidth,
         dMenuBarHeight: dMenuBarHeight ?? this.dMenuBarHeight,
         dLogoPadding: dLogoPadding ?? this.dLogoPadding,

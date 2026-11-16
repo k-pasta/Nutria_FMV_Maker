@@ -32,20 +32,26 @@ class NutriaTextField extends StatefulWidget {
 }
 
 class _NutriaTextFieldState extends State<NutriaTextField> {
-  late final TextEditingController _controller =
-      TextEditingController(text: widget.text);
+  late final TextEditingController _controller = TextEditingController(
+    text: widget.text,
+  );
   final FocusNode _focus = FocusNode();
 
   /// Single-key app shortcuts (toggle panels, zoom) must not fire while
   /// typing, so the field swallows them before they reach the app.
   static const _blockedShortcuts = <ShortcutActivator, Intent>{
-    SingleActivator(LogicalKeyboardKey.keyT): DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.keyN): DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.add): DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.keyT):
+        DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.keyN):
+        DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.add):
+        DoNothingAndStopPropagationIntent(),
     SingleActivator(LogicalKeyboardKey.numpadAdd):
         DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.equal): DoNothingAndStopPropagationIntent(),
-    SingleActivator(LogicalKeyboardKey.minus): DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.equal):
+        DoNothingAndStopPropagationIntent(),
+    SingleActivator(LogicalKeyboardKey.minus):
+        DoNothingAndStopPropagationIntent(),
     SingleActivator(LogicalKeyboardKey.numpadSubtract):
         DoNothingAndStopPropagationIntent(),
   };
@@ -115,15 +121,20 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
           counterText: '',
           hintText: widget.hint,
           hintStyle: TextStyle(color: theme.cTextInactive),
-          border: InputBorder.none,
+          // Flat: the fill shows the field, a darker fill shows focus.
+          border: OutlineInputBorder(borderRadius: radius, borderSide: hidden),
           enabledBorder: OutlineInputBorder(
-            borderSide:
-                BorderSide(color: theme.cOutlines, width: theme.dOutlinesWidth),
             borderRadius: radius,
+            borderSide: hidden,
           ),
-          focusedBorder: OutlineInputBorder(borderRadius: radius, borderSide: hidden),
-          disabledBorder:
-              OutlineInputBorder(borderRadius: radius, borderSide: hidden),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: radius,
+            borderSide: hidden,
+          ),
+          disabledBorder: OutlineInputBorder(
+            borderRadius: radius,
+            borderSide: hidden,
+          ),
           filled: true,
           fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
         ),

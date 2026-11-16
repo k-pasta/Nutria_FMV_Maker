@@ -31,10 +31,14 @@ class NutriaDropdown extends StatefulWidget {
 
 class _NutriaDropdownState extends State<NutriaDropdown>
     with SingleTickerProviderStateMixin {
-  late final AnimationController _controller =
-      AnimationController(vsync: this, duration: kShortAnimation);
-  late final Animation<double> _expansion =
-      CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: kShortAnimation,
+  );
+  late final Animation<double> _expansion = CurvedAnimation(
+    parent: _controller,
+    curve: Curves.easeInOut,
+  );
   bool _expanded = false;
 
   void _setExpanded(bool expanded) {
@@ -50,35 +54,44 @@ class _NutriaDropdownState extends State<NutriaDropdown>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        _HoverItem(
-          option: widget.options[widget.selectedIndex],
-          header: true,
-          expanded: _expanded,
-          onTap: () => _setExpanded(!_expanded),
-        ),
-        SizeTransition(
-          sizeFactor: _expansion,
-          alignment: Alignment.topCenter,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              for (var i = 0; i < widget.options.length; i++)
-                if (i != widget.selectedIndex)
-                  _HoverItem(
-                    option: widget.options[i],
-                    onTap: () {
-                      _setExpanded(false);
-                      widget.onSelected(i);
-                    },
-                  ),
-            ],
+    final theme = context.appTheme;
+    return Container(
+      clipBehavior: Clip.antiAlias,
+      decoration: BoxDecoration(
+        color: theme.cCard,
+        borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+        boxShadow: theme.cardShadow(),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _HoverItem(
+            option: widget.options[widget.selectedIndex],
+            header: true,
+            expanded: _expanded,
+            onTap: () => _setExpanded(!_expanded),
           ),
-        ),
-      ],
+          SizeTransition(
+            sizeFactor: _expansion,
+            alignment: Alignment.topCenter,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                for (var i = 0; i < widget.options.length; i++)
+                  if (i != widget.selectedIndex)
+                    _HoverItem(
+                      option: widget.options[i],
+                      onTap: () {
+                        _setExpanded(false);
+                        widget.onSelected(i);
+                      },
+                    ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -109,8 +122,9 @@ class _HoverItemState extends State<_HoverItem> {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final highlighted = _hovered || widget.expanded;
-    final foreground =
-        widget.header || highlighted ? theme.cTextActive : theme.cText;
+    final foreground = widget.header || highlighted
+        ? theme.cTextActive
+        : theme.cText;
     return MouseRegion(
       cursor: SystemMouseCursors.click,
       onEnter: (_) => setState(() => _hovered = true),
@@ -118,21 +132,29 @@ class _HoverItemState extends State<_HoverItem> {
       child: GestureDetector(
         onTap: widget.onTap,
         child: Container(
-          color: highlighted ? theme.cButtonHovered : theme.cButton,
+          color: highlighted ? theme.cCardHovered : theme.cCard,
           padding: EdgeInsets.symmetric(
-              horizontal: theme.dSectionPadding, vertical: theme.dPanelPadding),
-          child: Row(children: [
-            Icon(widget.option.icon, color: foreground),
-            SizedBox(width: theme.dPanelPadding),
-            Expanded(
-              child: Text(widget.option.text,
+            horizontal: theme.dSectionPadding,
+            vertical: theme.dPanelPadding,
+          ),
+          child: Row(
+            children: [
+              Icon(widget.option.icon, color: foreground),
+              SizedBox(width: theme.dPanelPadding),
+              Expanded(
+                child: Text(
+                  widget.option.text,
                   overflow: TextOverflow.ellipsis,
-                  style: TextStyle(color: foreground)),
-            ),
-            if (widget.header)
-              Icon(widget.expanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
-                  color: theme.cTextActive),
-          ]),
+                  style: TextStyle(color: foreground),
+                ),
+              ),
+              if (widget.header)
+                Icon(
+                  widget.expanded ? Icons.arrow_drop_up : Icons.arrow_drop_down,
+                  color: theme.cTextActive,
+                ),
+            ],
+          ),
         ),
       ),
     );

@@ -32,7 +32,6 @@ class _PanelEdgeButtonState extends State<PanelEdgeButton> {
     final theme = context.appTheme;
     final left = widget.side == PanelEdge.left;
     final round = Radius.circular(theme.dButtonBorderRadius);
-    final outline = BorderSide(color: theme.cOutlines, width: theme.dOutlinesWidth);
     return Positioned(
       left: left ? 0 : null,
       right: left ? null : 0,
@@ -64,12 +63,7 @@ class _PanelEdgeButtonState extends State<PanelEdgeButton> {
                     borderRadius: left
                         ? BorderRadius.horizontal(right: round)
                         : BorderRadius.horizontal(left: round),
-                    border: Border(
-                      top: outline,
-                      bottom: outline,
-                      right: left ? outline : BorderSide.none,
-                      left: left ? BorderSide.none : outline,
-                    ),
+                    boxShadow: theme.cardShadow(),
                   ),
                   child: Icon(left ? Icons.arrow_right : Icons.arrow_left,
                       color: theme.cText),

@@ -23,8 +23,7 @@ class NutriaModal extends StatelessWidget {
               decoration: BoxDecoration(
                 color: theme.cPanel,
                 borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                border: Border.all(
-                    color: theme.cOutlines, width: theme.dSectionOutlineWidth),
+                boxShadow: theme.cardShadow(lifted: true),
               ),
               padding: EdgeInsets.all(theme.dSectionPadding * 3),
               child: child,

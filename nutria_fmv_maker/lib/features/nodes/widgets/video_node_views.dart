@@ -24,28 +24,36 @@ class SimpleVideoNodeBody extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      NodeThumbnail(node: node),
-      NodeFileName(node: node),
-      Padding(
-        padding: EdgeInsets.all(theme.dPanelPadding),
-        child: NodeRow(children: [
-          Expanded(
-            child: NutriaButton(
-              onTap: () => ref.read(graphEditorProvider).convertNode(node.id),
-              child: Padding(
-                padding:
-                    EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
-                child: NutriaText(
-                    text: AppLocalizations.of(context).nodeConvertToBranching),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        NodeThumbnail(node: node),
+        NodeFileName(node: node),
+        Padding(
+          padding: EdgeInsets.all(theme.dPanelPadding),
+          child: NodeRow(
+            children: [
+              Expanded(
+                child: NutriaButton(
+                  onTap: () =>
+                      ref.read(graphEditorProvider).convertNode(node.id),
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(
+                      horizontal: theme.dTextfieldPadding,
+                    ),
+                    child: NutriaText(
+                      text: AppLocalizations.of(context).nodeConvertToBranching,
+                    ),
+                  ),
+                ),
               ),
-            ),
+              SizedBox(width: theme.dPanelPadding),
+              NodeExpandButton(node: node),
+            ],
           ),
-          SizedBox(width: theme.dPanelPadding),
-          NodeExpandButton(node: node),
-        ]),
-      ),
-    ]);
+        ),
+      ],
+    );
   }
 }
 
@@ -60,41 +68,54 @@ class BranchedVideoNodeBody extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final rows = NodeLayout.choiceRowCount(node);
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      NodeThumbnail(node: node),
-      NodeFileName(node: node),
-      Padding(
-        padding: EdgeInsets.all(theme.dPanelPadding),
-        child: FocusTraversalGroup(
-          child: Column(children: [
-            for (var i = 0; i < rows; i++) ...[
-              if (i > 0) SizedBox(height: theme.dPanelPadding),
-              NodeRow(children: [
-                Expanded(
-                  child: _ChoiceField(
-                    key: ValueKey(i),
-                    nodeId: node.id,
-                    index: i,
-                    text: i < node.choices.length ? node.choices[i].text : '',
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        NodeThumbnail(node: node),
+        NodeFileName(node: node),
+        Padding(
+          padding: EdgeInsets.all(theme.dPanelPadding),
+          child: FocusTraversalGroup(
+            child: Column(
+              children: [
+                for (var i = 0; i < rows; i++) ...[
+                  if (i > 0) SizedBox(height: theme.dPanelPadding),
+                  NodeRow(
+                    children: [
+                      Expanded(
+                        child: _ChoiceField(
+                          key: ValueKey(i),
+                          nodeId: node.id,
+                          index: i,
+                          text: i < node.choices.length
+                              ? node.choices[i].text
+                              : '',
+                        ),
+                      ),
+                      if (i == rows - 1) ...[
+                        SizedBox(width: theme.dPanelPadding),
+                        NodeExpandButton(node: node),
+                      ],
+                    ],
                   ),
-                ),
-                if (i == rows - 1) ...[
-                  SizedBox(width: theme.dPanelPadding),
-                  NodeExpandButton(node: node),
                 ],
-              ]),
-            ],
-          ]),
+              ],
+            ),
+          ),
         ),
-      ),
-    ]);
+      ],
+    );
   }
 }
 
 /// One choice's text. All keystrokes while focused are one undo step.
 class _ChoiceField extends ConsumerStatefulWidget {
-  const _ChoiceField(
-      {super.key, required this.nodeId, required this.index, required this.text});
+  const _ChoiceField({
+    super.key,
+    required this.nodeId,
+    required this.index,
+    required this.text,
+  });
 
   final String nodeId;
   final int index;
@@ -109,16 +130,22 @@ class _ChoiceFieldState extends ConsumerState<_ChoiceField> {
 
   @override
   Widget build(BuildContext context) => NutriaTextField(
-        text: widget.text,
-        hint: '${AppLocalizations.of(context).videoNodeChoice} '
-            '${widget.index + 1}',
-        onFocusChanged: (focused) {
-          if (focused) _editSession = Object();
-        },
-        onChanged: (text) => ref.read(graphEditorProvider).setChoiceText(
-            widget.nodeId, widget.index, text,
-            mergeKey: _editSession),
-      );
+    text: widget.text,
+    hint:
+        '${AppLocalizations.of(context).videoNodeChoice} '
+        '${widget.index + 1}',
+    onFocusChanged: (focused) {
+      if (focused) _editSession = Object();
+    },
+    onChanged: (text) => ref
+        .read(graphEditorProvider)
+        .setChoiceText(
+          widget.nodeId,
+          widget.index,
+          text,
+          mergeKey: _editSession,
+        ),
+  );
 }
 
 /// The settings under an expanded video node: per-node overrides of the
@@ -135,8 +162,9 @@ class VideoNodeExpansion extends ConsumerWidget {
     final editor = ref.read(graphEditorProvider);
     final settings = ref.watch(effectiveSettingsProvider(node.id));
     final overridden = node.overridesOrNull?.activeTypes ?? const [];
-    final types =
-        node is BranchedVideoNode ? kBranchedNodeSettings : kSimpleNodeSettings;
+    final types = node is BranchedVideoNode
+        ? kBranchedNodeSettings
+        : kSimpleNodeSettings;
     final children = <Widget>[
       if (node is BranchedVideoNode)
         NutriaButton(
@@ -152,7 +180,9 @@ class VideoNodeExpansion extends ConsumerWidget {
           settings: settings,
           isOverridden: overridden.contains(type),
           onStep: (direction) => editor.editOverrides(
-              node.id, (o) => o.enable(type, settings.step(type, direction))),
+            node.id,
+            (o) => o.enable(type, settings.step(type, direction)),
+          ),
           onReset: () => editor.disableOverride(node.id, type),
         ),
       SwatchPicker(
@@ -174,8 +204,11 @@ class VideoNodeExpansion extends ConsumerWidget {
 
 /// One square per theme swatch; the node's current color is outlined.
 class SwatchPicker extends StatelessWidget {
-  const SwatchPicker(
-      {super.key, required this.selected, required this.onSelected});
+  const SwatchPicker({
+    super.key,
+    required this.selected,
+    required this.onSelected,
+  });
 
   final int selected;
   final ValueChanged<int> onSelected;
@@ -186,32 +219,36 @@ class SwatchPicker extends StatelessWidget {
     final swatches = theme.cSwatches;
     return SizedBox(
       height: theme.dButtonHeight * 2 / 3,
-      child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-        for (var i = 0; i < swatches.length; i++) ...[
-          if (i > 0) SizedBox(width: theme.dPanelPadding),
-          Expanded(
-            child: MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () => onSelected(i),
-                child: DecoratedBox(
-                  decoration: BoxDecoration(
-                    color: swatches[i],
-                    borderRadius:
-                        BorderRadius.circular(theme.dButtonBorderRadius),
-                    border: Border.all(
-                      color: i == selected ? theme.cTextActive : theme.cOutlines,
-                      width: i == selected
-                          ? theme.dOutlinesWidth * 2
-                          : theme.dOutlinesWidth,
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (var i = 0; i < swatches.length; i++) ...[
+            if (i > 0) SizedBox(width: theme.dPanelPadding),
+            Expanded(
+              child: MouseRegion(
+                cursor: SystemMouseCursors.click,
+                child: GestureDetector(
+                  onTap: () => onSelected(i),
+                  child: DecoratedBox(
+                    decoration: BoxDecoration(
+                      color: swatches[i],
+                      borderRadius: BorderRadius.circular(
+                        theme.dButtonBorderRadius,
+                      ),
+                      border: i == selected
+                          ? Border.all(
+                              color: theme.cTextActive,
+                              width: theme.dOutlinesWidth * 2,
+                            )
+                          : null,
                     ),
                   ),
                 ),
               ),
             ),
-          ),
+          ],
         ],
-      ]),
+      ),
     );
   }
 }

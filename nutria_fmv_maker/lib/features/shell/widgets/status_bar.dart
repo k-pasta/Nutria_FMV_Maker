@@ -20,7 +20,7 @@ class StatusBar extends StatelessWidget {
         color: theme.cPanel,
         border: Border(
             top: BorderSide(
-                width: theme.dSectionOutlineWidth, color: theme.cOutlines)),
+                width: theme.dDividerWidth, color: theme.cDivider)),
       ),
       // The notification is drawn over the file name if they meet.
       child: const Stack(children: [
@@ -88,7 +88,7 @@ class _FadingBadgeState extends State<_FadingBadge> {
       opacity: _opacity,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
-        height: theme.dStatusBarHeight - theme.dSectionOutlineWidth,
+        height: theme.dStatusBarHeight - theme.dDividerWidth,
         alignment: Alignment.center,
         decoration: BoxDecoration(
           color: theme.cAccentButton.withValues(alpha: 1),

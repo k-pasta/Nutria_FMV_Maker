@@ -15,7 +15,25 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
+import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+
+/// The node card's color. A selected node is tinted with its own color
+/// (the accent for near-black swatches, where a tint wouldn't show) and gets
+/// a deeper shadow, instead of an outline.
+Color _cardColor(
+  AppTheme theme,
+  Node node, {
+  required bool selected,
+  required bool hovered,
+}) {
+  if (selected) {
+    final swatch = theme.cSwatches[node.swatch % theme.cSwatches.length];
+    final tint = swatch.computeLuminance() < 0.02 ? theme.cAccent : swatch;
+    return Color.alphaBlend(tint.withValues(alpha: 0.14), theme.cCard);
+  }
+  return hovered ? theme.cCardHovered : theme.cCard;
+}
 
 /// Ctrl or Shift: add to / remove from the selection.
 bool get _additive =>
@@ -45,8 +63,11 @@ class NodeFrame extends ConsumerWidget {
     final fileName = videoId == null
         ? null
         : ref.watch(videoAssetProvider(videoId).select((v) => v?.fileName));
-    final layout =
-        NodeLayout(node, NodeMetrics.of(context), fileName: fileName);
+    final layout = NodeLayout(
+      node,
+      NodeMetrics.of(context),
+      fileName: fileName,
+    );
     final expansion = this.expansion;
     return SizedBox(
       width: node.width + kNodePadding * 2,
@@ -67,7 +88,11 @@ class NodeFrame extends ConsumerWidget {
                   _NodeBody(node: node, selected: selected, child: body),
                   if (expansion != null && node.isExpanded) ...[
                     SizedBox(height: theme.dPanelPadding),
-                    _Expansion(selected: selected, child: expansion),
+                    _Expansion(
+                      node: node,
+                      selected: selected,
+                      child: expansion,
+                    ),
                   ],
                 ],
               ),
@@ -155,11 +180,6 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
   Widget _body(BuildContext context, bool dropping) {
     final theme = context.appTheme;
     final node = widget.node;
-    final radius = Radius.circular(theme.dPanelBorderRadius);
-    final outline = BorderSide(
-      color: theme.cOutlines,
-      width: theme.dOutlinesWidth,
-    );
     return NutriaContextMenuArea(
       itemsAt: (_) => _menu(AppLocalizations.of(context)),
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
@@ -185,35 +205,27 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
           onPanCancel: _gestures.end,
           child: Stack(
             children: [
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  _SwatchStrip(node: node),
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
-                        bottomLeft: radius,
-                        bottomRight: radius,
-                      ),
-                      boxShadow: [
-                        if (widget.selected)
-                          BoxShadow(
-                            color: theme.cAccentButton,
-                            spreadRadius: 3,
-                          ),
-                      ],
-                      border: Border(
-                        left: outline,
-                        right: outline,
-                        bottom: outline,
-                      ),
-                      color: _hovered || widget.selected || dropping
-                          ? theme.cButton
-                          : theme.cPanelTransparent,
-                    ),
-                    child: widget.child,
+              // One rounded card: color strip on top, content below.
+              AnimatedContainer(
+                duration: kShortAnimation,
+                clipBehavior: Clip.antiAlias,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  color: _cardColor(
+                    theme,
+                    node,
+                    selected: widget.selected,
+                    hovered: _hovered || dropping,
                   ),
-                ],
+                  boxShadow: theme.cardShadow(lifted: widget.selected),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    _SwatchStrip(node: node),
+                    widget.child,
+                  ],
+                ),
               ),
               _ResizeHandle(nodeId: node.id, fromLeft: true),
               _ResizeHandle(nodeId: node.id, fromLeft: false),
@@ -234,16 +246,12 @@ class _SwatchStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final radius = Radius.circular(theme.dPanelBorderRadius);
     final name = node.name;
     return Container(
       height: NodeMetrics.of(context).stripHeight(node),
       padding: EdgeInsets.symmetric(horizontal: theme.dPanelPadding * 2),
       alignment: Alignment.centerLeft,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
-        color: theme.cSwatches[node.swatch % theme.cSwatches.length],
-      ),
+      color: theme.cSwatches[node.swatch % theme.cSwatches.length],
       child: name == null
           ? null
           : Text(
@@ -290,19 +298,25 @@ class _ResizeHandle extends ConsumerWidget {
 
 /// The settings panel under an expanded node.
 class _Expansion extends StatelessWidget {
-  const _Expansion({required this.selected, required this.child});
+  const _Expansion({
+    required this.node,
+    required this.selected,
+    required this.child,
+  });
 
+  final Node node;
   final bool selected;
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    return Container(
+    return AnimatedContainer(
+      duration: kShortAnimation,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-        border: Border.all(color: theme.cOutlines, width: theme.dOutlinesWidth),
-        color: selected ? theme.cButton : theme.cPanelTransparent,
+        color: _cardColor(theme, node, selected: selected, hovered: false),
+        boxShadow: theme.cardShadow(lifted: selected),
       ),
       padding: EdgeInsets.all(theme.dPanelPadding),
       child: child,
