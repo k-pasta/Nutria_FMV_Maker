@@ -8,6 +8,7 @@ part 'overlay_provider.g.dart';
 /// Modal dialogs the app can show.
 enum AppModal { about }
 
+/// What is open over the editor: the menu bar, a context menu, a dialog.
 @freezed
 abstract class ShellOverlays with _$ShellOverlays {
   const ShellOverlays._();
@@ -22,6 +23,8 @@ abstract class ShellOverlays with _$ShellOverlays {
   bool get blocksCanvas => menuOpen || modal != null;
 }
 
+/// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
+/// open.
 @Riverpod(keepAlive: true)
 class OverlayNotifier extends _$OverlayNotifier {
   @override

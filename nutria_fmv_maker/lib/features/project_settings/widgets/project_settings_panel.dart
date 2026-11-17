@@ -11,6 +11,7 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 
+/// The Project Settings section: playback defaults for every video node.
 class ProjectSettingsPanel extends ConsumerWidget {
   const ProjectSettingsPanel({super.key});
 

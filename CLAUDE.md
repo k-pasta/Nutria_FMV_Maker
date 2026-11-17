@@ -4,76 +4,124 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project
 
-Nutria FMV Maker is a GPLv3 Flutter **desktop** app (Windows is the primary target) for authoring interactive movies (branching video narratives) through a node-graph editor. It is one part of the "Nutria FMV" system:
-- **Maker** (this repo): the node editor. It saves projects as `.nfmv` and exports playable `.fmv` files.
+Nutria FMV Maker is a GPLv3 Flutter **desktop** app (Windows is the main target) for authoring interactive movies (branching video stories) in a node-graph editor. It is one part of "Nutria FMV":
+- **Maker** (this repo): the editor. It saves projects as `.nfmv` and exports playable `.fmv` files.
 - **Player** (separate repo, `k-pasta/Nutria_FMV_Player`): plays `.fmv` files.
-- **Protocol**: the `.fmv` JSON format shared by the two apps.
+- **Protocol**: the `.fmv` JSON format shared by both apps.
 
-The Flutter project is in the `nutria_fmv_maker/` subdirectory, not at the repo root. Run every `flutter`/`dart` command from there.
+The Flutter project lives in `nutria_fmv_maker/`, not at the repo root. Run every `flutter`/`dart` command from there; from the root they fail with misleading errors (for example "generate flag not turned on").
 
 ## Commands
 
 ```sh
 cd nutria_fmv_maker
-flutter pub get
-flutter run -d windows                 # main dev target
-flutter build windows
-flutter analyze                        # lints: flutter_lints (analysis_options.yaml)
-dart run build_runner build --delete-conflicting-outputs   # regenerate *.g.dart (json_serializable)
-flutter gen-l10n                       # regenerate localizations (also runs automatically on build, since `generate: true`)
-flutter test                           # run all tests
-flutter test test/widget_test.dart --plain-name "<test name>"   # run a single test
-```
+flutter pub get                    # also regenerates lib/l10n/generated (pubspec has generate: true)
+flutter run -d windows
+flutter analyze                    # or: dart analyze
+flutter test                       # unit + widget tests
+flutter test test/features/node_widgets_test.dart --plain-name "<test name>"
+dart run build_runner build --delete-conflicting-outputs   # after changing @riverpod / @freezed / JSON models
 
-`test/widget_test.dart` is still the default counter template and fails against the real app. There is no meaningful test suite yet.
+# Frame timings on a generated 300-node project, profile mode, both themes:
+flutter drive --profile -d windows --driver=test_driver/perf_driver.dart --target=integration_test/drag_performance_test.dart
+# results: build/integration_response_data.json
+```
 
 ## Environment gotchas
 
-- **FFprobe path is hard-coded.** `DataStaticProperties.ffprobePath` in `lib/static_data/data_static_properties.dart` is an absolute path to `nutria_fmv_maker/ffmpeg/bin` (marked `TODO IMPORTANT`). Video metadata retrieval (`utilities/video_metadata_retriever.dart`, using `ffmpeg_helper`) breaks on other machines or checkouts until this is changed. The bundled FFmpeg is a GPLv3 static Windows build.
-- `MediaKit.ensureInitialized()` must run before `runApp`. Video playback uses `media_kit`, not `video_player`, because `video_player` has no Windows desktop support.
-- Thumbnails come from `fc_native_video_thumbnail` (OS-native) and are written to the temp dir (`tmp_path`).
-- Localizations are imported as `package:flutter_gen/gen_l10n/app_localizations.dart` (synthetic package). The ARB files are in `lib/i10n/` (`app_en.arb` is the template; `app_el.arb` and `app_fr.arb` are the others). Add new strings to all three files.
+- **Generated files are committed**: `*.g.dart`, `*.freezed.dart` (build_runner) and `lib/l10n/generated/` (gen-l10n). Never hand-edit them.
+- **Localizations:** `.arb` files are in `lib/l10n/` (`app_en.arb` is the template; also `el`, `fr`). Add every new string to all three. Import `package:nutria_fmv_maker/l10n/generated/app_localizations.dart` (not the old `flutter_gen` synthetic package).
+  - If `AppLocalizations` suddenly goes missing, run `flutter pub get`, which regenerates the files.
+  - Two Flutter processes on the project at once (VS Code plus a terminal) can delete the folder mid-generation. They can also break Windows builds with "Cannot open source file ... ephemeral\cpp_client_wrapper"; just rerun.
+- `MediaKit.ensureInitialized()` and a preloaded `SharedPreferences` (overriding `sharedPreferencesProvider`) are required in `main()` before `runApp`.
+- **No FFmpeg.**
+  - Thumbnails come from `fc_native_video_thumbnail` (background thread, queued two at a time).
+  - Metadata comes from `media_metadata`.
+  - Don't use `media_metadata` for thumbnails: on Windows it runs on the UI thread and freezes the app.
+- **Known Flutter Windows engine bug:** a `Tooltip` wrapped around a `Slider` crashes `flutter_windows.dll` when the window is resized. Put tooltips on plain widgets only.
+- **Windows clipboard:** it can be "busy" (another app has it open). `SystemClipboardService` retries and never throws; keep it that way.
+- **Imports:** use `package:material_ui/material_ui.dart`, not `package:flutter/material.dart` (deprecated in 3.47), and `package:` imports only.
 
 ## Architecture
 
-### State: Provider with immutable models
-All app state lives in `ChangeNotifier`s registered in a single `MultiProvider` in `lib/main.dart`. The most important providers are:
-- `NodesProvider`: the core document state. It holds the `List<NodeData>` of nodes and the `List<VideoData>` of imported videos, and handles node CRUD, selection, dragging and resizing, noodle (connection) dragging, "lazy connection" target detection, per-node overrides, and video import.
-- `ProjectVersionProvider`: save/load of `.nfmv` and export to `.fmv`. It also detects unsaved changes by comparing serialized strings.
-- `GridCanvasProvider`: the canvas `TransformationController`, plus zoom and pan.
-- `UiStateProvider`, `AppSettingsProvider`, `KeyboardProvider` (modifier keys), `VideoPlayerProvider`, `ThemeProvider`, `LocaleProvider`, `NotificationProvider` (messages in the bottom info bar).
+Layers, each depending only on those above it:
 
-The node models are **immutable** and updated through `copyWith`, then swapped into the provider's list followed by `notifyListeners()`. Widgets subscribe narrowly with `Selector`, often selecting a `Tuple` from the `tuple` package. Avoid broad `context.watch<NodesProvider>()` in node widgets, because it causes the performance problems this design was built to avoid.
-
-### Node model hierarchy (`lib/models/node_data/`)
 ```
-NodeData (position, id, intendedPosition, isSelected, isBeingHovered)
-└─ BaseNodeData (nodeName, nodeWidth, outputs: List<Output>, input, swatch, isExpanded)
-   ├─ OriginNodeData          start node (project title/description), cannot be deleted
-   └─ VideoNodeData           videoDataId + overrides
-      ├─ SimpleVideoNodeData   a single output (linear "pseudo-edit")
-      └─ BranchedVideoNodeData 2–10 outputs, created automatically from the option texts
+lib/
+  core/       pure Dart (no Flutter, no Riverpod, no IO): the document model and all edit logic
+  services/   IO behind small interfaces, each provided by a Riverpod provider (tests override them)
+  features/   Riverpod notifiers/selectors (providers/) and the widgets that use them (widgets/)
+  ui/         presentational design system: values in, callbacks out. Never imports Riverpod
+              (test/ui/ui_widgets_test.dart enforces this) or features/
+  app/        app.dart (MaterialApp), app_commands.dart, app_menus.dart, app_shortcuts.dart
 ```
-- `intendedPosition` and `intendedNodeWidth` hold the unsnapped values that grid snapping and default-width snapping work from.
-- Connections are stored on the output side (`Output.targetNodeId`). Input and output knot positions are computed from the theme (`inputPosition(theme)` / `outputPosition(theme, i)`).
-- Per-node settings that override the project defaults are the sealed `VideoNodeOverride` subclasses in `video_node_overrides.dart`: selectionTime, pauseOnEnd, showTimer, videoFit, defaultSelection. `VideoNodeOverrideConverter` handles their JSON. Project settings are a list of the same override types.
-- Models use `json_serializable` (`*.g.dart` is generated; do not hand-edit it) plus custom converters in `models/converters/` for `Offset` and `Color`.
 
-### Canvas rendering (`lib/grid_canvas.dart`)
-- The canvas is an `InteractiveViewer` with infinite boundary margins over a large fixed-size `SizedBox` (`UiStaticProperties.canvasSize`). Scroll zoom is handled manually through `GridCanvasProvider`.
-- Node widgets are **cached** in a parallel `List<Widget>` keyed by `ValueKey(nodeId)`. `_updateNodes` reuses existing widgets and only builds new ones, driven by a `Selector` on `NodesProvider.iDsandTypes`. Each node widget then selects its own data by id. When adding a node type, extend `_addNodeById` along with the type switches in `ProjectVersionProvider` (load/save use a `'type'` discriminator string).
-- Knots and noodles stick out past node bounds, so hit-testing outside a parent relies on `defer_pointer` and invisible overlay hit areas.
-- Painters are in `lib/painters/` (adaptive dot grid, noodles, stripes).
+### Document and undo (`core/`, `features/project/providers/`)
+- `ProjectDocument` (freezed, immutable) holds:
+  - `nodes` (`Map<String, Node>`) and `edges` (connections are `Edge(from: PortRef, to: PortRef)`, not stored on nodes)
+  - `videos` (`VideoAsset`, absolute path), `info` (title and description), `settings` (`VideoSettings`, the project defaults), `variables`
+- `Node` is a sealed freezed union: `OriginNode` (exactly one, can't be deleted or copied), `SimpleVideoNode` and `BranchedVideoNode`.
+  - A branched node has `choices`; each choice's `id` is also its output port key.
+  - Per-node `VideoSettingsOverride` overrides the project settings.
+- All edits are pure functions in `core/graph/`:
+  - `graph_ops.dart`: nodes, edges, choices, videos
+  - `fragment.dart`: copy/paste
+  - `variable_ops.dart`: variables
+- `documentProvider` (`DocumentNotifier`) is the **only** way to change the document: `apply(label, (doc) => newDoc, {mergeKey})`, or `beginTransaction`, several `apply` calls, then `commit` for a whole gesture.
+  - History is snapshot-based (`core/history/document_timeline.dart`).
+  - Text fields pass a per-focus `mergeKey`, so one typing session is one undo step.
+  - `isDirty` compares document identity with the saved one.
+- `GraphEditor` (`graphEditorProvider`) has one method per user command; each is one undo step. Gestures that need state live in their own notifiers (`nodeGestureProvider`, `connectionDragProvider`, `marqueeProvider`).
+- **Selectors** (`document_selectors.dart`) give widgets narrow slices: `nodeProvider(id)`, `nodeContentProvider(id)` (the node without its position), `projectDocumentProvider`, and others.
+  - Compare documents **by identity**, never with `==`: a freezed deep compare on every frame of a drag is what made dragging slow.
+- **Editor-only state** is never saved and never undone: selection, canvas view, connection drag, overlays, panel layout, preferences (persisted in `SharedPreferences`), clipboard state.
 
-### File formats (`ProjectVersionProvider`)
-- **`.nfmv`** (project save): `{ "nodes": [ {"type": "<ClassName>", ...toJson()} ], "videos": [VideoData...] }`.
-- **`.fmv`** (export for the Player): nodes are traversed from the origin and given simplified sequential ids (`utilities/simplify_node_tree.dart`), and `videoDataId` is replaced with the absolute video path. The output is `{ "ProjectInfo": <origin toJsonExport>, "ProjectSettings": {overrideName: jsonValue}, "Nodes": { "<id>": { "video", "choices": [{option, target}], "overrides": {...} } } }`. Changes to this structure break the separate Player app.
-- Video references are absolute paths, so projects are not portable between machines (a known limitation).
+### Canvas and nodes
+- `CanvasView` is an `InteractiveViewer` with pan and scale turned off, over a 2,000,000px `SizedBox`.
+  - Zoom, middle-drag/Shift-drag panning, box selection and animated framing (`CanvasViewController.frame`, `canvas_framing.dart`) are handled by the app.
+  - Node positions are relative to `kCanvasCenter`; `CanvasSpace` converts screen positions to canvas positions.
+- **Performance-critical node rendering** (`node_layer.dart`):
+  - Moving a node rebuilds only its `Positioned`: the content is a cached widget that watches `nodeContentProvider`.
+  - Each node is behind a `RepaintBoundary`.
+  - Don't add blurred shadows or animated decorations per node or per control. Themes with elevation use `RaisedEdge` (a painted 1px edge) for controls.
+  - Check changes with the perf test above; a drag frame should stay well under 16ms build and raster.
+- **Geometry** (`features/nodes/node_layout.dart`): `NodeMetrics` and `NodeLayout` compute knot positions from fixed row heights and a cached measurement of the wrapped file name. Widgets and the pure `noodlesFor` (connection lines) both use them, so knots and lines always agree.
+- Laid-out node sizes are recorded in `NodeBounds` (no rebuilds) for box selection and framing.
+- **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`); add a body widget.
 
-### Theming and constants
-- The app uses a custom theme system instead of Material theming. `AppTheme` (`lib/models/app_theme.dart`) holds all colors (`c*`) and dimensions (`d*`), and `ThemeProvider` supplies the current one (dark by default, plus an experimental light theme). Read colors and sizes from `theme` instead of hard-coding them.
-- Fixed layout and data constants are in `lib/static_data/ui_static_properties.dart` and `data_static_properties.dart`.
-- UI components are custom `Nutria*` widgets in `lib/custom_widgets/` (button, text, textfield, slider, menu bar, split view, context menu). Prefer them over raw Material widgets.
+### File formats
+- **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus video paths relative to the project file.
+  - New fields need defaults so older files still load.
+  - Older formats are rejected, not migrated, unless an upgrade step is added in `decode`.
+- **`.fmv`** (`core/protocol/fmv_exporter.dart`): `{ProjectInfo, ProjectSettings, Nodes}`, with nodes reached from the origin and given sequential ids.
+  - This is the Player's input format: any change is a protocol change, and `test/core/golden/` pins it.
+  - Variables are not exported yet.
 
-### Leftover / scratch files
-`lib/fvp_example.dart`, `internationalisation_example.dart`, `thumbnail_example.dart`, `video_metadata_tests.dart`, `noodle.dart` and `noodle_painter_current.dart` are experiments that no other file imports. `video_player_section.dart` is live (imported by `windows_app_layout.dart`). `lib/base_classes/command.dart` defines a `Command` (execute/undo) interface meant for undo/redo, but nothing implements it yet.
+### UI, theme, shortcuts
+- **Theme:** `AppTheme` (`ui/theme/app_theme.dart`) is a `ThemeExtension` holding every color (`c…`) and size (`d…`); widgets read it with `context.appTheme`. Presets are in `app_theme_presets.dart` (dark is the default, light, and "custom", the seed of a future accessible theme).
+  - Never hard-code colors or sizes.
+  - Node colors are per theme: `theme.swatch(node.swatch)`.
+  - `dElevation > 0` turns on shadows on nodes and raised controls.
+  - `test/ui/theme_contrast_test.dart` enforces WCAG contrast minimums for each preset.
+  - Adding a token means touching the constructor default, the field and `copyWith` in `AppTheme`.
+- **Components:** use the `Nutria*` widgets in `ui/widgets/`:
+  - `NutriaButton` (give icon-only buttons a `tooltip`; a test checks this) and `NutriaTextField`
+  - `NutriaNumberField` (arrows plus typing; accepts a comma as decimal point) and `NutriaSettingRow` (`options` gives a right-click menu of all values)
+  - `NutriaContextMenuArea`, `showNutriaChoiceDialog`, and others
+- **Shortcuts:** all commands go through `AppCommands`. The key table is in `app_shortcuts.dart`; the menus show the same activators.
+  - `NutriaTextField` swallows every character key and keeps Ctrl+C/X/V/A for its own text, so single-key app shortcuts (T, N, F, Space, …) never fire while typing.
+  - `AppShell` takes focus back when nothing else has it.
+
+## Conventions
+- **Comments:** each file starts with a one-line `//` header saying what it's for. Public types and notifier methods get `///` docs. Comment the *why*. No commented-out code or `print`.
+- **Widgets:** feature widgets are `ConsumerWidget`s that `ref.watch(...select(...))` narrowly. Each gesture callback calls one notifier or `GraphEditor` method; rules and algorithms belong in `core/` or a notifier.
+- **Lints:** `flutter_lints` plus `riverpod_lint` (analyzer plugin), `always_use_package_imports`, `avoid_print`, `directives_ordering`, `prefer_const_constructors`, `prefer_final_locals`, `unawaited_futures`. Keep `flutter analyze` clean.
+
+## Tests
+- `test/core/`: pure unit tests. `fixtures.dart` has `storyFixture()` and `sequentialIds()`.
+- `test/features/harness.dart`: `Harness.create()` gives a `ProviderContainer` with in-memory fakes (`MemoryProjectFiles`, `FakePlayer`).
+- `test/features/app_tester.dart`: `pumpApp(tester, {overrides, mediaInfo, player, startView})` pumps the whole app in a 1600x900 window with fake services.
+  - It resets the view so canvas (0, 0) is centered at 100%; pass `startView: true` to keep the startup framing.
+  - Video file names on nodes contain zero-width spaces (so they wrap anywhere): find them with `NodeMetrics.wrappable(name)` or `kNoVideo`.
+- `test/features/narrow_window_test.dart` shrinks the window for every left-panel section and fails on any overflow.
+- Widget tests use the test font, so text renders as boxes. Check the real look with `flutter run`.

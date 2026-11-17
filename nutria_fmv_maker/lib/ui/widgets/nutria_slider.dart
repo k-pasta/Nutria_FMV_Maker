@@ -2,6 +2,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
+/// A flat slider without a thumb, for timelines and volume.
 class NutriaSlider extends StatelessWidget {
   const NutriaSlider({
     super.key,

@@ -12,6 +12,7 @@ enum NutriaTextState {
   onAccent,
 }
 
+/// Weight and slant of a [NutriaText].
 enum NutriaTextStyle { normal, bold, italic, boldItalic }
 
 /// Text in the app's font, colored from the theme. Ellipsizes past [maxLines].

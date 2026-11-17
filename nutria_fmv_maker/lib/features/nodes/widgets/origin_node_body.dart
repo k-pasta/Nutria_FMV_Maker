@@ -10,6 +10,8 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 
+/// The start node: a preview of the main menu, then the project title and
+/// description fields.
 class OriginNodeBody extends ConsumerStatefulWidget {
   const OriginNodeBody({super.key});
 

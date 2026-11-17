@@ -8,12 +8,18 @@ part of 'overlay_provider.dart';
 
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // ignore_for_file: type=lint, type=warning
+/// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
+/// open.
 
 @ProviderFor(OverlayNotifier)
 final overlayProvider = OverlayNotifierProvider._();
 
+/// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
+/// open.
 final class OverlayNotifierProvider
     extends $NotifierProvider<OverlayNotifier, ShellOverlays> {
+  /// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
+  /// open.
   OverlayNotifierProvider._()
     : super(
         from: null,
@@ -42,6 +48,9 @@ final class OverlayNotifierProvider
 }
 
 String _$overlayNotifierHash() => r'3596b1e188ba24637786785fddc2e72b5940ea7c';
+
+/// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
+/// open.
 
 abstract class _$OverlayNotifier extends $Notifier<ShellOverlays> {
   ShellOverlays build();

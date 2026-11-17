@@ -1,16 +1,19 @@
-# nutria_fmv_maker
+# Nutria FMV Maker (Flutter project)
 
-A new Flutter project.
+The node editor of Nutria FMV. For what the project is, see the
+[repository README](../README.md) and the
+[documentation](https://rigascg.com/nutriafmvdocs/).
 
-## Getting Started
+## Development
 
-This project is a starting point for a Flutter application.
+Windows desktop is the main target. Run every command from this folder:
 
-A few resources to get you started if this is your first Flutter project:
+```sh
+flutter pub get
+flutter run -d windows
+flutter test
+dart run build_runner build --delete-conflicting-outputs   # after editing @riverpod / @freezed models
+```
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Code layout, conventions and known pitfalls are described in
+[`../CLAUDE.md`](../CLAUDE.md).

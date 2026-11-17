@@ -292,12 +292,6 @@ abstract class AppLocalizations {
   /// **'Delete Selected Node(s)'**
   String get editDeleteSelectedNodes;
 
-  /// No description provided for @editPreferences.
-  ///
-  /// In en, this message translates to:
-  /// **'Preferences'**
-  String get editPreferences;
-
   /// No description provided for @editProjectSettings.
   ///
   /// In en, this message translates to:
@@ -388,12 +382,6 @@ abstract class AppLocalizations {
   /// **'New Project'**
   String get fileNewProject;
 
-  /// No description provided for @fileRecentProjects.
-  ///
-  /// In en, this message translates to:
-  /// **'Recent Projects'**
-  String get fileRecentProjects;
-
   /// No description provided for @fileSaveProject.
   ///
   /// In en, this message translates to:
@@ -405,18 +393,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Save Project as'**
   String get fileSaveProjectAs;
-
-  /// No description provided for @filename.
-  ///
-  /// In en, this message translates to:
-  /// **'File Name'**
-  String get filename;
-
-  /// No description provided for @helloWorld.
-  ///
-  /// In en, this message translates to:
-  /// **'Hello World!'**
-  String get helloWorld;
 
   /// No description provided for @helpAbout.
   ///
@@ -604,12 +580,6 @@ abstract class AppLocalizations {
   /// **'Show Timer'**
   String get overrideShowTimer;
 
-  /// No description provided for @overrideUnknown.
-  ///
-  /// In en, this message translates to:
-  /// **'Unknown Override'**
-  String get overrideUnknown;
-
   /// No description provided for @overrideVideoFit.
   ///
   /// In en, this message translates to:
@@ -639,18 +609,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Fit'**
   String get overrideVideoFit_Fit;
-
-  /// No description provided for @overrideVideoFit_FitHeight.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit Height'**
-  String get overrideVideoFit_FitHeight;
-
-  /// No description provided for @overrideVideoFit_FitWidth.
-  ///
-  /// In en, this message translates to:
-  /// **'Fit Width'**
-  String get overrideVideoFit_FitWidth;
 
   /// No description provided for @overrideVideoFit_Stretch.
   ///
@@ -699,54 +657,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unsaved File'**
   String get statusUnsavedFile;
-
-  /// No description provided for @videoMetadataAspectRatio.
-  ///
-  /// In en, this message translates to:
-  /// **'Aspect Ratio'**
-  String get videoMetadataAspectRatio;
-
-  /// No description provided for @videoMetadataAudioBitDepth.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio Bit Depth'**
-  String get videoMetadataAudioBitDepth;
-
-  /// No description provided for @videoMetadataAudioChannels.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio Channels'**
-  String get videoMetadataAudioChannels;
-
-  /// No description provided for @videoMetadataAudioCodecFormat.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio Codec Format'**
-  String get videoMetadataAudioCodecFormat;
-
-  /// No description provided for @videoMetadataAudioSampleRate.
-  ///
-  /// In en, this message translates to:
-  /// **'Audio Sample Rate'**
-  String get videoMetadataAudioSampleRate;
-
-  /// No description provided for @videoMetadataBitrate.
-  ///
-  /// In en, this message translates to:
-  /// **'Bitrate'**
-  String get videoMetadataBitrate;
-
-  /// No description provided for @videoMetadataCodecFormat.
-  ///
-  /// In en, this message translates to:
-  /// **'Codec Format'**
-  String get videoMetadataCodecFormat;
-
-  /// No description provided for @videoMetadataColorProfile.
-  ///
-  /// In en, this message translates to:
-  /// **'Color Profile'**
-  String get videoMetadataColorProfile;
 
   /// No description provided for @videoMetadataDateCreated.
   ///
@@ -819,12 +729,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Resolution'**
   String get videoMetadataResolution;
-
-  /// No description provided for @videoMetadataTimecode.
-  ///
-  /// In en, this message translates to:
-  /// **'Timecode'**
-  String get videoMetadataTimecode;
 
   /// No description provided for @videoNodeChoice.
   ///
@@ -963,12 +867,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Color {number}'**
   String tooltipNodeColor(int number);
-
-  /// No description provided for @z.
-  ///
-  /// In en, this message translates to:
-  /// **'z'**
-  String get z;
 }
 
 class _AppLocalizationsDelegate

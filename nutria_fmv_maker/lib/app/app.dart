@@ -15,6 +15,8 @@ AppTheme appThemeFor(ThemeChoice choice) => switch (choice) {
       ThemeChoice.custom => kCustomTheme,
     };
 
+/// The root widget: theme and language from the preferences, around the
+/// [AppShell].
 class NutriaApp extends ConsumerWidget {
   const NutriaApp({super.key});
 

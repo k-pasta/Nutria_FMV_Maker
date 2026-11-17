@@ -18,6 +18,7 @@ class CanvasSpace extends StatefulWidget {
   State<CanvasSpace> createState() => CanvasSpaceState();
 }
 
+/// Converts between screen and canvas coordinates for the widgets below it.
 class CanvasSpaceState extends State<CanvasSpace> {
   final _surfaceKey = GlobalKey();
 

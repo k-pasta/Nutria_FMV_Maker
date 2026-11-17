@@ -10,6 +10,7 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_split_view.dart';
 PanelSide _side(SplitSide side) =>
     side == SplitSide.left ? PanelSide.left : PanelSide.right;
 
+/// The canvas between the resizable left and right panels.
 class SidePanels extends ConsumerWidget {
   const SidePanels({super.key});
 

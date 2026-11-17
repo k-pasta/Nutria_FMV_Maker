@@ -23,6 +23,8 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_modal.dart';
 
+/// The window layout (menu bar, canvas between the side panels, status bar),
+/// with the app's keyboard shortcuts and dialogs.
 class AppShell extends ConsumerStatefulWidget {
   const AppShell({super.key});
 

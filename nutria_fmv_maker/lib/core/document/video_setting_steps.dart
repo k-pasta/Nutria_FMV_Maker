@@ -17,6 +17,8 @@ bool isToggleSetting(VideoSettingType type) =>
 T _cycle<T>(List<T> values, T current, int direction) =>
     values[(values.indexOf(current) + direction) % values.length];
 
+/// How the editor changes playback settings: stepping, the list of
+/// choices, comparing values.
 extension VideoSettingSteps on VideoSettings {
   /// These settings with each possible value of [type] (e.g. for a menu of
   /// choices), or none for free numbers like the selection time.

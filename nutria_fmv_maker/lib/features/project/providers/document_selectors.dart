@@ -2,13 +2,11 @@
 // own slice changes.
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
-import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
@@ -68,16 +66,6 @@ class NodePaintOrder extends _$NodePaintOrder {
   bool updateShouldNotify(List<String> previous, List<String> next) =>
       !const ListEquality<String>().equals(previous, next);
 }
-
-/// Every connection, for drawing noodles.
-@riverpod
-List<Edge> edges(Ref ref) =>
-    ref.watch(documentProvider.select((s) => s.document.edges));
-
-/// Whether output [port] is connected.
-@riverpod
-bool isPortConnected(Ref ref, PortRef port) => ref.watch(
-    documentProvider.select((s) => s.document.edgeFrom(port) != null));
 
 /// Imported video [id], or `null`.
 @riverpod

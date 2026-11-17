@@ -19,6 +19,8 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 /// Seconds skipped by the rewind / fast-forward buttons.
 const _kSkip = Duration(seconds: 5);
 
+/// The right panel: the previewed video with transport controls and its
+/// file information.
 class VideoPreviewPanel extends ConsumerWidget {
   const VideoPreviewPanel({super.key});
 

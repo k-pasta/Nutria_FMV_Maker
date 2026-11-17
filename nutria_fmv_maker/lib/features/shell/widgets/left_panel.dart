@@ -11,6 +11,7 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_dropdown.dart';
 
+/// The left panel: a dropdown to pick a section, and that section.
 class LeftPanel extends ConsumerWidget {
   const LeftPanel({super.key});
 

@@ -105,9 +105,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Delete Selected Node(s)';
 
   @override
-  String get editPreferences => 'Preferences';
-
-  @override
   String get editProjectSettings => 'Project Settings';
 
   @override
@@ -153,19 +150,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get fileNewProject => 'New Project';
 
   @override
-  String get fileRecentProjects => 'Recent Projects';
-
-  @override
   String get fileSaveProject => 'Save Project';
 
   @override
   String get fileSaveProjectAs => 'Save Project as';
-
-  @override
-  String get filename => 'File Name';
-
-  @override
-  String get helloWorld => 'Hello World!';
 
   @override
   String get helpAbout => 'About Nutria FMV Maker';
@@ -272,9 +260,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get overrideShowTimer => 'Show Timer';
 
   @override
-  String get overrideUnknown => 'Unknown Override';
-
-  @override
   String get overrideVideoFit => 'Video Fit';
 
   @override
@@ -288,12 +273,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overrideVideoFit_Fit => 'Fit';
-
-  @override
-  String get overrideVideoFit_FitHeight => 'Fit Height';
-
-  @override
-  String get overrideVideoFit_FitWidth => 'Fit Width';
 
   @override
   String get overrideVideoFit_Stretch => 'Stretch';
@@ -318,30 +297,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get statusUnsavedFile => 'Unsaved File';
-
-  @override
-  String get videoMetadataAspectRatio => 'Aspect Ratio';
-
-  @override
-  String get videoMetadataAudioBitDepth => 'Audio Bit Depth';
-
-  @override
-  String get videoMetadataAudioChannels => 'Audio Channels';
-
-  @override
-  String get videoMetadataAudioCodecFormat => 'Audio Codec Format';
-
-  @override
-  String get videoMetadataAudioSampleRate => 'Audio Sample Rate';
-
-  @override
-  String get videoMetadataBitrate => 'Bitrate';
-
-  @override
-  String get videoMetadataCodecFormat => 'Codec Format';
-
-  @override
-  String get videoMetadataColorProfile => 'Color Profile';
 
   @override
   String get videoMetadataDateCreated => 'Date Created';
@@ -378,9 +333,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get videoMetadataResolution => 'Resolution';
-
-  @override
-  String get videoMetadataTimecode => 'Timecode';
 
   @override
   String get videoNodeChoice => 'Option';
@@ -452,7 +404,4 @@ class AppLocalizationsEn extends AppLocalizations {
   String tooltipNodeColor(int number) {
     return 'Color $number';
   }
-
-  @override
-  String get z => 'z';
 }

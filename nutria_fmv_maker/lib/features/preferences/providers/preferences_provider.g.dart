@@ -157,7 +157,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'6c80a80d59b99edfa54d7b824773aca87eaa6cd4';
+    r'c801a447e36e1a02a6650fb28239b87e45dee0ea';
 
 /// Reads and persists [Preferences].
 

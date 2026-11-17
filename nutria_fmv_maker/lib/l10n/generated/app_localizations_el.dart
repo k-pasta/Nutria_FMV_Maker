@@ -106,9 +106,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Διαγραφή Επελεγμένων Κόμβων';
 
   @override
-  String get editPreferences => 'Προτιμήσεις';
-
-  @override
   String get editProjectSettings => 'Ρυθμίσεις Πρότζεκτ';
 
   @override
@@ -154,19 +151,10 @@ class AppLocalizationsEl extends AppLocalizations {
   String get fileNewProject => 'Νέο Πρότζεκτ';
 
   @override
-  String get fileRecentProjects => 'Πρόσφατα Πρότζεκτ';
-
-  @override
   String get fileSaveProject => 'Αποθήκευση Πρότζεκτ';
 
   @override
   String get fileSaveProjectAs => 'Αποθήκευση Πρότζεκτ ως';
-
-  @override
-  String get filename => 'File Name';
-
-  @override
-  String get helloWorld => 'Γεια σου κοσμε!';
 
   @override
   String get helpAbout => 'Σχετικά με το Nutria FMV Maker';
@@ -273,9 +261,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get overrideShowTimer => 'Εμφάνιση Χρόνου Επιλογής';
 
   @override
-  String get overrideUnknown => 'Άγνωστη Παράκαμψη';
-
-  @override
   String get overrideVideoFit => 'Προσαρμογή Βίντεο';
 
   @override
@@ -289,12 +274,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get overrideVideoFit_Fit => 'Προσαρμογή';
-
-  @override
-  String get overrideVideoFit_FitHeight => 'Προσαρμογή στο Ύψος';
-
-  @override
-  String get overrideVideoFit_FitWidth => 'Προσαρμογή στο Πλάτος';
 
   @override
   String get overrideVideoFit_Stretch => 'Παραμόρφωση';
@@ -319,30 +298,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get statusUnsavedFile => 'Μη αποθηκευμένο αρχείο';
-
-  @override
-  String get videoMetadataAspectRatio => 'Αναλογία Διαστάσεων';
-
-  @override
-  String get videoMetadataAudioBitDepth => 'Bit Depth Ήχου';
-
-  @override
-  String get videoMetadataAudioChannels => 'Κανάλια Ήχου';
-
-  @override
-  String get videoMetadataAudioCodecFormat => 'Φορμάτ Κωδικοποίησης ΄Ήχου';
-
-  @override
-  String get videoMetadataAudioSampleRate => 'Sample Rate Ήχου';
-
-  @override
-  String get videoMetadataBitrate => 'Bitrate';
-
-  @override
-  String get videoMetadataCodecFormat => 'Φορμάτ Κωδικοποίησης';
-
-  @override
-  String get videoMetadataColorProfile => 'Χρωματικό Προφίλ';
 
   @override
   String get videoMetadataDateCreated => 'Ημερομηνία Τροποποίησης';
@@ -379,9 +334,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get videoMetadataResolution => 'Ανάλυση';
-
-  @override
-  String get videoMetadataTimecode => 'Μορφή Timecode';
 
   @override
   String get videoNodeChoice => 'Επιλογή';
@@ -454,7 +406,4 @@ class AppLocalizationsEl extends AppLocalizations {
   String tooltipNodeColor(int number) {
     return 'Χρώμα $number';
   }
-
-  @override
-  String get z => 'z';
 }

@@ -27,6 +27,7 @@ List<NutriaContextMenuItem> optionsMenu<T>(
     ),
 ];
 
+/// The Preferences section of the left panel.
 class PreferencesPanel extends ConsumerWidget {
   const PreferencesPanel({super.key});
 

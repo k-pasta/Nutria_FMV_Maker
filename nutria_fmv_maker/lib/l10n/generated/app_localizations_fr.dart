@@ -107,9 +107,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Supprimer les Nœuds Sélectionnés';
 
   @override
-  String get editPreferences => 'Préférences';
-
-  @override
   String get editProjectSettings => 'Paramètres du Projet';
 
   @override
@@ -156,19 +153,10 @@ class AppLocalizationsFr extends AppLocalizations {
   String get fileNewProject => 'Nouveau Projet';
 
   @override
-  String get fileRecentProjects => 'Projets Récents';
-
-  @override
   String get fileSaveProject => 'Enregistrer le Projet';
 
   @override
   String get fileSaveProjectAs => 'Enregistrer le Projet sous...';
-
-  @override
-  String get filename => 'Nom du Fichier';
-
-  @override
-  String get helloWorld => 'Salut Monde!';
 
   @override
   String get helpAbout => 'À propos de Nutria FMV Maker';
@@ -275,9 +263,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get overrideShowTimer => 'Afficher la Minuterie';
 
   @override
-  String get overrideUnknown => 'Forçage Inconnu';
-
-  @override
   String get overrideVideoFit => 'Ajustement Vidéo';
 
   @override
@@ -291,12 +276,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get overrideVideoFit_Fit => 'Ajuster';
-
-  @override
-  String get overrideVideoFit_FitHeight => 'Ajuster à la Hauteur';
-
-  @override
-  String get overrideVideoFit_FitWidth => 'Ajuster à la Largeur';
 
   @override
   String get overrideVideoFit_Stretch => 'Étirer';
@@ -321,30 +300,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get statusUnsavedFile => 'Fichier non enregistré';
-
-  @override
-  String get videoMetadataAspectRatio => 'Rapport de Forme';
-
-  @override
-  String get videoMetadataAudioBitDepth => 'Bit Depth Audio';
-
-  @override
-  String get videoMetadataAudioChannels => 'Canaux audio';
-
-  @override
-  String get videoMetadataAudioCodecFormat => 'Format du codec audio';
-
-  @override
-  String get videoMetadataAudioSampleRate => 'Taux d\'Έchantillonnage Αudio';
-
-  @override
-  String get videoMetadataBitrate => 'Bitrate';
-
-  @override
-  String get videoMetadataCodecFormat => 'Format du codec';
-
-  @override
-  String get videoMetadataColorProfile => 'Profil de couleur';
 
   @override
   String get videoMetadataDateCreated => 'Date de creation';
@@ -381,9 +336,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get videoMetadataResolution => 'Résolution';
-
-  @override
-  String get videoMetadataTimecode => 'Timecode';
 
   @override
   String get videoNodeChoice => 'Choix';
@@ -456,7 +408,4 @@ class AppLocalizationsFr extends AppLocalizations {
   String tooltipNodeColor(int number) {
     return 'Couleur $number';
   }
-
-  @override
-  String get z => 'z';
 }

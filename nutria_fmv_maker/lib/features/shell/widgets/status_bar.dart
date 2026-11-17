@@ -8,6 +8,8 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 
+/// The bar at the bottom: the project's file name and the latest
+/// notification.
 class StatusBar extends StatelessWidget {
   const StatusBar({super.key});
 

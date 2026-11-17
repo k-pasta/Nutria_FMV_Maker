@@ -2,6 +2,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
+/// A vertical scroll view with an always-visible themed scrollbar.
 class NutriaScrollArea extends StatefulWidget {
   const NutriaScrollArea({super.key, required this.child, this.padding});
 

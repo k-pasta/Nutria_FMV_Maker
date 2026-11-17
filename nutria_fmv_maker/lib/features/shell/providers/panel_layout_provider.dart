@@ -8,6 +8,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'panel_layout_provider.freezed.dart';
 part 'panel_layout_provider.g.dart';
 
+/// The left (sections) or right (video preview) side panel.
 enum PanelSide { left, right }
 
 /// Tabs of the left panel.
@@ -23,6 +24,7 @@ const kMaxRightPanel = double.infinity;
 /// Dragging a panel this far below its minimum width closes it.
 const kPanelCloseThreshold = 50.0;
 
+/// Widths and open state of the side panels, and the left panel's section.
 @freezed
 abstract class PanelLayout with _$PanelLayout {
   const PanelLayout._();

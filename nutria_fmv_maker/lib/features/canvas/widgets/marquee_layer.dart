@@ -5,6 +5,8 @@ import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.
 import 'package:nutria_fmv_maker/features/canvas/providers/marquee_provider.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 
+/// The selection box being dragged (see `marqueeProvider`), above the
+/// nodes.
 class MarqueeLayer extends ConsumerWidget {
   const MarqueeLayer({super.key});
 

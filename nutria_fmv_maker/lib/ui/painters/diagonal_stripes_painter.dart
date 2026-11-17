@@ -3,6 +3,7 @@ import 'dart:math';
 
 import 'package:material_ui/material_ui.dart';
 
+/// Diagonal stripes across the whole area, e.g. where a thumbnail is missing.
 class DiagonalStripesPainter extends CustomPainter {
   const DiagonalStripesPainter({
     required this.stripeWidth,

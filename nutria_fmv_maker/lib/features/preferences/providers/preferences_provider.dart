@@ -47,6 +47,8 @@ const kLanguageNames = {'en': 'English', 'el': 'Ελληνικά', 'fr': 'Franç
 /// Grid sizes offered in the preferences, in canvas units.
 const kGridSizes = [25.0, 50.0, 100.0, 200.0];
 
+/// The editor preferences of this user, saved on this computer (not in
+/// projects).
 @freezed
 abstract class Preferences with _$Preferences {
   const factory Preferences({

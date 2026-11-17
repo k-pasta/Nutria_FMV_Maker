@@ -4,6 +4,7 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
+/// The window edge a [PanelEdgeButton] sits on.
 enum PanelEdge { left, right }
 
 /// Positioned at the vertical center of the [side] edge of a [Stack].

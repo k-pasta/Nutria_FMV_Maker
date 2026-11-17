@@ -8,6 +8,7 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:url_launcher/link.dart';
 
+/// The About dialog: version, credits, license and links.
 class AboutWindow extends StatelessWidget {
   const AboutWindow({super.key});
 
