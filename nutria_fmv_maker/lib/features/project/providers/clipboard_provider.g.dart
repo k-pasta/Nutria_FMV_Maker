@@ -53,7 +53,7 @@ final class ClipboardHasNodesProvider
   }
 }
 
-String _$clipboardHasNodesHash() => r'6eddf7b80e6bac30df83db79a809d061107e873d';
+String _$clipboardHasNodesHash() => r'6e9a0323e59a949d36e1aefd58dc46193b5327b0';
 
 /// Whether the clipboard holds copied nodes. The clipboard can change
 /// outside the app at any time and can only be read asynchronously, so this

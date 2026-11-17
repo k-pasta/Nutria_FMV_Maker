@@ -81,8 +81,9 @@ class GraphEditor {
     final fragment =
         _current.copyFragment(_ref.read(selectionProvider).selected);
     if (fragment.isEmpty) return;
-    await _ref.read(clipboardServiceProvider).write(fragment.encode());
-    await _ref.read(clipboardHasNodesProvider.notifier).refresh();
+    if (await _ref.read(clipboardServiceProvider).write(fragment.encode())) {
+      _ref.read(clipboardHasNodesProvider.notifier).copied();
+    }
   }
 
   /// Pastes copied nodes centered on [at] (node coordinates) and selects

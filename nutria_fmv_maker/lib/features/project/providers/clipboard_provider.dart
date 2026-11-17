@@ -20,6 +20,10 @@ class ClipboardHasNodes extends _$ClipboardHasNodes {
     return false;
   }
 
+  /// Nodes were just copied: no need to read the clipboard back (on Windows
+  /// it may still be busy right after writing).
+  void copied() => state = true;
+
   /// Reads the clipboard again.
   Future<void> refresh() async {
     final text = await ref.read(clipboardServiceProvider).read();

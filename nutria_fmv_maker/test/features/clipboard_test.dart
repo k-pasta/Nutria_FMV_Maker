@@ -15,7 +15,10 @@ class MemoryClipboard implements ClipboardService {
   @override
   Future<String?> read() async => text;
   @override
-  Future<void> write(String text) async => this.text = text;
+  Future<bool> write(String text) async {
+    this.text = text;
+    return true;
+  }
 }
 
 void main() {
