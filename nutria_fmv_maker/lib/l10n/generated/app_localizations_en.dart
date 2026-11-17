@@ -90,7 +90,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contextSimpleVideoNode => 'Simple Video';
 
   @override
-  String get dialogUnsavedChanges => 'Discard unsaved changes?';
+  String get dialogUnsavedChanges => 'Save the changes to this project?';
+
+  @override
+  String get dialogSave => 'Save';
+
+  @override
+  String get dialogDontSave => 'Don\'t Save';
+
+  @override
+  String get essentialsCancel => 'Cancel';
 
   @override
   String get editDeleteSelectedNodes => 'Delete Selected Node(s)';

@@ -265,8 +265,26 @@ abstract class AppLocalizations {
   /// No description provided for @dialogUnsavedChanges.
   ///
   /// In en, this message translates to:
-  /// **'Discard unsaved changes?'**
+  /// **'Save the changes to this project?'**
   String get dialogUnsavedChanges;
+
+  /// No description provided for @dialogSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get dialogSave;
+
+  /// No description provided for @dialogDontSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Don\'t Save'**
+  String get dialogDontSave;
+
+  /// No description provided for @essentialsCancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get essentialsCancel;
 
   /// No description provided for @editDeleteSelectedNodes.
   ///

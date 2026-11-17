@@ -92,7 +92,16 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get dialogUnsavedChanges =>
-      'Abandonner les modifications non enregistrées ?';
+      'Enregistrer les modifications de ce projet ?';
+
+  @override
+  String get dialogSave => 'Enregistrer';
+
+  @override
+  String get dialogDontSave => 'Ne pas enregistrer';
+
+  @override
+  String get essentialsCancel => 'Annuler';
 
   @override
   String get editDeleteSelectedNodes => 'Supprimer les Nœuds Sélectionnés';

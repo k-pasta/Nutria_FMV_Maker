@@ -91,7 +91,16 @@ class AppLocalizationsEl extends AppLocalizations {
   String get contextSimpleVideoNode => 'Απλό Βίντεο';
 
   @override
-  String get dialogUnsavedChanges => 'Απόρριψη μη αποθηκευμένων αλλαγών;';
+  String get dialogUnsavedChanges => 'Αποθήκευση των αλλαγών του έργου;';
+
+  @override
+  String get dialogSave => 'Αποθήκευση';
+
+  @override
+  String get dialogDontSave => 'Χωρίς αποθήκευση';
+
+  @override
+  String get essentialsCancel => 'Ακύρωση';
 
   @override
   String get editDeleteSelectedNodes => 'Διαγραφή Επελεγμένων Κόμβων';

@@ -23,6 +23,9 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_confirm_dialog.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher.dart';
 
+/// Answers to "save the changes?".
+enum _UnsavedChoice { save, discard, cancel }
+
 /// The commands behind the menu bar and keyboard shortcuts. This is where
 /// file results and errors become localized notifications, and where the
 /// user is asked before unsaved changes are thrown away.
@@ -85,16 +88,36 @@ class AppCommands {
     }
   }
 
-  /// `true` if there are no unsaved changes or the user agrees to lose them.
+  /// Whether the open project may be replaced or closed: `true` if it has
+  /// no unsaved changes, or the user saved them (successfully) or chose not
+  /// to; `false` if they cancelled.
   Future<bool> _confirmDiscard() async {
     if (!_ref.read(isDirtyProvider)) return true;
-    final discard = await showNutriaConfirmDialog(
+    final choice = await showNutriaChoiceDialog<_UnsavedChoice>(
       _context,
       message: _t.dialogUnsavedChanges,
-      confirmLabel: _t.essentialsYes,
-      cancelLabel: _t.essentialsNo,
+      choices: [
+        (value: _UnsavedChoice.cancel, label: _t.essentialsCancel,
+            isAccented: false),
+        (value: _UnsavedChoice.discard, label: _t.dialogDontSave,
+            isAccented: false),
+        (value: _UnsavedChoice.save, label: _t.dialogSave, isAccented: true),
+      ],
     );
-    return discard && _context.mounted;
+    if (!_context.mounted) return false;
+    switch (choice) {
+      case _UnsavedChoice.discard:
+        return true;
+      case _UnsavedChoice.save:
+        var saved = false;
+        await _guard(() async {
+          saved = await _document.save() == FileOutcome.done;
+          if (saved) _notifySaved();
+        });
+        return saved && _context.mounted;
+      case _UnsavedChoice.cancel || null:
+        return false;
+    }
   }
 
   // ------------------------------------------------------------------- edit

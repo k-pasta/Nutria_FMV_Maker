@@ -28,26 +28,80 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 /// card over its content: it lines up with the color strip, never changes
 /// the layout and never sticks out of the node at any zoom.
 BoxDecoration _card(AppTheme theme, {required bool lit}) => BoxDecoration(
-      color: lit ? theme.cCardHovered : theme.cCard,
-      borderRadius: BorderRadius.circular(theme.dNodeBorderRadius),
-      boxShadow: theme.dElevation > 0 ? theme.cardShadow() : null,
-    );
+  color: lit ? theme.cCardHovered : theme.cCard,
+  borderRadius: BorderRadius.circular(theme.dNodeBorderRadius),
+  boxShadow: theme.dElevation > 0 ? theme.cardShadow() : null,
+);
 
 /// Never `null`, even when not [selected]: a `Container` only inserts its
 /// foreground layer when it has one, and that change of tree shape would
 /// recreate the node's content (dropping text-field focus) on selection.
-BoxDecoration _selectionOutline(AppTheme theme, Node node,
-        {required bool selected}) =>
-    BoxDecoration(
-      borderRadius: BorderRadius.circular(theme.dNodeBorderRadius),
-      border: selected
-          ? Border.all(
-              color: theme.swatch(node.swatch),
-              width: theme.dSelectionWidth,
-              strokeAlign: BorderSide.strokeAlignInside,
-            )
-          : null,
-    );
+BoxDecoration _selectionOutline(
+  AppTheme theme,
+  Node node, {
+  required bool selected,
+}) => BoxDecoration(
+  borderRadius: BorderRadius.circular(theme.dNodeBorderRadius),
+  border: selected
+      ? Border.all(
+          color: theme.swatch(node.swatch),
+          width: theme.dSelectionWidth,
+          strokeAlign: BorderSide.strokeAlignInside,
+        )
+      : null,
+);
+
+/// The right-click menu of [node], on its body and its settings panel.
+List<NutriaContextMenuItem> _nodeMenu(
+  WidgetRef ref,
+  Node node,
+  AppLocalizations t,
+) {
+  final editor = ref.read(graphEditorProvider);
+  return [
+    if (node is SimpleVideoNode)
+      NutriaContextMenuItem(
+        icon: Icons.call_split,
+        label: t.nodeConvertToBranching,
+        onSelected: () => editor.convertNode(node.id),
+      ),
+    if (node is BranchedVideoNode)
+      NutriaContextMenuItem(
+        icon: Icons.arrow_forward,
+        label: t.nodeConvertToSimple,
+        onSelected: () => editor.convertNode(node.id),
+      ),
+    // Right-clicking selected the node, so these act on the selection,
+    // which may hold nothing copyable (only the origin).
+    if (ref.read(canCopySelectionProvider)) ...[
+      NutriaContextMenuItem(
+        icon: Icons.content_copy,
+        label: t.editCopy,
+        onSelected: editor.copySelection,
+      ),
+      NutriaContextMenuItem(
+        icon: Icons.copy_all,
+        label: t.editDuplicate,
+        onSelected: editor.duplicateSelection,
+      ),
+    ],
+    if (ref.read(clipboardHasNodesProvider))
+      NutriaContextMenuItem(
+        icon: Icons.content_paste,
+        label: t.editPaste,
+        onSelected: () {
+          final view = ref.read(canvasViewProvider);
+          editor.paste(view.pointer ?? view.center);
+        },
+      ),
+    if (node is! OriginNode)
+      NutriaContextMenuItem(
+        icon: Icons.delete,
+        label: t.editDeleteSelectedNodes,
+        onSelected: () => editor.removeNodeOrSelection(node.id),
+      ),
+  ];
+}
 
 /// Ctrl or Shift: add to / remove from the selection.
 bool get _additive =>
@@ -180,54 +234,6 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
     connectionDragProvider.notifier,
   );
 
-  List<NutriaContextMenuItem> _menu(AppLocalizations t) {
-    final node = widget.node;
-    final editor = ref.read(graphEditorProvider);
-    return [
-      if (node is SimpleVideoNode)
-        NutriaContextMenuItem(
-          icon: Icons.call_split,
-          label: t.nodeConvertToBranching,
-          onSelected: () => editor.convertNode(node.id),
-        ),
-      if (node is BranchedVideoNode)
-        NutriaContextMenuItem(
-          icon: Icons.arrow_forward,
-          label: t.nodeConvertToSimple,
-          onSelected: () => editor.convertNode(node.id),
-        ),
-      // Right-clicking selected the node, so these act on the selection,
-      // which may hold nothing copyable (only the origin).
-      if (ref.read(canCopySelectionProvider)) ...[
-        NutriaContextMenuItem(
-          icon: Icons.content_copy,
-          label: t.editCopy,
-          onSelected: editor.copySelection,
-        ),
-        NutriaContextMenuItem(
-          icon: Icons.copy_all,
-          label: t.editDuplicate,
-          onSelected: editor.duplicateSelection,
-        ),
-      ],
-      if (ref.read(clipboardHasNodesProvider))
-        NutriaContextMenuItem(
-          icon: Icons.content_paste,
-          label: t.editPaste,
-          onSelected: () {
-            final view = ref.read(canvasViewProvider);
-            editor.paste(view.pointer ?? view.center);
-          },
-        ),
-      if (node is! OriginNode)
-        NutriaContextMenuItem(
-          icon: Icons.delete,
-          label: t.editDeleteSelectedNodes,
-          onSelected: () => editor.removeNodeOrSelection(node.id),
-        ),
-    ];
-  }
-
   @override
   Widget build(BuildContext context) {
     final node = widget.node;
@@ -245,7 +251,7 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
     final theme = context.appTheme;
     final node = widget.node;
     return NutriaContextMenuArea(
-      itemsAt: (_) => _menu(AppLocalizations.of(context)),
+      itemsAt: (_) => _nodeMenu(ref, widget.node, AppLocalizations.of(context)),
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
       // Tells noodle drags which node they're over (lazy connections).
       child: MouseRegion(
@@ -267,8 +273,11 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
               // One rounded card: color strip on top, content below.
               Container(
                 decoration: _card(theme, lit: widget.lit || dropping),
-                foregroundDecoration:
-                    _selectionOutline(theme, node, selected: widget.selected),
+                foregroundDecoration: _selectionOutline(
+                  theme,
+                  node,
+                  selected: widget.selected,
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
@@ -353,7 +362,7 @@ class _ResizeHandle extends ConsumerWidget {
 }
 
 /// The settings panel under an expanded node.
-class _Expansion extends StatelessWidget {
+class _Expansion extends ConsumerWidget {
   const _Expansion({
     required this.node,
     required this.selected,
@@ -366,14 +375,30 @@ class _Expansion extends StatelessWidget {
   final bool lit;
   final Widget child;
 
+  /// Like the body: right-click for the node menu, edges to resize. Rows
+  /// with their own right-click menu (setting values) take precedence.
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
-    return Container(
-      decoration: _card(theme, lit: lit),
-      foregroundDecoration: _selectionOutline(theme, node, selected: selected),
-      padding: EdgeInsets.all(theme.dPanelPadding),
-      child: child,
+    return NutriaContextMenuArea(
+      itemsAt: (_) => _nodeMenu(ref, node, AppLocalizations.of(context)),
+      onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
+      child: Stack(
+        children: [
+          Container(
+            decoration: _card(theme, lit: lit),
+            foregroundDecoration: _selectionOutline(
+              theme,
+              node,
+              selected: selected,
+            ),
+            padding: EdgeInsets.all(theme.dPanelPadding),
+            child: child,
+          ),
+          _ResizeHandle(nodeId: node.id, fromLeft: true),
+          _ResizeHandle(nodeId: node.id, fromLeft: false),
+        ],
+      ),
     );
   }
 }
