@@ -187,35 +187,40 @@ class _TransportState extends ConsumerState<_Transport> {
           ],
         ),
         SizedBox(height: theme.dPanelPadding),
-        NutriaTooltip(
-          message: t.tooltipVolume,
-          child: ConstrainedBox(
-            constraints: BoxConstraints(
-              maxWidth: theme.dButtonHeight * 4 + theme.dPanelPadding * 3,
-            ),
-            child: Row(
-              children: [
-                Icon(
+        // The hint is on the icons, not around the row: a Tooltip around a
+        // Slider crashes the Windows engine when the window is resized.
+        ConstrainedBox(
+          constraints: BoxConstraints(
+            maxWidth: theme.dButtonHeight * 4 + theme.dPanelPadding * 3,
+          ),
+          child: Row(
+            children: [
+              NutriaTooltip(
+                message: t.tooltipVolume,
+                child: Icon(
                   Icons.volume_down,
                   color: theme.cTextInactive,
                   size: theme.dTextHeight,
                 ),
-                gap,
-                Expanded(
-                  child: NutriaSlider(
-                    value: status.volume,
-                    max: 100,
-                    onChanged: player.setVolume,
-                  ),
+              ),
+              gap,
+              Expanded(
+                child: NutriaSlider(
+                  value: status.volume,
+                  max: 100,
+                  onChanged: player.setVolume,
                 ),
-                gap,
-                Icon(
+              ),
+              gap,
+              NutriaTooltip(
+                message: t.tooltipVolume,
+                child: Icon(
                   Icons.volume_up,
                   color: theme.cTextInactive,
                   size: theme.dTextHeight,
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ],
