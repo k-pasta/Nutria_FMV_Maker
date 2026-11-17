@@ -1,0 +1,13 @@
+name: nutria_fmv_protocol
+description: >-
+  The Nutria FMV Protocol: the .fmv file the Maker exports and the Player
+  plays. Pure Dart, no dependencies, shared by both apps.
+version: 1.0.0
+publish_to: none
+
+environment:
+  # The Player still builds with Dart 3.5; keep the syntax compatible.
+  sdk: ^3.5.0
+
+dev_dependencies:
+  test: ^1.25.0

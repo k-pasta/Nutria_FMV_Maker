@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 import 'fixtures.dart';
 
@@ -15,7 +16,16 @@ void main() {
       );
       final export = exportFmv(storyFixture());
       // Round-trip through JSON so we compare exactly what gets written.
-      expect(jsonDecode(jsonEncode(export.json)), golden);
+      expect(jsonDecode(jsonEncode(export.project.toJson())), golden);
+    });
+
+    test('reads back unchanged through the shared protocol package', () {
+      // What the Player reads: the written text, parsed by the package.
+      final written = exportFmv(storyFixture()).project.encode();
+      final read = FmvProject.decode(written);
+      expect(read.encode(), written);
+      expect(read.startNodeId, '001');
+      expect(read.nodes['001']!.choices!.map((c) => c.target), ['002', '003']);
     });
 
     test('reports unconnected choices with text', () {
@@ -36,8 +46,8 @@ void main() {
 
     test('an empty project exports no nodes', () {
       final export = exportFmv(ProjectDocument.empty());
-      expect(export.json['Nodes'], isEmpty);
-      expect(export.json['ProjectInfo'], isEmpty);
+      expect(export.project.toJson()['Nodes'], isEmpty);
+      expect(export.project.toJson()['ProjectInfo'], isEmpty);
     });
   });
 }

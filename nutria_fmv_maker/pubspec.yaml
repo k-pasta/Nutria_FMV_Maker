@@ -29,6 +29,9 @@ dependencies:
   riverpod_annotation: ^4.0.8
   media_metadata: ^2.2.2
   material_ui: ^1.11.0
+  # The .fmv format, shared with Nutria FMV Player.
+  nutria_fmv_protocol:
+    path: ../packages/nutria_fmv_protocol
 
 dev_dependencies:
   flutter_test:

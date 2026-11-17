@@ -11,6 +11,8 @@ Nutria FMV Maker is a GPLv3 Flutter **desktop** app (Windows is the main target)
 
 The Flutter project lives in `nutria_fmv_maker/`, not at the repo root. Run every `flutter`/`dart` command from there; from the root they fail with misleading errors (for example "generate flag not turned on").
 
+The `.fmv` format itself is the pure-Dart package `packages/nutria_fmv_protocol/` (no dependencies, SDK `^3.5` so the Player can use it), which the Maker depends on by path.
+
 ## Commands
 
 ```sh
@@ -21,6 +23,9 @@ flutter analyze                    # or: dart analyze
 flutter test                       # unit + widget tests
 flutter test test/features/node_widgets_test.dart --plain-name "<test name>"
 dart run build_runner build --delete-conflicting-outputs   # after changing @riverpod / @freezed / JSON models
+
+# The shared .fmv package
+cd ../packages/nutria_fmv_protocol && dart test
 
 # Frame timings on a generated 300-node project, profile mode, both themes:
 flutter drive --profile -d windows --driver=test_driver/perf_driver.dart --target=integration_test/drag_performance_test.dart
@@ -93,8 +98,10 @@ lib/
 - **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus video paths relative to the project file.
   - New fields need defaults so older files still load.
   - Older formats are rejected, not migrated, unless an upgrade step is added in `decode`.
-- **`.fmv`** (`core/protocol/fmv_exporter.dart`): `{ProjectInfo, ProjectSettings, Nodes}`, with nodes reached from the origin and given sequential ids.
-  - This is the Player's input format: any change is a protocol change, and `test/core/golden/` pins it.
+- **`.fmv`**: the format (`FmvProject`: `{ProjectInfo, ProjectSettings, Nodes}`), writing it and lenient reading live in `packages/nutria_fmv_protocol`, shared with the Player.
+  - `core/protocol/fmv_exporter.dart` only maps a `ProjectDocument` to an `FmvProject`: nodes reachable from the origin, with sequential ids from `001` (playback starts at the first node), and only connected choices.
+  - Any change to the package is a protocol change for both apps; `test/core/golden/` pins the Maker's output.
+  - Keep the package Dart 3.5-compatible.
   - Variables are not exported yet.
 
 ### UI, theme, shortcuts

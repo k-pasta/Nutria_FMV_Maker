@@ -89,7 +89,7 @@ class ProjectFileService {
   }) =>
       _saveWithDialog(
         '$suggestedName.$kExportExtension',
-        const JsonEncoder.withIndent('  ').convert(export.json),
+        export.project.encode(),
         kExportExtension,
       );
 

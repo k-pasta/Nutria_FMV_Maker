@@ -37,14 +37,6 @@ abstract class VideoSettings with _$VideoSettings {
   factory VideoSettings.fromJson(Map<String, dynamic> json) =>
       _$VideoSettingsFromJson(json);
 
-  /// The `.fmv` representation (`ProjectSettings` block).
-  Map<String, Object> toProtocolJson() => {
-        VideoSettingType.selectionTime.name: selectionTimeMs,
-        VideoSettingType.pauseOnEnd.name: pauseOnEnd,
-        VideoSettingType.showTimer.name: showTimer,
-        VideoSettingType.videoFit.name: videoFit.name,
-        VideoSettingType.defaultSelection.name: defaultSelection.name,
-      };
 }
 
 /// A node's deviations from the project [VideoSettings]. A `null` field means
@@ -106,13 +98,4 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
         VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
       };
 
-  /// The `.fmv` representation of a node's `overrides` block. Only set fields
-  /// are included.
-  Map<String, Object> toProtocolJson() => {
-        VideoSettingType.selectionTime.name: ?selectionTimeMs,
-        VideoSettingType.pauseOnEnd.name: ?pauseOnEnd,
-        VideoSettingType.showTimer.name: ?showTimer,
-        VideoSettingType.videoFit.name: ?videoFit?.name,
-        VideoSettingType.defaultSelection.name: ?defaultSelection?.name,
-      };
 }
