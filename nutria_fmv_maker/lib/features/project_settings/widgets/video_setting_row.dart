@@ -4,6 +4,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 
 /// The localized name of a setting.
@@ -44,16 +46,25 @@ String videoSettingValue(
         },
     };
 
+/// Selection time as shown in its field: seconds with two decimals.
+String _seconds(int ms) => (ms / 1000).toStringAsFixed(2);
+
 /// One setting as a [NutriaSettingRow]. On nodes, an overridden setting is
 /// accented and gets a reset (x) button.
-class VideoSettingRow extends StatelessWidget {
+///
+/// The selection time is a number field (type seconds, or step a second with
+/// its arrows); every other setting steps through its values by clicking,
+/// and right-clicking it lists them all.
+class VideoSettingRow extends StatefulWidget {
   const VideoSettingRow({
     super.key,
     required this.type,
     required this.settings,
     required this.onStep,
+    required this.onChanged,
     this.isOverridden = false,
     this.onReset,
+    this.onMenuOpenChanged,
   });
 
   final VideoSettingType type;
@@ -63,24 +74,70 @@ class VideoSettingRow extends StatelessWidget {
 
   /// The user clicked previous (-1) or next (1); toggles always send 1.
   final ValueChanged<int> onStep;
+
+  /// The user picked or typed a value: [settings] with [type] changed. All
+  /// keystrokes of one typing session share [mergeKey] (one undo step).
+  final void Function(VideoSettings next, {Object? mergeKey}) onChanged;
   final bool isOverridden;
 
   /// Removes the override. Shown only when [isOverridden].
   final VoidCallback? onReset;
+  final ValueChanged<bool>? onMenuOpenChanged;
+
+  @override
+  State<VideoSettingRow> createState() => _VideoSettingRowState();
+}
+
+class _VideoSettingRowState extends State<VideoSettingRow> {
+  Object _typing = Object();
 
   @override
   Widget build(BuildContext context) {
     final t = AppLocalizations.of(context);
+    final type = widget.type;
+    final settings = widget.settings;
     final toggle = isToggleSetting(type);
+    final options = settings.optionsFor(type);
     return NutriaSettingRow(
       label: videoSettingName(t, type),
       value: videoSettingValue(t, type, settings),
-      isAccented: isOverridden,
-      onReset: isOverridden ? onReset : null,
+      isAccented: widget.isOverridden,
+      onReset: widget.isOverridden ? widget.onReset : null,
       resetTooltip: t.tooltipResetOverride,
-      onTap: toggle ? () => onStep(1) : null,
-      onPrevious: toggle ? null : () => onStep(-1),
-      onNext: toggle ? null : () => onStep(1),
+      field: type == VideoSettingType.selectionTime
+          ? NutriaNumberField(
+              text: _seconds(settings.selectionTimeMs),
+              decimals: true,
+              onStep: widget.onStep,
+              onFocusChanged: (focused) {
+                if (focused) _typing = Object();
+              },
+              onChanged: (text) {
+                final seconds = NutriaNumberField.parse(text);
+                if (seconds == null || seconds < 0) return;
+                widget.onChanged(
+                    settings.copyWith(
+                        selectionTimeMs: (seconds * 1000).round()),
+                    mergeKey: _typing);
+              },
+            )
+          : null,
+      onTap: toggle ? () => widget.onStep(1) : null,
+      onPrevious: toggle ? null : () => widget.onStep(-1),
+      onNext: toggle ? null : () => widget.onStep(1),
+      options: options.isEmpty
+          ? null
+          : [
+              for (final option in options)
+                NutriaContextMenuItem(
+                  icon: settings.sameValue(option, type)
+                      ? Icons.check
+                      : Icons.circle_outlined,
+                  label: videoSettingValue(t, type, option),
+                  onSelected: () => widget.onChanged(option),
+                ),
+            ],
+      onOptionsOpenChanged: widget.onMenuOpenChanged,
     );
   }
 }

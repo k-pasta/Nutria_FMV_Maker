@@ -2,6 +2,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
@@ -20,7 +21,12 @@ class NutriaSettingRow extends StatelessWidget {
     this.onReset,
     this.resetTooltip,
     this.isAccented = false,
-  }) : assert(onTap != null || (onPrevious != null && onNext != null));
+    this.field,
+    this.options,
+    this.onOptionsOpenChanged,
+  }) : assert(field != null ||
+            onTap != null ||
+            (onPrevious != null && onNext != null));
 
   final String label;
   final String value;
@@ -33,11 +39,17 @@ class NutriaSettingRow extends StatelessWidget {
   final String? resetTooltip;
   final bool isAccented;
 
+  /// Shown instead of the value button, e.g. a `NutriaNumberField`.
+  final Widget? field;
+
+  /// Every possible value, offered when the value is right-clicked.
+  final List<NutriaContextMenuItem>? options;
+  final ValueChanged<bool>? onOptionsOpenChanged;
+
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final valueText = NutriaText(text: value);
-    final onTap = this.onTap;
     final onReset = this.onReset;
     return Row(
       children: [
@@ -80,21 +92,32 @@ class NutriaSettingRow extends StatelessWidget {
             ),
           ),
         ),
-        Expanded(
-          child: onTap != null
-              ? NutriaButton(
-                  isAccented: isAccented,
-                  onTap: onTap,
-                  child: valueText,
-                )
-              : NutriaButton.leftRight(
-                  isAccented: isAccented,
-                  onTapLeft: onPrevious!,
-                  onTapRight: onNext!,
-                  child: valueText,
-                ),
-        ),
+        Expanded(child: _withOptions(_value(valueText))),
       ],
+    );
+  }
+
+  Widget _value(Widget valueText) {
+    final field = this.field;
+    if (field != null) return field;
+    final onTap = this.onTap;
+    return onTap != null
+        ? NutriaButton(isAccented: isAccented, onTap: onTap, child: valueText)
+        : NutriaButton.leftRight(
+            isAccented: isAccented,
+            onTapLeft: onPrevious!,
+            onTapRight: onNext!,
+            child: valueText,
+          );
+  }
+
+  Widget _withOptions(Widget value) {
+    final options = this.options;
+    if (options == null) return value;
+    return NutriaContextMenuArea(
+      itemsAt: (_) => options,
+      onOpenChanged: onOptionsOpenChanged,
+      child: value,
     );
   }
 }

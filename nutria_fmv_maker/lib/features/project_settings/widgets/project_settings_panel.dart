@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/video_setting_row.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 
@@ -28,6 +29,10 @@ class ProjectSettingsPanel extends ConsumerWidget {
             settings: settings,
             onStep: (direction) =>
                 editor.editProjectSettings((s) => s.step(type, direction)),
+            onChanged: (next, {mergeKey}) =>
+                editor.editProjectSettings((_) => next, mergeKey: mergeKey),
+            onMenuOpenChanged:
+                ref.read(overlayProvider.notifier).setContextMenuOpen,
           ),
         ],
       ]),

@@ -159,19 +159,21 @@ class GraphEditor {
 
   /// Changes override values, e.g. `(o) => o.copyWith(showTimer: false)`.
   void editOverrides(String nodeId,
-          VideoSettingsOverride Function(VideoSettingsOverride o) edit) =>
-      _updateOverrides('Change setting', nodeId, edit);
+          VideoSettingsOverride Function(VideoSettingsOverride o) edit,
+          {Object? mergeKey}) =>
+      _updateOverrides('Change setting', nodeId, edit, mergeKey: mergeKey);
 
   void clearOverrides(String nodeId) => _updateOverrides(
       'Remove overrides', nodeId, (_) => const VideoSettingsOverride());
 
   void _updateOverrides(String label, String nodeId,
-      VideoSettingsOverride Function(VideoSettingsOverride o) edit) {
+      VideoSettingsOverride Function(VideoSettingsOverride o) edit,
+      {Object? mergeKey}) {
     _document.apply(label, (d) {
       final current = d.node(nodeId).overridesOrNull;
       if (current == null) return d;
       return d.setOverrides(nodeId, edit(current));
-    });
+    }, mergeKey: mergeKey);
   }
 
   // ---------------------------------------------------------------- project
@@ -190,9 +192,12 @@ class GraphEditor {
       );
 
   /// Changes project-wide settings, e.g. `(s) => s.copyWith(showTimer: true)`.
-  void editProjectSettings(VideoSettings Function(VideoSettings s) edit) =>
+  /// Pass the same [mergeKey] for every keystroke of one typing session.
+  void editProjectSettings(VideoSettings Function(VideoSettings s) edit,
+          {Object? mergeKey}) =>
       _document.apply('Change project settings',
-          (d) => d.copyWith(settings: edit(d.settings)));
+          (d) => d.copyWith(settings: edit(d.settings)),
+          mergeKey: mergeKey);
 
   // -------------------------------------------------------------- variables
 
@@ -226,6 +231,17 @@ class GraphEditor {
           'Edit variable',
           (d) => d.updateVariable(id, (v) => v.withInitialText(text) ?? v),
           mergeKey: mergeKey);
+
+  /// Steps the starting value with the field's arrows (see
+  /// [Variable.stepped]).
+  void stepVariable(String id, int direction) => _document.apply(
+      'Edit variable', (d) => d.updateVariable(id, (v) => v.stepped(direction)));
+
+  /// Sets a true/false variable's starting value.
+  void setVariableBool(String id, bool value) => _document.apply(
+      'Edit variable',
+      (d) => d.updateVariable(
+          id, (v) => v is BoolVariable ? v.copyWith(initial: value) : v));
 
   /// Flips a true/false variable's starting value.
   void toggleVariable(String id) => _document.apply(

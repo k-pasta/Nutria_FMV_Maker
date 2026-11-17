@@ -1,13 +1,15 @@
 // The project's variables: name, type and starting value of each.
-import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
@@ -99,6 +101,12 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
       ),
     );
     final gap = SizedBox(width: theme.dPanelPadding);
+    final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
+    String typeName(VariableType type) => switch (type) {
+      VariableType.boolean => t.variableTypeBool,
+      VariableType.integer => t.variableTypeInt,
+      VariableType.decimal => t.variableTypeFloat,
+    };
 
     return Container(
       padding: EdgeInsets.all(theme.dPanelPadding),
@@ -133,18 +141,34 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
               Expanded(
                 flex: 3,
                 child: switch (variable) {
-                  BoolVariable(:final initial) => NutriaButton(
-                    onTap: () => editor.toggleVariable(variable.id),
-                    child: NutriaText(
-                      text: initial ? t.variableTrue : t.variableFalse,
+                  BoolVariable(:final initial) => NutriaContextMenuArea(
+                    onOpenChanged: menuOpen,
+                    itemsAt: (_) => [
+                      for (final value in [true, false])
+                        NutriaContextMenuItem(
+                          icon: value == initial
+                              ? Icons.check
+                              : Icons.circle_outlined,
+                          label: value ? t.variableTrue : t.variableFalse,
+                          onSelected: () =>
+                              editor.setVariableBool(variable.id, value),
+                        ),
+                    ],
+                    child: NutriaButton(
+                      onTap: () => editor.toggleVariable(variable.id),
+                      child: NutriaText(
+                        text: initial ? t.variableTrue : t.variableFalse,
+                      ),
                     ),
                   ),
-                  _ => NutriaTextField(
+                  _ => NutriaNumberField(
                     // A new field per type, so its text and filter match it.
                     key: ValueKey(variable.type),
                     text: variable.initialText,
                     hint: t.variableInitialValue,
-                    inputFormatters: [_numberFilter(variable.type)],
+                    decimals: variable.type == VariableType.decimal,
+                    onStep: (direction) =>
+                        editor.stepVariable(variable.id, direction),
                     onFocusChanged: (focused) {
                       if (focused) _valueSession = Object();
                     },
@@ -159,23 +183,31 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
               gap,
               Expanded(
                 flex: 2,
-                child: NutriaTooltip(
-                  message: t.variableType,
-                  child: NutriaButton.leftRight(
-                    onTapLeft: () => editor.setVariableType(
-                      variable.id,
-                      _stepType(variable.type, -1),
-                    ),
-                    onTapRight: () => editor.setVariableType(
-                      variable.id,
-                      _stepType(variable.type, 1),
-                    ),
-                    child: NutriaText(
-                      text: switch (variable.type) {
-                        VariableType.boolean => t.variableTypeBool,
-                        VariableType.integer => t.variableTypeInt,
-                        VariableType.decimal => t.variableTypeFloat,
-                      },
+                child: NutriaContextMenuArea(
+                  onOpenChanged: menuOpen,
+                  itemsAt: (_) => [
+                    for (final type in VariableType.values)
+                      NutriaContextMenuItem(
+                        icon: type == variable.type
+                            ? Icons.check
+                            : Icons.circle_outlined,
+                        label: typeName(type),
+                        onSelected: () =>
+                            editor.setVariableType(variable.id, type),
+                      ),
+                  ],
+                  child: NutriaTooltip(
+                    message: t.variableType,
+                    child: NutriaButton.leftRight(
+                      onTapLeft: () => editor.setVariableType(
+                        variable.id,
+                        _stepType(variable.type, -1),
+                      ),
+                      onTapRight: () => editor.setVariableType(
+                        variable.id,
+                        _stepType(variable.type, 1),
+                      ),
+                      child: NutriaText(text: typeName(variable.type)),
                     ),
                   ),
                 ),
@@ -197,14 +229,3 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
 /// The type before ([direction] -1) or after (1) [type], wrapping around.
 VariableType _stepType(VariableType type, int direction) =>
     VariableType.values[(type.index + direction) % VariableType.values.length];
-
-/// Only lets through text on the way to a number of [type]: digits, a
-/// leading minus and, for decimals, one decimal point or comma.
-TextInputFormatter _numberFilter(VariableType type) {
-  final valid = type == VariableType.integer
-      ? RegExp(r'^-?\d*$')
-      : RegExp(r'^-?\d*[.,]?\d*$');
-  return TextInputFormatter.withFunction(
-    (old, next) => valid.hasMatch(next.text) ? next : old,
-  );
-}

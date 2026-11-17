@@ -20,6 +20,7 @@ class NutriaTextField extends StatefulWidget {
     this.textAlign = TextAlign.left,
     this.isError = false,
     this.inputFormatters,
+    this.horizontalPadding,
   });
 
   final String text;
@@ -34,6 +35,10 @@ class NutriaTextField extends StatefulWidget {
 
   /// Limits what can be typed, e.g. to digits.
   final List<TextInputFormatter>? inputFormatters;
+
+  /// Space left and right of the text (default: the theme's), e.g. to make
+  /// room for buttons drawn over the field's ends.
+  final double? horizontalPadding;
 
   @override
   State<NutriaTextField> createState() => _NutriaTextFieldState();
@@ -157,7 +162,7 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
           // Vertically centers one line in a button-high field (+0.5 by eye).
           contentPadding: EdgeInsets.symmetric(
             vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
-            horizontal: theme.dTextfieldPadding,
+            horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
           ),
           counterText: '',
           hintText: widget.hint,

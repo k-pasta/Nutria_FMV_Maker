@@ -90,6 +90,10 @@ class PreferencesNotifier extends _$PreferencesNotifier {
   void toggleGridSnapping() =>
       _update(state.copyWith(gridSnapping: !state.gridSnapping));
 
+  void setGridSize(double size) {
+    if (kGridSizes.contains(size)) _update(state.copyWith(gridSize: size));
+  }
+
   /// Picks the next ([direction] 1) or previous (-1) of [kGridSizes].
   void stepGridSize(int direction) {
     final current = kGridSizes.indexOf(state.gridSize);

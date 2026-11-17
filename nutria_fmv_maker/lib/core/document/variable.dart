@@ -73,6 +73,17 @@ sealed class Variable with _$Variable {
     };
   }
 
+  /// This variable with the starting value one step up ([direction] 1) or
+  /// down (-1): whole numbers by 1, decimals by 0.1, true/false flips.
+  Variable stepped(int direction) => switch (this) {
+        final BoolVariable v => v.copyWith(initial: !v.initial),
+        final IntVariable v => v.copyWith(initial: v.initial + direction),
+        // Rounded, so repeated steps don't drift (0.30000000000000004).
+        final DecimalVariable v => v.copyWith(
+            initial:
+                ((v.initial + direction / 10) * 1e6).roundToDouble() / 1e6),
+      };
+
   /// The starting value as typed in a field.
   String get initialText => switch (this) {
     BoolVariable(:final initial) => '$initial',

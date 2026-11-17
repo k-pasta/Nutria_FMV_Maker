@@ -8,6 +8,7 @@ import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_parts.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/video_setting_row.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
@@ -184,7 +185,12 @@ class VideoNodeExpansion extends ConsumerWidget {
             node.id,
             (o) => o.enable(type, settings.step(type, direction)),
           ),
+          onChanged: (next, {mergeKey}) => editor.editOverrides(
+              node.id, (o) => o.enable(type, next),
+              mergeKey: mergeKey),
           onReset: () => editor.disableOverride(node.id, type),
+          onMenuOpenChanged:
+              ref.read(overlayProvider.notifier).setContextMenuOpen,
         ),
       SwatchPicker(
         selected: node.swatch,
