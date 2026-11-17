@@ -13,7 +13,7 @@ const kLightSwatches = <Color>[
   Color(0xffc8243f),
   Color(0xffc73a1c),
   Color(0xff946200),
-  Color(0xff16803e),
+  Color(0xff137a3a),
   Color(0xff1f6dcc),
   Color(0xff3a3a44),
 ];
@@ -21,23 +21,26 @@ const kLightSwatches = <Color>[
 /// Light theme: grey canvas, off-white panels, white nodes raised by soft
 /// shadows.
 const kLightTheme = AppTheme(
-  cBackground: Color(0xffcdd1d8),
-  cBackgroundDots: Color(0xff9ea4b0),
+  cBackground: Color(0xffc3c8d0),
+  cBackgroundDots: Color(0xff949aa6),
   cText: Color(0xd91b1b22),
   cTextActive: Color(0xff111116),
   cTextInactive: Color(0x991b1b22),
   cPanel: Color(0xfff5f6f8),
-  cCard: Color(0xffffffff),
-  cCardHovered: Color(0xfff4f5f7),
-  cButton: Color(0xffd3d8e0),
-  cButtonHovered: Color(0xffcad0da),
-  cButtonPressed: Color(0xffbfc6d1),
+  // Nodes rest on a soft grey and turn white (the lightest) when hovered or
+  // selected.
+  cCard: Color(0xfff1f3f6),
+  cCardHovered: Color(0xffffffff),
+  // Light fills; a small shadow (elevation) sets them apart.
+  cButton: Color(0xffe8ebf0),
+  cButtonHovered: Color(0xffdfe3e9),
+  cButtonPressed: Color(0xffd3d8e0),
   cButtonContentUnhovered: Color(0x991b1b22),
-  cTextField: Color(0xffd3d8e0),
-  cTextFieldActive: Color(0xffcad0da),
+  cTextField: Color(0xffe8ebf0),
+  cTextFieldActive: Color(0xffffffff),
   cDivider: Color(0x2e000000),
   cOutlines: Color(0x33000000),
-  cShadow: Color(0x24252a3a),
+  cShadow: Color(0x33252a3a),
   cMenuBar: Color(0xfff5f6f8),
   cMenuBarText: Color(0xff1b1b22),
   cDimmer: Color(0x40000000),

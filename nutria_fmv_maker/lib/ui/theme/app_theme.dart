@@ -36,13 +36,13 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cPanel = const Color(0xff212128),
     this.cCard = const Color(0xff32323c),
     this.cCardHovered = const Color(0xff3a3a45),
-    this.cButton = const Color(0xff46464f),
-    this.cButtonHovered = const Color(0xff50505a),
-    this.cButtonPressed = const Color(0xff5b5b66),
+    this.cButton = const Color(0xff50505a),
+    this.cButtonHovered = const Color(0xff5a5a64),
+    this.cButtonPressed = const Color(0xff656570),
     this.cButtonContentUnhovered = const Color(0x99ffffff),
-    this.cListSelected = const Color(0xff5b5b66),
-    this.cTextField = const Color(0xff46464f),
-    this.cTextFieldActive = const Color(0xff50505a),
+    this.cListSelected = const Color(0xff656570),
+    this.cTextField = const Color(0xff50505a),
+    this.cTextFieldActive = const Color(0xff5a5a64),
     this.cDivider = const Color(0x26ffffff),
     this.cOutlines = const Color(0x29ffffff),
     this.cShadow = const Color(0x99000000),
@@ -179,6 +179,18 @@ class AppTheme extends ThemeExtension<AppTheme> {
           offset: Offset(0, lifted ? 6 : 2),
         ),
       ];
+
+  /// The small shadow under buttons and fields in themes with elevation
+  /// ([dElevation] > 0); none otherwise.
+  List<BoxShadow>? controlShadow() => dElevation > 0
+      ? [
+          BoxShadow(
+            color: cShadow,
+            blurRadius: dShadowBlur / 4,
+            offset: const Offset(0, 1),
+          ),
+        ]
+      : null;
 
   @override
   AppTheme copyWith({

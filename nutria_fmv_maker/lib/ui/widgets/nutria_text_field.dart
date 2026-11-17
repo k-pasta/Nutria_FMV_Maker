@@ -135,54 +135,64 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     final focused = _focus.hasFocus;
     final radius = BorderRadius.circular(theme.dButtonBorderRadius);
     const hidden = BorderSide(color: Colors.transparent);
-    return Shortcuts(
-      shortcuts: _blockedShortcuts,
-      child: TextField(
-        controller: _controller,
-        focusNode: _focus,
-        onChanged: widget.onChanged,
-        inputFormatters: widget.inputFormatters,
-        // Clicking elsewhere ends editing, so the app's keyboard shortcuts
-        // work again (desktop fields keep focus by default).
-        onTapOutside: (_) => _focus.unfocus(),
-        textInputAction: TextInputAction.next,
-        cursorColor: theme.cText,
-        style: TextStyle(
-          color: widget.isError
-              ? theme.cAccent
-              : (focused ? theme.cTextActive : theme.cText),
-          fontSize: theme.dTextHeight,
-        ),
-        maxLines: widget.maxLines,
-        maxLength: kTextFieldMaxLength,
-        textAlign: widget.textAlign,
-        decoration: InputDecoration(
-          // Allows heights below Material's 48px minimum.
-          isDense: true,
-          // Vertically centers one line in a button-high field (+0.5 by eye).
-          contentPadding: EdgeInsets.symmetric(
-            vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
-            horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
+    // Raised a little in themes with elevation, like buttons.
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        borderRadius: radius,
+        boxShadow: theme.controlShadow(),
+      ),
+      child: Shortcuts(
+        shortcuts: _blockedShortcuts,
+        child: TextField(
+          controller: _controller,
+          focusNode: _focus,
+          onChanged: widget.onChanged,
+          inputFormatters: widget.inputFormatters,
+          // Clicking elsewhere ends editing, so the app's keyboard shortcuts
+          // work again (desktop fields keep focus by default).
+          onTapOutside: (_) => _focus.unfocus(),
+          textInputAction: TextInputAction.next,
+          cursorColor: theme.cText,
+          style: TextStyle(
+            color: widget.isError
+                ? theme.cAccent
+                : (focused ? theme.cTextActive : theme.cText),
+            fontSize: theme.dTextHeight,
           ),
-          counterText: '',
-          hintText: widget.hint,
-          hintStyle: TextStyle(color: theme.cTextInactive),
-          // Flat: the fill shows the field, a darker fill shows focus.
-          border: OutlineInputBorder(borderRadius: radius, borderSide: hidden),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: radius,
-            borderSide: hidden,
+          maxLines: widget.maxLines,
+          maxLength: kTextFieldMaxLength,
+          textAlign: widget.textAlign,
+          decoration: InputDecoration(
+            // Allows heights below Material's 48px minimum.
+            isDense: true,
+            // Vertically centers one line in a button-high field (+0.5 by eye).
+            contentPadding: EdgeInsets.symmetric(
+              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
+              horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
+            ),
+            counterText: '',
+            hintText: widget.hint,
+            hintStyle: TextStyle(color: theme.cTextInactive),
+            // Flat: the fill shows the field, a darker fill shows focus.
+            border: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: hidden,
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: hidden,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: hidden,
+            ),
+            disabledBorder: OutlineInputBorder(
+              borderRadius: radius,
+              borderSide: hidden,
+            ),
+            filled: true,
+            fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
           ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: radius,
-            borderSide: hidden,
-          ),
-          disabledBorder: OutlineInputBorder(
-            borderRadius: radius,
-            borderSide: hidden,
-          ),
-          filled: true,
-          fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
         ),
       ),
     );

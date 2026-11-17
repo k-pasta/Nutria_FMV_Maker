@@ -21,13 +21,17 @@ void main() {
 
   for (final MapEntry(key: name, value: t) in themes.entries) {
     group('$name theme', () {
+      // Themes with elevation separate buttons and fields from what they sit
+      // on with a shadow, so their fills may be closer.
+      final controls = t.dElevation > 0 ? 1.05 : 1.3;
       // (what, foreground, background, minimum)
       final pairs = <(String, Color, Color, double)>[
         ('nodes on the canvas', t.cCard, t.cBackground, 1.5),
         ('panels next to the canvas', t.cPanel, t.cBackground, 1.2),
-        ('buttons on nodes', t.cButton, t.cCard, 1.3),
-        ('buttons on panels', t.cButton, t.cPanel, 1.3),
-        ('text fields on nodes', t.cTextField, t.cCard, 1.3),
+        ('buttons on nodes', t.cButton, t.cCard, controls),
+        ('buttons on lit nodes', t.cButton, t.cCardHovered, controls),
+        ('buttons on panels', t.cButton, t.cPanel, controls),
+        ('text fields on nodes', t.cTextField, t.cCard, controls),
         ('grid dots', t.cBackgroundDots, t.cBackground, 1.6),
         for (final (surface, color) in [
           ('canvas', t.cBackground),

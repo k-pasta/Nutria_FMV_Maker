@@ -147,6 +147,8 @@ class _NutriaButtonState extends State<NutriaButton> {
             decoration: BoxDecoration(
               color: _background(theme),
               borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+              // Raised a little in themes with elevation.
+              boxShadow: active ? theme.controlShadow() : null,
             ),
             child: IgnorePointer(
               // Centered, and only as wide as the content needs: a Center
