@@ -24,9 +24,11 @@ class NutriaSettingRow extends StatelessWidget {
     this.field,
     this.options,
     this.onOptionsOpenChanged,
-  }) : assert(field != null ||
-            onTap != null ||
-            (onPrevious != null && onNext != null));
+  }) : assert(
+         field != null ||
+             onTap != null ||
+             (onPrevious != null && onNext != null),
+       );
 
   final String label;
   final String value;

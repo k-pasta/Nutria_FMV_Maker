@@ -31,10 +31,10 @@ class NutriaNumberField extends StatelessWidget {
   /// Lets through text on the way to a number: digits, a leading minus and,
   /// with [decimals], one decimal point or comma.
   static TextInputFormatter filter({required bool decimals}) {
-    final valid =
-        decimals ? RegExp(r'^-?\d*[.,]?\d*$') : RegExp(r'^-?\d*$');
+    final valid = decimals ? RegExp(r'^-?\d*[.,]?\d*$') : RegExp(r'^-?\d*$');
     return TextInputFormatter.withFunction(
-        (old, next) => valid.hasMatch(next.text) ? next : old);
+      (old, next) => valid.hasMatch(next.text) ? next : old,
+    );
   }
 
   /// Reads a typed number, with a comma also accepted as the decimal point.

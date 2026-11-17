@@ -49,8 +49,10 @@ class DotGridPainter extends CustomPainter {
 
     // Screen position of the origin, then of the first dot left/above it.
     final translation = matrix.getTranslation();
-    final originOnScreen =
-        Offset(origin.dx * scale + translation.x, origin.dy * scale + translation.y);
+    final originOnScreen = Offset(
+      origin.dx * scale + translation.x,
+      origin.dy * scale + translation.y,
+    );
     final startX = originOnScreen.dx % screenStep;
     final startY = originOnScreen.dy % screenStep;
 

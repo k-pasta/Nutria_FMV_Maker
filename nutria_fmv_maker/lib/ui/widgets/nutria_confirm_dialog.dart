@@ -15,48 +15,47 @@ Future<T?> showNutriaChoiceDialog<T>(
   BuildContext context, {
   required String message,
   required List<NutriaChoice<T>> choices,
-}) =>
-    showDialog<T>(
-      context: context,
-      barrierColor: context.appTheme.cDimmer,
-      builder: (context) {
-        final theme = context.appTheme;
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          child: NutriaModal(
-            onClose: () => Navigator.of(context).pop(),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+}) => showDialog<T>(
+  context: context,
+  barrierColor: context.appTheme.cDimmer,
+  builder: (context) {
+    final theme = context.appTheme;
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      child: NutriaModal(
+        onClose: () => Navigator.of(context).pop(),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            NutriaText(
+              text: message,
+              maxLines: 5,
+              state: NutriaTextState.accented,
+            ),
+            SizedBox(height: theme.dSectionPadding * 2),
+            Row(
               children: [
-                NutriaText(
-                  text: message,
-                  maxLines: 5,
-                  state: NutriaTextState.accented,
-                ),
-                SizedBox(height: theme.dSectionPadding * 2),
-                Row(
-                  children: [
-                    for (final (i, choice) in choices.indexed) ...[
-                      if (i > 0) SizedBox(width: theme.dSectionPadding),
-                      Expanded(
-                        child: NutriaButton(
-                          isAccented: choice.isAccented,
-                          onTap: () => Navigator.of(context).pop(choice.value),
-                          child: NutriaText(
-                            text: choice.label,
-                            state: choice.isAccented
-                                ? NutriaTextState.onAccent
-                                : NutriaTextState.normal,
-                          ),
-                        ),
+                for (final (i, choice) in choices.indexed) ...[
+                  if (i > 0) SizedBox(width: theme.dSectionPadding),
+                  Expanded(
+                    child: NutriaButton(
+                      isAccented: choice.isAccented,
+                      onTap: () => Navigator.of(context).pop(choice.value),
+                      child: NutriaText(
+                        text: choice.label,
+                        state: choice.isAccented
+                            ? NutriaTextState.onAccent
+                            : NutriaTextState.normal,
                       ),
-                    ],
-                  ],
-                ),
+                    ),
+                  ),
+                ],
               ],
             ),
-          ),
-        );
-      },
+          ],
+        ),
+      ),
     );
+  },
+);

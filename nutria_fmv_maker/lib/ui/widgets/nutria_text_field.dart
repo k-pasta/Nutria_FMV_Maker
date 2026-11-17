@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
+import 'package:nutria_fmv_maker/ui/widgets/raised_edge.dart';
 
 /// A single- or multi-line text field.
 ///
@@ -136,11 +137,8 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     final radius = BorderRadius.circular(theme.dButtonBorderRadius);
     const hidden = BorderSide(color: Colors.transparent);
     // Raised a little in themes with elevation, like buttons.
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        borderRadius: radius,
-        boxShadow: theme.controlShadow(),
-      ),
+    return RaisedEdge(
+      radius: theme.dButtonBorderRadius,
       child: Shortcuts(
         shortcuts: _blockedShortcuts,
         child: TextField(

@@ -2,6 +2,7 @@
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
+import 'package:nutria_fmv_maker/ui/widgets/raised_edge.dart';
 
 /// A square button of the theme's button height with hover and press states.
 ///
@@ -138,60 +139,63 @@ class _NutriaButtonState extends State<NutriaButton> {
                   }
                 }
               : null,
-          child: Container(
-            height: theme.dButtonHeight,
-            constraints: BoxConstraints(
-              minWidth: theme.dButtonHeight,
-              minHeight: theme.dButtonHeight,
-            ),
-            decoration: BoxDecoration(
-              color: _background(theme),
-              borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
-              // Raised a little in themes with elevation.
-              boxShadow: active ? theme.controlShadow() : null,
-            ),
-            child: IgnorePointer(
-              // Centered, and only as wide as the content needs: a Center
-              // would stretch icon buttons to the full width they're offered.
-              child: Stack(
-                alignment: Alignment.center,
-                children: [
-                  if (widget._isStepper) ...[
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      left: -theme.dButtonHeight / 5,
-                      child: Icon(
-                        Icons.arrow_left,
-                        size: theme.dButtonHeight,
-                        color: _arrowColor(theme, _Side.left),
+          // Raised a little in themes with elevation.
+          child: RaisedEdge(
+            radius: theme.dButtonBorderRadius,
+            enabled: active,
+            child: Container(
+              height: theme.dButtonHeight,
+              constraints: BoxConstraints(
+                minWidth: theme.dButtonHeight,
+                minHeight: theme.dButtonHeight,
+              ),
+              decoration: BoxDecoration(
+                color: _background(theme),
+                borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+              ),
+              child: IgnorePointer(
+                // Centered, and only as wide as the content needs: a Center
+                // would stretch icon buttons to the full width they're offered.
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    if (widget._isStepper) ...[
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        left: -theme.dButtonHeight / 5,
+                        child: Icon(
+                          Icons.arrow_left,
+                          size: theme.dButtonHeight,
+                          color: _arrowColor(theme, _Side.left),
+                        ),
                       ),
-                    ),
-                    Positioned(
-                      top: 0,
-                      bottom: 0,
-                      right: -theme.dButtonHeight / 5,
-                      child: Icon(
-                        Icons.arrow_right,
-                        size: theme.dButtonHeight,
-                        color: _arrowColor(theme, _Side.right),
+                      Positioned(
+                        top: 0,
+                        bottom: 0,
+                        right: -theme.dButtonHeight / 5,
+                        child: Icon(
+                          Icons.arrow_right,
+                          size: theme.dButtonHeight,
+                          color: _arrowColor(theme, _Side.right),
+                        ),
                       ),
-                    ),
+                    ],
+                    ?widget.child,
+                    if (widget.icon != null)
+                      Icon(
+                        widget.icon,
+                        size: theme.dButtonHeight * widget.iconScale,
+                        color: !active
+                            ? theme.cTextInactive
+                            : widget.isAccented
+                            ? theme.cOnAccent
+                            : _hovered
+                            ? theme.cText
+                            : theme.cButtonContentUnhovered,
+                      ),
                   ],
-                  ?widget.child,
-                  if (widget.icon != null)
-                    Icon(
-                      widget.icon,
-                      size: theme.dButtonHeight * widget.iconScale,
-                      color: !active
-                          ? theme.cTextInactive
-                          : widget.isAccented
-                          ? theme.cOnAccent
-                          : _hovered
-                          ? theme.cText
-                          : theme.cButtonContentUnhovered,
-                    ),
-                ],
+                ),
               ),
             ),
           ),

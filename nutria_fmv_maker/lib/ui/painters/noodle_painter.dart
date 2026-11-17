@@ -40,8 +40,8 @@ class Noodle {
       other.endSwatch == endSwatch;
 
   @override
-  int get hashCode => Object.hash(
-      start, end, startLocked, endLocked, startSwatch, endSwatch);
+  int get hashCode =>
+      Object.hash(start, end, startLocked, endLocked, startSwatch, endSwatch);
 }
 
 /// Length of the horizontal piece at a knot, for straight noodles.
@@ -71,8 +71,11 @@ class NoodlePainter extends CustomPainter {
   final double width;
 
   /// The line of [noodle], for painting and tests.
-  static Path pathOf(Noodle noodle,
-      {bool curved = false, Offset origin = Offset.zero}) {
+  static Path pathOf(
+    Noodle noodle, {
+    bool curved = false,
+    Offset origin = Offset.zero,
+  }) {
     final start = noodle.start + origin;
     final end = noodle.end + origin;
     if (!curved) {
@@ -90,8 +93,14 @@ class NoodlePainter extends CustomPainter {
     final handle = math.max(50.0, (end.dx - start.dx).abs() / 2);
     return Path()
       ..moveTo(start.dx, start.dy)
-      ..cubicTo(start.dx + handle, start.dy, end.dx - handle, end.dy, end.dx,
-          end.dy);
+      ..cubicTo(
+        start.dx + handle,
+        start.dy,
+        end.dx - handle,
+        end.dy,
+        end.dx,
+        end.dy,
+      );
   }
 
   @override
@@ -111,7 +120,10 @@ class NoodlePainter extends CustomPainter {
           ..color = from;
       } else {
         paint.shader = ui.Gradient.linear(
-            noodle.start + origin, noodle.end + origin, [from, to]);
+          noodle.start + origin,
+          noodle.end + origin,
+          [from, to],
+        );
       }
       canvas.drawPath(pathOf(noodle, curved: curved, origin: origin), paint);
     }
