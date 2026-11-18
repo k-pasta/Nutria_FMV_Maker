@@ -31,11 +31,11 @@ class NodeFragment {
 
   /// Clipboard text.
   String encode() => jsonEncode({
-        _marker: _version,
-        'nodes': [for (final n in nodes) n.toJson()],
-        'edges': [for (final e in edges) e.toJson()],
-        'videos': [for (final v in videos) v.toJson()],
-      });
+    _marker: _version,
+    'nodes': [for (final n in nodes) n.toJson()],
+    'edges': [for (final e in edges) e.toJson()],
+    'videos': [for (final v in videos) v.toJson()],
+  });
 
   /// Reads clipboard [text], or returns `null` if it isn't copied nodes.
   static NodeFragment? decode(String? text) {
@@ -62,7 +62,8 @@ class NodeFragment {
     final xs = nodes.map((n) => n.position.x);
     final ys = nodes.map((n) => n.position.y);
     double mid(Iterable<double> v) =>
-        (v.reduce((a, b) => a < b ? a : b) + v.reduce((a, b) => a > b ? a : b)) /
+        (v.reduce((a, b) => a < b ? a : b) +
+            v.reduce((a, b) => a > b ? a : b)) /
         2;
     return Position(mid(xs), mid(ys));
   }
@@ -77,9 +78,7 @@ extension FragmentOps on ProjectDocument {
       for (final id in ids)
         if (nodes[id] case final node? when node is! OriginNode) id: node,
     };
-    final videoIds = {
-      for (final node in picked.values) ?node.videoIdOrNull,
-    };
+    final videoIds = {for (final node in picked.values) ?node.videoIdOrNull};
     return NodeFragment(
       nodes: picked.values.toList(),
       edges: [
@@ -106,8 +105,9 @@ extension FragmentOps on ProjectDocument {
     var doc = this;
     final videoIds = <String, String>{};
     for (final video in fragment.videos) {
-      final (next, id) =
-          doc.importVideo(VideoAsset(id: newId(), path: video.path));
+      final (next, id) = doc.importVideo(
+        VideoAsset(id: newId(), path: video.path),
+      );
       doc = next;
       videoIds[video.id] = id;
     }
@@ -120,20 +120,26 @@ extension FragmentOps on ProjectDocument {
       final id = newId();
       nodeIds[node.id] = id;
       final position = Position(
-          node.position.x + offset.x, node.position.y + offset.y);
+        node.position.x + offset.x,
+        node.position.y + offset.y,
+      );
       final copy = switch (node) {
         SimpleVideoNode() => node.copyWith(
-            id: id, position: position, videoId: videoIds[node.videoId]),
+          id: id,
+          position: position,
+          videoId: videoIds[node.videoId],
+        ),
         BranchedVideoNode() => node.copyWith(
-            id: id,
-            position: position,
-            videoId: videoIds[node.videoId],
-            choices: [
-              for (final choice in node.choices)
-                choice.copyWith(
-                    id: (portIds[node.id] ??= {})[choice.id] = newId()),
-            ],
-          ),
+          id: id,
+          position: position,
+          videoId: videoIds[node.videoId],
+          choices: [
+            for (final choice in node.choices)
+              choice.copyWith(
+                id: (portIds[node.id] ??= {})[choice.id] = newId(),
+              ),
+          ],
+        ),
         OriginNode() => throw StateError('unreachable'),
       };
       doc = doc.putNode(copy);

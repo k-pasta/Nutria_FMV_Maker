@@ -498,30 +498,30 @@ final class VariablesProvider
 
 String _$variablesHash() => r'fd405b21337284a28dd03bc629b8371ddc98c420';
 
-/// Variable names that are empty or used twice.
+/// Variable names shown as errors: invalid or used twice.
 
-@ProviderFor(conflictingVariableNames)
-final conflictingVariableNamesProvider = ConflictingVariableNamesProvider._();
+@ProviderFor(invalidVariableNames)
+final invalidVariableNamesProvider = InvalidVariableNamesProvider._();
 
-/// Variable names that are empty or used twice.
+/// Variable names shown as errors: invalid or used twice.
 
-final class ConflictingVariableNamesProvider
+final class InvalidVariableNamesProvider
     extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
     with $Provider<Set<String>> {
-  /// Variable names that are empty or used twice.
-  ConflictingVariableNamesProvider._()
+  /// Variable names shown as errors: invalid or used twice.
+  InvalidVariableNamesProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'conflictingVariableNamesProvider',
+        name: r'invalidVariableNamesProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$conflictingVariableNamesHash();
+  String debugGetCreateSourceHash() => _$invalidVariableNamesHash();
 
   @$internal
   @override
@@ -530,7 +530,7 @@ final class ConflictingVariableNamesProvider
 
   @override
   Set<String> create(Ref ref) {
-    return conflictingVariableNames(ref);
+    return invalidVariableNames(ref);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -542,8 +542,8 @@ final class ConflictingVariableNamesProvider
   }
 }
 
-String _$conflictingVariableNamesHash() =>
-    r'61ff37f013458097631de7cc97c1f28177b7cbf0';
+String _$invalidVariableNamesHash() =>
+    r'aa5241cf8a721ccd73b30eb650d5e6b6d0759122';
 
 /// Project title and description.
 

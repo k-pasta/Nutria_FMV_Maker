@@ -232,6 +232,14 @@ class GraphEditor {
           (d) => d.updateVariable(id, (v) => v.withInitialText(text) ?? v),
           mergeKey: mergeKey);
 
+  /// Sets the minimum ([isMin]) or maximum of a number variable from typed
+  /// [text]; empty removes the limit.
+  void setVariableLimit(String id,
+          {required bool isMin, required String text, Object? mergeKey}) =>
+      _document.apply('Edit variable',
+          (d) => d.setVariableLimit(id, isMin: isMin, text: text),
+          mergeKey: mergeKey);
+
   /// Steps the starting value with the field's arrows (see
   /// [Variable.stepped]).
   void stepVariable(String id, int direction) => _document.apply(

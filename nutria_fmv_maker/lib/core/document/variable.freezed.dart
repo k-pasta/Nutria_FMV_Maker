@@ -190,12 +190,12 @@ return decimal(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  bool initial)?  boolean,TResult Function( String id,  String name,  int initial)?  integer,TResult Function( String id,  String name,  double initial)?  decimal,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  String name,  bool initial)?  boolean,TResult Function( String id,  String name,  int initial,  int? min,  int? max)?  integer,TResult Function( String id,  String name,  double initial,  double? min,  double? max)?  decimal,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case BoolVariable() when boolean != null:
 return boolean(_that.id,_that.name,_that.initial);case IntVariable() when integer != null:
-return integer(_that.id,_that.name,_that.initial);case DecimalVariable() when decimal != null:
-return decimal(_that.id,_that.name,_that.initial);case _:
+return integer(_that.id,_that.name,_that.initial,_that.min,_that.max);case DecimalVariable() when decimal != null:
+return decimal(_that.id,_that.name,_that.initial,_that.min,_that.max);case _:
   return orElse();
 
 }
@@ -213,12 +213,12 @@ return decimal(_that.id,_that.name,_that.initial);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  bool initial)  boolean,required TResult Function( String id,  String name,  int initial)  integer,required TResult Function( String id,  String name,  double initial)  decimal,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  String name,  bool initial)  boolean,required TResult Function( String id,  String name,  int initial,  int? min,  int? max)  integer,required TResult Function( String id,  String name,  double initial,  double? min,  double? max)  decimal,}) {final _that = this;
 switch (_that) {
 case BoolVariable():
 return boolean(_that.id,_that.name,_that.initial);case IntVariable():
-return integer(_that.id,_that.name,_that.initial);case DecimalVariable():
-return decimal(_that.id,_that.name,_that.initial);}
+return integer(_that.id,_that.name,_that.initial,_that.min,_that.max);case DecimalVariable():
+return decimal(_that.id,_that.name,_that.initial,_that.min,_that.max);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -232,12 +232,12 @@ return decimal(_that.id,_that.name,_that.initial);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  bool initial)?  boolean,TResult? Function( String id,  String name,  int initial)?  integer,TResult? Function( String id,  String name,  double initial)?  decimal,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  String name,  bool initial)?  boolean,TResult? Function( String id,  String name,  int initial,  int? min,  int? max)?  integer,TResult? Function( String id,  String name,  double initial,  double? min,  double? max)?  decimal,}) {final _that = this;
 switch (_that) {
 case BoolVariable() when boolean != null:
 return boolean(_that.id,_that.name,_that.initial);case IntVariable() when integer != null:
-return integer(_that.id,_that.name,_that.initial);case DecimalVariable() when decimal != null:
-return decimal(_that.id,_that.name,_that.initial);case _:
+return integer(_that.id,_that.name,_that.initial,_that.min,_that.max);case DecimalVariable() when decimal != null:
+return decimal(_that.id,_that.name,_that.initial,_that.min,_that.max);case _:
   return null;
 
 }
@@ -328,12 +328,15 @@ as bool,
 @JsonSerializable()
 
 class IntVariable extends Variable {
-  const IntVariable({required this.id, required this.name, this.initial = 0,  String? $type}): $type = $type ?? 'integer',super._();
+  const IntVariable({required this.id, required this.name, this.initial = 0, this.min, this.max,  String? $type}): $type = $type ?? 'integer',super._();
   factory IntVariable.fromJson(Map<String, dynamic> json) => _$IntVariableFromJson(json);
 
 @override final  String id;
 @override final  String name;
 @override@JsonKey() final  int initial;
+/// Lowest and highest allowed value; `null` means no limit.
+ final  int? min;
+ final  int? max;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -352,18 +355,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is IntVariable&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.initial, initial) || other.initial == initial));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is IntVariable&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,initial);
+    return Object.hash(runtimeType,id,name,initial,min,max);
 }
 
 @override
 String toString() {
-    return 'Variable.integer(id: $id, name: $name, initial: $initial)';
+    return 'Variable.integer(id: $id, name: $name, initial: $initial, min: $min, max: $max)';
 }
 
 
@@ -374,7 +377,7 @@ abstract mixin class $IntVariableCopyWith<$Res> implements $VariableCopyWith<$Re
   factory $IntVariableCopyWith(IntVariable value, $Res Function(IntVariable) _then) = _$IntVariableCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, int initial
+ String id, String name, int initial, int? min, int? max
 });
 
 
@@ -391,12 +394,14 @@ class _$IntVariableCopyWithImpl<$Res>
 
 /// Create a copy of Variable
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? initial = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? initial = null,Object? min = freezed,Object? max = freezed,}) {
   return _then(IntVariable(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,initial: null == initial ? _self.initial : initial // ignore: cast_nullable_to_non_nullable
-as int,
+as int,min: freezed == min ? _self.min : min // ignore: cast_nullable_to_non_nullable
+as int?,max: freezed == max ? _self.max : max // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -407,12 +412,15 @@ as int,
 @JsonSerializable()
 
 class DecimalVariable extends Variable {
-  const DecimalVariable({required this.id, required this.name, this.initial = 0.0,  String? $type}): $type = $type ?? 'decimal',super._();
+  const DecimalVariable({required this.id, required this.name, this.initial = 0.0, this.min, this.max,  String? $type}): $type = $type ?? 'decimal',super._();
   factory DecimalVariable.fromJson(Map<String, dynamic> json) => _$DecimalVariableFromJson(json);
 
 @override final  String id;
 @override final  String name;
 @override@JsonKey() final  double initial;
+/// Lowest and highest allowed value; `null` means no limit.
+ final  double? min;
+ final  double? max;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -431,18 +439,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalVariable&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.initial, initial) || other.initial == initial));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is DecimalVariable&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.initial, initial) || other.initial == initial)&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,initial);
+    return Object.hash(runtimeType,id,name,initial,min,max);
 }
 
 @override
 String toString() {
-    return 'Variable.decimal(id: $id, name: $name, initial: $initial)';
+    return 'Variable.decimal(id: $id, name: $name, initial: $initial, min: $min, max: $max)';
 }
 
 
@@ -453,7 +461,7 @@ abstract mixin class $DecimalVariableCopyWith<$Res> implements $VariableCopyWith
   factory $DecimalVariableCopyWith(DecimalVariable value, $Res Function(DecimalVariable) _then) = _$DecimalVariableCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, double initial
+ String id, String name, double initial, double? min, double? max
 });
 
 
@@ -470,12 +478,14 @@ class _$DecimalVariableCopyWithImpl<$Res>
 
 /// Create a copy of Variable
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? initial = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? initial = null,Object? min = freezed,Object? max = freezed,}) {
   return _then(DecimalVariable(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,initial: null == initial ? _self.initial : initial // ignore: cast_nullable_to_non_nullable
-as double,
+as double,min: freezed == min ? _self.min : min // ignore: cast_nullable_to_non_nullable
+as double?,max: freezed == max ? _self.max : max // ignore: cast_nullable_to_non_nullable
+as double?,
   ));
 }
 

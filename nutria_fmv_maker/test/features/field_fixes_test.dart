@@ -30,7 +30,7 @@ void main() {
     // Typing the first variable's name makes a duplicate (an error).
     await tester.enterText(second, names[0]);
     await tester.pumpAndSettle();
-    expect(c.read(conflictingVariableNamesProvider), isNotEmpty);
+    expect(c.read(invalidVariableNamesProvider), isNotEmpty);
     final focused = tester
         .widgetList<EditableText>(find.byType(EditableText))
         .where((e) => e.focusNode.hasFocus);

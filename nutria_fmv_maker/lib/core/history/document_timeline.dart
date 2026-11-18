@@ -37,13 +37,15 @@ class DocumentTimeline {
   });
 
   /// Starts a timeline at [document] with empty history.
-  factory DocumentTimeline.start(ProjectDocument document, {int capacity = 200}) =>
-      DocumentTimeline._(
-        current: document,
-        undoStack: const [],
-        redoStack: const [],
-        capacity: capacity,
-      );
+  factory DocumentTimeline.start(
+    ProjectDocument document, {
+    int capacity = 200,
+  }) => DocumentTimeline._(
+    current: document,
+    undoStack: const [],
+    redoStack: const [],
+    capacity: capacity,
+  );
 
   /// The document as the user currently sees it.
   final ProjectDocument current;
@@ -85,7 +87,8 @@ class DocumentTimeline {
     // time is too slow for large projects. [commit] compares once instead.
     if (inTransaction) return _copy(current: next);
     if (next == current) return this;
-    final mergesWithLast = mergeKey != null &&
+    final mergesWithLast =
+        mergeKey != null &&
         redoStack.isEmpty &&
         undoStack.isNotEmpty &&
         undoStack.last.mergeKey == mergeKey;
@@ -93,16 +96,17 @@ class DocumentTimeline {
     return _copy(
       current: next,
       undoStack: _pushCapped(
-          undoStack, HistoryEntry(label, current, mergeKey: mergeKey)),
+        undoStack,
+        HistoryEntry(label, current, mergeKey: mergeKey),
+      ),
       redoStack: const [],
     );
   }
 
   /// Opens a transaction named [label]. Nested calls are ignored, so a
   /// gesture can't accidentally split itself into several steps.
-  DocumentTimeline beginTransaction(String label) => inTransaction
-      ? this
-      : _copy(transaction: HistoryEntry(label, current));
+  DocumentTimeline beginTransaction(String label) =>
+      inTransaction ? this : _copy(transaction: HistoryEntry(label, current));
 
   /// Closes the open transaction as one undo step (or nothing if the
   /// document ended up unchanged).
@@ -162,12 +166,11 @@ class DocumentTimeline {
     List<HistoryEntry>? redoStack,
     HistoryEntry? transaction,
     bool clearTransaction = false,
-  }) =>
-      DocumentTimeline._(
-        current: current ?? this.current,
-        undoStack: undoStack ?? this.undoStack,
-        redoStack: redoStack ?? this.redoStack,
-        capacity: capacity,
-        transaction: clearTransaction ? null : (transaction ?? this.transaction),
-      );
+  }) => DocumentTimeline._(
+    current: current ?? this.current,
+    undoStack: undoStack ?? this.undoStack,
+    redoStack: redoStack ?? this.redoStack,
+    capacity: capacity,
+    transaction: clearTransaction ? null : (transaction ?? this.transaction),
+  );
 }

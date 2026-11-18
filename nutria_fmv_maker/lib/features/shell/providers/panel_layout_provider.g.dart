@@ -51,7 +51,7 @@ final class PanelLayoutNotifierProvider
 }
 
 String _$panelLayoutNotifierHash() =>
-    r'dbd74bebef3f65c28b347499a7b0d99f00da8f8d';
+    r'f808f725829caeaff19589cb3181a5f92baf55bb';
 
 /// Resizing rules: panels respect their min/max widths, push each other when
 /// the window is too narrow, close when dragged well below their minimum, and

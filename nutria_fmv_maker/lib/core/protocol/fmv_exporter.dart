@@ -61,8 +61,10 @@ FmvExport exportFmv(ProjectDocument document) {
           if (target != null) {
             choices.add(FmvChoice(text: choice.text, target: target));
           } else if (choice.text.isNotEmpty) {
-            issues.add(
-                (type: ExportIssueType.unconnectedChoice, nodeId: nodeId));
+            issues.add((
+              type: ExportIssueType.unconnectedChoice,
+              nodeId: nodeId,
+            ));
           }
         }
         nodes[ids[nodeId]!] = FmvNode(
@@ -94,14 +96,14 @@ FmvExport exportFmv(ProjectDocument document) {
 }
 
 FmvOverrides _overrides(VideoSettingsOverride o) => FmvOverrides(
-      selectionTimeMs: o.selectionTimeMs,
-      pauseOnEnd: o.pauseOnEnd,
-      showTimer: o.showTimer,
-      videoFit: o.videoFit == null ? null : _videoFit(o.videoFit!),
-      defaultSelection: o.defaultSelection == null
-          ? null
-          : _defaultSelection(o.defaultSelection!),
-    );
+  selectionTimeMs: o.selectionTimeMs,
+  pauseOnEnd: o.pauseOnEnd,
+  showTimer: o.showTimer,
+  videoFit: o.videoFit == null ? null : _videoFit(o.videoFit!),
+  defaultSelection: o.defaultSelection == null
+      ? null
+      : _defaultSelection(o.defaultSelection!),
+);
 
 /// The editor's values all exist in the protocol under the same names.
 FmvVideoFit _videoFit(VideoFit fit) => FmvVideoFit.values.byName(fit.name);
@@ -132,7 +134,10 @@ List<String> _reachableInBfsOrder(ProjectDocument document) {
 }
 
 String? _videoPath(
-    ProjectDocument document, Node node, List<ExportIssue> issues) {
+  ProjectDocument document,
+  Node node,
+  List<ExportIssue> issues,
+) {
   final path = document.videoById(node.videoIdOrNull)?.path;
   if (path == null) {
     issues.add((type: ExportIssueType.missingVideo, nodeId: node.id));

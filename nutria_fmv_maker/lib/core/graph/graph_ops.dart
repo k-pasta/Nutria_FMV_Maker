@@ -15,13 +15,12 @@ BranchedVideoNode newBranchedVideoNode({
   required Position position,
   String? videoId,
   required IdGenerator newId,
-}) =>
-    BranchedVideoNode(
-      id: id,
-      position: position,
-      videoId: videoId,
-      choices: [for (var i = 0; i < kMinChoices; i++) Choice(id: newId())],
-    );
+}) => BranchedVideoNode(
+  id: id,
+  position: position,
+  videoId: videoId,
+  choices: [for (var i = 0; i < kMinChoices; i++) Choice(id: newId())],
+);
 
 /// Edges by output port, built once per document (documents never change).
 final _edgeIndex = Expando<Map<PortRef, Edge>>('edges by output');
@@ -51,7 +50,8 @@ extension GraphOps on ProjectDocument {
   // ------------------------------------------------------------------ nodes
 
   /// Adds [node], or replaces the node with the same id.
-  ProjectDocument putNode(Node node) => copyWith(nodes: {...nodes, node.id: node});
+  ProjectDocument putNode(Node node) =>
+      copyWith(nodes: {...nodes, node.id: node});
 
   /// Replaces node [id] with the result of [update].
   ProjectDocument updateNode(String id, Node Function(Node node) update) =>
@@ -80,18 +80,20 @@ extension GraphOps on ProjectDocument {
   }
 
   /// Moves nodes to new positions.
-  ProjectDocument moveNodes(Map<String, Position> positions) => copyWith(nodes: {
-        for (final entry in nodes.entries)
-          entry.key: positions.containsKey(entry.key)
-              ? entry.value.copyWith(position: positions[entry.key]!)
-              : entry.value,
-      });
+  ProjectDocument moveNodes(Map<String, Position> positions) => copyWith(
+    nodes: {
+      for (final entry in nodes.entries)
+        entry.key: positions.containsKey(entry.key)
+            ? entry.value.copyWith(position: positions[entry.key]!)
+            : entry.value,
+    },
+  );
 
   /// Sets a node's width, clamped to [kMinNodeWidth]..[kMaxNodeWidth].
   ProjectDocument setNodeWidth(String id, double width) => updateNode(
-        id,
-        (n) => n.copyWith(width: width.clamp(kMinNodeWidth, kMaxNodeWidth)),
-      );
+    id,
+    (n) => n.copyWith(width: width.clamp(kMinNodeWidth, kMaxNodeWidth)),
+  );
 
   /// Sets the color swatch index shown on a node.
   ProjectDocument setSwatch(String id, int swatch) =>
@@ -105,27 +107,36 @@ extension GraphOps on ProjectDocument {
   /// none was open, so it records no undo step.
   ProjectDocument collapseAll() {
     if (!nodes.values.any((n) => n.isExpanded)) return this;
-    return copyWith(nodes: {
-      for (final MapEntry(:key, :value) in nodes.entries)
-        key: value.isExpanded ? value.copyWith(isExpanded: false) : value,
-    });
+    return copyWith(
+      nodes: {
+        for (final MapEntry(:key, :value) in nodes.entries)
+          key: value.isExpanded ? value.copyWith(isExpanded: false) : value,
+      },
+    );
   }
 
   /// Points a video node at [videoId]. No-op for non-video nodes.
-  ProjectDocument setVideo(String nodeId, String videoId) =>
-      updateNode(nodeId, (n) => switch (n) {
-            SimpleVideoNode() => n.copyWith(videoId: videoId),
-            BranchedVideoNode() => n.copyWith(videoId: videoId),
-            OriginNode() => n,
-          });
+  ProjectDocument setVideo(String nodeId, String videoId) => updateNode(
+    nodeId,
+    (n) => switch (n) {
+      SimpleVideoNode() => n.copyWith(videoId: videoId),
+      BranchedVideoNode() => n.copyWith(videoId: videoId),
+      OriginNode() => n,
+    },
+  );
 
   /// Replaces a video node's setting overrides. No-op for non-video nodes.
-  ProjectDocument setOverrides(String nodeId, VideoSettingsOverride overrides) =>
-      updateNode(nodeId, (n) => switch (n) {
-            SimpleVideoNode() => n.copyWith(overrides: overrides),
-            BranchedVideoNode() => n.copyWith(overrides: overrides),
-            OriginNode() => n,
-          });
+  ProjectDocument setOverrides(
+    String nodeId,
+    VideoSettingsOverride overrides,
+  ) => updateNode(
+    nodeId,
+    (n) => switch (n) {
+      SimpleVideoNode() => n.copyWith(overrides: overrides),
+      BranchedVideoNode() => n.copyWith(overrides: overrides),
+      OriginNode() => n,
+    },
+  );
 
   /// Switches a node between simple and branched video, keeping its id,
   /// video, overrides and appearance.
@@ -150,15 +161,20 @@ extension GraphOps on ProjectDocument {
             for (var i = 1; i < kMinChoices; i++) Choice(id: newId()),
           ],
         );
-        return putNode(converted).copyWith(edges: [
-          for (final edge in edges)
-            edge.from == PortRef(nodeId: id, port: kNextPortKey)
-                ? edge.copyWith(from: PortRef(nodeId: id, port: firstChoice.id))
-                : edge,
-        ]);
+        return putNode(converted).copyWith(
+          edges: [
+            for (final edge in edges)
+              edge.from == PortRef(nodeId: id, port: kNextPortKey)
+                  ? edge.copyWith(
+                      from: PortRef(nodeId: id, port: firstChoice.id),
+                    )
+                  : edge,
+          ],
+        );
       case BranchedVideoNode():
-        final firstPort =
-            current.choices.isEmpty ? null : current.choices.first.id;
+        final firstPort = current.choices.isEmpty
+            ? null
+            : current.choices.first.id;
         final converted = SimpleVideoNode(
           id: current.id,
           position: current.position,
@@ -168,13 +184,17 @@ extension GraphOps on ProjectDocument {
           videoId: current.videoId,
           overrides: current.overrides,
         );
-        return putNode(converted).copyWith(edges: [
-          for (final edge in edges)
-            if (edge.from.nodeId != id)
-              edge
-            else if (edge.from.port == firstPort)
-              edge.copyWith(from: PortRef(nodeId: id, port: kNextPortKey)),
-        ]);
+        return putNode(converted).copyWith(
+          edges: [
+            for (final edge in edges)
+              if (edge.from.nodeId != id)
+                edge
+              else if (edge.from.port == firstPort)
+                edge.copyWith(
+                  from: PortRef(nodeId: id, port: kNextPortKey),
+                ),
+          ],
+        );
       case OriginNode():
         throw ArgumentError('The origin node cannot be converted');
     }
@@ -235,20 +255,24 @@ extension GraphOps on ProjectDocument {
     if (from.nodeId == to.nodeId) return this;
     if (!isOutputPortOf(source, from.port)) return this;
     if (!hasInputPort(target) || to.port != PortRef.inputPortKey) return this;
-    return copyWith(edges: [
-      for (final edge in edges)
-        if (edge.from != from) edge,
-      Edge(from: from, to: to),
-    ]);
+    return copyWith(
+      edges: [
+        for (final edge in edges)
+          if (edge.from != from) edge,
+        Edge(from: from, to: to),
+      ],
+    );
   }
 
   /// Removes the edge leaving [from], if any.
   ProjectDocument disconnect(PortRef from) {
     if (edgeFrom(from) == null) return this;
-    return copyWith(edges: [
-      for (final edge in edges)
-        if (edge.from != from) edge,
-    ]);
+    return copyWith(
+      edges: [
+        for (final edge in edges)
+          if (edge.from != from) edge,
+      ],
+    );
   }
 
   // ----------------------------------------------------------------- videos

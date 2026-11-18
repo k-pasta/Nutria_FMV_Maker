@@ -169,8 +169,26 @@ abstract class AppLocalizations {
   /// No description provided for @variableNameError.
   ///
   /// In en, this message translates to:
-  /// **'Each variable needs its own name'**
+  /// **'Names must be unique, start with a letter and use only letters, numbers, - and _'**
   String get variableNameError;
+
+  /// No description provided for @variableNameRejected.
+  ///
+  /// In en, this message translates to:
+  /// **'Variable names start with a letter and use only letters, numbers, - and _'**
+  String get variableNameRejected;
+
+  /// No description provided for @variableMin.
+  ///
+  /// In en, this message translates to:
+  /// **'Minimum (empty: no limit)'**
+  String get variableMin;
+
+  /// No description provided for @variableMax.
+  ///
+  /// In en, this message translates to:
+  /// **'Maximum (empty: no limit)'**
+  String get variableMax;
 
   /// No description provided for @variableInitialValue.
   ///

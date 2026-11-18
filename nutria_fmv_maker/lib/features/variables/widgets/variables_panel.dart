@@ -1,9 +1,11 @@
 // The project's variables: name, type and starting value of each.
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -88,6 +90,7 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
   // A new undo step per editing session of each field.
   Object _nameSession = Object();
   Object _valueSession = Object();
+  Object _limitSession = Object();
 
   @override
   Widget build(BuildContext context) {
@@ -96,8 +99,8 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
     final editor = ref.read(graphEditorProvider);
     final variable = widget.variable;
     final nameError = ref.watch(
-      conflictingVariableNamesProvider.select(
-        (names) => names.contains(variable.name.trim()),
+      invalidVariableNamesProvider.select(
+        (names) => names.contains(variable.name),
       ),
     );
     final gap = SizedBox(width: theme.dPanelPadding);
@@ -108,6 +111,73 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
       VariableType.decimal => t.variableTypeFloat,
     };
 
+    final typeStepper = NutriaContextMenuArea(
+      onOpenChanged: menuOpen,
+      itemsAt: (_) => [
+        for (final type in VariableType.values)
+          NutriaContextMenuItem(
+            icon: type == variable.type ? Icons.check : Icons.circle_outlined,
+            label: typeName(type),
+            onSelected: () => editor.setVariableType(variable.id, type),
+          ),
+      ],
+      child: NutriaTooltip(
+        message: t.variableType,
+        child: NutriaButton.leftRight(
+          onTapLeft: () =>
+              editor.setVariableType(variable.id, _stepType(variable.type, -1)),
+          onTapRight: () =>
+              editor.setVariableType(variable.id, _stepType(variable.type, 1)),
+          child: NutriaText(text: typeName(variable.type)),
+        ),
+      ),
+    );
+
+    final value = switch (variable) {
+      BoolVariable(:final initial) => NutriaContextMenuArea(
+        onOpenChanged: menuOpen,
+        itemsAt: (_) => [
+          for (final value in [true, false])
+            NutriaContextMenuItem(
+              icon: value == initial ? Icons.check : Icons.circle_outlined,
+              label: value ? t.variableTrue : t.variableFalse,
+              onSelected: () => editor.setVariableBool(variable.id, value),
+            ),
+        ],
+        child: NutriaButton(
+          onTap: () => editor.toggleVariable(variable.id),
+          child: NutriaText(text: initial ? t.variableTrue : t.variableFalse),
+        ),
+      ),
+      _ => Row(
+        children: [
+          _limitField(variable, isMin: true),
+          gap,
+          Expanded(
+            child: NutriaNumberField(
+              // A new field per type, so its text and filter match it.
+              key: ValueKey(variable.type),
+              text: variable.initialText,
+              hint: t.variableInitialValue,
+              decimals: variable.type == VariableType.decimal,
+              onStep: (direction) =>
+                  editor.stepVariable(variable.id, direction),
+              onFocusChanged: (focused) {
+                if (focused) _valueSession = Object();
+              },
+              onChanged: (text) => editor.setVariableInitialText(
+                variable.id,
+                text,
+                mergeKey: _valueSession,
+              ),
+            ),
+          ),
+          gap,
+          _limitField(variable, isMin: false),
+        ],
+      ),
+    };
+
     return Container(
       padding: EdgeInsets.all(theme.dPanelPadding),
       decoration: BoxDecoration(
@@ -115,105 +185,36 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
         borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
         boxShadow: theme.dElevation > 0 ? theme.cardShadow() : null,
       ),
-      // Two lines: the name, then value, type and delete.
+      // Two lines: name, type and delete; then the value (with its limits).
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          NutriaTooltip(
-            message: nameError ? t.variableNameError : null,
-            // The error comes and goes while typing; keep the field.
-            stable: true,
-            child: NutriaTextField(
-              text: variable.name,
-              hint: t.variableName,
-              isError: nameError,
-              onFocusChanged: (focused) {
-                if (focused) _nameSession = Object();
-              },
-              onChanged: (name) => editor.renameVariable(
-                variable.id,
-                name,
-                mergeKey: _nameSession,
-              ),
-            ),
-          ),
-          SizedBox(height: theme.dPanelPadding),
           Row(
             children: [
               Expanded(
                 flex: 3,
-                child: switch (variable) {
-                  BoolVariable(:final initial) => NutriaContextMenuArea(
-                    onOpenChanged: menuOpen,
-                    itemsAt: (_) => [
-                      for (final value in [true, false])
-                        NutriaContextMenuItem(
-                          icon: value == initial
-                              ? Icons.check
-                              : Icons.circle_outlined,
-                          label: value ? t.variableTrue : t.variableFalse,
-                          onSelected: () =>
-                              editor.setVariableBool(variable.id, value),
-                        ),
-                    ],
-                    child: NutriaButton(
-                      onTap: () => editor.toggleVariable(variable.id),
-                      child: NutriaText(
-                        text: initial ? t.variableTrue : t.variableFalse,
-                      ),
-                    ),
-                  ),
-                  _ => NutriaNumberField(
-                    // A new field per type, so its text and filter match it.
-                    key: ValueKey(variable.type),
-                    text: variable.initialText,
-                    hint: t.variableInitialValue,
-                    decimals: variable.type == VariableType.decimal,
-                    onStep: (direction) =>
-                        editor.stepVariable(variable.id, direction),
+                child: NutriaTooltip(
+                  message: nameError ? t.variableNameError : null,
+                  // The error comes and goes while typing; keep the field.
+                  stable: true,
+                  child: NutriaTextField(
+                    text: variable.name,
+                    hint: t.variableName,
+                    isError: nameError,
+                    inputFormatters: [_nameFilter],
                     onFocusChanged: (focused) {
-                      if (focused) _valueSession = Object();
+                      if (focused) _nameSession = Object();
                     },
-                    onChanged: (text) => editor.setVariableInitialText(
+                    onChanged: (name) => editor.renameVariable(
                       variable.id,
-                      text,
-                      mergeKey: _valueSession,
-                    ),
-                  ),
-                },
-              ),
-              gap,
-              Expanded(
-                flex: 2,
-                child: NutriaContextMenuArea(
-                  onOpenChanged: menuOpen,
-                  itemsAt: (_) => [
-                    for (final type in VariableType.values)
-                      NutriaContextMenuItem(
-                        icon: type == variable.type
-                            ? Icons.check
-                            : Icons.circle_outlined,
-                        label: typeName(type),
-                        onSelected: () =>
-                            editor.setVariableType(variable.id, type),
-                      ),
-                  ],
-                  child: NutriaTooltip(
-                    message: t.variableType,
-                    child: NutriaButton.leftRight(
-                      onTapLeft: () => editor.setVariableType(
-                        variable.id,
-                        _stepType(variable.type, -1),
-                      ),
-                      onTapRight: () => editor.setVariableType(
-                        variable.id,
-                        _stepType(variable.type, 1),
-                      ),
-                      child: NutriaText(text: typeName(variable.type)),
+                      name,
+                      mergeKey: _nameSession,
                     ),
                   ),
                 ),
               ),
+              gap,
+              Expanded(flex: 2, child: typeStepper),
               gap,
               NutriaButton.icon(
                 icon: Icons.delete,
@@ -222,7 +223,58 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
               ),
             ],
           ),
+          SizedBox(height: theme.dPanelPadding),
+          value,
         ],
+      ),
+    );
+  }
+
+  /// Rejects characters a name can't have, and says why in the status bar.
+  late final TextInputFormatter _nameFilter = TextInputFormatter.withFunction((
+    old,
+    next,
+  ) {
+    if (Variable.typingPattern.hasMatch(next.text)) return next;
+    ref
+        .read(notificationsProvider.notifier)
+        .post(AppLocalizations.of(context).variableNameRejected);
+    return old;
+  });
+
+  /// A small square field for the minimum ([isMin]) or maximum; empty (shown
+  /// as −∞ / +∞) means no limit.
+  Widget _limitField(Variable variable, {required bool isMin}) {
+    final theme = context.appTheme;
+    final t = AppLocalizations.of(context);
+    return SizedBox(
+      width: theme.dButtonHeight * 1.6,
+      child: NutriaTooltip(
+        message: isMin ? t.variableMin : t.variableMax,
+        child: NutriaTextField(
+          key: ValueKey((variable.type, isMin)),
+          text: variable.limitText(isMin: isMin),
+          hint: isMin ? '−∞' : '+∞',
+          textAlign: TextAlign.center,
+          horizontalPadding: 2,
+          isError: !variable.hasValidRange,
+          inputFormatters: [
+            NutriaNumberField.filter(
+              decimals: variable.type == VariableType.decimal,
+            ),
+          ],
+          onFocusChanged: (focused) {
+            if (focused) _limitSession = Object();
+          },
+          onChanged: (text) => ref
+              .read(graphEditorProvider)
+              .setVariableLimit(
+                variable.id,
+                isMin: isMin,
+                text: text,
+                mergeKey: _limitSession,
+              ),
+        ),
       ),
     );
   }

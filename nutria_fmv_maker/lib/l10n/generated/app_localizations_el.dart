@@ -43,7 +43,18 @@ class AppLocalizationsEl extends AppLocalizations {
   String get variableName => 'Όνομα';
 
   @override
-  String get variableNameError => 'Κάθε μεταβλητή χρειάζεται δικό της όνομα';
+  String get variableNameError =>
+      'Τα ονόματα πρέπει να είναι μοναδικά, να αρχίζουν με γράμμα και να περιέχουν μόνο γράμματα, αριθμούς, - και _';
+
+  @override
+  String get variableNameRejected =>
+      'Τα ονόματα μεταβλητών αρχίζουν με γράμμα και περιέχουν μόνο γράμματα, αριθμούς, - και _';
+
+  @override
+  String get variableMin => 'Ελάχιστο (κενό: χωρίς όριο)';
+
+  @override
+  String get variableMax => 'Μέγιστο (κενό: χωρίς όριο)';
 
   @override
   String get variableInitialValue => 'Αρχική τιμή';

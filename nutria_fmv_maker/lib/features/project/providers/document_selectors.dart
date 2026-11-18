@@ -82,10 +82,10 @@ List<VideoAsset> videoAssets(Ref ref) =>
 List<Variable> variables(Ref ref) =>
     ref.watch(documentProvider.select((s) => s.document.variables));
 
-/// Variable names that are empty or used twice.
+/// Variable names shown as errors: invalid or used twice.
 @riverpod
-Set<String> conflictingVariableNames(Ref ref) =>
-    ref.watch(projectDocumentProvider).conflictingVariableNames;
+Set<String> invalidVariableNames(Ref ref) =>
+    ref.watch(projectDocumentProvider).invalidVariableNames;
 
 /// Project title and description.
 @riverpod

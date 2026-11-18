@@ -47,7 +47,7 @@ final class OverlayNotifierProvider
   }
 }
 
-String _$overlayNotifierHash() => r'3596b1e188ba24637786785fddc2e72b5940ea7c';
+String _$overlayNotifierHash() => r'7a98428a5fe1bb1db85aac20120b4ef2d066b41d';
 
 /// Tracks [ShellOverlays], e.g. so canvas shortcuts pause while a menu is
 /// open.

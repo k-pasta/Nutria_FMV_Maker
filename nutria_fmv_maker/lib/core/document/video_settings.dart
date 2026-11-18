@@ -12,7 +12,13 @@ enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
 
 /// Every setting a video node can override. The enum names are the keys used
 /// in exported `.fmv` files, so renaming one is a protocol change.
-enum VideoSettingType { selectionTime, pauseOnEnd, showTimer, videoFit, defaultSelection }
+enum VideoSettingType {
+  selectionTime,
+  pauseOnEnd,
+  showTimer,
+  videoFit,
+  defaultSelection,
+}
 
 /// The full set of playback settings. Used as the project defaults, and as the
 /// result of merging a node's [VideoSettingsOverride] onto those defaults.
@@ -36,7 +42,6 @@ abstract class VideoSettings with _$VideoSettings {
 
   factory VideoSettings.fromJson(Map<String, dynamic> json) =>
       _$VideoSettingsFromJson(json);
-
 }
 
 /// A node's deviations from the project [VideoSettings]. A `null` field means
@@ -58,44 +63,45 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
 
   /// The setting types this override actually changes, in display order.
   List<VideoSettingType> get activeTypes => [
-        if (selectionTimeMs != null) VideoSettingType.selectionTime,
-        if (pauseOnEnd != null) VideoSettingType.pauseOnEnd,
-        if (showTimer != null) VideoSettingType.showTimer,
-        if (videoFit != null) VideoSettingType.videoFit,
-        if (defaultSelection != null) VideoSettingType.defaultSelection,
-      ];
+    if (selectionTimeMs != null) VideoSettingType.selectionTime,
+    if (pauseOnEnd != null) VideoSettingType.pauseOnEnd,
+    if (showTimer != null) VideoSettingType.showTimer,
+    if (videoFit != null) VideoSettingType.videoFit,
+    if (defaultSelection != null) VideoSettingType.defaultSelection,
+  ];
 
   bool get isEmpty => activeTypes.isEmpty;
 
   /// Returns [base] with every non-null field of this override applied.
   VideoSettings applyTo(VideoSettings base) => base.copyWith(
-        selectionTimeMs: selectionTimeMs ?? base.selectionTimeMs,
-        pauseOnEnd: pauseOnEnd ?? base.pauseOnEnd,
-        showTimer: showTimer ?? base.showTimer,
-        videoFit: videoFit ?? base.videoFit,
-        defaultSelection: defaultSelection ?? base.defaultSelection,
-      );
+    selectionTimeMs: selectionTimeMs ?? base.selectionTimeMs,
+    pauseOnEnd: pauseOnEnd ?? base.pauseOnEnd,
+    showTimer: showTimer ?? base.showTimer,
+    videoFit: videoFit ?? base.videoFit,
+    defaultSelection: defaultSelection ?? base.defaultSelection,
+  );
 
   /// Starts overriding [type], copying its current value from [base] so the
   /// effective behavior doesn't change until the user edits it.
   VideoSettingsOverride enable(VideoSettingType type, VideoSettings base) =>
       switch (type) {
-        VideoSettingType.selectionTime =>
-          copyWith(selectionTimeMs: base.selectionTimeMs),
+        VideoSettingType.selectionTime => copyWith(
+          selectionTimeMs: base.selectionTimeMs,
+        ),
         VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: base.pauseOnEnd),
         VideoSettingType.showTimer => copyWith(showTimer: base.showTimer),
         VideoSettingType.videoFit => copyWith(videoFit: base.videoFit),
-        VideoSettingType.defaultSelection =>
-          copyWith(defaultSelection: base.defaultSelection),
+        VideoSettingType.defaultSelection => copyWith(
+          defaultSelection: base.defaultSelection,
+        ),
       };
 
   /// Stops overriding [type] (falls back to the project default).
   VideoSettingsOverride disable(VideoSettingType type) => switch (type) {
-        VideoSettingType.selectionTime => copyWith(selectionTimeMs: null),
-        VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: null),
-        VideoSettingType.showTimer => copyWith(showTimer: null),
-        VideoSettingType.videoFit => copyWith(videoFit: null),
-        VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
-      };
-
+    VideoSettingType.selectionTime => copyWith(selectionTimeMs: null),
+    VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: null),
+    VideoSettingType.showTimer => copyWith(showTimer: null),
+    VideoSettingType.videoFit => copyWith(videoFit: null),
+    VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
+  };
 }

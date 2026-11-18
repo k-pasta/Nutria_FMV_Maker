@@ -10,21 +10,22 @@ const String kNextPortKey = 'next';
 /// A branched node's output ports are its choice ids, so a connection follows
 /// its choice when choices are edited.
 List<String> outputPortsOf(Node node) => switch (node) {
-      OriginNode() => const [kNextPortKey],
-      SimpleVideoNode() => const [kNextPortKey],
-      BranchedVideoNode(:final choices) => [for (final c in choices) c.id],
-    };
+  OriginNode() => const [kNextPortKey],
+  SimpleVideoNode() => const [kNextPortKey],
+  BranchedVideoNode(:final choices) => [for (final c in choices) c.id],
+};
 
 /// Whether [node] can be the target of a flow connection.
 bool hasInputPort(Node node) => switch (node) {
-      OriginNode() => false,
-      SimpleVideoNode() || BranchedVideoNode() => true,
-    };
+  OriginNode() => false,
+  SimpleVideoNode() || BranchedVideoNode() => true,
+};
 
 /// Whether [port] is an existing output port of [node].
-bool isOutputPortOf(Node node, String port) => outputPortsOf(node).contains(port);
+bool isOutputPortOf(Node node, String port) =>
+    outputPortsOf(node).contains(port);
 
 /// Convenience: the [PortRef] of every output of [node].
 List<PortRef> outputRefsOf(Node node) => [
-      for (final port in outputPortsOf(node)) PortRef(nodeId: node.id, port: port),
-    ];
+  for (final port in outputPortsOf(node)) PortRef(nodeId: node.id, port: port),
+];

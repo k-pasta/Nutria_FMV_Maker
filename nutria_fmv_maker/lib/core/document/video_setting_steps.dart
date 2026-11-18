@@ -23,47 +23,52 @@ extension VideoSettingSteps on VideoSettings {
   /// These settings with each possible value of [type] (e.g. for a menu of
   /// choices), or none for free numbers like the selection time.
   List<VideoSettings> optionsFor(VideoSettingType type) => switch (type) {
-        VideoSettingType.selectionTime => const [],
-        VideoSettingType.pauseOnEnd => [
-            copyWith(pauseOnEnd: true),
-            copyWith(pauseOnEnd: false),
-          ],
-        VideoSettingType.showTimer => [
-            copyWith(showTimer: true),
-            copyWith(showTimer: false),
-          ],
-        VideoSettingType.videoFit => [
-            for (final fit in VideoFit.values) copyWith(videoFit: fit),
-          ],
-        VideoSettingType.defaultSelection => [
-            for (final method in DefaultSelectionMethod.values)
-              copyWith(defaultSelection: method),
-          ],
-      };
+    VideoSettingType.selectionTime => const [],
+    VideoSettingType.pauseOnEnd => [
+      copyWith(pauseOnEnd: true),
+      copyWith(pauseOnEnd: false),
+    ],
+    VideoSettingType.showTimer => [
+      copyWith(showTimer: true),
+      copyWith(showTimer: false),
+    ],
+    VideoSettingType.videoFit => [
+      for (final fit in VideoFit.values) copyWith(videoFit: fit),
+    ],
+    VideoSettingType.defaultSelection => [
+      for (final method in DefaultSelectionMethod.values)
+        copyWith(defaultSelection: method),
+    ],
+  };
 
   /// Whether [other] has the same value of [type] as these settings.
   bool sameValue(VideoSettings other, VideoSettingType type) => switch (type) {
-        VideoSettingType.selectionTime =>
-          selectionTimeMs == other.selectionTimeMs,
-        VideoSettingType.pauseOnEnd => pauseOnEnd == other.pauseOnEnd,
-        VideoSettingType.showTimer => showTimer == other.showTimer,
-        VideoSettingType.videoFit => videoFit == other.videoFit,
-        VideoSettingType.defaultSelection =>
-          defaultSelection == other.defaultSelection,
-      };
+    VideoSettingType.selectionTime => selectionTimeMs == other.selectionTimeMs,
+    VideoSettingType.pauseOnEnd => pauseOnEnd == other.pauseOnEnd,
+    VideoSettingType.showTimer => showTimer == other.showTimer,
+    VideoSettingType.videoFit => videoFit == other.videoFit,
+    VideoSettingType.defaultSelection =>
+      defaultSelection == other.defaultSelection,
+  };
 
   /// Steps [type] forward ([direction] 1) or back (-1). Toggles flip either
   /// way; lists wrap around; the selection time doesn't go below zero.
   VideoSettings step(VideoSettingType type, int direction) => switch (type) {
-        VideoSettingType.selectionTime => copyWith(
-            selectionTimeMs: (selectionTimeMs + direction * kSelectionTimeStepMs)
-                .clamp(0, 1 << 31)),
-        VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: !pauseOnEnd),
-        VideoSettingType.showTimer => copyWith(showTimer: !showTimer),
-        VideoSettingType.videoFit =>
-          copyWith(videoFit: _cycle(VideoFit.values, videoFit, direction)),
-        VideoSettingType.defaultSelection => copyWith(
-            defaultSelection: _cycle(
-                DefaultSelectionMethod.values, defaultSelection, direction)),
-      };
+    VideoSettingType.selectionTime => copyWith(
+      selectionTimeMs: (selectionTimeMs + direction * kSelectionTimeStepMs)
+          .clamp(0, 1 << 31),
+    ),
+    VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: !pauseOnEnd),
+    VideoSettingType.showTimer => copyWith(showTimer: !showTimer),
+    VideoSettingType.videoFit => copyWith(
+      videoFit: _cycle(VideoFit.values, videoFit, direction),
+    ),
+    VideoSettingType.defaultSelection => copyWith(
+      defaultSelection: _cycle(
+        DefaultSelectionMethod.values,
+        defaultSelection,
+        direction,
+      ),
+    ),
+  };
 }

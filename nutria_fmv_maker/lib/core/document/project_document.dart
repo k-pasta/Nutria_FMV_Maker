@@ -83,14 +83,14 @@ abstract class ProjectDocument with _$ProjectDocument {
 
   /// A new project containing only the origin node.
   factory ProjectDocument.empty() => const ProjectDocument(
-        nodes: {
-          kOriginNodeId: Node.origin(
-            id: kOriginNodeId,
-            name: 'Origin Node',
-            position: Position(150, 250),
-          ),
-        },
-      );
+    nodes: {
+      kOriginNodeId: Node.origin(
+        id: kOriginNodeId,
+        name: 'Origin Node',
+        position: Position(150, 250),
+      ),
+    },
+  );
 
   /// The single origin node (the story's start).
   OriginNode get origin => nodes.values.whereType<OriginNode>().first;

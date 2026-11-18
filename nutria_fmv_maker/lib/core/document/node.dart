@@ -86,17 +86,17 @@ sealed class Node with _$Node {
 
   /// The video this node plays, or `null` for non-video nodes / no video yet.
   String? get videoIdOrNull => switch (this) {
-        SimpleVideoNode(:final videoId) => videoId,
-        BranchedVideoNode(:final videoId) => videoId,
-        OriginNode() => null,
-      };
+    SimpleVideoNode(:final videoId) => videoId,
+    BranchedVideoNode(:final videoId) => videoId,
+    OriginNode() => null,
+  };
 
   /// This node's setting overrides, or `null` for non-video nodes.
   VideoSettingsOverride? get overridesOrNull => switch (this) {
-        SimpleVideoNode(:final overrides) => overrides,
-        BranchedVideoNode(:final overrides) => overrides,
-        OriginNode() => null,
-      };
+    SimpleVideoNode(:final overrides) => overrides,
+    BranchedVideoNode(:final overrides) => overrides,
+    OriginNode() => null,
+  };
 
   /// Whether this node plays a video (and so has video settings).
   bool get isVideoNode => this is SimpleVideoNode || this is BranchedVideoNode;

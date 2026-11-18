@@ -37,9 +37,9 @@ sealed class DragAnchor with _$DragAnchor {
 
   /// The node the fixed end belongs to.
   String get nodeId => switch (this) {
-        AnchorOutput(:final port) => port.nodeId,
-        AnchorInput(:final nodeId) => nodeId,
-      };
+    AnchorOutput(:final port) => port.nodeId,
+    AnchorInput(:final nodeId) => nodeId,
+  };
 }
 
 /// A connection that would be made on release, already oriented output → input.

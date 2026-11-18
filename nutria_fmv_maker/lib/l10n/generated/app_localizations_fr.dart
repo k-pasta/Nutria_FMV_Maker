@@ -43,7 +43,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get variableName => 'Nom';
 
   @override
-  String get variableNameError => 'Chaque variable a besoin de son propre nom';
+  String get variableNameError =>
+      'Les noms doivent être uniques, commencer par une lettre et ne contenir que des lettres, chiffres, - et _';
+
+  @override
+  String get variableNameRejected =>
+      'Les noms de variables commencent par une lettre et ne contiennent que des lettres, chiffres, - et _';
+
+  @override
+  String get variableMin => 'Minimum (vide : sans limite)';
+
+  @override
+  String get variableMax => 'Maximum (vide : sans limite)';
 
   @override
   String get variableInitialValue => 'Valeur initiale';

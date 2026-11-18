@@ -80,8 +80,10 @@ abstract final class NfmvCodec {
       throw const NfmvFormatException(NfmvReason.invalidData);
     }
     if (version > kNfmvFormatVersion) {
-      throw NfmvFormatException(NfmvReason.unsupportedNewVersion,
-          foundVersion: version);
+      throw NfmvFormatException(
+        NfmvReason.unsupportedNewVersion,
+        foundVersion: version,
+      );
     }
     // Future format upgrades go here: `if (version < 2) decoded = _v1ToV2(decoded);`
 
@@ -98,19 +100,21 @@ abstract final class NfmvCodec {
 
     if (projectDir == null || fileExists == null) return document;
     final rawVideos = (decoded['videos'] as List?) ?? const [];
-    return document.copyWith(videos: [
-      for (final (index, video) in document.videos.indexed)
-        video.copyWith(
-          path: _resolvePath(
-            absolute: video.path,
-            relative: index < rawVideos.length
-                ? (rawVideos[index] as Map)['relativePath'] as String?
-                : null,
-            projectDir: projectDir,
-            fileExists: fileExists,
+    return document.copyWith(
+      videos: [
+        for (final (index, video) in document.videos.indexed)
+          video.copyWith(
+            path: _resolvePath(
+              absolute: video.path,
+              relative: index < rawVideos.length
+                  ? (rawVideos[index] as Map)['relativePath'] as String?
+                  : null,
+              projectDir: projectDir,
+              fileExists: fileExists,
+            ),
           ),
-        ),
-    ]);
+      ],
+    );
   }
 
   static String _resolvePath({
