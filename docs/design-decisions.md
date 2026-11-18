@@ -197,3 +197,28 @@ change any of them and I'll adapt.
   and audio tags such as title and artist. Audio shows what the media
   details already show: duration, codec, bitrate, sample rate, channels
   and size.
+
+## Phase 4a: bold and italic
+- **Where it works:** choices, the question, and the project title and
+  description on the origin node. Comments get it too (Phase 4b).
+- **How it looks while typing:** `**bold**` shows bold and `*italic*`
+  shows italic. The asterisks stay visible but faint, so the cursor never
+  jumps over hidden characters. **Ask:** would you rather hide the
+  asterisks except next to the cursor? It looks cleaner, but editing near
+  them gets confusing.
+- **Ctrl+B / Ctrl+I** make the selection bold or italic, or plain again if
+  it already is.
+  - Spaces at the ends of the selection stay outside the markers.
+  - With nothing selected, they insert an empty pair with the cursor
+    inside.
+  - `***both***` works.
+- **Rules,** shared with the Player in the protocol package
+  (`parseInlineMarkdown`):
+  - A marker opens only before non-space text and closes only after it.
+  - Markers without a partner stay plain text, so `2 * 3 * 4` is
+    unchanged.
+  - Four or more asterisks are plain text.
+- **Export** keeps the asterisks in the text. The Player has to show the
+  styles and hide the asterisks. It can call the same parser, or
+  `plainTextOf` until it styles text.
+- No underline or other markdown, as you asked for bold and italic only.

@@ -150,6 +150,7 @@ class _ChoiceFieldState extends ConsumerState<_ChoiceField> {
 
   @override
   Widget build(BuildContext context) => NutriaTextField(
+    markdown: true,
     text: widget.text,
     hint:
         '${AppLocalizations.of(context).videoNodeChoice} '
@@ -185,6 +186,7 @@ class _QuestionFieldState extends ConsumerState<_QuestionField> {
 
   @override
   Widget build(BuildContext context) => NutriaTextField(
+    markdown: true,
     text: widget.text,
     hint: AppLocalizations.of(context).nodeQuestionHint,
     onFocusChanged: (focused) {

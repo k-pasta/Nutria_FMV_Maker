@@ -74,6 +74,7 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
         Padding(
           padding: EdgeInsets.all(theme.dPanelPadding),
           child: NutriaTextField(
+            markdown: true,
             text: title,
             hint: '${t.originProjectTitle} ...',
             onFocusChanged: (focused) {
@@ -91,6 +92,7 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
             theme.dPanelPadding,
           ),
           child: NutriaTextField(
+            markdown: true,
             text: description,
             hint: '${t.originProjectDescription} ...',
             maxLines: 2,

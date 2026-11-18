@@ -1,6 +1,8 @@
 // Theme text field that stays in sync with external changes (e.g. undo).
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/ui/text/markdown_edit.dart';
+import 'package:nutria_fmv_maker/ui/text/markdown_text.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
@@ -28,6 +30,7 @@ class NutriaTextField extends StatefulWidget {
     this.autofocus = false,
     this.onSubmitted,
     this.onEscape,
+    this.markdown = false,
   });
 
   final String text;
@@ -63,14 +66,18 @@ class NutriaTextField extends StatefulWidget {
   /// Escape was pressed (e.g. to cancel an edit).
   final VoidCallback? onEscape;
 
+  /// Story text: shows `**bold**` and `*italic*` as they look, and Ctrl+B /
+  /// Ctrl+I make the selection bold or italic.
+  final bool markdown;
+
   @override
   State<NutriaTextField> createState() => _NutriaTextFieldState();
 }
 
 class _NutriaTextFieldState extends State<NutriaTextField> {
-  late final TextEditingController _controller = TextEditingController(
-    text: widget.text,
-  );
+  late final TextEditingController _controller = widget.markdown
+      ? MarkdownTextEditingController(text: widget.text)
+      : TextEditingController(text: widget.text);
   final FocusNode _focus = FocusNode();
 
   /// Single-key app shortcuts (panels, zoom, framing, play) must not fire
@@ -189,6 +196,12 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): ?onEscape,
+        if (widget.markdown) ...{
+          const SingleActivator(LogicalKeyboardKey.keyB, control: true): () =>
+              _toggleStyle(bold: true),
+          const SingleActivator(LogicalKeyboardKey.keyI, control: true): () =>
+              _toggleStyle(bold: false),
+        },
       },
       child: Shortcuts(
         shortcuts: _blockedShortcuts,
@@ -303,6 +316,27 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
         ),
       ),
     ];
+  }
+
+  /// Makes the selection bold or italic, or plain again (see
+  /// [toggleMarkdown]), and reports the change like typing would.
+  void _toggleStyle({required bool bold}) {
+    final value = _controller.value;
+    final selection = value.selection.isValid
+        ? value.selection
+        : TextSelection.collapsed(offset: value.text.length);
+    final edit = toggleMarkdown(
+      value.text,
+      selection.start,
+      selection.end,
+      bold: bold,
+    );
+    if (edit.text.length > kTextFieldMaxLength) return;
+    _controller.value = TextEditingValue(
+      text: edit.text,
+      selection: TextSelection(baseOffset: edit.start, extentOffset: edit.end),
+    );
+    if (edit.text != value.text) widget.onChanged?.call(edit.text);
   }
 
   /// Puts [text] in place of the selection (or at the cursor), through the
