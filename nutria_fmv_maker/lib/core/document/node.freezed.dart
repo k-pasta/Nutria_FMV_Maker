@@ -476,12 +476,12 @@ return branchedVideo(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices)?  branchedVideo,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices);case _:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case _:
   return orElse();
 
 }
@@ -499,12 +499,12 @@ return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices)  branchedVideo,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)  branchedVideo,}) {final _that = this;
 switch (_that) {
 case OriginNode():
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode():
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode():
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices);}
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -518,12 +518,12 @@ return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices)?  branchedVideo,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices);case _:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case _:
   return null;
 
 }
@@ -736,7 +736,7 @@ $VideoSettingsOverrideCopyWith<$Res> get overrides {
 @JsonSerializable()
 
 class BranchedVideoNode extends Node {
-  const BranchedVideoNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 0, this.isExpanded = false, this.videoId, this.overrides = const VideoSettingsOverride(),  List<Choice> choices = const <Choice>[],  String? $type}): _choices = choices,$type = $type ?? 'branchedVideo',super._();
+  const BranchedVideoNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 0, this.isExpanded = false, this.videoId, this.overrides = const VideoSettingsOverride(),  List<Choice> choices = const <Choice>[], this.question,  String? $type}): _choices = choices,$type = $type ?? 'branchedVideo',super._();
   factory BranchedVideoNode.fromJson(Map<String, dynamic> json) => _$BranchedVideoNodeFromJson(json);
 
 @override final  String id;
@@ -754,6 +754,9 @@ class BranchedVideoNode extends Node {
   return EqualUnmodifiableListView(_choices);
 }
 
+/// A question shown above the choices, with no output of its own;
+/// `null` when the node has none (the "Question" setting is off).
+ final  String? question;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -772,18 +775,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is BranchedVideoNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&const DeepCollectionEquality().equals(other.choices, _choices));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BranchedVideoNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&const DeepCollectionEquality().equals(other.choices, _choices)&&(identical(other.question, question) || other.question == question));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,videoId,overrides,const DeepCollectionEquality().hash(_choices));
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,videoId,overrides,const DeepCollectionEquality().hash(_choices),question);
 }
 
 @override
 String toString() {
-    return 'Node.branchedVideo(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, videoId: $videoId, overrides: $overrides, choices: $choices)';
+    return 'Node.branchedVideo(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, videoId: $videoId, overrides: $overrides, choices: $choices, question: $question)';
 }
 
 
@@ -794,7 +797,7 @@ abstract mixin class $BranchedVideoNodeCopyWith<$Res> implements $NodeCopyWith<$
   factory $BranchedVideoNodeCopyWith(BranchedVideoNode value, $Res Function(BranchedVideoNode) _then) = _$BranchedVideoNodeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, Position position, double width, String? name, int swatch, bool isExpanded, String? videoId, VideoSettingsOverride overrides, List<Choice> choices
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, String? videoId, VideoSettingsOverride overrides, List<Choice> choices, String? question
 });
 
 
@@ -811,7 +814,7 @@ class _$BranchedVideoNodeCopyWithImpl<$Res>
 
 /// Create a copy of Node
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? videoId = freezed,Object? overrides = null,Object? choices = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? videoId = freezed,Object? overrides = null,Object? choices = null,Object? question = freezed,}) {
   return _then(BranchedVideoNode(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
@@ -822,7 +825,8 @@ as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore:
 as bool,videoId: freezed == videoId ? _self.videoId : videoId // ignore: cast_nullable_to_non_nullable
 as String?,overrides: null == overrides ? _self.overrides : overrides // ignore: cast_nullable_to_non_nullable
 as VideoSettingsOverride,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
-as List<Choice>,
+as List<Choice>,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

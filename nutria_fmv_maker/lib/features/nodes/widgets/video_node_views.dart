@@ -12,6 +12,8 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
@@ -80,6 +82,22 @@ class BranchedVideoNodeBody extends StatelessWidget {
           child: FocusTraversalGroup(
             child: Column(
               children: [
+                // The question has no output; NodeLayout gives it the
+                // first row, so the choice knots line up below it.
+                if (node.question case final question?) ...[
+                  NodeRow(
+                    children: [
+                      Expanded(
+                        child: _QuestionField(
+                          key: const ValueKey('question'),
+                          nodeId: node.id,
+                          text: question,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: theme.dPanelPadding),
+                ],
                 for (var i = 0; i < rows; i++) ...[
                   if (i > 0) SizedBox(height: theme.dPanelPadding),
                   NodeRow(
@@ -150,6 +168,34 @@ class _ChoiceFieldState extends ConsumerState<_ChoiceField> {
   );
 }
 
+/// The question above a branched node's choices. All keystrokes while
+/// focused are one undo step.
+class _QuestionField extends ConsumerStatefulWidget {
+  const _QuestionField({super.key, required this.nodeId, required this.text});
+
+  final String nodeId;
+  final String text;
+
+  @override
+  ConsumerState<_QuestionField> createState() => _QuestionFieldState();
+}
+
+class _QuestionFieldState extends ConsumerState<_QuestionField> {
+  Object _editSession = Object();
+
+  @override
+  Widget build(BuildContext context) => NutriaTextField(
+    text: widget.text,
+    hint: AppLocalizations.of(context).nodeQuestionHint,
+    onFocusChanged: (focused) {
+      if (focused) _editSession = Object();
+    },
+    onChanged: (text) => ref
+        .read(graphEditorProvider)
+        .setQuestion(widget.nodeId, text, mergeKey: _editSession),
+  );
+}
+
 /// The settings under an expanded video node: per-node overrides of the
 /// project settings, conversion (branched nodes) and the node color.
 class VideoNodeExpansion extends ConsumerWidget {
@@ -159,6 +205,7 @@ class VideoNodeExpansion extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final node = this.node;
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
     final editor = ref.read(graphEditorProvider);
@@ -168,7 +215,7 @@ class VideoNodeExpansion extends ConsumerWidget {
         ? kBranchedNodeSettings
         : kSimpleNodeSettings;
     final children = <Widget>[
-      if (node is BranchedVideoNode)
+      if (node is BranchedVideoNode) ...[
         NutriaButton(
           onTap: () => editor.convertNode(node.id),
           child: Padding(
@@ -176,6 +223,27 @@ class VideoNodeExpansion extends ConsumerWidget {
             child: NutriaText(text: t.nodeConvertToSimple),
           ),
         ),
+        // A text above the choices, with no output of its own.
+        NutriaSettingRow(
+          label: t.nodeQuestion,
+          value: node.question != null ? t.essentialsYes : t.essentialsNo,
+          onTap: () =>
+              editor.setQuestionEnabled(node.id, node.question == null),
+          options: [
+            for (final enabled in [true, false])
+              NutriaContextMenuItem(
+                icon: enabled == (node.question != null)
+                    ? Icons.check
+                    : Icons.circle_outlined,
+                label: enabled ? t.essentialsYes : t.essentialsNo,
+                onSelected: () => editor.setQuestionEnabled(node.id, enabled),
+              ),
+          ],
+          onOptionsOpenChanged: ref
+              .read(overlayProvider.notifier)
+              .setContextMenuOpen,
+        ),
+      ],
       for (final type in types)
         VideoSettingRow(
           type: type,
@@ -186,11 +254,14 @@ class VideoNodeExpansion extends ConsumerWidget {
             (o) => o.enable(type, settings.step(type, direction)),
           ),
           onChanged: (next, {mergeKey}) => editor.editOverrides(
-              node.id, (o) => o.enable(type, next),
-              mergeKey: mergeKey),
+            node.id,
+            (o) => o.enable(type, next),
+            mergeKey: mergeKey,
+          ),
           onReset: () => editor.disableOverride(node.id, type),
-          onMenuOpenChanged:
-              ref.read(overlayProvider.notifier).setContextMenuOpen,
+          onMenuOpenChanged: ref
+              .read(overlayProvider.notifier)
+              .setContextMenuOpen,
         ),
       SwatchPicker(
         selected: node.swatch,
@@ -235,25 +306,25 @@ class SwatchPicker extends StatelessWidget {
               child: NutriaTooltip(
                 message: AppLocalizations.of(context).tooltipNodeColor(i + 1),
                 child: MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () => onSelected(i),
-                  child: DecoratedBox(
-                    decoration: BoxDecoration(
-                      color: swatches[i],
-                      borderRadius: BorderRadius.circular(
-                        theme.dButtonBorderRadius,
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () => onSelected(i),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: swatches[i],
+                        borderRadius: BorderRadius.circular(
+                          theme.dButtonBorderRadius,
+                        ),
+                        border: i == selected
+                            ? Border.all(
+                                color: theme.cTextActive,
+                                width: theme.dOutlinesWidth * 2,
+                              )
+                            : null,
                       ),
-                      border: i == selected
-                          ? Border.all(
-                              color: theme.cTextActive,
-                              width: theme.dOutlinesWidth * 2,
-                            )
-                          : null,
                     ),
                   ),
                 ),
-              ),
               ),
             ),
           ],

@@ -40,3 +40,29 @@ change any of them and I'll adapt.
 - **Changing the type drops the limits.** **Ask:** keep them when switching
   between int and float?
 - Limits are saved in `.nfmv` but not exported yet (Phase 5).
+
+### Phase 1c: node editing
+- **Rename:** F2 (first selected node), right-click > Rename, or
+  double-click the color strip. The strip becomes a text field; Enter or a
+  click elsewhere keeps the name, Escape restores it, and the whole edit is
+  one undo step. An empty name removes it (the strip goes thin again).
+- **Double-click is only on the strip**, not the whole node: a double-click
+  detector on the body would delay every single click on nodes by ~300 ms.
+  A side effect: a single click on the strip itself waits for that delay.
+- **Origin name:** new projects store no name; the origin shows the
+  translated "Origin Node" and its strip is always tall. Existing projects
+  keep their stored "Origin Node" text (it can be cleared by renaming).
+- **F2 also works while typing in a field.** It ends that typing and starts
+  renaming the selected node. **Ask:** should F2 be ignored inside fields?
+- **Ctrl+Delete** disconnects everything into and out of the selected nodes
+  (Edit menu and node menu "Disconnect"). Chosen over Alt+Delete: Ctrl is
+  the common "stronger variant" modifier, as you suggested.
+- **Alt+drag** on a node pulls its first unconnected output; if all are
+  connected, the first output (picking up its connection, like dragging its
+  knot). **Alt+hover** grows that knot. Untested on Windows: a lone Alt
+  press may briefly focus the window's system menu. **Ask:** tell me if it
+  does and I'll suppress it.
+- **Question:** a Yes/No row in a branched node's settings. When on, a field
+  above the choices (no output). Stored in the project; exported as an
+  optional `"question"` key only when not empty. The current Player ignores
+  it, so old Players still work.

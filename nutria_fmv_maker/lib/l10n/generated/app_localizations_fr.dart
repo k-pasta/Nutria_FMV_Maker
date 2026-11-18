@@ -118,6 +118,27 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Supprimer les Nœuds Sélectionnés';
 
   @override
+  String get editDisconnectNodes => 'Déconnecter les nœuds sélectionnés';
+
+  @override
+  String get editRenameNode => 'Renommer le nœud';
+
+  @override
+  String get nodeRename => 'Renommer';
+
+  @override
+  String get nodeRenameHint => 'Nom du nœud';
+
+  @override
+  String get nodeOriginDefaultName => 'Nœud d\'origine';
+
+  @override
+  String get nodeQuestion => 'Question';
+
+  @override
+  String get nodeQuestionHint => 'Question au-dessus des choix';
+
+  @override
   String get editProjectSettings => 'Paramètres du Projet';
 
   @override

@@ -116,6 +116,27 @@ class AppLocalizationsEn extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Delete Selected Node(s)';
 
   @override
+  String get editDisconnectNodes => 'Disconnect Selected Node(s)';
+
+  @override
+  String get editRenameNode => 'Rename Node';
+
+  @override
+  String get nodeRename => 'Rename';
+
+  @override
+  String get nodeRenameHint => 'Node name';
+
+  @override
+  String get nodeOriginDefaultName => 'Origin Node';
+
+  @override
+  String get nodeQuestion => 'Question';
+
+  @override
+  String get nodeQuestionHint => 'Question above the choices';
+
+  @override
   String get editProjectSettings => 'Project Settings';
 
   @override

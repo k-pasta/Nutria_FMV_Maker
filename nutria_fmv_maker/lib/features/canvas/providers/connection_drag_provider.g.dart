@@ -203,7 +203,7 @@ final class IsKnotActiveProvider extends $FunctionalProvider<bool, bool, bool>
   }
 }
 
-String _$isKnotActiveHash() => r'cc29b14e4037f406723081d4d72fb400d1340dcd';
+String _$isKnotActiveHash() => r'1b91ee43c95e1c6885532356ea569bbe830ddf31';
 
 /// Whether [port] is the anchor or the target of the drag in progress, so its
 /// knot is drawn enlarged. Inputs use [PortRef.input].

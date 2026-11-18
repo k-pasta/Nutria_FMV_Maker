@@ -110,13 +110,19 @@ class NodeGestureNotifier extends _$NodeGestureNotifier {
     final prefs = ref.read(preferencesProvider);
     final shouldSnap = snap || prefs.gridSnapping;
     final offset = Position(gesture.total.dx, gesture.total.dy);
-    _document.apply('Move nodes', (d) => d.moveNodes({
-          for (final MapEntry(:key, :value) in gesture.start.entries)
-            key: shouldSnap
-                ? snapToGrid(value + offset,
-                    gridSize: prefs.gridSize, gridOffset: -kNodePadding)
-                : value + offset,
-        }));
+    _document.apply(
+      'Move nodes',
+      (d) => d.moveNodes({
+        for (final MapEntry(:key, :value) in gesture.start.entries)
+          key: shouldSnap
+              ? snapToGrid(
+                  value + offset,
+                  gridSize: prefs.gridSize,
+                  gridOffset: -kNodePadding,
+                )
+              : value + offset,
+      }),
+    );
   }
 
   // ----------------------------------------------------------------- resize

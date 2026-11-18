@@ -310,6 +310,48 @@ abstract class AppLocalizations {
   /// **'Delete Selected Node(s)'**
   String get editDeleteSelectedNodes;
 
+  /// No description provided for @editDisconnectNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Disconnect Selected Node(s)'**
+  String get editDisconnectNodes;
+
+  /// No description provided for @editRenameNode.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename Node'**
+  String get editRenameNode;
+
+  /// No description provided for @nodeRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get nodeRename;
+
+  /// No description provided for @nodeRenameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Node name'**
+  String get nodeRenameHint;
+
+  /// No description provided for @nodeOriginDefaultName.
+  ///
+  /// In en, this message translates to:
+  /// **'Origin Node'**
+  String get nodeOriginDefaultName;
+
+  /// No description provided for @nodeQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get nodeQuestion;
+
+  /// No description provided for @nodeQuestionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Question above the choices'**
+  String get nodeQuestionHint;
+
   /// No description provided for @editProjectSettings.
   ///
   /// In en, this message translates to:

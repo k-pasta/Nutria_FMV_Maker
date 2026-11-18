@@ -99,6 +99,33 @@ extension GraphOps on ProjectDocument {
   ProjectDocument setSwatch(String id, int swatch) =>
       updateNode(id, (n) => n.copyWith(swatch: swatch));
 
+  /// Names node [id]; an empty or blank [name] removes the name.
+  ProjectDocument renameNode(String id, String? name) {
+    final trimmed = name?.trim();
+    return setNodeName(id, trimmed == null || trimmed.isEmpty ? null : name);
+  }
+
+  /// Sets node [id]'s name exactly as given (even empty, while it's being
+  /// typed). Unchanged documents stay the same instance.
+  ProjectDocument setNodeName(String id, String? name) =>
+      nodes[id]?.name == name ? this : updateNode(id, (n) => n.copyWith(name: name));
+
+  /// Turns the question of branched node [id] on (an empty text) or off.
+  ProjectDocument setQuestionEnabled(String id, bool enabled) =>
+      updateNode(id, (n) => switch (n) {
+            BranchedVideoNode() => n.copyWith(
+                question: enabled ? (n.question ?? '') : null),
+            _ => n,
+          });
+
+  /// Sets the question text of branched node [id] (if it has a question).
+  ProjectDocument setQuestion(String id, String text) =>
+      updateNode(id, (n) => switch (n) {
+            BranchedVideoNode(:final question?) when question != text =>
+              n.copyWith(question: text),
+            _ => n,
+          });
+
   /// Shows or hides a node's settings panel.
   ProjectDocument toggleExpanded(String id) =>
       updateNode(id, (n) => n.copyWith(isExpanded: !n.isExpanded));
@@ -262,6 +289,16 @@ extension GraphOps on ProjectDocument {
         Edge(from: from, to: to),
       ],
     );
+  }
+
+  /// Removes every connection into or out of the nodes [ids].
+  ProjectDocument disconnectNodes(Set<String> ids) {
+    final kept = [
+      for (final edge in edges)
+        if (!ids.contains(edge.from.nodeId) && !ids.contains(edge.to.nodeId))
+          edge,
+    ];
+    return kept.length == edges.length ? this : copyWith(edges: kept);
   }
 
   /// Removes the edge leaving [from], if any.

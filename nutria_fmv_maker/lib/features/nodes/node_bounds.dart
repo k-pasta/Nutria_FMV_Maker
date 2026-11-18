@@ -31,8 +31,12 @@ class NodeBounds {
     final height = size == null
         ? kUnmeasuredNodeHeight
         : size.height - kNodePadding * 2;
-    return Rect.fromLTWH(node.position.x + kNodePadding,
-        node.position.y + kNodePadding, width, height);
+    return Rect.fromLTWH(
+      node.position.x + kNodePadding,
+      node.position.y + kNodePadding,
+      width,
+      height,
+    );
   }
 
   /// The smallest rect around the nodes [ids] of [doc] (all of them if
@@ -71,7 +75,9 @@ class NodeSizeReporter extends SingleChildRenderObjectWidget {
 
   @override
   void updateRenderObject(
-      BuildContext context, RenderNodeSizeReporter renderObject) {
+    BuildContext context,
+    RenderNodeSizeReporter renderObject,
+  ) {
     renderObject
       ..id = id
       ..bounds = bounds;

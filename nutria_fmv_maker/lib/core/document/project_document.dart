@@ -86,7 +86,7 @@ abstract class ProjectDocument with _$ProjectDocument {
     nodes: {
       kOriginNodeId: Node.origin(
         id: kOriginNodeId,
-        name: 'Origin Node',
+        // No name: shown as the localized "Origin Node".
         position: Position(150, 250),
       ),
     },

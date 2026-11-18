@@ -84,6 +84,7 @@ BranchedVideoNode _$BranchedVideoNodeFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Choice.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Choice>[],
+      question: json['question'] as String?,
       $type: json['type'] as String?,
     );
 
@@ -98,5 +99,6 @@ Map<String, dynamic> _$BranchedVideoNodeToJson(BranchedVideoNode instance) =>
       'videoId': instance.videoId,
       'overrides': instance.overrides.toJson(),
       'choices': instance.choices.map((e) => e.toJson()).toList(),
+      'question': instance.question,
       'type': instance.$type,
     };

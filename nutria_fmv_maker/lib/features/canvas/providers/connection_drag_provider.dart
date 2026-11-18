@@ -5,6 +5,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/alt_drag_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -110,5 +111,9 @@ bool isKnotActive(Ref ref, PortRef port) {
   };
   if (isAnchor) return true;
   final target = ref.watch(potentialConnectionProvider);
-  return target != null && (target.from == port || target.to == port);
+  if (target != null && (target.from == port || target.to == port)) {
+    return true;
+  }
+  // Alt over a node shows the output an Alt+drag would pull.
+  return ref.watch(altPreviewPortProvider) == port;
 }

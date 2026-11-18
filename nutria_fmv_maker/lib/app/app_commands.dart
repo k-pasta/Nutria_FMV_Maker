@@ -8,6 +8,7 @@ import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -124,6 +125,17 @@ class AppCommands {
 
   void undo() => _document.undo();
   void redo() => _document.redo();
+  void disconnectSelection() =>
+      _ref.read(graphEditorProvider).disconnectSelection();
+
+  /// Renames the selected node in place (the first one, if several are).
+  void renameSelected() {
+    final selected = _ref.read(selectionProvider).selected;
+    if (selected.isNotEmpty) {
+      _ref.read(renamingNodeProvider.notifier).start(selected.first);
+    }
+  }
+
   void deleteSelection() => _ref.read(graphEditorProvider).removeSelection();
   Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
   void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();

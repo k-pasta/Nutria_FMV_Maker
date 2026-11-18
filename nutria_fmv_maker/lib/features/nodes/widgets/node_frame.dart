@@ -6,10 +6,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
+import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
+import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -19,6 +23,7 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 
 /// A node card. [lit] (hovered or selected) shows the lighter card color.
 /// Themes with elevation give it a constant soft shadow; it never changes
@@ -58,7 +63,22 @@ List<NutriaContextMenuItem> _nodeMenu(
   AppLocalizations t,
 ) {
   final editor = ref.read(graphEditorProvider);
+  final doc = ref.read(projectDocumentProvider);
+  final connected = doc.edges.any(
+    (e) => e.from.nodeId == node.id || e.to.nodeId == node.id,
+  );
   return [
+    NutriaContextMenuItem(
+      icon: Icons.edit,
+      label: t.nodeRename,
+      onSelected: () => ref.read(renamingNodeProvider.notifier).start(node.id),
+    ),
+    if (connected)
+      NutriaContextMenuItem(
+        icon: Icons.link_off,
+        label: t.editDisconnectNodes,
+        onSelected: () => editor.disconnectNodeOrSelection(node.id),
+      ),
     if (node is SimpleVideoNode)
       NutriaContextMenuItem(
         icon: Icons.call_split,
@@ -247,6 +267,37 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
     );
   }
 
+  /// Whether this drag pulls a noodle (Alt) rather than moving the node.
+  bool _pullingNoodle = false;
+
+  /// Alt+drag starts dragging the node's first free output (see
+  /// [firstFreeOutput]); a plain drag moves the node.
+  void _beginDrag(Node node, DragStartDetails details) {
+    if (HardwareKeyboard.instance.isAltPressed) {
+      final doc = ref.read(projectDocumentProvider);
+      final port = firstFreeOutput(node, (p) => doc.edgeFrom(p) != null);
+      if (port != null) {
+        _pullingNoodle = true;
+        final pointer =
+            CanvasSpace.maybeOf(context)?.fromGlobal(details.globalPosition) ??
+            Offset.zero;
+        _drag.beginFromOutput(port, pointer);
+        return;
+      }
+    }
+    _pullingNoodle = false;
+    _gestures.beginMove(node.id, additive: _additive);
+  }
+
+  void _endDrag() {
+    if (_pullingNoodle) {
+      _pullingNoodle = false;
+      _drag.end();
+    } else {
+      _gestures.end();
+    }
+  }
+
   Widget _body(BuildContext context, bool dropping) {
     final theme = context.appTheme;
     final node = widget.node;
@@ -260,14 +311,16 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
         child: GestureDetector(
           behavior: HitTestBehavior.opaque,
           onTap: () => _gestures.tap(node.id, additive: _additive),
-          onPanStart: (_) => _gestures.beginMove(node.id, additive: _additive),
+          onPanStart: (details) => _beginDrag(node, details),
           // Local deltas are in canvas units: the node is inside the canvas.
-          onPanUpdate: (details) => _gestures.updateMove(
-            details.delta,
-            snap: HardwareKeyboard.instance.isShiftPressed,
-          ),
-          onPanEnd: (_) => _gestures.end(),
-          onPanCancel: _gestures.end,
+          onPanUpdate: (details) => _pullingNoodle
+              ? _drag.updatePointer(details.delta)
+              : _gestures.updateMove(
+                  details.delta,
+                  snap: HardwareKeyboard.instance.isShiftPressed,
+                ),
+          onPanEnd: (_) => _endDrag(),
+          onPanCancel: _endDrag,
           child: Stack(
             children: [
               // One rounded card: color strip on top, content below.
@@ -297,34 +350,63 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
 }
 
 /// The colored top of the node, with its name if it has one.
-class _SwatchStrip extends StatelessWidget {
+class _SwatchStrip extends ConsumerWidget {
   const _SwatchStrip({required this.node});
 
   final Node node;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
-    final name = node.name;
+    final renaming = ref.watch(
+      renamingNodeProvider.select((id) => id == node.id),
+    );
+    final rename = ref.read(renamingNodeProvider.notifier);
+    // The origin always shows a name: its own, or "Origin Node".
+    final name =
+        node.name ??
+        (node is OriginNode
+            ? AppLocalizations.of(context).nodeOriginDefaultName
+            : null);
     final radius = Radius.circular(theme.dNodeBorderRadius);
-    return Container(
-      height: NodeMetrics.of(context).stripHeight(node),
-      padding: EdgeInsets.symmetric(horizontal: theme.dPanelPadding * 2),
-      alignment: Alignment.centerLeft,
-      // Rounded itself rather than clipped by the card: clipping every node
-      // costs more to draw.
-      decoration: BoxDecoration(
-        color: theme.swatch(node.swatch),
-        borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
+    final Widget? label = renaming
+        ? NutriaTextField(
+            text: node.name ?? '',
+            hint: node is OriginNode
+                ? AppLocalizations.of(context).nodeOriginDefaultName
+                : AppLocalizations.of(context).nodeRenameHint,
+            bareStyle: theme.swatchTextStyle,
+            autofocus: true,
+            onChanged: rename.update,
+            onSubmitted: (_) => rename.commit(),
+            onEscape: rename.cancel,
+            onFocusChanged: (focused) {
+              if (!focused) rename.commit();
+            },
+          )
+        : name == null
+        ? null
+        : Text(
+            name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.swatchTextStyle,
+          );
+    // Double-clicking the strip renames the node.
+    return GestureDetector(
+      onDoubleTap: () => rename.start(node.id),
+      child: Container(
+        height: NodeMetrics.of(context).stripHeight(node),
+        padding: EdgeInsets.symmetric(horizontal: theme.dPanelPadding * 2),
+        alignment: Alignment.centerLeft,
+        // Rounded itself rather than clipped by the card: clipping every node
+        // costs more to draw.
+        decoration: BoxDecoration(
+          color: theme.swatch(node.swatch),
+          borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
+        ),
+        child: label,
       ),
-      child: name == null
-          ? null
-          : Text(
-              name,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.swatchTextStyle,
-            ),
     );
   }
 }

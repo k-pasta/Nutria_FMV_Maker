@@ -16,9 +16,10 @@ class NodeLayer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final ids = ref.watch(nodePaintOrderProvider);
     return Positioned.fill(
-      child: Stack(clipBehavior: Clip.none, children: [
-        for (final id in ids) _NodeView(key: ValueKey(id), id: id),
-      ]),
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [for (final id in ids) _NodeView(key: ValueKey(id), id: id)],
+      ),
     );
   }
 }
@@ -37,13 +38,15 @@ class _NodeView extends ConsumerStatefulWidget {
 }
 
 class _NodeViewState extends ConsumerState<_NodeView> {
-  late final Widget _content =
-      RepaintBoundary(child: _NodeContent(id: widget.id));
+  late final Widget _content = RepaintBoundary(
+    child: _NodeContent(id: widget.id),
+  );
 
   @override
   Widget build(BuildContext context) {
-    final position =
-        ref.watch(nodeProvider(widget.id).select((n) => n?.position));
+    final position = ref.watch(
+      nodeProvider(widget.id).select((n) => n?.position),
+    );
     if (position == null) return const SizedBox.shrink();
     return Positioned(
       left: kCanvasCenter.dx + position.x,

@@ -16,6 +16,9 @@ const kShortcutRedo = SingleActivator(LogicalKeyboardKey.keyY, control: true);
 const kShortcutRedoAlt =
     SingleActivator(LogicalKeyboardKey.keyZ, control: true, shift: true);
 const kShortcutDelete = SingleActivator(LogicalKeyboardKey.delete);
+const kShortcutDisconnect =
+    SingleActivator(LogicalKeyboardKey.delete, control: true);
+const kShortcutRename = SingleActivator(LogicalKeyboardKey.f2);
 const kShortcutCopy = SingleActivator(LogicalKeyboardKey.keyC, control: true);
 const kShortcutPaste = SingleActivator(LogicalKeyboardKey.keyV, control: true);
 const kShortcutDuplicate =
@@ -76,6 +79,8 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutRedo: commands.redo,
       kShortcutRedoAlt: commands.redo,
       kShortcutDelete: commands.deleteSelection,
+      kShortcutDisconnect: commands.disconnectSelection,
+      kShortcutRename: commands.renameSelected,
       kShortcutCopy: commands.copy,
       kShortcutPaste: commands.paste,
       kShortcutDuplicate: commands.duplicate,

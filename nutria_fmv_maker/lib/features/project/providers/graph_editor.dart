@@ -122,6 +122,27 @@ class GraphEditor {
     }
   }
 
+  /// Removes every connection into or out of the selected nodes.
+  void disconnectSelection() => _document.apply('Disconnect nodes',
+      (d) => d.disconnectNodes(_ref.read(selectionProvider).selected));
+
+  /// From node [id]'s menu: disconnects the whole selection if [id] is part
+  /// of it, otherwise just [id].
+  void disconnectNodeOrSelection(String id) {
+    final selected = _ref.read(selectionProvider).selected;
+    _document.apply('Disconnect nodes',
+        (d) => d.disconnectNodes(selected.contains(id) ? selected : {id}));
+  }
+
+  /// Turns the question of branched node [id] on or off.
+  void setQuestionEnabled(String id, bool enabled) => _document.apply(
+      'Toggle question', (d) => d.setQuestionEnabled(id, enabled));
+
+  /// Pass the same [mergeKey] for every keystroke of one typing session.
+  void setQuestion(String id, String text, {Object? mergeKey}) =>
+      _document.apply('Edit question', (d) => d.setQuestion(id, text),
+          mergeKey: mergeKey);
+
   /// Switches a video node between simple and branched.
   void convertNode(String id) => _document.apply(
       'Convert node', (d) => d.convertVideoNode(id, newId: _newId));

@@ -33,61 +33,77 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
     final description = info.description ?? '';
     final editor = ref.read(graphEditorProvider);
     final isEmpty = title.isEmpty && description.isEmpty;
-    return Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
-      // Rough preview of the player's main menu, inset like a screen. The
-      // outer height stays the thumbnail height, which the knots rely on.
-      Container(
-        height: NodeMetrics.of(context).thumbnailHeight - theme.dPanelPadding,
-        margin: EdgeInsets.fromLTRB(
-            theme.dPanelPadding, theme.dPanelPadding, theme.dPanelPadding, 0),
-        decoration: BoxDecoration(
-          color: theme.cButton,
-          borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
-        ),
-        padding: EdgeInsets.all(theme.dPanelPadding),
-        child: Column(mainAxisAlignment: MainAxisAlignment.center, children: [
-          NutriaText(
-            text: isEmpty ? t.originTitlePlaceHolder : title,
-            textAlign: TextAlign.center,
-            textStyle: title.isEmpty
-                ? NutriaTextStyle.italic
-                : NutriaTextStyle.bold,
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        // Rough preview of the player's main menu, inset like a screen. The
+        // outer height stays the thumbnail height, which the knots rely on.
+        Container(
+          height: NodeMetrics.of(context).thumbnailHeight - theme.dPanelPadding,
+          margin: EdgeInsets.fromLTRB(
+            theme.dPanelPadding,
+            theme.dPanelPadding,
+            theme.dPanelPadding,
+            0,
           ),
-          SizedBox(height: theme.dPanelPadding * 3),
-          NutriaText(
+          decoration: BoxDecoration(
+            color: theme.cButton,
+            borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+          ),
+          padding: EdgeInsets.all(theme.dPanelPadding),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              NutriaText(
+                text: isEmpty ? t.originTitlePlaceHolder : title,
+                textAlign: TextAlign.center,
+                textStyle: title.isEmpty
+                    ? NutriaTextStyle.italic
+                    : NutriaTextStyle.bold,
+              ),
+              SizedBox(height: theme.dPanelPadding * 3),
+              NutriaText(
+                text: description,
+                textAlign: TextAlign.center,
+                maxLines: 3,
+                sizeMultiplier: .65,
+              ),
+            ],
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.all(theme.dPanelPadding),
+          child: NutriaTextField(
+            text: title,
+            hint: '${t.originProjectTitle} ...',
+            onFocusChanged: (focused) {
+              if (focused) _titleSession = Object();
+            },
+            onChanged: (value) =>
+                editor.setProjectTitle(value, mergeKey: _titleSession),
+          ),
+        ),
+        Padding(
+          padding: EdgeInsets.fromLTRB(
+            theme.dPanelPadding,
+            0,
+            theme.dPanelPadding,
+            theme.dPanelPadding,
+          ),
+          child: NutriaTextField(
             text: description,
-            textAlign: TextAlign.center,
-            maxLines: 3,
-            sizeMultiplier: .65,
+            hint: '${t.originProjectDescription} ...',
+            maxLines: 2,
+            onFocusChanged: (focused) {
+              if (focused) _descriptionSession = Object();
+            },
+            onChanged: (value) => editor.setProjectDescription(
+              value,
+              mergeKey: _descriptionSession,
+            ),
           ),
-        ]),
-      ),
-      Padding(
-        padding: EdgeInsets.all(theme.dPanelPadding),
-        child: NutriaTextField(
-          text: title,
-          hint: '${t.originProjectTitle} ...',
-          onFocusChanged: (focused) {
-            if (focused) _titleSession = Object();
-          },
-          onChanged: (value) =>
-              editor.setProjectTitle(value, mergeKey: _titleSession),
         ),
-      ),
-      Padding(
-        padding: EdgeInsets.fromLTRB(
-            theme.dPanelPadding, 0, theme.dPanelPadding, theme.dPanelPadding),
-        child: NutriaTextField(
-          text: description,
-          hint: '${t.originProjectDescription} ...',
-          maxLines: 2,
-          onFocusChanged: (focused) {
-            if (focused) _descriptionSession = Object();
-          },
-          onChanged: (value) => editor.setProjectDescription(value,
-              mergeKey: _descriptionSession),
-        ),
-      ),
-    ]);
+      ],
+    );
   }
 }

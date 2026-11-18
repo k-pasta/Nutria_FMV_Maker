@@ -70,8 +70,19 @@ void main() {
     const origin = OriginNode(id: 'o', position: Position.zero);
     final layout = NodeLayout(origin, metrics);
     expect(layout.input, isNull);
+    // The origin's strip always shows a name ("Origin Node" by default).
     expect(layout.output(kNextPortKey),
-        Offset(30 + kDefaultNodeWidth, 30 + 10 + metrics.thumbnailHeight));
+        Offset(30 + kDefaultNodeWidth, 30 + 10 + 14 + metrics.thumbnailHeight));
+  });
+
+  test('a question takes the first row; the choice knots move down a row',
+      () {
+    final plain = NodeLayout(branched, metrics);
+    final asking = NodeLayout(branched.copyWith(question: 'Which?'), metrics);
+    final port = branched.choices.first.id;
+    expect(asking.output(port)!.dy - plain.output(port)!.dy,
+        metrics.choiceStride);
+    expect(asking.input, plain.input, reason: 'the input stays put');
   });
 
   test('a branched node shows an empty row to type into until the maximum',

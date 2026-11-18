@@ -210,6 +210,7 @@ class FmvOverrides {
 class FmvNode {
   const FmvNode({
     this.video,
+    this.question,
     this.target,
     this.choices,
     this.overrides = const FmvOverrides(),
@@ -217,6 +218,10 @@ class FmvNode {
 
   /// Path of the video file; `null` if the author didn't pick one.
   final String? video;
+
+  /// A question shown above the [choices]; `null` for none. (Added after
+  /// version 1.0; older readers ignore it.)
+  final String? question;
 
   /// The next node of a node without choices; `null` ends the story.
   final String? target;
@@ -229,6 +234,7 @@ class FmvNode {
 
   Map<String, Object?> toJson() => {
         'video': video,
+        if (question != null) 'question': question,
         if (target != null) 'target': target,
         if (choices != null)
           'choices': [for (final choice in choices!) choice.toJson()],
@@ -239,6 +245,7 @@ class FmvNode {
     final choices = json['choices'];
     return FmvNode(
       video: _string(json['video']),
+      question: _string(json['question']),
       target: _string(json['target']),
       choices: choices is List
           ? [for (final choice in choices) FmvChoice.fromJson(_map(choice))]

@@ -68,7 +68,7 @@ void main() {
   });
 
   test('min and max keep the value inside them', () {
-    var v = const Variable.integer(id: 'a', name: 'hp', initial: 50) as Variable;
+    Variable v = const Variable.integer(id: 'a', name: 'hp', initial: 50);
     v = v.withLimitText(isMin: false, text: '10')!;
     expect((v as IntVariable).initial, 10, reason: 'clamped to the new max');
     expect(v.stepped(1), v, reason: 'stepping stays at the max');

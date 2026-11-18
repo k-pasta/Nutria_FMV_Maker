@@ -60,6 +60,18 @@ void main() {
     expect(project.settings.toJson()['videoFit'], 'fillWidth');
   });
 
+  test('a node can carry a question above its choices', () {
+    const node = FmvNode(
+      video: 'a.mp4',
+      question: 'Which door?',
+      choices: [FmvChoice(text: 'Left', target: '002')],
+    );
+    expect(node.toJson().keys, ['video', 'question', 'choices']);
+    expect(FmvNode.fromJson(node.toJson()).question, 'Which door?');
+    expect(const FmvNode(video: 'b.mp4').toJson().containsKey('question'),
+        isFalse);
+  });
+
   test('missing or unknown values fall back to the defaults', () {
     final project = FmvProject.fromJson({
       'ProjectSettings': {'videoFit': 'sideways', 'selectionTime': 'soon'},

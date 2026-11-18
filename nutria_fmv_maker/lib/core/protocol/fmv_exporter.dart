@@ -69,6 +69,11 @@ FmvExport exportFmv(ProjectDocument document) {
         }
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
+          // An empty question (turned on, never written) isn't exported.
+          question: switch (node.question?.trim()) {
+            final q? when q.isNotEmpty => node.question,
+            _ => null,
+          },
           choices: choices.isEmpty ? null : choices,
           overrides: _overrides(node.overrides),
         );

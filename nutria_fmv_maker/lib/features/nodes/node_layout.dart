@@ -40,8 +40,7 @@ class NodeMetrics {
       panelPadding: theme.dPanelPadding,
       rowHeight: theme.dButtonHeight,
       // Fully resolved, so measuring and drawing use the same font.
-      fileNameStyle: DefaultTextStyle.of(context)
-          .style
+      fileNameStyle: DefaultTextStyle.of(context).style
           .merge(theme.filenameTextStyle)
           .copyWith(fontStyle: FontStyle.italic),
       noVideoText: AppLocalizations.of(context).nodeNoVideo,
@@ -67,14 +66,16 @@ class NodeMetrics {
 
   /// Lays out a file name exactly as the node draws it.
   TextPainter fileNamePainter(String? fileName) => TextPainter(
-        text: TextSpan(
-            text: wrappable(fileName ?? noVideoText), style: fileNameStyle),
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr,
-        maxLines: kFileNameMaxLines,
-        ellipsis: '\u2026',
-        textScaler: TextScaler.noScaling,
-      );
+    text: TextSpan(
+      text: wrappable(fileName ?? noVideoText),
+      style: fileNameStyle,
+    ),
+    textAlign: TextAlign.center,
+    textDirection: TextDirection.ltr,
+    maxLines: kFileNameMaxLines,
+    ellipsis: '\u2026',
+    textScaler: TextScaler.noScaling,
+  );
 
   static final _heights = <(String?, String, double, TextStyle), double>{};
 
@@ -96,9 +97,11 @@ class NodeMetrics {
   double fileNameRowHeight(String? fileName, double nodeWidth) =>
       fileNameHeight(fileName, nodeWidth) + panelPadding * 2;
 
-  /// The colored strip on top; taller when the node has a name.
-  double stripHeight(Node node) =>
-      node.name == null ? swatchHeight : swatchHeight + textHeight;
+  /// The colored strip on top; taller when it shows a name. The origin
+  /// always does ("Origin Node" when it has none of its own).
+  double stripHeight(Node node) => node.name == null && node is! OriginNode
+      ? swatchHeight
+      : swatchHeight + textHeight;
 
   /// The video thumbnail (or origin preview). It keeps the 16:9 shape of a
   /// default-width node at every width, so resizing doesn't move knots.
@@ -148,20 +151,25 @@ class NodeLayout {
       // Level with the input, so a chain of simple nodes reads as a line.
       SimpleVideoNode() =>
         port == kNextPortKey ? Offset(right, _thumbnailBottom) : null,
-      BranchedVideoNode(:final choices) => switch (
-            choices.indexWhere((c) => c.id == port)) {
-          -1 => null,
-          final i =>
-            Offset(right, _rowsTop + rowCenter + i * metrics.choiceStride),
-        },
+      // A question takes the first row; the choices follow it.
+      BranchedVideoNode(:final choices, :final question) => switch (choices
+          .indexWhere((c) => c.id == port)) {
+        -1 => null,
+        final i => Offset(
+          right,
+          _rowsTop +
+              rowCenter +
+              (i + (question == null ? 0 : 1)) * metrics.choiceStride,
+        ),
+      },
     };
   }
 
   /// Every knot of the node: its input first, then outputs top to bottom.
   List<({PortRef port, Offset offset})> get knots => [
-        if (input case final offset?)
-          (port: PortRef.input(node.id), offset: offset),
-        for (final port in outputPortsOf(node))
-          (port: PortRef(nodeId: node.id, port: port), offset: output(port)!),
-      ];
+    if (input case final offset?)
+      (port: PortRef.input(node.id), offset: offset),
+    for (final port in outputPortsOf(node))
+      (port: PortRef(nodeId: node.id, port: port), offset: output(port)!),
+  ];
 }

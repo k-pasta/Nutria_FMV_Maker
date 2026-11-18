@@ -24,6 +24,10 @@ class NutriaTextField extends StatefulWidget {
     this.isAccented = false,
     this.inputFormatters,
     this.horizontalPadding,
+    this.bareStyle,
+    this.autofocus = false,
+    this.onSubmitted,
+    this.onEscape,
   });
 
   final String text;
@@ -45,6 +49,19 @@ class NutriaTextField extends StatefulWidget {
   /// Space left and right of the text (default: the theme's), e.g. to make
   /// room for buttons drawn over the field's ends.
   final double? horizontalPadding;
+
+  /// Draws only the text, in this style: no fill, no padding, no raised
+  /// edge. For editing text in place, e.g. a node's name in its strip.
+  final TextStyle? bareStyle;
+
+  /// Focuses the field (and selects its text) as soon as it appears.
+  final bool autofocus;
+
+  /// Enter was pressed.
+  final ValueChanged<String>? onSubmitted;
+
+  /// Escape was pressed (e.g. to cancel an edit).
+  final VoidCallback? onEscape;
 
   @override
   State<NutriaTextField> createState() => _NutriaTextFieldState();
@@ -109,6 +126,16 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
   void initState() {
     super.initState();
     _focus.addListener(_onFocus);
+    if (widget.autofocus) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _focus.requestFocus();
+        _controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _controller.text.length,
+        );
+      });
+    }
   }
 
   @override
@@ -138,71 +165,96 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final bare = widget.bareStyle;
+    final field = _field(theme);
+    // Our own right-click menu: the built-in one is drawn in the field's
+    // coordinates, so on a zoomed-out canvas it shrinks with the node.
+    final withMenu = NutriaContextMenuArea(
+      fromPointerEvents: true,
+      itemsAt: (_) => _menu(context),
+      child: field,
+    );
+    // Raised a little in themes with elevation, like buttons.
+    return bare != null
+        ? withMenu
+        : RaisedEdge(radius: theme.dButtonBorderRadius, child: withMenu);
+  }
+
+  Widget _field(AppTheme theme) {
     final focused = _focus.hasFocus;
     final radius = BorderRadius.circular(theme.dButtonBorderRadius);
     const hidden = BorderSide(color: Colors.transparent);
-    // Raised a little in themes with elevation, like buttons.
-    return RaisedEdge(
-      radius: theme.dButtonBorderRadius,
-      // Our own right-click menu: the built-in one is drawn in the field's
-      // coordinates, so on a zoomed-out canvas it shrinks with the node.
-      child: NutriaContextMenuArea(
-        fromPointerEvents: true,
-        itemsAt: (_) => _menu(context),
-        child: Shortcuts(
-          shortcuts: _blockedShortcuts,
-          child: TextField(
-            controller: _controller,
-            focusNode: _focus,
-            onChanged: widget.onChanged,
-            inputFormatters: widget.inputFormatters,
-            // Clicking elsewhere ends editing, so the app's keyboard shortcuts
-            // work again (desktop fields keep focus by default).
-            onTapOutside: (_) => _focus.unfocus(),
-            textInputAction: TextInputAction.next,
-            cursorColor: theme.cText,
-            style: TextStyle(
-              color: widget.isError || widget.isAccented
-                  ? theme.cAccent
-                  : (focused ? theme.cTextActive : theme.cText),
-              fontSize: theme.dTextHeight,
-            ),
-            contextMenuBuilder: null,
-            maxLines: widget.maxLines,
-            maxLength: kTextFieldMaxLength,
-            textAlign: widget.textAlign,
-            decoration: InputDecoration(
-              // Allows heights below Material's 48px minimum.
-              isDense: true,
-              // Vertically centers one line in a button-high field (+0.5 by eye).
-              contentPadding: EdgeInsets.symmetric(
-                vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
-                horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
+    final bare = widget.bareStyle;
+    final onEscape = widget.onEscape;
+    return CallbackShortcuts(
+      bindings: {
+        const SingleActivator(LogicalKeyboardKey.escape): ?onEscape,
+      },
+      child: Shortcuts(
+        shortcuts: _blockedShortcuts,
+        child: TextField(
+          controller: _controller,
+          focusNode: _focus,
+          onChanged: widget.onChanged,
+          onSubmitted: widget.onSubmitted,
+          inputFormatters: widget.inputFormatters,
+          // Clicking elsewhere ends editing, so the app's keyboard shortcuts
+          // work again (desktop fields keep focus by default).
+          onTapOutside: (_) => _focus.unfocus(),
+          textInputAction: TextInputAction.next,
+          cursorColor: theme.cText,
+          style:
+              bare ??
+              TextStyle(
+                color: widget.isError || widget.isAccented
+                    ? theme.cAccent
+                    : (focused ? theme.cTextActive : theme.cText),
+                fontSize: theme.dTextHeight,
               ),
-              counterText: '',
-              hintText: widget.hint,
-              hintStyle: TextStyle(color: theme.cTextInactive),
-              // Flat: the fill shows the field, a darker fill shows focus.
-              border: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: hidden,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: hidden,
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: hidden,
-              ),
-              disabledBorder: OutlineInputBorder(
-                borderRadius: radius,
-                borderSide: hidden,
-              ),
-              filled: true,
-              fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
-            ),
-          ),
+          contextMenuBuilder: null,
+          maxLines: widget.maxLines,
+          maxLength: kTextFieldMaxLength,
+          textAlign: widget.textAlign,
+          decoration: bare != null
+              ? InputDecoration.collapsed(
+                  hintText: widget.hint,
+                  hintStyle: bare.copyWith(color: theme.cTextInactive),
+                )
+              : InputDecoration(
+                  // Allows heights below Material's 48px minimum.
+                  isDense: true,
+                  // Vertically centers one line in a button-high field (+0.5 by eye).
+                  contentPadding: EdgeInsets.symmetric(
+                    vertical:
+                        (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
+                    horizontal:
+                        widget.horizontalPadding ?? theme.dTextfieldPadding,
+                  ),
+                  counterText: '',
+                  hintText: widget.hint,
+                  hintStyle: TextStyle(color: theme.cTextInactive),
+                  // Flat: the fill shows the field, a darker fill shows focus.
+                  border: OutlineInputBorder(
+                    borderRadius: radius,
+                    borderSide: hidden,
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: radius,
+                    borderSide: hidden,
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: radius,
+                    borderSide: hidden,
+                  ),
+                  disabledBorder: OutlineInputBorder(
+                    borderRadius: radius,
+                    borderSide: hidden,
+                  ),
+                  filled: true,
+                  fillColor: focused
+                      ? theme.cTextFieldActive
+                      : theme.cTextField,
+                ),
         ),
       ),
     );

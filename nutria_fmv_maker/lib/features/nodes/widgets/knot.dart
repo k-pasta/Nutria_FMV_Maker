@@ -34,8 +34,9 @@ class _KnotState extends ConsumerState<Knot> {
 
   // Read once: the mouse-exit callback can fire while this widget is being
   // removed, when `ref` may no longer be used.
-  late final ConnectionDragNotifier _drag =
-      ref.read(connectionDragProvider.notifier);
+  late final ConnectionDragNotifier _drag = ref.read(
+    connectionDragProvider.notifier,
+  );
 
   HoverTarget get _target => widget.isInput
       ? HoverTarget.input(widget.port.nodeId)
@@ -44,7 +45,7 @@ class _KnotState extends ConsumerState<Knot> {
   void _begin(DragStartDetails details) {
     final pointer =
         CanvasSpace.maybeOf(context)?.fromGlobal(details.globalPosition) ??
-            Offset.zero;
+        Offset.zero;
     if (widget.isInput) {
       _drag.beginFromInput(widget.port.nodeId, pointer);
     } else {
@@ -55,8 +56,9 @@ class _KnotState extends ConsumerState<Knot> {
   @override
   Widget build(BuildContext context) {
     final active = ref.watch(isKnotActiveProvider(widget.port));
-    final dragging =
-        ref.watch(connectionDragProvider.select((s) => s.anchor != null));
+    final dragging = ref.watch(
+      connectionDragProvider.select((s) => s.anchor != null),
+    );
     final large = active || (_hovered && !dragging);
     final size = large ? kKnotSizeLarge : kKnotSizeSmall;
     return MouseRegion(

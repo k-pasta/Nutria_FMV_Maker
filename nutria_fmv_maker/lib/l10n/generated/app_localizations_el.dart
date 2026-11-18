@@ -117,6 +117,27 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editDeleteSelectedNodes => 'Διαγραφή Επελεγμένων Κόμβων';
 
   @override
+  String get editDisconnectNodes => 'Αποσύνδεση Επιλεγμένων Κόμβων';
+
+  @override
+  String get editRenameNode => 'Μετονομασία Κόμβου';
+
+  @override
+  String get nodeRename => 'Μετονομασία';
+
+  @override
+  String get nodeRenameHint => 'Όνομα κόμβου';
+
+  @override
+  String get nodeOriginDefaultName => 'Αρχικός Κόμβος';
+
+  @override
+  String get nodeQuestion => 'Ερώτηση';
+
+  @override
+  String get nodeQuestionHint => 'Ερώτηση πάνω από τις επιλογές';
+
+  @override
   String get editProjectSettings => 'Ρυθμίσεις Πρότζεκτ';
 
   @override

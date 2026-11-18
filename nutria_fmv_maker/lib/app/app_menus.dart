@@ -96,6 +96,16 @@ List<NutriaMenu> buildAppMenus({
             icon: Icons.unfold_less,
             onPressed: commands.collapseAll),
         NutriaMenuEntry(
+            label: t.editRenameNode,
+            icon: Icons.edit,
+            shortcut: kShortcutRename,
+            onPressed: commands.renameSelected),
+        NutriaMenuEntry(
+            label: t.editDisconnectNodes,
+            icon: Icons.link_off,
+            shortcut: kShortcutDisconnect,
+            onPressed: commands.disconnectSelection),
+        NutriaMenuEntry(
             label: t.editDeleteSelectedNodes,
             icon: Icons.delete_forever,
             shortcut: kShortcutDelete,

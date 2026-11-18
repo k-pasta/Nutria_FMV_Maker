@@ -80,6 +80,10 @@ sealed class Node with _$Node {
     String? videoId,
     @Default(VideoSettingsOverride()) VideoSettingsOverride overrides,
     @Default(<Choice>[]) List<Choice> choices,
+
+    /// A question shown above the choices, with no output of its own;
+    /// `null` when the node has none (the "Question" setting is off).
+    String? question,
   }) = BranchedVideoNode;
 
   factory Node.fromJson(Map<String, dynamic> json) => _$NodeFromJson(json);
