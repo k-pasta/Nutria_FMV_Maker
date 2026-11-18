@@ -1,15 +1,18 @@
-// The imported videos: click to preview, drag onto the canvas or a node.
+// The imported media: click a video to preview it, drag one onto the canvas
+// or a node. Sorted and grouped as the user chooses.
+import 'dart:io';
 import 'dart:math' as math;
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
+import 'package:nutria_fmv_maker/features/video_library/library_order.dart';
 import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
@@ -29,8 +32,30 @@ double? libraryThumbnailWidth(LibraryView view) => switch (view) {
       LibraryView.list => null,
     };
 
-/// The imported videos as a grid or a list, with an import (+) button that
-/// floats over them. Ctrl+wheel, or the right-click menu, changes the size.
+/// The icon standing for media of [kind] where there's no thumbnail.
+IconData mediaKindIcon(MediaKind kind) => switch (kind) {
+      MediaKind.video => Icons.movie,
+      MediaKind.audio => Icons.music_note,
+      MediaKind.image => Icons.image,
+      MediaKind.subtitle => Icons.subtitles,
+      MediaKind.font => Icons.font_download,
+    };
+
+/// The title of a library group (see [LibraryGroup.key]).
+String libraryGroupTitle(AppLocalizations t, Object? key) => switch (key) {
+      MediaKind.video => t.mediaKindVideo,
+      MediaKind.audio => t.mediaKindAudio,
+      MediaKind.image => t.mediaKindImage,
+      MediaKind.subtitle => t.mediaKindSubtitle,
+      MediaKind.font => t.mediaKindFont,
+      final String extension when extension.isNotEmpty =>
+        extension.toUpperCase(),
+      _ => '?',
+    };
+
+/// The imported media as a grid or a list, optionally in collapsible groups,
+/// with an import (+) button that floats over them. Ctrl+wheel, or the
+/// right-click menu, changes the size; the menu also sorts and groups.
 class VideoLibraryPanel extends ConsumerWidget {
   const VideoLibraryPanel({super.key});
 
@@ -38,21 +63,36 @@ class VideoLibraryPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
-    final videos = ref.watch(videoAssetsProvider);
+    final media = ref.watch(mediaAssetsProvider);
     final previewed = ref.watch(videoPreviewProvider.select((p) => p?.videoId));
-    final view = ref.watch(preferencesProvider.select((p) => p.libraryView));
+    final (view, sort, grouping) = ref.watch(preferencesProvider
+        .select((p) => (p.libraryView, p.librarySort, p.libraryGrouping)));
+    final collapsed = ref.watch(collapsedLibraryGroupsProvider);
     final preferences = ref.read(preferencesProvider.notifier);
     final grid = view.index <= LibraryView.smallThumbnails.index;
+    final groups = libraryGroups(media, sort, grouping);
 
-    final entries = [
-      for (final video in videos)
-        VideoLibraryEntry(
-          key: ValueKey(video.id),
-          video: video,
-          view: view,
-          isPreviewed: video.id == previewed,
-        ),
-    ];
+    Widget entriesOf(List<MediaAsset> list) {
+      final entries = [
+        for (final asset in list)
+          VideoLibraryEntry(
+            key: ValueKey(asset.id),
+            video: asset,
+            view: view,
+            isPreviewed: asset.id == previewed,
+          ),
+      ];
+      return grid
+          ? Wrap(
+              spacing: theme.dPanelPadding,
+              runSpacing: theme.dPanelPadding,
+              children: entries,
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: entries,
+            );
+    }
 
     return Stack(
       children: [
@@ -88,6 +128,32 @@ class VideoLibraryPanel extends ConsumerWidget {
                       label: label,
                       onSelected: () => preferences.setLibraryView(option),
                     ),
+                  const NutriaContextMenuItem.divider(),
+                  for (final (option, label, icon) in [
+                    (LibrarySort.dateAdded, t.librarySortDateAdded,
+                        Icons.schedule),
+                    (LibrarySort.name, t.librarySortName, Icons.sort_by_alpha),
+                    (LibrarySort.type, t.librarySortType, Icons.category),
+                  ])
+                    NutriaContextMenuItem(
+                      icon: option == sort ? Icons.check : icon,
+                      label: label,
+                      onSelected: () => preferences.setLibrarySort(option),
+                    ),
+                  const NutriaContextMenuItem.divider(),
+                  for (final (option, label, icon) in [
+                    (LibraryGrouping.none, t.libraryGroupNone,
+                        Icons.view_agenda),
+                    (LibraryGrouping.kind, t.libraryGroupKind,
+                        Icons.folder_copy),
+                    (LibraryGrouping.fileType, t.libraryGroupFileType,
+                        Icons.description),
+                  ])
+                    NutriaContextMenuItem(
+                      icon: option == grouping ? Icons.check : icon,
+                      label: label,
+                      onSelected: () => preferences.setLibraryGrouping(option),
+                    ),
                 ],
                 // Inside the scroll view, so it claims Ctrl+wheel before the
                 // scroll view does (the deepest listener is asked first).
@@ -116,15 +182,27 @@ class VideoLibraryPanel extends ConsumerWidget {
                               theme.dSectionPadding * 2),
                       minWidth: double.infinity,
                     ),
-                    child: grid
-                        ? Wrap(
-                            spacing: theme.dPanelPadding,
-                            runSpacing: theme.dPanelPadding,
-                            children: entries,
-                          )
+                    child: grouping == LibraryGrouping.none
+                        ? entriesOf(groups.single.media)
                         : Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: entries,
+                            children: [
+                              for (final group in groups) ...[
+                                LibraryGroupHeader(
+                                  title: libraryGroupTitle(t, group.key),
+                                  count: group.media.length,
+                                  isCollapsed: collapsed.contains(group.key),
+                                  onTap: () => ref
+                                      .read(collapsedLibraryGroupsProvider
+                                          .notifier)
+                                      .toggle(group.key!),
+                                ),
+                                if (!collapsed.contains(group.key)) ...[
+                                  entriesOf(group.media),
+                                  SizedBox(height: theme.dPanelPadding),
+                                ],
+                              ],
+                            ],
                           ),
                   ),
                 ),
@@ -140,7 +218,7 @@ class VideoLibraryPanel extends ConsumerWidget {
             icon: Icons.add,
             isAccented: true,
             tooltip: t.tooltipImportVideos,
-            onTap: () => ref.read(graphEditorProvider).pickAndImportVideos(),
+            onTap: () => ref.read(graphEditorProvider).pickAndImportMedia(),
           ),
         ),
       ],
@@ -148,9 +226,54 @@ class VideoLibraryPanel extends ConsumerWidget {
   }
 }
 
-/// One video: thumbnail (unless [view] is a plain list) and file name.
-/// Click previews it; dragging it onto the canvas creates a node, onto a node
-/// sets that node's video.
+/// A group's title row: an arrow, the title and how many files it holds.
+/// Clicking it collapses or expands the group.
+class LibraryGroupHeader extends StatelessWidget {
+  const LibraryGroupHeader({
+    super.key,
+    required this.title,
+    required this.count,
+    required this.isCollapsed,
+    required this.onTap,
+  });
+
+  final String title;
+  final int count;
+  final bool isCollapsed;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return MouseRegion(
+      cursor: SystemMouseCursors.click,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onTap,
+        child: SizedBox(
+          height: theme.dButtonHeight,
+          child: Row(
+            children: [
+              Icon(
+                isCollapsed ? Icons.chevron_right : Icons.expand_more,
+                size: theme.dTextHeight * 1.4,
+                color: theme.cTextInactive,
+              ),
+              SizedBox(width: theme.dPanelPadding),
+              Flexible(child: NutriaText(text: title)),
+              SizedBox(width: theme.dPanelPadding),
+              NutriaText(text: '$count', state: NutriaTextState.inactive),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// One imported file: thumbnail (unless [view] is a plain list) and file
+/// name. Clicking a video previews it; dragging one onto the canvas creates a
+/// node, onto a node sets that node's video.
 class VideoLibraryEntry extends ConsumerStatefulWidget {
   const VideoLibraryEntry({
     super.key,
@@ -159,7 +282,7 @@ class VideoLibraryEntry extends ConsumerStatefulWidget {
     required this.isPreviewed,
   });
 
-  final VideoAsset video;
+  final MediaAsset video;
   final LibraryView view;
   final bool isPreviewed;
 
@@ -176,30 +299,31 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
     final view = widget.view;
     final width = libraryThumbnailWidth(view);
     final grid = view.index <= LibraryView.smallThumbnails.index;
+    final asset = widget.video;
     final thumbnail = width == null
         ? null
-        : LibraryThumbnail(path: widget.video.path, width: width);
+        : MediaThumbnail(asset: asset, width: width);
     final name = NutriaText(
       text: widget.video.fileName,
       maxLines: grid ? 2 : 1,
       textAlign: grid ? TextAlign.center : TextAlign.start,
     );
-    return Draggable<String>(
-      data: widget.video.id,
+    return Draggable<MediaAsset>(
+      data: asset,
       // The pointer is at the drop position; the thumbnail is centered on it.
       dragAnchorStrategy: pointerDragAnchorStrategy,
       feedback: FractionalTranslation(
         translation: const Offset(-0.5, -0.5),
-        child: LibraryThumbnail(path: widget.video.path, width: 120),
+        child: MediaThumbnail(asset: asset, width: 120),
       ),
       child: MouseRegion(
         cursor: SystemMouseCursors.click,
         onEnter: (_) => setState(() => _hovered = true),
         onExit: (_) => setState(() => _hovered = false),
         child: GestureDetector(
-          onTap: () => ref
-              .read(videoPreviewProvider.notifier)
-              .showVideo(widget.video.id),
+          onTap: asset.isVideo
+              ? () => ref.read(videoPreviewProvider.notifier).showVideo(asset.id)
+              : null,
           child: Container(
             padding: EdgeInsets.all(
                 grid ? theme.dPanelPadding : theme.dPanelPadding / 2),
@@ -225,10 +349,16 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
                   )
                 : Row(
                     children: [
-                      if (thumbnail != null) ...[
-                        thumbnail,
-                        SizedBox(width: theme.dPanelPadding),
-                      ],
+                      if (thumbnail != null)
+                        thumbnail
+                      else
+                        // The plain list shows what kind each file is.
+                        Icon(
+                          mediaKindIcon(asset.kind),
+                          size: theme.dTextHeight * 1.2,
+                          color: theme.cTextInactive,
+                        ),
+                      SizedBox(width: theme.dPanelPadding),
                       Expanded(child: name),
                     ],
                   ),
@@ -239,8 +369,59 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
   }
 }
 
-/// A 16:9 thumbnail [width] wide, striped while it loads or if there is
-/// none.
+/// A 16:9 picture of [asset], [width] wide: a video's thumbnail, an image
+/// itself, or the icon of its kind.
+class MediaThumbnail extends StatelessWidget {
+  const MediaThumbnail({super.key, required this.asset, required this.width});
+
+  final MediaAsset asset;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) => switch (asset.kind) {
+        MediaKind.video => LibraryThumbnail(path: asset.path, width: width),
+        MediaKind.image => SizedBox(
+            width: width,
+            height: width * 9 / 16,
+            child: Image.file(
+              File(asset.path),
+              fit: BoxFit.cover,
+              cacheWidth:
+                  (width * MediaQuery.devicePixelRatioOf(context)).round(),
+              gaplessPlayback: true,
+              errorBuilder: (_, _, _) =>
+                  MediaKindTile(kind: asset.kind, width: width),
+            ),
+          ),
+        _ => MediaKindTile(kind: asset.kind, width: width),
+      };
+}
+
+/// A 16:9 tile [width] wide with the icon of [kind].
+class MediaKindTile extends StatelessWidget {
+  const MediaKindTile({super.key, required this.kind, required this.width});
+
+  final MediaKind kind;
+  final double width;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return Container(
+      width: width,
+      height: width * 9 / 16,
+      color: theme.cTextField,
+      child: Icon(
+        mediaKindIcon(kind),
+        size: width * 0.22,
+        color: theme.cTextInactive,
+      ),
+    );
+  }
+}
+
+/// A 16:9 video thumbnail [width] wide, striped while it loads or if there
+/// is none.
 class LibraryThumbnail extends ConsumerWidget {
   const LibraryThumbnail({super.key, required this.path, required this.width});
 

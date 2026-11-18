@@ -323,8 +323,8 @@ final videoAssetProvider = VideoAssetFamily._();
 /// Imported video [id], or `null`.
 
 final class VideoAssetProvider
-    extends $FunctionalProvider<VideoAsset?, VideoAsset?, VideoAsset?>
-    with $Provider<VideoAsset?> {
+    extends $FunctionalProvider<MediaAsset?, MediaAsset?, MediaAsset?>
+    with $Provider<MediaAsset?> {
   /// Imported video [id], or `null`.
   VideoAssetProvider._({
     required VideoAssetFamily super.from,
@@ -349,20 +349,20 @@ final class VideoAssetProvider
 
   @$internal
   @override
-  $ProviderElement<VideoAsset?> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<MediaAsset?> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  VideoAsset? create(Ref ref) {
+  MediaAsset? create(Ref ref) {
     final argument = this.argument as String;
     return videoAsset(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(VideoAsset? value) {
+  Override overrideWithValue(MediaAsset? value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<VideoAsset?>(value),
+      providerOverride: $SyncValueProvider<MediaAsset?>(value),
     );
   }
 
@@ -377,12 +377,12 @@ final class VideoAssetProvider
   }
 }
 
-String _$videoAssetHash() => r'e67673b4d1af85cb276478eb0e4d86bd839b27b2';
+String _$videoAssetHash() => r'20e459881079c1f914bb5cd7a8097dcf7b088433';
 
 /// Imported video [id], or `null`.
 
 final class VideoAssetFamily extends $Family
-    with $FunctionalFamilyOverride<VideoAsset?, String> {
+    with $FunctionalFamilyOverride<MediaAsset?, String> {
   VideoAssetFamily._()
     : super(
         retry: null,
@@ -403,54 +403,54 @@ final class VideoAssetFamily extends $Family
 
 /// All imported videos, in import order.
 
-@ProviderFor(videoAssets)
-final videoAssetsProvider = VideoAssetsProvider._();
+@ProviderFor(mediaAssets)
+final mediaAssetsProvider = MediaAssetsProvider._();
 
 /// All imported videos, in import order.
 
-final class VideoAssetsProvider
+final class MediaAssetsProvider
     extends
         $FunctionalProvider<
-          List<VideoAsset>,
-          List<VideoAsset>,
-          List<VideoAsset>
+          List<MediaAsset>,
+          List<MediaAsset>,
+          List<MediaAsset>
         >
-    with $Provider<List<VideoAsset>> {
+    with $Provider<List<MediaAsset>> {
   /// All imported videos, in import order.
-  VideoAssetsProvider._()
+  MediaAssetsProvider._()
     : super(
         from: null,
         argument: null,
         retry: null,
-        name: r'videoAssetsProvider',
+        name: r'mediaAssetsProvider',
         isAutoDispose: true,
         dependencies: null,
         $allTransitiveDependencies: null,
       );
 
   @override
-  String debugGetCreateSourceHash() => _$videoAssetsHash();
+  String debugGetCreateSourceHash() => _$mediaAssetsHash();
 
   @$internal
   @override
-  $ProviderElement<List<VideoAsset>> $createElement($ProviderPointer pointer) =>
+  $ProviderElement<List<MediaAsset>> $createElement($ProviderPointer pointer) =>
       $ProviderElement(pointer);
 
   @override
-  List<VideoAsset> create(Ref ref) {
-    return videoAssets(ref);
+  List<MediaAsset> create(Ref ref) {
+    return mediaAssets(ref);
   }
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(List<VideoAsset> value) {
+  Override overrideWithValue(List<MediaAsset> value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<List<VideoAsset>>(value),
+      providerOverride: $SyncValueProvider<List<MediaAsset>>(value),
     );
   }
 }
 
-String _$videoAssetsHash() => r'82f0cc1fae22de46b49398173998b2b281b3ceb8';
+String _$mediaAssetsHash() => r'd9cca2d07d2470e5728b3cf37a99ffa6e91b6bf8';
 
 /// The project's variables, in the order they were added.
 
@@ -754,7 +754,7 @@ final class EffectiveSettingsProvider
   }
 }
 
-String _$effectiveSettingsHash() => r'2d39338898b877026a6f650e69690115ecf71902';
+String _$effectiveSettingsHash() => r'474802a11b468153b7608b51ff3a517efdff4be4';
 
 /// The settings node [nodeId] actually plays with: its color's defaults with
 /// the node's overrides applied.

@@ -1,22 +1,31 @@
 // Right-click menu over any area, with items supplied by the caller.
+import 'dart:math' as math;
+
 import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
-import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_styles.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 
 /// One entry of a [NutriaContextMenuArea].
 class NutriaContextMenuItem {
   const NutriaContextMenuItem({
-    required this.icon,
-    required this.label,
-    required this.onSelected,
+    required IconData this.icon,
+    required String this.label,
+    required VoidCallback this.onSelected,
   });
 
-  final IconData icon;
-  final String label;
-  final VoidCallback onSelected;
+  /// A thin line between groups of items.
+  const NutriaContextMenuItem.divider()
+    : icon = null,
+      label = null,
+      onSelected = null;
+
+  final IconData? icon;
+  final String? label;
+  final VoidCallback? onSelected;
+
+  bool get isDivider => onSelected == null;
 }
 
 /// Wraps [child]; right-clicking it opens a menu of the items [itemsAt]
@@ -71,27 +80,11 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     super.dispose();
   }
 
-  /// Keeps the menu inside the window when opened near its edge.
-  Offset _fit(Offset position) {
-    final window = MediaQuery.sizeOf(context);
-    var x = position.dx;
-    var y = position.dy;
-    if (x + kContextMenuWidth > window.width &&
-        kContextMenuWidth < window.width) {
-      x = window.width - kContextMenuWidth;
-    }
-    if (y + kContextMenuHeight > window.height &&
-        kContextMenuHeight < window.height) {
-      y = window.height - kContextMenuHeight;
-    }
-    return Offset(x, y);
-  }
-
   void _open(Offset localPosition, Offset globalPosition) {
     _close();
     final items = widget.itemsAt(localPosition);
     if (items.isEmpty) return;
-    final position = _fit(globalPosition);
+    final position = globalPosition;
     final theme = context.appTheme;
     final itemStyle = NutriaMenuStyles(theme).item;
 
@@ -105,9 +98,9 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
               onPointerDown: (_) => _close(),
             ),
           ),
-          Positioned(
-            left: position.dx,
-            top: position.dy,
+          // Opens at the click, moved in as needed to stay in the window.
+          CustomSingleChildLayout(
+            delegate: _InsideWindow(position),
             child: IntrinsicWidth(
               child: Container(
                 decoration: BoxDecoration(
@@ -122,18 +115,29 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       for (final item in items)
-                        MenuItemButton(
-                          leadingIcon: Icon(item.icon),
-                          style: itemStyle,
-                          onPressed: () {
-                            _close();
-                            item.onSelected();
-                          },
-                          child: NutriaText(
-                            text: item.label,
-                            state: NutriaTextState.accented,
+                        if (item.isDivider)
+                          Padding(
+                            padding: EdgeInsets.symmetric(
+                              vertical: theme.dPanelPadding / 2,
+                            ),
+                            child: Container(
+                              height: theme.dDividerWidth,
+                              color: theme.cDivider,
+                            ),
+                          )
+                        else
+                          MenuItemButton(
+                            leadingIcon: Icon(item.icon),
+                            style: itemStyle,
+                            onPressed: () {
+                              _close();
+                              item.onSelected!();
+                            },
+                            child: NutriaText(
+                              text: item.label!,
+                              state: NutriaTextState.accented,
+                            ),
                           ),
-                        ),
                     ],
                   ),
                 ),
@@ -181,4 +185,26 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
       child: widget.child,
     );
   }
+}
+
+/// Places the menu's top-left corner at [position], moved left or up just
+/// enough for the whole menu to fit in the window.
+class _InsideWindow extends SingleChildLayoutDelegate {
+  const _InsideWindow(this.position);
+
+  final Offset position;
+
+  @override
+  BoxConstraints getConstraintsForChild(BoxConstraints constraints) =>
+      constraints.loosen();
+
+  @override
+  Offset getPositionForChild(Size size, Size childSize) => Offset(
+    position.dx.clamp(0, math.max(0, size.width - childSize.width)),
+    position.dy.clamp(0, math.max(0, size.height - childSize.height)),
+  );
+
+  @override
+  bool shouldRelayout(_InsideWindow oldDelegate) =>
+      oldDelegate.position != position;
 }

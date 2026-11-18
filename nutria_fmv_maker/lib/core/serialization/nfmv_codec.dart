@@ -41,8 +41,8 @@ abstract final class NfmvCodec {
   /// in) to also store project-relative video paths.
   static String encode(ProjectDocument document, {String? projectDir}) {
     final json = document.toJson();
-    json['videos'] = [
-      for (final video in document.videos)
+    json['media'] = [
+      for (final video in document.media)
         {
           ...video.toJson(),
           if (projectDir != null)
@@ -85,11 +85,11 @@ abstract final class NfmvCodec {
         foundVersion: version,
       );
     }
-    // Future format upgrades go here: `if (version < 2) decoded = _v1ToV2(decoded);`
+    final upgraded = version < 2 ? _v1ToV2(decoded) : decoded;
 
     final ProjectDocument document;
     try {
-      document = ProjectDocument.fromJson(decoded);
+      document = ProjectDocument.fromJson(upgraded);
     } catch (_) {
       throw NfmvFormatException(NfmvReason.invalidData, foundVersion: version);
     }
@@ -99,10 +99,10 @@ abstract final class NfmvCodec {
     }
 
     if (projectDir == null || fileExists == null) return document;
-    final rawVideos = (decoded['videos'] as List?) ?? const [];
+    final rawVideos = (upgraded['media'] as List?) ?? const [];
     return document.copyWith(
-      videos: [
-        for (final (index, video) in document.videos.indexed)
+      media: [
+        for (final (index, video) in document.media.indexed)
           video.copyWith(
             path: _resolvePath(
               absolute: video.path,
@@ -116,6 +116,13 @@ abstract final class NfmvCodec {
       ],
     );
   }
+
+  /// Version 1 called the imported files "videos" (it had no other kinds).
+  static Map<String, dynamic> _v1ToV2(Map<String, dynamic> json) => {
+    for (final MapEntry(:key, :value) in json.entries)
+      key == 'videos' ? 'media' : key: value,
+    'formatVersion': 2,
+  };
 
   static String _resolvePath({
     required String absolute,

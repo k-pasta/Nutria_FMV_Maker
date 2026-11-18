@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Vidéos Importées';
+  String get boardImportedVideos => 'Médias Importés';
 
   @override
   String get libraryLargeThumbnails => 'Grandes miniatures';
@@ -25,6 +25,39 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get libraryList => 'Liste';
+
+  @override
+  String get librarySortDateAdded => 'Trier par date d’ajout';
+
+  @override
+  String get librarySortName => 'Trier par nom';
+
+  @override
+  String get librarySortType => 'Trier par type';
+
+  @override
+  String get libraryGroupNone => 'Ne pas grouper';
+
+  @override
+  String get libraryGroupKind => 'Grouper par genre';
+
+  @override
+  String get libraryGroupFileType => 'Grouper par type de fichier';
+
+  @override
+  String get mediaKindVideo => 'Vidéos';
+
+  @override
+  String get mediaKindAudio => 'Audio';
+
+  @override
+  String get mediaKindImage => 'Images';
+
+  @override
+  String get mediaKindSubtitle => 'Sous-titres';
+
+  @override
+  String get mediaKindFont => 'Polices';
 
   @override
   String get boardPreferences => 'Préférences';
@@ -436,7 +469,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get tooltipNodeSettings => 'Réglages du nœud';
 
   @override
-  String get tooltipImportVideos => 'Importer des vidéos';
+  String get tooltipImportVideos => 'Importer des médias';
 
   @override
   String get tooltipBack5 => 'Reculer de 5 secondes (Ctrl+←)';

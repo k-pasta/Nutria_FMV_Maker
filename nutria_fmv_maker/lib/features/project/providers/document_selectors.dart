@@ -2,6 +2,7 @@
 // own slice changes.
 import 'package:collection/collection.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -69,13 +70,13 @@ class NodePaintOrder extends _$NodePaintOrder {
 
 /// Imported video [id], or `null`.
 @riverpod
-VideoAsset? videoAsset(Ref ref, String id) =>
-    ref.watch(documentProvider.select((s) => s.document.videoById(id)));
+MediaAsset? videoAsset(Ref ref, String id) =>
+    ref.watch(documentProvider.select((s) => s.document.mediaById(id)));
 
 /// All imported videos, in import order.
 @riverpod
-List<VideoAsset> videoAssets(Ref ref) =>
-    ref.watch(documentProvider.select((s) => s.document.videos));
+List<MediaAsset> mediaAssets(Ref ref) =>
+    ref.watch(documentProvider.select((s) => s.document.media));
 
 /// The project's variables, in the order they were added.
 @riverpod

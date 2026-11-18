@@ -1,5 +1,6 @@
 // Named, undoable editing commands for the node graph and project.
 import 'package:flutter/painting.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -294,33 +295,33 @@ class GraphEditor {
       (d) => d.updateVariable(
           id, (v) => v is BoolVariable ? v.copyWith(initial: !v.initial) : v));
 
-  // ----------------------------------------------------------------- videos
+  // ------------------------------------------------------------------ media
 
-  /// Asks for video files and imports them. Returns the ids of the assets.
-  Future<List<String>> pickAndImportVideos() async {
-    final paths = await _ref.read(projectFileServiceProvider).pickVideos();
-    return importVideos(paths);
+  /// Asks for files of any kind and imports them. Returns their asset ids.
+  Future<List<String>> pickAndImportMedia() async {
+    final paths = await _ref.read(projectFileServiceProvider).pickMedia();
+    return importFiles(paths);
   }
 
   /// Asks for video files, imports them and gives the first one to video
   /// node [nodeId], as one undo step.
   Future<void> pickVideoFor(String nodeId) async {
-    final paths = await _ref.read(projectFileServiceProvider).pickVideos();
+    final paths = await _ref.read(projectFileServiceProvider).pickVideoFiles();
     if (paths.isEmpty) return;
     _document.beginTransaction('Set video');
-    final ids = importVideos(paths);
+    final ids = importFiles(paths);
     setVideo(nodeId, ids.first);
     _document.commit();
   }
 
   /// Imports [paths] as one undo step. Already imported files are reused.
   /// Returns the asset id for each path, in order.
-  List<String> importVideos(List<String> paths) {
+  List<String> importFiles(List<String> paths) {
     final ids = <String>[];
-    _document.apply('Import videos', (d) {
+    _document.apply('Import files', (d) {
       var doc = d;
       for (final path in paths) {
-        final (next, id) = doc.importVideo(VideoAsset(id: _newId(), path: path));
+        final (next, id) = doc.importMedia(MediaAsset(id: _newId(), path: path));
         doc = next;
         ids.add(id);
       }

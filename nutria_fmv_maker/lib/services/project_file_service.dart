@@ -2,6 +2,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
@@ -42,8 +43,13 @@ class ProjectFileService {
   Future<String?> pickProject() =>
       _dialogs.pickFile(extensions: const [kProjectExtension]);
 
-  /// Asks the user for video files to import.
-  Future<List<String>> pickVideos() => _dialogs.pickVideos();
+  /// Asks the user for files to import, of every kind the library takes.
+  Future<List<String>> pickMedia() =>
+      _dialogs.pickFiles(extensions: kAllMediaExtensions);
+
+  /// Asks the user for video files only.
+  Future<List<String>> pickVideoFiles() =>
+      _dialogs.pickFiles(extensions: kMediaExtensions[MediaKind.video]!);
 
   /// Reads the project at [path]. Video paths stored relative to the project
   /// are preferred when those files exist, so moved project folders still work.

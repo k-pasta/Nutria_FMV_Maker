@@ -28,7 +28,7 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.space);
     expect(playing(), isFalse);
 
-    final video = c.read(graphEditorProvider).importVideos(['C:/v/a.mp4']).single;
+    final video = c.read(graphEditorProvider).importFiles(['C:/v/a.mp4']).single;
     c.read(videoPreviewProvider.notifier).showVideo(video);
     await tester.pumpAndSettle();
 
@@ -56,7 +56,7 @@ void main() {
     final player = FakePlayer();
     final c = await pumpApp(tester, player: player);
     final editor = c.read(graphEditorProvider);
-    final video = editor.importVideos(['C:/v/a.mp4']).single;
+    final video = editor.importFiles(['C:/v/a.mp4']).single;
     editor.addVideoNode(Position.zero,
         videoId: video, type: DefaultNodeType.branchedVideo);
     c.read(videoPreviewProvider.notifier).showVideo(video);
@@ -74,7 +74,7 @@ void main() {
   testWidgets('every icon-only button has a tooltip', (tester) async {
     final c = await pumpApp(tester);
     final editor = c.read(graphEditorProvider);
-    final video = editor.importVideos(['C:/v/a.mp4']).single;
+    final video = editor.importFiles(['C:/v/a.mp4']).single;
     // A node without a video shows the "choose a video" button.
     editor.addVideoNode(Position.zero, type: DefaultNodeType.branchedVideo);
     c.read(videoPreviewProvider.notifier).showVideo(video);

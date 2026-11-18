@@ -18,7 +18,7 @@ void main() {
     // A→B is inside; origin→A, A→C and B→C leave the copied nodes.
     expect(fragment.edges, hasLength(1));
     expect(fragment.edges.single.from, const PortRef(nodeId: 'A', port: 'yes'));
-    expect(fragment.videos.map((v) => v.id), unorderedEquals(['v1', 'v2']));
+    expect(fragment.media.map((v) => v.id), unorderedEquals(['v1', 'v2']));
   });
 
   test('survives the clipboard', () {
@@ -26,7 +26,7 @@ void main() {
     final back = NodeFragment.decode(fragment.encode())!;
     expect(back.nodes, fragment.nodes);
     expect(back.edges, fragment.edges);
-    expect(back.videos, fragment.videos);
+    expect(back.media, fragment.media);
     expect(NodeFragment.decode('just some text'), isNull);
     expect(NodeFragment.decode('{"nutriaFmvNodes": 99}'), isNull);
   });
@@ -50,7 +50,7 @@ void main() {
     expect(ids, contains(edge.to.nodeId));
     expect(doc.edgeFrom(PortRef(nodeId: a.id, port: a.choices[1].id)), isNull,
         reason: 'A→C left the copied nodes');
-    expect(doc.videos, story.videos, reason: 'same paths reuse the videos');
+    expect(doc.media, story.media, reason: 'same paths reuse the videos');
   });
 
   test('pasting into another project brings the videos along', () {
@@ -58,7 +58,7 @@ void main() {
     final (doc, ids) = ProjectDocument.empty().pasteFragment(fragment,
         offset: Position.zero, newId: sequentialIds('new'));
     final b = doc.nodes[ids.single]! as SimpleVideoNode;
-    expect(doc.videoById(b.videoId)?.path, r'C:\videos\b.mp4');
+    expect(doc.mediaById(b.videoId)?.path, r'C:\videos\b.mp4');
   });
 
   test('collapse all closes every node, and is a no-op if none is open', () {

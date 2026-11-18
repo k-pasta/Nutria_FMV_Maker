@@ -1,5 +1,6 @@
 // Shared test documents for core tests.
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -21,9 +22,9 @@ IdGenerator sequentialIds([String prefix = 'id']) {
 ///          D (simple, unreachable)
 ProjectDocument storyFixture() {
   const videos = [
-    VideoAsset(id: 'v1', path: r'C:\videos\a.mp4'),
-    VideoAsset(id: 'v2', path: r'C:\videos\b.mp4'),
-    VideoAsset(id: 'v3', path: r'C:\videos\c.mp4'),
+    MediaAsset(id: 'v1', path: r'C:\videos\a.mp4'),
+    MediaAsset(id: 'v2', path: r'C:\videos\b.mp4'),
+    MediaAsset(id: 'v3', path: r'C:\videos\c.mp4'),
   ];
   final empty = ProjectDocument.empty();
   return empty.copyWith(
@@ -31,7 +32,7 @@ ProjectDocument storyFixture() {
       title: 'Τα 88 Ντολμαδάκια',
       description: 'Ένα διαδραστικό παραμύθι',
     ),
-    videos: videos,
+    media: videos,
     nodes: {
       ...empty.nodes,
       'A': const BranchedVideoNode(

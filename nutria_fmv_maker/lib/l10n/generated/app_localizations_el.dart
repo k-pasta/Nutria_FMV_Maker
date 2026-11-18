@@ -9,7 +9,7 @@ class AppLocalizationsEl extends AppLocalizations {
   AppLocalizationsEl([String locale = 'el']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Εισαγόμενα βίντεο';
+  String get boardImportedVideos => 'Εισαγόμενα Πολυμέσα';
 
   @override
   String get libraryLargeThumbnails => 'Μεγάλες Μικρογραφίες';
@@ -25,6 +25,39 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get libraryList => 'Λίστα';
+
+  @override
+  String get librarySortDateAdded => 'Ταξινόμηση κατά Ημερομηνία Προσθήκης';
+
+  @override
+  String get librarySortName => 'Ταξινόμηση κατά Όνομα';
+
+  @override
+  String get librarySortType => 'Ταξινόμηση κατά Τύπο';
+
+  @override
+  String get libraryGroupNone => 'Χωρίς Ομαδοποίηση';
+
+  @override
+  String get libraryGroupKind => 'Ομαδοποίηση κατά Είδος';
+
+  @override
+  String get libraryGroupFileType => 'Ομαδοποίηση κατά Τύπο Αρχείου';
+
+  @override
+  String get mediaKindVideo => 'Βίντεο';
+
+  @override
+  String get mediaKindAudio => 'Ήχος';
+
+  @override
+  String get mediaKindImage => 'Εικόνες';
+
+  @override
+  String get mediaKindSubtitle => 'Υπότιτλοι';
+
+  @override
+  String get mediaKindFont => 'Γραμματοσειρές';
 
   @override
   String get boardPreferences => 'Προτιμήσεις';
@@ -434,7 +467,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get tooltipNodeSettings => 'Ρυθμίσεις κόμβου';
 
   @override
-  String get tooltipImportVideos => 'Εισαγωγή βίντεο';
+  String get tooltipImportVideos => 'Εισαγωγή πολυμέσων';
 
   @override
   String get tooltipBack5 => 'Πίσω 5 δευτερόλεπτα (Ctrl+←)';

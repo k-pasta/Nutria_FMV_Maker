@@ -1,5 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -44,9 +45,9 @@ void main() {
       expect(connected.disconnect(fromC).edgeFrom(fromC), isNull);
       expect(before.edgeFrom(fromC), isNull);
 
-      final video = before.videos.first;
-      expect(before.videoById(video.id), video);
-      expect(before.copyWith(videos: const []).videoById(video.id), isNull);
+      final video = before.media.first;
+      expect(before.mediaById(video.id), video);
+      expect(before.copyWith(media: const []).mediaById(video.id), isNull);
     });
 
     test('replaces the existing edge of the same output', () {
@@ -149,11 +150,11 @@ void main() {
     });
   });
 
-  test('importVideo reuses an asset with the same path', () {
+  test('importMedia reuses an asset with the same path', () {
     final (doc, id) = storyFixture()
-        .importVideo(const VideoAsset(id: 'new', path: r'C:\videos\a.mp4'));
+        .importMedia(const MediaAsset(id: 'new', path: r'C:\videos\a.mp4'));
     expect(id, 'v1');
-    expect(doc.videos, hasLength(3));
+    expect(doc.media, hasLength(3));
   });
 
   test('setNodeWidth clamps to the allowed range', () {

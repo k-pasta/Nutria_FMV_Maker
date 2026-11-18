@@ -35,6 +35,19 @@ enum LibraryView {
   list,
 }
 
+/// The order of the media library.
+enum LibrarySort {
+  /// Import order.
+  dateAdded,
+  name,
+
+  /// By kind (videos, audio, …), then extension, then name.
+  type,
+}
+
+/// How the media library is split into titled groups.
+enum LibraryGrouping { none, kind, fileType }
+
 /// The app's color theme.
 enum ThemeChoice { dark, light, custom }
 
@@ -60,6 +73,8 @@ abstract class Preferences with _$Preferences {
     @Default('en') String languageCode,
     @Default(NoodleStyle.straight) NoodleStyle noodleStyle,
     @Default(LibraryView.thumbnails) LibraryView libraryView,
+    @Default(LibrarySort.dateAdded) LibrarySort librarySort,
+    @Default(LibraryGrouping.none) LibraryGrouping libraryGrouping,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -118,6 +133,12 @@ class PreferencesNotifier extends _$PreferencesNotifier {
   void stepLibraryView(int direction) => setLibraryView(LibraryView.values[
       (state.libraryView.index + direction)
           .clamp(0, LibraryView.values.length - 1)]);
+
+  void setLibrarySort(LibrarySort sort) =>
+      _update(state.copyWith(librarySort: sort));
+
+  void setLibraryGrouping(LibraryGrouping grouping) =>
+      _update(state.copyWith(libraryGrouping: grouping));
 
   void setTheme(ThemeChoice theme) => _update(state.copyWith(theme: theme));
 

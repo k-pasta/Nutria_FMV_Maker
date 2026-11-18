@@ -1,5 +1,6 @@
 // A generated project with many connected nodes, for performance tests.
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -11,7 +12,7 @@ import 'package:nutria_fmv_maker/core/graph/ports.dart';
 ProjectDocument buildLargeDocument({int columns = 20, int rows = 15}) {
   final empty = ProjectDocument.empty();
   final nodes = <String, Node>{...empty.nodes};
-  final videos = <VideoAsset>[];
+  final videos = <MediaAsset>[];
   final edges = <Edge>[];
   final count = columns * rows;
   String idOf(int i) => 'n$i';
@@ -21,7 +22,7 @@ ProjectDocument buildLargeDocument({int columns = 20, int rows = 15}) {
       (i ~/ columns - rows / 2) * 460,
     );
     final videoId = 'v$i';
-    videos.add(VideoAsset(id: videoId, path: 'C:/videos/clip_$i.mp4'));
+    videos.add(MediaAsset(id: videoId, path: 'C:/videos/clip_$i.mp4'));
     final swatch = i % 5;
     nodes[idOf(i)] = i % 3 == 0
         ? Node.branchedVideo(
@@ -53,5 +54,5 @@ ProjectDocument buildLargeDocument({int columns = 20, int rows = 15}) {
       ));
     }
   }
-  return empty.copyWith(nodes: nodes, videos: videos, edges: edges);
+  return empty.copyWith(nodes: nodes, media: videos, edges: edges);
 }

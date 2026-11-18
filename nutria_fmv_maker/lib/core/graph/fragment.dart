@@ -3,6 +3,7 @@
 import 'dart:convert';
 
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -14,14 +15,14 @@ class NodeFragment {
   const NodeFragment({
     this.nodes = const [],
     this.edges = const [],
-    this.videos = const [],
+    this.media = const [],
   });
 
   final List<Node> nodes;
 
   /// Only connections whose both ends are in [nodes].
   final List<Edge> edges;
-  final List<VideoAsset> videos;
+  final List<MediaAsset> media;
 
   bool get isEmpty => nodes.isEmpty;
 
@@ -34,7 +35,7 @@ class NodeFragment {
     _marker: _version,
     'nodes': [for (final n in nodes) n.toJson()],
     'edges': [for (final e in edges) e.toJson()],
-    'videos': [for (final v in videos) v.toJson()],
+    'media': [for (final v in media) v.toJson()],
   });
 
   /// Reads clipboard [text], or returns `null` if it isn't copied nodes.
@@ -50,7 +51,11 @@ class NodeFragment {
       return NodeFragment(
         nodes: [for (final n in list('nodes')) Node.fromJson(n)],
         edges: [for (final e in list('edges')) Edge.fromJson(e)],
-        videos: [for (final v in list('videos')) VideoAsset.fromJson(v)],
+        media: [
+          // 'videos' before the media library.
+          for (final v in list(json.containsKey('media') ? 'media' : 'videos'))
+            MediaAsset.fromJson(v),
+        ],
       );
     } on Object {
       return null;
@@ -87,8 +92,8 @@ extension FragmentOps on ProjectDocument {
               picked.containsKey(edge.to.nodeId))
             edge,
       ],
-      videos: [
-        for (final video in videos)
+      media: [
+        for (final video in media)
           if (videoIds.contains(video.id)) video,
       ],
     );
@@ -104,9 +109,9 @@ extension FragmentOps on ProjectDocument {
   }) {
     var doc = this;
     final videoIds = <String, String>{};
-    for (final video in fragment.videos) {
-      final (next, id) = doc.importVideo(
-        VideoAsset(id: newId(), path: video.path),
+    for (final video in fragment.media) {
+      final (next, id) = doc.importMedia(
+        MediaAsset(id: newId(), path: video.path),
       );
       doc = next;
       videoIds[video.id] = id;

@@ -1,4 +1,5 @@
-// Cached file information and thumbnails for imported videos, keyed by path.
+// Cached file information and thumbnails for imported videos, keyed by path,
+// and the library's collapsed groups.
 import 'dart:typed_data';
 
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
@@ -12,6 +13,18 @@ part 'video_library_providers.g.dart';
 @Riverpod(keepAlive: true)
 Future<VideoInfo?> videoInfo(Ref ref, String path) =>
     ref.watch(mediaInfoServiceProvider).read(path);
+
+/// The library groups the user has collapsed this session (see
+/// `LibraryGroup.key`). Not saved.
+@Riverpod(keepAlive: true)
+class CollapsedLibraryGroups extends _$CollapsedLibraryGroups {
+  @override
+  Set<Object> build() => const {};
+
+  void toggle(Object key) => state = state.contains(key)
+      ? ({...state}..remove(key))
+      : {...state, key};
+}
 
 /// Thumbnail image bytes for the video at [path], or `null` if none could be
 /// made. Kept for the session so scrolling the library doesn't regenerate.

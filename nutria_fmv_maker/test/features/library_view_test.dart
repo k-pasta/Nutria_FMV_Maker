@@ -10,7 +10,7 @@ void main() {
   testWidgets('Ctrl+wheel over the library changes the video size',
       (tester) async {
     final c = await pumpApp(tester);
-    c.read(graphEditorProvider).importVideos(['C:/v/a.mp4', 'C:/v/b.mp4']);
+    c.read(graphEditorProvider).importFiles(['C:/v/a.mp4', 'C:/v/b.mp4']);
     await tester.pumpAndSettle();
     LibraryView view() => c.read(preferencesProvider).libraryView;
     final library = tester.getCenter(find.byType(VideoLibraryPanel));
@@ -36,7 +36,7 @@ void main() {
 
   testWidgets('the library context menu picks the view', (tester) async {
     final c = await pumpApp(tester);
-    c.read(graphEditorProvider).importVideos(['C:/v/a.mp4']);
+    c.read(graphEditorProvider).importFiles(['C:/v/a.mp4']);
     await tester.pumpAndSettle();
     final library = tester.getRect(find.byType(VideoLibraryPanel));
 

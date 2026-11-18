@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
@@ -155,7 +156,7 @@ class _EmptyCanvasArea extends ConsumerWidget {
 
     // A dropped library video becomes a node with its thumbnail under the
     // pointer.
-    void dropVideo(DragTargetDetails<String> details) {
+    void dropVideo(DragTargetDetails<MediaAsset> details) {
       final point = CanvasSpace.maybeOf(context)?.fromGlobal(details.offset);
       if (point == null) return;
       final metrics = NodeMetrics.of(context);
@@ -164,11 +165,12 @@ class _EmptyCanvasArea extends ConsumerWidget {
           point.dx - kNodePadding - kDefaultNodeWidth / 2,
           point.dy - kNodePadding - metrics.thumbnailHeight / 2,
         ),
-        videoId: details.data,
+        videoId: details.data.id,
       );
     }
 
-    return DragTarget<String>(
+    return DragTarget<MediaAsset>(
+      onWillAcceptWithDetails: (details) => details.data.isVideo,
       onAcceptWithDetails: dropVideo,
       builder: (context, _, _) => _contextMenu(context, ref),
     );

@@ -220,7 +220,7 @@ return $default(_that.left,_that.right,_that.intendedLeft,_that.intendedRight,_t
 
 
 class _PanelLayout extends PanelLayout {
-  const _PanelLayout({this.left = 300, this.right = 300, this.intendedLeft = 300, this.intendedRight = 300, this.leftClosed = false, this.rightClosed = false, this.section = LeftPanelSection.videos}): super._();
+  const _PanelLayout({this.left = 300, this.right = 300, this.intendedLeft = 300, this.intendedRight = 300, this.leftClosed = false, this.rightClosed = false, this.section = LeftPanelSection.media}): super._();
   
 
 @override@JsonKey() final  double left;

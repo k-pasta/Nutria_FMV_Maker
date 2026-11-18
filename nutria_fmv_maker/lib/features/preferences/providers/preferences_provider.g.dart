@@ -22,6 +22,12 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
   libraryView:
       $enumDecodeNullable(_$LibraryViewEnumMap, json['libraryView']) ??
       LibraryView.thumbnails,
+  librarySort:
+      $enumDecodeNullable(_$LibrarySortEnumMap, json['librarySort']) ??
+      LibrarySort.dateAdded,
+  libraryGrouping:
+      $enumDecodeNullable(_$LibraryGroupingEnumMap, json['libraryGrouping']) ??
+      LibraryGrouping.none,
 );
 
 Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
@@ -33,6 +39,8 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'languageCode': instance.languageCode,
       'noodleStyle': _$NoodleStyleEnumMap[instance.noodleStyle]!,
       'libraryView': _$LibraryViewEnumMap[instance.libraryView]!,
+      'librarySort': _$LibrarySortEnumMap[instance.librarySort]!,
+      'libraryGrouping': _$LibraryGroupingEnumMap[instance.libraryGrouping]!,
     };
 
 const _$DefaultNodeTypeEnumMap = {
@@ -57,6 +65,18 @@ const _$LibraryViewEnumMap = {
   LibraryView.smallThumbnails: 'smallThumbnails',
   LibraryView.listWithThumbnails: 'listWithThumbnails',
   LibraryView.list: 'list',
+};
+
+const _$LibrarySortEnumMap = {
+  LibrarySort.dateAdded: 'dateAdded',
+  LibrarySort.name: 'name',
+  LibrarySort.type: 'type',
+};
+
+const _$LibraryGroupingEnumMap = {
+  LibraryGrouping.none: 'none',
+  LibraryGrouping.kind: 'kind',
+  LibraryGrouping.fileType: 'fileType',
 };
 
 // **************************************************************************
@@ -157,7 +177,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'c801a447e36e1a02a6650fb28239b87e45dee0ea';
+    r'e8179e7fb18192a2acac41318ce617b5c2e8189f';
 
 /// Reads and persists [Preferences].
 

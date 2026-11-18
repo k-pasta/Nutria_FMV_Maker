@@ -24,14 +24,17 @@ class MemoryProjectFiles extends ProjectFileService {
   String? nextOpenPath;
   FmvExport? lastExport;
 
-  /// What the next "pick videos" dialog returns.
+  /// What the next "pick files" dialog returns (for media or videos).
   List<String> nextVideos = const [];
 
   @override
   Future<String?> pickProject() async => nextOpenPath;
 
   @override
-  Future<List<String>> pickVideos() async => nextVideos;
+  Future<List<String>> pickMedia() async => nextVideos;
+
+  @override
+  Future<List<String>> pickVideoFiles() async => nextVideos;
 
   @override
   Future<ProjectDocument> readProject(String path) async => files[path]!;
@@ -61,7 +64,8 @@ class _NoDialogs implements FileDialogs {
   @override
   Future<String?> pickFile({required List<String> extensions}) async => null;
   @override
-  Future<List<String>> pickVideos() async => const [];
+  Future<List<String>> pickFiles({required List<String> extensions}) async =>
+      const [];
   @override
   Future<String?> saveFile(
           {required String fileName, required Uint8List bytes}) async =>

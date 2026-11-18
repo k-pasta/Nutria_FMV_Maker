@@ -21,7 +21,8 @@ class FakeDialogs implements FileDialogs {
   Future<String?> pickFile({required List<String> extensions}) async => null;
 
   @override
-  Future<List<String>> pickVideos() async => const [];
+  Future<List<String>> pickFiles({required List<String> extensions}) async =>
+      const [];
 
   @override
   Future<String?> saveFile({
@@ -52,7 +53,7 @@ void main() {
   test('save as stores video paths relative to the chosen folder', () async {
     final path = p.join(dir.path, 'story.nfmv');
     await ProjectFileService(FakeDialogs(path)).saveProjectAs(storyFixture());
-    final videos = jsonDecode(File(path).readAsStringSync())['videos'] as List;
+    final videos = jsonDecode(File(path).readAsStringSync())['media'] as List;
     expect(videos.first['relativePath'], isNotNull);
   });
 

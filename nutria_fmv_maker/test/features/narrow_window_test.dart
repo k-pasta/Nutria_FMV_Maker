@@ -30,7 +30,7 @@ void main() {
         (tester) async {
       final container = await pumpApp(tester, mediaInfo: _FullInfo());
       final editor = container.read(graphEditorProvider);
-      final ids = editor.importVideos([
+      final ids = editor.importFiles([
         r'C:\Users\someone\Videos\Recording 2026-04-01 12-54-49.mp4',
         r'C:\v\2022-09-10 19-56-23.mp4',
       ]);

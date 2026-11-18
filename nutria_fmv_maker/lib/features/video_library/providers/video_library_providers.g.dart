@@ -96,6 +96,69 @@ final class VideoInfoFamily extends $Family
   String toString() => r'videoInfoProvider';
 }
 
+/// The library groups the user has collapsed this session (see
+/// `LibraryGroup.key`). Not saved.
+
+@ProviderFor(CollapsedLibraryGroups)
+final collapsedLibraryGroupsProvider = CollapsedLibraryGroupsProvider._();
+
+/// The library groups the user has collapsed this session (see
+/// `LibraryGroup.key`). Not saved.
+final class CollapsedLibraryGroupsProvider
+    extends $NotifierProvider<CollapsedLibraryGroups, Set<Object>> {
+  /// The library groups the user has collapsed this session (see
+  /// `LibraryGroup.key`). Not saved.
+  CollapsedLibraryGroupsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'collapsedLibraryGroupsProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$collapsedLibraryGroupsHash();
+
+  @$internal
+  @override
+  CollapsedLibraryGroups create() => CollapsedLibraryGroups();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<Object> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<Object>>(value),
+    );
+  }
+}
+
+String _$collapsedLibraryGroupsHash() =>
+    r'7795e9ceff11bcea19bf33411f3f4631b01cc9b3';
+
+/// The library groups the user has collapsed this session (see
+/// `LibraryGroup.key`). Not saved.
+
+abstract class _$CollapsedLibraryGroups extends $Notifier<Set<Object>> {
+  Set<Object> build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<Set<Object>, Set<Object>>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<Set<Object>, Set<Object>>,
+              Set<Object>,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 /// Thumbnail image bytes for the video at [path], or `null` if none could be
 /// made. Kept for the session so scrolling the library doesn't regenerate.
 

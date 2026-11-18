@@ -31,7 +31,7 @@ class LeftPanel extends ConsumerWidget {
               options: [
                 for (final s in LeftPanelSection.values)
                   switch (s) {
-                    LeftPanelSection.videos => NutriaDropdownOption(
+                    LeftPanelSection.media => NutriaDropdownOption(
                       icon: Icons.camera_roll,
                       text: t.boardImportedVideos,
                     ),
@@ -64,7 +64,7 @@ class LeftPanel extends ConsumerWidget {
               child: SizedBox.expand(
                 key: ValueKey(section),
                 child: switch (section) {
-                  LeftPanelSection.videos => const VideoLibraryPanel(),
+                  LeftPanelSection.media => const VideoLibraryPanel(),
                   LeftPanelSection.variables => const VariablesPanel(),
                   LeftPanelSection.projectSettings =>
                     const ProjectSettingsPanel(),

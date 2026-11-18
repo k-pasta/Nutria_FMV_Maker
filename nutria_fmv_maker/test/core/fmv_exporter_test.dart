@@ -36,7 +36,7 @@ void main() {
     });
 
     test('reports reachable video nodes without a video', () {
-      final doc = storyFixture().copyWith(videos: const []);
+      final doc = storyFixture().copyWith(media: const []);
       final missing = exportFmv(doc)
           .issues
           .where((i) => i.type == ExportIssueType.missingVideo)

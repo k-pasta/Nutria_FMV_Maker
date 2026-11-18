@@ -287,281 +287,6 @@ as String?,
 
 
 /// @nodoc
-mixin _$VideoAsset {
-
- String get id;/// Absolute path on the machine that last saved the project.
- String get path;
-/// Create a copy of VideoAsset
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$VideoAssetCopyWith<VideoAsset> get copyWith => _$VideoAssetCopyWithImpl<VideoAsset>(this as VideoAsset, _$identity);
-
-  /// Serializes this VideoAsset to a JSON map.
-  Map<String, dynamic> toJson();
-
-
-@override
-bool operator ==(Object other) {
-  final _this = this as VideoAsset;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoAsset&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.path, _this.path) || other.path == _this.path));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode {
-  final _this = this as VideoAsset;
-  return Object.hash(runtimeType,_this.id,_this.path);
-}
-
-@override
-String toString() {
-  final _this = this as VideoAsset;
-  return 'VideoAsset(id: ${_this.id}, path: ${_this.path})';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $VideoAssetCopyWith<$Res>  {
-  factory $VideoAssetCopyWith(VideoAsset value, $Res Function(VideoAsset) _then) = _$VideoAssetCopyWithImpl;
-@useResult
-$Res call({
- String id, String path
-});
-
-
-
-
-}
-/// @nodoc
-class _$VideoAssetCopyWithImpl<$Res>
-    implements $VideoAssetCopyWith<$Res> {
-  _$VideoAssetCopyWithImpl(this._self, this._then);
-
-  final VideoAsset _self;
-  final $Res Function(VideoAsset) _then;
-
-/// Create a copy of VideoAsset
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? path = null,}) {
-  return _then(VideoAsset(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-}
-
-
-/// Adds pattern-matching-related methods to [VideoAsset].
-extension VideoAssetPatterns on VideoAsset {
-/// A variant of `map` that fallback to returning `orElse`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _VideoAsset value)?  $default,{required TResult orElse(),}){
-final _that = this;
-switch (_that) {
-case _VideoAsset() when $default != null:
-return $default(_that);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// Callbacks receives the raw object, upcasted.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case final Subclass2 value:
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _VideoAsset value)  $default,){
-final _that = this;
-switch (_that) {
-case _VideoAsset():
-return $default(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `map` that fallback to returning `null`.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case final Subclass value:
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _VideoAsset value)?  $default,){
-final _that = this;
-switch (_that) {
-case _VideoAsset() when $default != null:
-return $default(_that);case _:
-  return null;
-
-}
-}
-/// A variant of `when` that fallback to an `orElse` callback.
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return orElse();
-/// }
-/// ```
-
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String path)?  $default,{required TResult orElse(),}) {final _that = this;
-switch (_that) {
-case _VideoAsset() when $default != null:
-return $default(_that.id,_that.path);case _:
-  return orElse();
-
-}
-}
-/// A `switch`-like method, using callbacks.
-///
-/// As opposed to `map`, this offers destructuring.
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case Subclass2(:final field2):
-///     return ...;
-/// }
-/// ```
-
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String path)  $default,) {final _that = this;
-switch (_that) {
-case _VideoAsset():
-return $default(_that.id,_that.path);case _:
-  throw StateError('Unexpected subclass');
-
-}
-}
-/// A variant of `when` that fallback to returning `null`
-///
-/// It is equivalent to doing:
-/// ```dart
-/// switch (sealedClass) {
-///   case Subclass(:final field):
-///     return ...;
-///   case _:
-///     return null;
-/// }
-/// ```
-
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String path)?  $default,) {final _that = this;
-switch (_that) {
-case _VideoAsset() when $default != null:
-return $default(_that.id,_that.path);case _:
-  return null;
-
-}
-}
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class _VideoAsset extends VideoAsset {
-  const _VideoAsset({required this.id, required this.path}): super._();
-  factory _VideoAsset.fromJson(Map<String, dynamic> json) => _$VideoAssetFromJson(json);
-
-@override final  String id;
-/// Absolute path on the machine that last saved the project.
-@override final  String path;
-
-/// Create a copy of VideoAsset
-/// with the given fields replaced by the non-null parameter values.
-@override @JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$VideoAssetCopyWith<_VideoAsset> get copyWith => __$VideoAssetCopyWithImpl<_VideoAsset>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$VideoAssetToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VideoAsset&&(identical(other.id, id) || other.id == id)&&(identical(other.path, path) || other.path == path));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode {
-    return Object.hash(runtimeType,id,path);
-}
-
-@override
-String toString() {
-    return 'VideoAsset(id: $id, path: $path)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$VideoAssetCopyWith<$Res> implements $VideoAssetCopyWith<$Res> {
-  factory _$VideoAssetCopyWith(_VideoAsset value, $Res Function(_VideoAsset) _then) = __$VideoAssetCopyWithImpl;
-@override @useResult
-$Res call({
- String id, String path
-});
-
-
-
-
-}
-/// @nodoc
-class __$VideoAssetCopyWithImpl<$Res>
-    implements _$VideoAssetCopyWith<$Res> {
-  __$VideoAssetCopyWithImpl(this._self, this._then);
-
-  final _VideoAsset _self;
-  final $Res Function(_VideoAsset) _then;
-
-/// Create a copy of VideoAsset
-/// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? path = null,}) {
-  return _then(_VideoAsset(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-
-/// @nodoc
 mixin _$ProjectDocument {
 
  int get formatVersion; ProjectInfo get info;/// The defaults: for the first color, and every color without its own
@@ -569,7 +294,8 @@ mixin _$ProjectDocument {
  VideoSettings get settings;/// Defaults for other colors, by swatch index (1 to [kMaxColorDefaults]).
 /// Missing in older files, hence empty.
  Map<int, VideoSettings> get colorDefaults;/// Nodes by id. Insertion order is kept but carries no meaning.
- Map<String, Node> get nodes; List<Edge> get edges; List<VideoAsset> get videos;/// Named values for the story. Missing in older files, hence empty.
+ Map<String, Node> get nodes; List<Edge> get edges;/// Imported files, in import order (which is also "date added").
+ List<MediaAsset> get media;/// Named values for the story. Missing in older files, hence empty.
  List<Variable> get variables;
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
@@ -584,20 +310,20 @@ $ProjectDocumentCopyWith<ProjectDocument> get copyWith => _$ProjectDocumentCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as ProjectDocument;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectDocument&&(identical(other.formatVersion, _this.formatVersion) || other.formatVersion == _this.formatVersion)&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _this.colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _this.nodes)&&const DeepCollectionEquality().equals(other.edges, _this.edges)&&const DeepCollectionEquality().equals(other.videos, _this.videos)&&const DeepCollectionEquality().equals(other.variables, _this.variables));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectDocument&&(identical(other.formatVersion, _this.formatVersion) || other.formatVersion == _this.formatVersion)&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _this.colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _this.nodes)&&const DeepCollectionEquality().equals(other.edges, _this.edges)&&const DeepCollectionEquality().equals(other.media, _this.media)&&const DeepCollectionEquality().equals(other.variables, _this.variables));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ProjectDocument;
-  return Object.hash(runtimeType,_this.formatVersion,_this.info,_this.settings,const DeepCollectionEquality().hash(_this.colorDefaults),const DeepCollectionEquality().hash(_this.nodes),const DeepCollectionEquality().hash(_this.edges),const DeepCollectionEquality().hash(_this.videos),const DeepCollectionEquality().hash(_this.variables));
+  return Object.hash(runtimeType,_this.formatVersion,_this.info,_this.settings,const DeepCollectionEquality().hash(_this.colorDefaults),const DeepCollectionEquality().hash(_this.nodes),const DeepCollectionEquality().hash(_this.edges),const DeepCollectionEquality().hash(_this.media),const DeepCollectionEquality().hash(_this.variables));
 }
 
 @override
 String toString() {
   final _this = this as ProjectDocument;
-  return 'ProjectDocument(formatVersion: ${_this.formatVersion}, info: ${_this.info}, settings: ${_this.settings}, colorDefaults: ${_this.colorDefaults}, nodes: ${_this.nodes}, edges: ${_this.edges}, videos: ${_this.videos}, variables: ${_this.variables})';
+  return 'ProjectDocument(formatVersion: ${_this.formatVersion}, info: ${_this.info}, settings: ${_this.settings}, colorDefaults: ${_this.colorDefaults}, nodes: ${_this.nodes}, edges: ${_this.edges}, media: ${_this.media}, variables: ${_this.variables})';
 }
 
 
@@ -608,7 +334,7 @@ abstract mixin class $ProjectDocumentCopyWith<$Res>  {
   factory $ProjectDocumentCopyWith(ProjectDocument value, $Res Function(ProjectDocument) _then) = _$ProjectDocumentCopyWithImpl;
 @useResult
 $Res call({
- int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<VideoAsset> videos, List<Variable> variables
+ int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables
 });
 
 
@@ -625,7 +351,7 @@ class _$ProjectDocumentCopyWithImpl<$Res>
 
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? videos = null,Object? variables = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,}) {
   return _then(ProjectDocument(
 formatVersion: null == formatVersion ? _self.formatVersion : formatVersion // ignore: cast_nullable_to_non_nullable
 as int,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
@@ -633,8 +359,8 @@ as ProjectInfo,settings: null == settings ? _self.settings : settings // ignore:
 as VideoSettings,colorDefaults: null == colorDefaults ? _self.colorDefaults : colorDefaults // ignore: cast_nullable_to_non_nullable
 as Map<int, VideoSettings>,nodes: null == nodes ? _self.nodes : nodes // ignore: cast_nullable_to_non_nullable
 as Map<String, Node>,edges: null == edges ? _self.edges : edges // ignore: cast_nullable_to_non_nullable
-as List<Edge>,videos: null == videos ? _self.videos : videos // ignore: cast_nullable_to_non_nullable
-as List<VideoAsset>,variables: null == variables ? _self.variables : variables // ignore: cast_nullable_to_non_nullable
+as List<Edge>,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as List<MediaAsset>,variables: null == variables ? _self.variables : variables // ignore: cast_nullable_to_non_nullable
 as List<Variable>,
   ));
 }
@@ -738,10 +464,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<VideoAsset> videos,  List<Variable> variables)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectDocument() when $default != null:
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.videos,_that.variables);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables);case _:
   return orElse();
 
 }
@@ -759,10 +485,10 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<VideoAsset> videos,  List<Variable> variables)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectDocument():
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.videos,_that.variables);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -779,10 +505,10 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<VideoAsset> videos,  List<Variable> variables)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectDocument() when $default != null:
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.videos,_that.variables);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables);case _:
   return null;
 
 }
@@ -794,7 +520,7 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 @JsonSerializable()
 
 class _ProjectDocument extends ProjectDocument {
-  const _ProjectDocument({this.formatVersion = kNfmvFormatVersion, this.info = const ProjectInfo(), this.settings = const VideoSettings(),  Map<int, VideoSettings> colorDefaults = const <int, VideoSettings>{},  Map<String, Node> nodes = const <String, Node>{},  List<Edge> edges = const <Edge>[],  List<VideoAsset> videos = const <VideoAsset>[],  List<Variable> variables = const <Variable>[]}): _colorDefaults = colorDefaults,_nodes = nodes,_edges = edges,_videos = videos,_variables = variables,super._();
+  const _ProjectDocument({this.formatVersion = kNfmvFormatVersion, this.info = const ProjectInfo(), this.settings = const VideoSettings(),  Map<int, VideoSettings> colorDefaults = const <int, VideoSettings>{},  Map<String, Node> nodes = const <String, Node>{},  List<Edge> edges = const <Edge>[],  List<MediaAsset> media = const <MediaAsset>[],  List<Variable> variables = const <Variable>[]}): _colorDefaults = colorDefaults,_nodes = nodes,_edges = edges,_media = media,_variables = variables,super._();
   factory _ProjectDocument.fromJson(Map<String, dynamic> json) => _$ProjectDocumentFromJson(json);
 
 @override@JsonKey() final  int formatVersion;
@@ -829,11 +555,13 @@ class _ProjectDocument extends ProjectDocument {
   return EqualUnmodifiableListView(_edges);
 }
 
- final  List<VideoAsset> _videos;
-@override@JsonKey() List<VideoAsset> get videos {
-  if (_videos is EqualUnmodifiableListView) return _videos;
+/// Imported files, in import order (which is also "date added").
+ final  List<MediaAsset> _media;
+/// Imported files, in import order (which is also "date added").
+@override@JsonKey() List<MediaAsset> get media {
+  if (_media is EqualUnmodifiableListView) return _media;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(_videos);
+  return EqualUnmodifiableListView(_media);
 }
 
 /// Named values for the story. Missing in older files, hence empty.
@@ -859,18 +587,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectDocument&&(identical(other.formatVersion, formatVersion) || other.formatVersion == formatVersion)&&(identical(other.info, info) || other.info == info)&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _nodes)&&const DeepCollectionEquality().equals(other.edges, _edges)&&const DeepCollectionEquality().equals(other.videos, _videos)&&const DeepCollectionEquality().equals(other.variables, _variables));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectDocument&&(identical(other.formatVersion, formatVersion) || other.formatVersion == formatVersion)&&(identical(other.info, info) || other.info == info)&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _nodes)&&const DeepCollectionEquality().equals(other.edges, _edges)&&const DeepCollectionEquality().equals(other.media, _media)&&const DeepCollectionEquality().equals(other.variables, _variables));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,formatVersion,info,settings,const DeepCollectionEquality().hash(_colorDefaults),const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_videos),const DeepCollectionEquality().hash(_variables));
+    return Object.hash(runtimeType,formatVersion,info,settings,const DeepCollectionEquality().hash(_colorDefaults),const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_media),const DeepCollectionEquality().hash(_variables));
 }
 
 @override
 String toString() {
-    return 'ProjectDocument(formatVersion: $formatVersion, info: $info, settings: $settings, colorDefaults: $colorDefaults, nodes: $nodes, edges: $edges, videos: $videos, variables: $variables)';
+    return 'ProjectDocument(formatVersion: $formatVersion, info: $info, settings: $settings, colorDefaults: $colorDefaults, nodes: $nodes, edges: $edges, media: $media, variables: $variables)';
 }
 
 
@@ -881,7 +609,7 @@ abstract mixin class _$ProjectDocumentCopyWith<$Res> implements $ProjectDocument
   factory _$ProjectDocumentCopyWith(_ProjectDocument value, $Res Function(_ProjectDocument) _then) = __$ProjectDocumentCopyWithImpl;
 @override @useResult
 $Res call({
- int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<VideoAsset> videos, List<Variable> variables
+ int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables
 });
 
 
@@ -898,7 +626,7 @@ class __$ProjectDocumentCopyWithImpl<$Res>
 
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? videos = null,Object? variables = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,}) {
   return _then(_ProjectDocument(
 formatVersion: null == formatVersion ? _self.formatVersion : formatVersion // ignore: cast_nullable_to_non_nullable
 as int,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
@@ -906,8 +634,8 @@ as ProjectInfo,settings: null == settings ? _self.settings : settings // ignore:
 as VideoSettings,colorDefaults: null == colorDefaults ? _self._colorDefaults : colorDefaults // ignore: cast_nullable_to_non_nullable
 as Map<int, VideoSettings>,nodes: null == nodes ? _self._nodes : nodes // ignore: cast_nullable_to_non_nullable
 as Map<String, Node>,edges: null == edges ? _self._edges : edges // ignore: cast_nullable_to_non_nullable
-as List<Edge>,videos: null == videos ? _self._videos : videos // ignore: cast_nullable_to_non_nullable
-as List<VideoAsset>,variables: null == variables ? _self._variables : variables // ignore: cast_nullable_to_non_nullable
+as List<Edge>,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
+as List<MediaAsset>,variables: null == variables ? _self._variables : variables // ignore: cast_nullable_to_non_nullable
 as List<Variable>,
   ));
 }

@@ -178,7 +178,7 @@ class VideoPreviewNotifier extends _$VideoPreviewNotifier {
   PreviewTarget? _retarget(PreviewTarget target, ProjectDocument doc) {
     final nodeId = target.nodeId;
     if (nodeId == null) {
-      return doc.videoById(target.videoId) == null ? null : target;
+      return doc.mediaById(target.videoId) == null ? null : target;
     }
     final videoId = doc.nodes[nodeId]?.videoIdOrNull;
     return videoId == null ? null : target.copyWith(videoId: videoId);
@@ -192,7 +192,7 @@ class VideoPreviewNotifier extends _$VideoPreviewNotifier {
     if (target == null) {
       unawaited(player.stop());
     } else if (target.videoId != previousVideo) {
-      final path = ref.read(documentProvider).document.videoById(target.videoId)?.path;
+      final path = ref.read(documentProvider).document.mediaById(target.videoId)?.path;
       if (path != null) unawaited(player.open(path));
     }
   }

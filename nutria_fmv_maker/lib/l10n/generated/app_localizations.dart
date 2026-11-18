@@ -103,7 +103,7 @@ abstract class AppLocalizations {
   /// No description provided for @boardImportedVideos.
   ///
   /// In en, this message translates to:
-  /// **'Imported Videos'**
+  /// **'Imported Media'**
   String get boardImportedVideos;
 
   /// No description provided for @libraryLargeThumbnails.
@@ -135,6 +135,72 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'List'**
   String get libraryList;
+
+  /// No description provided for @librarySortDateAdded.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by Date Added'**
+  String get librarySortDateAdded;
+
+  /// No description provided for @librarySortName.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by Name'**
+  String get librarySortName;
+
+  /// No description provided for @librarySortType.
+  ///
+  /// In en, this message translates to:
+  /// **'Sort by Type'**
+  String get librarySortType;
+
+  /// No description provided for @libraryGroupNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Don’t Group'**
+  String get libraryGroupNone;
+
+  /// No description provided for @libraryGroupKind.
+  ///
+  /// In en, this message translates to:
+  /// **'Group by Kind'**
+  String get libraryGroupKind;
+
+  /// No description provided for @libraryGroupFileType.
+  ///
+  /// In en, this message translates to:
+  /// **'Group by File Type'**
+  String get libraryGroupFileType;
+
+  /// No description provided for @mediaKindVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Videos'**
+  String get mediaKindVideo;
+
+  /// No description provided for @mediaKindAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'Audio'**
+  String get mediaKindAudio;
+
+  /// No description provided for @mediaKindImage.
+  ///
+  /// In en, this message translates to:
+  /// **'Images'**
+  String get mediaKindImage;
+
+  /// No description provided for @mediaKindSubtitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles'**
+  String get mediaKindSubtitle;
+
+  /// No description provided for @mediaKindFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts'**
+  String get mediaKindFont;
 
   /// No description provided for @boardPreferences.
   ///
@@ -913,7 +979,7 @@ abstract class AppLocalizations {
   /// No description provided for @tooltipImportVideos.
   ///
   /// In en, this message translates to:
-  /// **'Import videos'**
+  /// **'Import media'**
   String get tooltipImportVideos;
 
   /// No description provided for @tooltipBack5.

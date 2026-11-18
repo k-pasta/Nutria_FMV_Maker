@@ -53,9 +53,9 @@ void main() {
   });
 
   test('importing videos is one step and reuses existing files', () {
-    final ids = editor().importVideos([r'C:\videos\a.mp4', r'C:\new\x.mp4']);
+    final ids = editor().importFiles([r'C:\videos\a.mp4', r'C:\new\x.mp4']);
     expect(ids.first, 'v1');
-    expect(h.document.videos, hasLength(4));
+    expect(h.document.media, hasLength(4));
     expect(undoSteps(), 1);
   });
 

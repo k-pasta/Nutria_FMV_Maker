@@ -1,5 +1,6 @@
 // Pure edit operations on a ProjectDocument. Every edit in the app goes through here.
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -360,14 +361,14 @@ extension GraphOps on ProjectDocument {
     );
   }
 
-  // ----------------------------------------------------------------- videos
+  // ------------------------------------------------------------------ media
 
-  /// Adds [video] unless a video with the same path is already imported.
+  /// Adds [asset] unless a file with the same path is already imported.
   /// Returns the document and the id of the (new or existing) asset.
-  (ProjectDocument, String) importVideo(VideoAsset video) {
-    for (final existing in videos) {
-      if (existing.path == video.path) return (this, existing.id);
+  (ProjectDocument, String) importMedia(MediaAsset asset) {
+    for (final existing in media) {
+      if (existing.path == asset.path) return (this, existing.id);
     }
-    return (copyWith(videos: [...videos, video]), video.id);
+    return (copyWith(media: [...media, asset]), asset.id);
   }
 }

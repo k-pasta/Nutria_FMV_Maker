@@ -4,6 +4,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
@@ -258,10 +259,11 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
   Widget build(BuildContext context) {
     final node = widget.node;
     // Library videos dropped on a video node replace its video.
-    return DragTarget<String>(
-      onWillAcceptWithDetails: (_) => node.isVideoNode,
+    return DragTarget<MediaAsset>(
+      onWillAcceptWithDetails: (details) =>
+          node.isVideoNode && details.data.isVideo,
       onAcceptWithDetails: (details) =>
-          _gestures.dropVideo(node.id, details.data),
+          _gestures.dropVideo(node.id, details.data.id),
       builder: (context, candidates, _) =>
           _body(context, candidates.isNotEmpty),
     );

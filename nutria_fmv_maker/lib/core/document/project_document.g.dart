@@ -17,12 +17,6 @@ Map<String, dynamic> _$ProjectInfoToJson(_ProjectInfo instance) =>
       'description': instance.description,
     };
 
-_VideoAsset _$VideoAssetFromJson(Map<String, dynamic> json) =>
-    _VideoAsset(id: json['id'] as String, path: json['path'] as String);
-
-Map<String, dynamic> _$VideoAssetToJson(_VideoAsset instance) =>
-    <String, dynamic>{'id': instance.id, 'path': instance.path};
-
 _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>
     _ProjectDocument(
       formatVersion:
@@ -51,11 +45,11 @@ _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Edge.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Edge>[],
-      videos:
-          (json['videos'] as List<dynamic>?)
-              ?.map((e) => VideoAsset.fromJson(e as Map<String, dynamic>))
+      media:
+          (json['media'] as List<dynamic>?)
+              ?.map((e) => MediaAsset.fromJson(e as Map<String, dynamic>))
               .toList() ??
-          const <VideoAsset>[],
+          const <MediaAsset>[],
       variables:
           (json['variables'] as List<dynamic>?)
               ?.map((e) => Variable.fromJson(e as Map<String, dynamic>))
@@ -73,6 +67,6 @@ Map<String, dynamic> _$ProjectDocumentToJson(_ProjectDocument instance) =>
       ),
       'nodes': instance.nodes.map((k, e) => MapEntry(k, e.toJson())),
       'edges': instance.edges.map((e) => e.toJson()).toList(),
-      'videos': instance.videos.map((e) => e.toJson()).toList(),
+      'media': instance.media.map((e) => e.toJson()).toList(),
       'variables': instance.variables.map((e) => e.toJson()).toList(),
     };

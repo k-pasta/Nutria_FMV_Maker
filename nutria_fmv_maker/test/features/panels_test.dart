@@ -28,7 +28,7 @@ Future<ProviderContainer> pumpWithVideos(WidgetTester tester) {
       overrides: [projectFileServiceProvider.overrideWithValue(files)]);
 }
 
-Future<void> importVideos(WidgetTester tester) async {
+Future<void> importFiles(WidgetTester tester) async {
   await tester.tap(find.descendant(
       of: find.byType(VideoLibraryPanel), matching: find.byIcon(Icons.add)));
   await tester.pumpAndSettle();
@@ -50,15 +50,15 @@ Future<void> dragEntry(WidgetTester tester, String fileName, Offset to) async {
 void main() {
   testWidgets('importing videos lists them in the library', (tester) async {
     final container = await pumpWithVideos(tester);
-    await importVideos(tester);
+    await importFiles(tester);
     expect(find.text('intro.mp4'), findsOneWidget);
     expect(find.text('ending.mp4'), findsOneWidget);
-    expect(container.read(videoAssetsProvider), hasLength(2));
+    expect(container.read(mediaAssetsProvider), hasLength(2));
   });
 
   testWidgets('clicking a library video previews it', (tester) async {
     final container = await pumpWithVideos(tester);
-    await importVideos(tester);
+    await importFiles(tester);
     await tester.tap(find.text('ending.mp4'));
     await tester.pumpAndSettle();
     final previewed = container.read(videoPreviewProvider)!.videoId;
@@ -68,7 +68,7 @@ void main() {
   testWidgets('dropping a library video on the canvas creates a node',
       (tester) async {
     final container = await pumpWithVideos(tester);
-    await importVideos(tester);
+    await importFiles(tester);
     final before = container.read(projectDocumentProvider).nodes.length;
 
     await dragEntry(tester, 'intro.mp4', const Offset(800, 200));
@@ -82,7 +82,7 @@ void main() {
   testWidgets('dropping a library video on a node sets its video',
       (tester) async {
     final container = await pumpWithVideos(tester);
-    await importVideos(tester);
+    await importFiles(tester);
     final id = container
         .read(graphEditorProvider)
         .addVideoNode(const Position(-100, -300),
@@ -137,7 +137,7 @@ void main() {
   testWidgets('a node shows the file name of its video', (tester) async {
     final container = await pumpWithVideos(tester);
     final editor = container.read(graphEditorProvider);
-    final ids = editor.importVideos(videos);
+    final ids = editor.importFiles(videos);
     editor.addVideoNode(Position.zero,
         videoId: ids.first, type: DefaultNodeType.branchedVideo);
     await tester.pumpAndSettle();

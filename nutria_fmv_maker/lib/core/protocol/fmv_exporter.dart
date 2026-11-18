@@ -157,7 +157,7 @@ String? _videoPath(
   Node node,
   List<ExportIssue> issues,
 ) {
-  final path = document.videoById(node.videoIdOrNull)?.path;
+  final path = document.mediaById(node.videoIdOrNull)?.path;
   if (path == null) {
     issues.add((type: ExportIssueType.missingVideo, nodeId: node.id));
   }

@@ -1,6 +1,7 @@
 // The complete, saveable state of a project: the single source of truth for undo.
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
@@ -11,7 +12,7 @@ part 'project_document.g.dart';
 
 /// Version of the `.nfmv` format written by this code. Bump it when the
 /// format changes and add an upgrade step in `nfmv_codec.dart`.
-const int kNfmvFormatVersion = 1;
+const int kNfmvFormatVersion = 2;
 
 /// Id of the origin node in a new project.
 const String kOriginNodeId = 'origin';
@@ -26,38 +27,11 @@ abstract class ProjectInfo with _$ProjectInfo {
       _$ProjectInfoFromJson(json);
 }
 
-/// A video file imported into the project.
-///
-/// Only the location is saved. Thumbnails and metadata are re-read from the
-/// file at runtime, so they never go stale.
-@freezed
-abstract class VideoAsset with _$VideoAsset {
-  const VideoAsset._();
-
-  const factory VideoAsset({
-    required String id,
-
-    /// Absolute path on the machine that last saved the project.
-    required String path,
-  }) = _VideoAsset;
-
-  factory VideoAsset.fromJson(Map<String, dynamic> json) =>
-      _$VideoAssetFromJson(json);
-
-  /// File name including extension, independent of the path separator.
-  String get fileName {
-    final separator = path.lastIndexOf('/') > path.lastIndexOf(r'\')
-        ? path.lastIndexOf('/')
-        : path.lastIndexOf(r'\');
-    return path.substring(separator + 1);
-  }
-}
-
 /// How many colors, after the first, can have their own defaults.
 const kMaxColorDefaults = 5;
 
-/// Videos by id, built once per document (documents never change).
-final _videoIndex = Expando<Map<String, VideoAsset>>('videos by id');
+/// Media by id, built once per document (documents never change).
+final _mediaIndex = Expando<Map<String, MediaAsset>>('media by id');
 
 /// Everything that is saved to `.nfmv`, undone by undo, and exported to `.fmv`.
 ///
@@ -82,7 +56,8 @@ abstract class ProjectDocument with _$ProjectDocument {
     /// Nodes by id. Insertion order is kept but carries no meaning.
     @Default(<String, Node>{}) Map<String, Node> nodes,
     @Default(<Edge>[]) List<Edge> edges,
-    @Default(<VideoAsset>[]) List<VideoAsset> videos,
+    /// Imported files, in import order (which is also "date added").
+    @Default(<MediaAsset>[]) List<MediaAsset> media,
 
     /// Named values for the story. Missing in older files, hence empty.
     @Default(<Variable>[]) List<Variable> variables,
@@ -108,12 +83,12 @@ abstract class ProjectDocument with _$ProjectDocument {
   /// The single origin node (the story's start).
   OriginNode get origin => nodes.values.whereType<OriginNode>().first;
 
-  /// Looks up a video asset, or `null` if [id] is null or unknown.
+  /// Looks up an imported file, or `null` if [id] is null or unknown.
   /// Indexed: widgets and noodles look videos up on every frame of a drag.
-  VideoAsset? videoById(String? id) {
+  MediaAsset? mediaById(String? id) {
     if (id == null) return null;
-    final index = _videoIndex[this] ??= {
-      for (final video in videos) video.id: video,
+    final index = _mediaIndex[this] ??= {
+      for (final asset in media) asset.id: asset,
     };
     return index[id];
   }

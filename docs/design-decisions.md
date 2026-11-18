@@ -103,3 +103,33 @@ change any of them and I'll adapt.
 - **Saving:** stored as `colorDefaults` in `.nfmv`. Older files load with
   no groups, so the format version did not change.
 - Not checked in the real app yet; widget tests render text as boxes.
+
+## Phase 3a: Imported Media (kinds, sorting, grouping)
+- **"Imported Videos" is now "Imported Media".** The + button imports
+  videos, audio (mp3, wav, ogg, flac, m4a, aac, opus, wma), images (png,
+  jpg, webp, bmp, gif), subtitles (srt) and fonts (ttf, otf). A node's
+  "pick video" still shows only videos.
+- **The kind comes from the file extension** and isn't stored. Unknown
+  extensions count as videos, because older projects only had videos.
+- **`.nfmv` is now format version 2.** The list is called `media` instead
+  of `videos`. Version 1 files are upgraded when opened and saved as
+  version 2, so an older Maker can't open them afterwards.
+- **In code,** `VideoAsset` became `MediaAsset` and `document.videos`
+  became `document.media`.
+- **Sorting and grouping are in the library's right-click menu,** under the
+  view sizes, separated by thin lines. They are saved as preferences.
+  - Sort by date added (import order, the default), name, or type. Type
+    means kind, then extension, then name.
+  - Group by nothing (the default), kind, or file type. Each group has a
+    title row with an arrow and a count; clicking it collapses the group.
+    Collapsed groups are remembered only until the app closes.
+- **Pictures:**
+  - Images show the picture itself.
+  - Audio, subtitles and fonts show an icon of their kind.
+  - The plain list view now shows a small kind icon before each name,
+    videos included.
+- **Only videos** can be dropped on the canvas or on a node. Clicking a
+  file that isn't a video does nothing yet; Phase 3c adds previews.
+- **Right-click menus now fit their real size** in the window. Before, they
+  used a fixed size estimate, so the longer library menu could go off the
+  bottom.

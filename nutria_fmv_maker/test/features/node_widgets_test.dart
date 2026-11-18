@@ -141,7 +141,7 @@ void main() {
         (tester) async {
       final container = await pumpApp(tester);
       final editor = container.read(graphEditorProvider);
-      final video = editor.importVideos(['C:/v/$name']).single;
+      final video = editor.importFiles(['C:/v/$name']).single;
       final id = editor.addVideoNode(const Position(-100, -300),
           videoId: video, type: DefaultNodeType.branchedVideo);
       await tester.pumpAndSettle();

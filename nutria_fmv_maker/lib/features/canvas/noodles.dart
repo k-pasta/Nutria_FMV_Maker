@@ -15,7 +15,7 @@ Offset? knotPosition(ProjectDocument doc, NodeMetrics metrics, PortRef port) {
   if (node == null) return null;
   final videoId = node.videoIdOrNull;
   final layout = NodeLayout(node, metrics,
-      fileName: videoId == null ? null : doc.videoById(videoId)?.fileName);
+      fileName: videoId == null ? null : doc.mediaById(videoId)?.fileName);
   final offset = port.port == PortRef.inputPortKey
       ? layout.input
       : layout.output(port.port);

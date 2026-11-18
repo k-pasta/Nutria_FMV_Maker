@@ -12,8 +12,8 @@ abstract interface class FileDialogs {
   /// Lets the user pick one file with one of [extensions] (without the dot).
   Future<String?> pickFile({required List<String> extensions});
 
-  /// Lets the user pick any number of video files.
-  Future<List<String>> pickVideos();
+  /// Lets the user pick any number of files with one of [extensions].
+  Future<List<String>> pickFiles({required List<String> extensions});
 
   /// Asks where to save, writes [bytes] there and returns the chosen path.
   Future<String?> saveFile({required String fileName, required Uint8List bytes});
@@ -33,8 +33,11 @@ class FilePickerDialogs implements FileDialogs {
   }
 
   @override
-  Future<List<String>> pickVideos() async {
-    final files = await FilePicker.pickFiles(type: FileType.video);
+  Future<List<String>> pickFiles({required List<String> extensions}) async {
+    final files = await FilePicker.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: extensions,
+    );
     return [
       for (final file in files)
         if (file.path != null) file.path!,

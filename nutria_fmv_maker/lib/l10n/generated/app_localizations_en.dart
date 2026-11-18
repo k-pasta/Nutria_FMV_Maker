@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Imported Videos';
+  String get boardImportedVideos => 'Imported Media';
 
   @override
   String get libraryLargeThumbnails => 'Large Thumbnails';
@@ -25,6 +25,39 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get libraryList => 'List';
+
+  @override
+  String get librarySortDateAdded => 'Sort by Date Added';
+
+  @override
+  String get librarySortName => 'Sort by Name';
+
+  @override
+  String get librarySortType => 'Sort by Type';
+
+  @override
+  String get libraryGroupNone => 'Don’t Group';
+
+  @override
+  String get libraryGroupKind => 'Group by Kind';
+
+  @override
+  String get libraryGroupFileType => 'Group by File Type';
+
+  @override
+  String get mediaKindVideo => 'Videos';
+
+  @override
+  String get mediaKindAudio => 'Audio';
+
+  @override
+  String get mediaKindImage => 'Images';
+
+  @override
+  String get mediaKindSubtitle => 'Subtitles';
+
+  @override
+  String get mediaKindFont => 'Fonts';
 
   @override
   String get boardPreferences => 'Preferences';
@@ -433,7 +466,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get tooltipNodeSettings => 'Node settings';
 
   @override
-  String get tooltipImportVideos => 'Import videos';
+  String get tooltipImportVideos => 'Import media';
 
   @override
   String get tooltipBack5 => 'Back 5 seconds (Ctrl+←)';
