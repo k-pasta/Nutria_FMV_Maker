@@ -210,6 +210,7 @@ class FmvOverrides {
 class FmvNode {
   const FmvNode({
     this.video,
+    this.subtitles,
     this.question,
     this.target,
     this.choices,
@@ -218,6 +219,10 @@ class FmvNode {
 
   /// Path of the video file; `null` if the author didn't pick one.
   final String? video;
+
+  /// Path of a SubRip (.srt) file for the video; `null` for none. (Added
+  /// after version 1.0; older readers ignore it.)
+  final String? subtitles;
 
   /// A question shown above the [choices]; `null` for none. (Added after
   /// version 1.0; older readers ignore it.)
@@ -234,6 +239,7 @@ class FmvNode {
 
   Map<String, Object?> toJson() => {
         'video': video,
+        if (subtitles != null) 'subtitles': subtitles,
         if (question != null) 'question': question,
         if (target != null) 'target': target,
         if (choices != null)
@@ -245,6 +251,7 @@ class FmvNode {
     final choices = json['choices'];
     return FmvNode(
       video: _string(json['video']),
+      subtitles: _string(json['subtitles']),
       question: _string(json['question']),
       target: _string(json['target']),
       choices: choices is List

@@ -75,6 +75,9 @@ abstract class Preferences with _$Preferences {
     @Default(LibraryView.thumbnails) LibraryView libraryView,
     @Default(LibrarySort.dateAdded) LibrarySort librarySort,
     @Default(LibraryGrouping.none) LibraryGrouping libraryGrouping,
+
+    /// Link a video and a subtitle file of the same name when importing.
+    @Default(true) bool autoLinkSubtitles,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -139,6 +142,9 @@ class PreferencesNotifier extends _$PreferencesNotifier {
 
   void setLibraryGrouping(LibraryGrouping grouping) =>
       _update(state.copyWith(libraryGrouping: grouping));
+
+  void setAutoLinkSubtitles(bool on) =>
+      _update(state.copyWith(autoLinkSubtitles: on));
 
   void setTheme(ThemeChoice theme) => _update(state.copyWith(theme: theme));
 

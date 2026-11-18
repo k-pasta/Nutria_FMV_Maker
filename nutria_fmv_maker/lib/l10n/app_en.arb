@@ -39,6 +39,35 @@
   },
   "notifyNoMissingFiles": "No files are missing",
   "notifyFileNameDiffers": "The chosen file has another name: {name}",
+  "mediaUnlinkSubtitles": "Unlink Subtitles",
+  "tooltipHasSubtitles": "Subtitles: {name}",
+  "@tooltipHasSubtitles": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "notifySubtitlesLonger": "The subtitles go on {time} longer than the video",
+  "@notifySubtitlesLonger": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      }
+    }
+  },
+  "previewLinkedTo": "Linked to {name}",
+  "@previewLinkedTo": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "previewUnreadable": "This file can’t be read.",
+  "previewNoCues": "No subtitles were found in this file.",
+  "previewFontSample": "The quick brown fox jumps over the lazy dog",
+  "prefAutoLinkSubtitles": "Link Subtitles by Name",
   "@notifyFileNameDiffers": {
     "placeholders": {
       "name": {

@@ -61,7 +61,7 @@ void main() {
     await importFiles(tester);
     await tester.tap(find.text('ending.mp4'));
     await tester.pumpAndSettle();
-    final previewed = container.read(videoPreviewProvider)!.videoId;
+    final previewed = container.read(videoPreviewProvider)!.mediaId;
     expect(container.read(videoAssetProvider(previewed))!.path, videos[1]);
   });
 

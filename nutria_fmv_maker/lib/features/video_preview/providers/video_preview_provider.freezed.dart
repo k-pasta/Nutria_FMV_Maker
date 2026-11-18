@@ -15,7 +15,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PreviewTarget implements DiagnosticableTreeMixin {
 
- String get videoId;/// The node being previewed, if the preview came from a node.
+/// The imported file shown; the player plays it if it is a video or
+/// audio.
+ String get mediaId;/// The node being previewed, if the preview came from a node.
  String? get nodeId;
 /// Create a copy of PreviewTarget
 /// with the given fields replaced by the non-null parameter values.
@@ -29,26 +31,26 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   final _this = this as PreviewTarget;
   properties
     ..add(DiagnosticsProperty('type', 'PreviewTarget'))
-    ..add(DiagnosticsProperty('videoId', _this.videoId))..add(DiagnosticsProperty('nodeId', _this.nodeId));
+    ..add(DiagnosticsProperty('mediaId', _this.mediaId))..add(DiagnosticsProperty('nodeId', _this.nodeId));
 }
 
 @override
 bool operator ==(Object other) {
   final _this = this as PreviewTarget;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PreviewTarget&&(identical(other.videoId, _this.videoId) || other.videoId == _this.videoId)&&(identical(other.nodeId, _this.nodeId) || other.nodeId == _this.nodeId));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is PreviewTarget&&(identical(other.mediaId, _this.mediaId) || other.mediaId == _this.mediaId)&&(identical(other.nodeId, _this.nodeId) || other.nodeId == _this.nodeId));
 }
 
 
 @override
 int get hashCode {
   final _this = this as PreviewTarget;
-  return Object.hash(runtimeType,_this.videoId,_this.nodeId);
+  return Object.hash(runtimeType,_this.mediaId,_this.nodeId);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   final _this = this as PreviewTarget;
-  return 'PreviewTarget(videoId: ${_this.videoId}, nodeId: ${_this.nodeId})';
+  return 'PreviewTarget(mediaId: ${_this.mediaId}, nodeId: ${_this.nodeId})';
 }
 
 
@@ -59,7 +61,7 @@ abstract mixin class $PreviewTargetCopyWith<$Res>  {
   factory $PreviewTargetCopyWith(PreviewTarget value, $Res Function(PreviewTarget) _then) = _$PreviewTargetCopyWithImpl;
 @useResult
 $Res call({
- String videoId, String? nodeId
+ String mediaId, String? nodeId
 });
 
 
@@ -76,9 +78,9 @@ class _$PreviewTargetCopyWithImpl<$Res>
 
 /// Create a copy of PreviewTarget
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? videoId = null,Object? nodeId = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? mediaId = null,Object? nodeId = freezed,}) {
   return _then(PreviewTarget(
-videoId: null == videoId ? _self.videoId : videoId // ignore: cast_nullable_to_non_nullable
+mediaId: null == mediaId ? _self.mediaId : mediaId // ignore: cast_nullable_to_non_nullable
 as String,nodeId: freezed == nodeId ? _self.nodeId : nodeId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
@@ -165,10 +167,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String videoId,  String? nodeId)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String mediaId,  String? nodeId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _PreviewTarget() when $default != null:
-return $default(_that.videoId,_that.nodeId);case _:
+return $default(_that.mediaId,_that.nodeId);case _:
   return orElse();
 
 }
@@ -186,10 +188,10 @@ return $default(_that.videoId,_that.nodeId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String videoId,  String? nodeId)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String mediaId,  String? nodeId)  $default,) {final _that = this;
 switch (_that) {
 case _PreviewTarget():
-return $default(_that.videoId,_that.nodeId);case _:
+return $default(_that.mediaId,_that.nodeId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -206,10 +208,10 @@ return $default(_that.videoId,_that.nodeId);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String videoId,  String? nodeId)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String mediaId,  String? nodeId)?  $default,) {final _that = this;
 switch (_that) {
 case _PreviewTarget() when $default != null:
-return $default(_that.videoId,_that.nodeId);case _:
+return $default(_that.mediaId,_that.nodeId);case _:
   return null;
 
 }
@@ -221,10 +223,12 @@ return $default(_that.videoId,_that.nodeId);case _:
 
 
 class _PreviewTarget with DiagnosticableTreeMixin implements PreviewTarget {
-  const _PreviewTarget({required this.videoId, this.nodeId});
+  const _PreviewTarget({required this.mediaId, this.nodeId});
   
 
-@override final  String videoId;
+/// The imported file shown; the player plays it if it is a video or
+/// audio.
+@override final  String mediaId;
 /// The node being previewed, if the preview came from a node.
 @override final  String? nodeId;
 
@@ -239,23 +243,23 @@ _$PreviewTargetCopyWith<_PreviewTarget> get copyWith => __$PreviewTargetCopyWith
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
     properties
     ..add(DiagnosticsProperty('type', 'PreviewTarget'))
-    ..add(DiagnosticsProperty('videoId', videoId))..add(DiagnosticsProperty('nodeId', nodeId));
+    ..add(DiagnosticsProperty('mediaId', mediaId))..add(DiagnosticsProperty('nodeId', nodeId));
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PreviewTarget&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.nodeId, nodeId) || other.nodeId == nodeId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _PreviewTarget&&(identical(other.mediaId, mediaId) || other.mediaId == mediaId)&&(identical(other.nodeId, nodeId) || other.nodeId == nodeId));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,videoId,nodeId);
+    return Object.hash(runtimeType,mediaId,nodeId);
 }
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-    return 'PreviewTarget(videoId: $videoId, nodeId: $nodeId)';
+    return 'PreviewTarget(mediaId: $mediaId, nodeId: $nodeId)';
 }
 
 
@@ -266,7 +270,7 @@ abstract mixin class _$PreviewTargetCopyWith<$Res> implements $PreviewTargetCopy
   factory _$PreviewTargetCopyWith(_PreviewTarget value, $Res Function(_PreviewTarget) _then) = __$PreviewTargetCopyWithImpl;
 @override @useResult
 $Res call({
- String videoId, String? nodeId
+ String mediaId, String? nodeId
 });
 
 
@@ -283,9 +287,9 @@ class __$PreviewTargetCopyWithImpl<$Res>
 
 /// Create a copy of PreviewTarget
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? videoId = null,Object? nodeId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? mediaId = null,Object? nodeId = freezed,}) {
   return _then(_PreviewTarget(
-videoId: null == videoId ? _self.videoId : videoId // ignore: cast_nullable_to_non_nullable
+mediaId: null == mediaId ? _self.mediaId : mediaId // ignore: cast_nullable_to_non_nullable
 as String,nodeId: freezed == nodeId ? _self.nodeId : nodeId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));

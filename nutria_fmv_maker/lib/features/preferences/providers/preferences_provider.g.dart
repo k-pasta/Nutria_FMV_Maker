@@ -28,6 +28,7 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
   libraryGrouping:
       $enumDecodeNullable(_$LibraryGroupingEnumMap, json['libraryGrouping']) ??
       LibraryGrouping.none,
+  autoLinkSubtitles: json['autoLinkSubtitles'] as bool? ?? true,
 );
 
 Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
@@ -41,6 +42,7 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'libraryView': _$LibraryViewEnumMap[instance.libraryView]!,
       'librarySort': _$LibrarySortEnumMap[instance.librarySort]!,
       'libraryGrouping': _$LibraryGroupingEnumMap[instance.libraryGrouping]!,
+      'autoLinkSubtitles': instance.autoLinkSubtitles,
     };
 
 const _$DefaultNodeTypeEnumMap = {
@@ -177,7 +179,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'e8179e7fb18192a2acac41318ce617b5c2e8189f';
+    r'cbc7ed99b01648535a535f7b7dcef4bb72ad8459';
 
 /// Reads and persists [Preferences].
 

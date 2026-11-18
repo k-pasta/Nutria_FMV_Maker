@@ -63,6 +63,10 @@ abstract class MediaAsset with _$MediaAsset {
 
     /// Absolute path on the machine that last saved the project.
     required String path,
+
+    /// For a video: the id of the subtitle file linked to it, if any.
+    /// Linked subtitles are listed with their video, not on their own.
+    String? subtitleId,
   }) = _MediaAsset;
 
   factory MediaAsset.fromJson(Map<String, dynamic> json) =>
@@ -77,4 +81,15 @@ abstract class MediaAsset with _$MediaAsset {
   MediaKind get kind => mediaKindOf(path);
 
   bool get isVideo => kind == MediaKind.video;
+
+  /// Whether the preview can play it (with the transport controls).
+  bool get isPlayable => kind == MediaKind.video || kind == MediaKind.audio;
+
+  /// The file name without its extension, in lower case: what a video and
+  /// its subtitles share when they are linked automatically.
+  String get baseName {
+    final name = fileName.toLowerCase();
+    final dot = name.lastIndexOf('.');
+    return dot <= 0 ? name : name.substring(0, dot);
+  }
 }

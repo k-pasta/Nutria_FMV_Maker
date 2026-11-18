@@ -85,6 +85,38 @@ class AppLocalizationsFr extends AppLocalizations {
   }
 
   @override
+  String get mediaUnlinkSubtitles => 'Délier les sous-titres';
+
+  @override
+  String tooltipHasSubtitles(String name) {
+    return 'Sous-titres : $name';
+  }
+
+  @override
+  String notifySubtitlesLonger(String time) {
+    return 'Les sous-titres continuent $time après la fin de la vidéo';
+  }
+
+  @override
+  String previewLinkedTo(String name) {
+    return 'Liés à $name';
+  }
+
+  @override
+  String get previewUnreadable => 'Ce fichier est illisible.';
+
+  @override
+  String get previewNoCues =>
+      'Aucun sous-titre n’a été trouvé dans ce fichier.';
+
+  @override
+  String get previewFontSample =>
+      'Portez ce vieux whisky au juge blond qui fume';
+
+  @override
+  String get prefAutoLinkSubtitles => 'Lier les sous-titres par nom';
+
+  @override
   String get mediaKindVideo => 'Vidéos';
 
   @override

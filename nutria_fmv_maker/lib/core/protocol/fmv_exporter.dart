@@ -52,6 +52,7 @@ FmvExport exportFmv(ProjectDocument document) {
       case SimpleVideoNode():
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
+          subtitles: _subtitlesPath(document, node),
           target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
           overrides: _overrides(document, node, kSimpleNodeSettings),
         );
@@ -70,6 +71,7 @@ FmvExport exportFmv(ProjectDocument document) {
         }
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
+          subtitles: _subtitlesPath(document, node),
           // An empty question (turned on, never written) isn't exported.
           question: switch (node.question?.trim()) {
             final q? when q.isNotEmpty => node.question,
@@ -99,6 +101,12 @@ FmvExport exportFmv(ProjectDocument document) {
     ),
     issues: issues,
   );
+}
+
+/// The path of the subtitles linked to [node]'s video, if any.
+String? _subtitlesPath(ProjectDocument document, Node node) {
+  final video = document.mediaById(node.videoIdOrNull);
+  return document.mediaById(video?.subtitleId)?.path;
 }
 
 /// The node's own overrides plus its color's defaults, as overrides of the

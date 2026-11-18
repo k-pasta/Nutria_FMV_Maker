@@ -65,7 +65,15 @@ class VideoLibraryPanel extends ConsumerWidget {
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
     final media = ref.watch(mediaAssetsProvider);
-    final previewed = ref.watch(videoPreviewProvider.select((p) => p?.videoId));
+    final previewed = ref.watch(videoPreviewProvider.select((p) => p?.mediaId));
+    // Linked subtitles are shown with their video only.
+    final linked = ref.watch(linkedSubtitleIdsProvider);
+    final listed = linked.isEmpty
+        ? media
+        : [
+            for (final asset in media)
+              if (!linked.contains(asset.id)) asset,
+          ];
     final (view, sort, grouping) = ref.watch(
       preferencesProvider.select(
         (p) => (p.libraryView, p.librarySort, p.libraryGrouping),
@@ -74,7 +82,7 @@ class VideoLibraryPanel extends ConsumerWidget {
     final collapsed = ref.watch(collapsedLibraryGroupsProvider);
     final preferences = ref.read(preferencesProvider.notifier);
     final grid = view.index <= LibraryView.smallThumbnails.index;
-    final groups = libraryGroups(media, sort, grouping);
+    final groups = libraryGroups(listed, sort, grouping);
 
     Widget entriesOf(List<MediaAsset> list) {
       final entries = [
@@ -328,25 +336,89 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
+    final t = AppLocalizations.of(context);
     final view = widget.view;
     final width = libraryThumbnailWidth(view);
     final grid = view.index <= LibraryView.smallThumbnails.index;
     final asset = widget.video;
-    final thumbnail = width == null
-        ? null
-        : MediaThumbnail(asset: asset, width: width);
-    final t = AppLocalizations.of(context);
     final missing = ref.watch(
       missingMediaProvider.select((ids) => ids.contains(asset.id)),
     );
+    final subtitles = asset.subtitleId == null
+        ? null
+        : ref.watch(videoAssetProvider(asset.subtitleId!));
+    final commands = AppCommands(context, ref);
     final name = NutriaText(
-      text: widget.video.fileName,
+      text: asset.fileName,
       maxLines: grid ? 2 : 1,
       textAlign: grid ? TextAlign.center : TextAlign.start,
       // Missing files stand out, in the accent color.
       state: missing ? NutriaTextState.accented : NutriaTextState.normal,
     );
-    final commands = AppCommands(context, ref);
+    final subtitlesMark = Icon(
+      Icons.closed_caption,
+      size: theme.dTextHeight * 1.2,
+      color: theme.cTextActive,
+    );
+
+    Widget? picture = width == null
+        ? null
+        : MediaThumbnail(asset: asset, width: width);
+    if (picture != null && missing) picture = _MissingMark(child: picture);
+    if (picture != null && grid && subtitles != null) {
+      picture = Stack(
+        children: [
+          picture,
+          Positioned(
+            right: theme.dPanelPadding / 2,
+            bottom: theme.dPanelPadding / 2,
+            child: subtitlesMark,
+          ),
+        ],
+      );
+    }
+
+    // Blends into the panel; a fill shows hover (or a subtitle file about to
+    // be dropped). The previewed file is filled too, and raised in themes
+    // with elevation.
+    Widget card(bool highlighted) => Container(
+      padding: EdgeInsets.all(
+        grid ? theme.dPanelPadding : theme.dPanelPadding / 2,
+      ),
+      decoration: BoxDecoration(
+        color: widget.isPreviewed
+            ? theme.cListSelected
+            : (highlighted ? theme.cButtonHovered : null),
+        borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+        boxShadow: widget.isPreviewed && theme.dElevation > 0
+            ? theme.cardShadow()
+            : null,
+      ),
+      child: grid
+          ? Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ?picture,
+                SizedBox(height: theme.dPanelPadding),
+                SizedBox(width: width, child: name),
+              ],
+            )
+          : Row(
+              children: [
+                picture ??
+                    // The plain list shows what kind each file is.
+                    Icon(
+                      missing ? Icons.link_off : mediaKindIcon(asset.kind),
+                      size: theme.dTextHeight * 1.2,
+                      color: missing ? theme.cAccent : theme.cTextInactive,
+                    ),
+                SizedBox(width: theme.dPanelPadding),
+                Expanded(child: name),
+                if (subtitles != null) subtitlesMark,
+              ],
+            ),
+    );
+
     return Draggable<MediaAsset>(
       data: asset,
       // The pointer is at the drop position; the thumbnail is centered on it.
@@ -364,6 +436,13 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
               label: t.mediaFindMissing,
               onSelected: () => commands.findMissingFile(asset.id),
             ),
+          if (subtitles != null)
+            NutriaContextMenuItem(
+              icon: Icons.subtitles_off,
+              label: t.mediaUnlinkSubtitles,
+              onSelected: () =>
+                  ref.read(graphEditorProvider).unlinkSubtitle(asset.id),
+            ),
           NutriaContextMenuItem(
             icon: Icons.swap_horiz,
             label: t.mediaReplace,
@@ -371,65 +450,26 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
           ),
         ],
         child: NutriaTooltip(
-          message: missing ? t.tooltipMissingFile(asset.path) : null,
+          message: missing
+              ? t.tooltipMissingFile(asset.path)
+              : (subtitles == null
+                    ? null
+                    : t.tooltipHasSubtitles(subtitles.fileName)),
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             onEnter: (_) => setState(() => _hovered = true),
             onExit: (_) => setState(() => _hovered = false),
             child: GestureDetector(
-              onTap: asset.isVideo
-                  ? () => ref
-                        .read(videoPreviewProvider.notifier)
-                        .showVideo(asset.id)
-                  : null,
-              child: Container(
-                padding: EdgeInsets.all(
-                  grid ? theme.dPanelPadding : theme.dPanelPadding / 2,
-                ),
-                // Blends into the panel; a fill shows hover. The previewed video
-                // is filled too, and raised in themes with elevation.
-                decoration: BoxDecoration(
-                  color: widget.isPreviewed
-                      ? theme.cListSelected
-                      : (_hovered ? theme.cButtonHovered : null),
-                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                  boxShadow: widget.isPreviewed && theme.dElevation > 0
-                      ? theme.cardShadow()
-                      : null,
-                ),
-                child: grid
-                    ? Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          if (thumbnail != null)
-                            missing
-                                ? _MissingMark(child: thumbnail)
-                                : thumbnail,
-                          SizedBox(height: theme.dPanelPadding),
-                          SizedBox(width: width, child: name),
-                        ],
-                      )
-                    : Row(
-                        children: [
-                          if (thumbnail != null)
-                            missing ? _MissingMark(child: thumbnail) : thumbnail
-                          else if (missing)
-                            Icon(
-                              Icons.link_off,
-                              size: theme.dTextHeight * 1.2,
-                              color: theme.cAccent,
-                            )
-                          else
-                            // The plain list shows what kind each file is.
-                            Icon(
-                              mediaKindIcon(asset.kind),
-                              size: theme.dTextHeight * 1.2,
-                              color: theme.cTextInactive,
-                            ),
-                          SizedBox(width: theme.dPanelPadding),
-                          Expanded(child: name),
-                        ],
-                      ),
+              onTap: () =>
+                  ref.read(videoPreviewProvider.notifier).showMedia(asset.id),
+              // A subtitle file dropped on a video is linked to it.
+              child: DragTarget<MediaAsset>(
+                onWillAcceptWithDetails: (details) =>
+                    asset.isVideo && details.data.kind == MediaKind.subtitle,
+                onAcceptWithDetails: (details) =>
+                    commands.linkSubtitle(asset.id, details.data.id),
+                builder: (context, candidates, _) =>
+                    card(_hovered || candidates.isNotEmpty),
               ),
             ),
           ),

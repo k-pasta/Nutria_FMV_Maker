@@ -72,6 +72,14 @@ void main() {
         isFalse);
   });
 
+  test('a node can name subtitles for its video', () {
+    const node = FmvNode(video: 'a.mp4', subtitles: 'a.srt', target: '002');
+    expect(node.toJson().keys, ['video', 'subtitles', 'target']);
+    expect(FmvNode.fromJson(node.toJson()).subtitles, 'a.srt');
+    expect(const FmvNode(video: 'b.mp4').toJson().containsKey('subtitles'),
+        isFalse);
+  });
+
   test('missing or unknown values fall back to the defaults', () {
     final project = FmvProject.fromJson({
       'ProjectSettings': {'videoFit': 'sideways', 'selectionTime': 'soon'},

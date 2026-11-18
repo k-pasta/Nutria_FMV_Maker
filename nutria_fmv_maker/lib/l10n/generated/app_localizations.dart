@@ -238,6 +238,54 @@ abstract class AppLocalizations {
   /// **'The chosen file has another name: {name}'**
   String notifyFileNameDiffers(String name);
 
+  /// No description provided for @mediaUnlinkSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Unlink Subtitles'**
+  String get mediaUnlinkSubtitles;
+
+  /// No description provided for @tooltipHasSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles: {name}'**
+  String tooltipHasSubtitles(String name);
+
+  /// No description provided for @notifySubtitlesLonger.
+  ///
+  /// In en, this message translates to:
+  /// **'The subtitles go on {time} longer than the video'**
+  String notifySubtitlesLonger(String time);
+
+  /// No description provided for @previewLinkedTo.
+  ///
+  /// In en, this message translates to:
+  /// **'Linked to {name}'**
+  String previewLinkedTo(String name);
+
+  /// No description provided for @previewUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'This file can’t be read.'**
+  String get previewUnreadable;
+
+  /// No description provided for @previewNoCues.
+  ///
+  /// In en, this message translates to:
+  /// **'No subtitles were found in this file.'**
+  String get previewNoCues;
+
+  /// No description provided for @previewFontSample.
+  ///
+  /// In en, this message translates to:
+  /// **'The quick brown fox jumps over the lazy dog'**
+  String get previewFontSample;
+
+  /// No description provided for @prefAutoLinkSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Link Subtitles by Name'**
+  String get prefAutoLinkSubtitles;
+
   /// No description provided for @mediaKindVideo.
   ///
   /// In en, this message translates to:

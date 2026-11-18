@@ -98,6 +98,18 @@ class PreferencesPanel extends ConsumerWidget {
         onOptionsOpenChanged: menuOpen,
       ),
       NutriaSettingRow(
+        label: t.prefAutoLinkSubtitles,
+        value: yesNo(prefs.autoLinkSubtitles),
+        onTap: () => notifier.setAutoLinkSubtitles(!prefs.autoLinkSubtitles),
+        options: optionsMenu(
+          [true, false],
+          prefs.autoLinkSubtitles,
+          yesNo,
+          notifier.setAutoLinkSubtitles,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      NutriaSettingRow(
         label: t.prefNoodleStyle,
         value: noodleStyleName(prefs.noodleStyle),
         onTap: () => notifier.setNoodleStyle(

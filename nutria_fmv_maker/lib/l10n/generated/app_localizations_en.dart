@@ -85,6 +85,36 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get mediaUnlinkSubtitles => 'Unlink Subtitles';
+
+  @override
+  String tooltipHasSubtitles(String name) {
+    return 'Subtitles: $name';
+  }
+
+  @override
+  String notifySubtitlesLonger(String time) {
+    return 'The subtitles go on $time longer than the video';
+  }
+
+  @override
+  String previewLinkedTo(String name) {
+    return 'Linked to $name';
+  }
+
+  @override
+  String get previewUnreadable => 'This file can’t be read.';
+
+  @override
+  String get previewNoCues => 'No subtitles were found in this file.';
+
+  @override
+  String get previewFontSample => 'The quick brown fox jumps over the lazy dog';
+
+  @override
+  String get prefAutoLinkSubtitles => 'Link Subtitles by Name';
+
+  @override
   String get mediaKindVideo => 'Videos';
 
   @override

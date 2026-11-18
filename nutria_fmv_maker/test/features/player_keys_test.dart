@@ -29,7 +29,7 @@ void main() {
     expect(playing(), isFalse);
 
     final video = c.read(graphEditorProvider).importFiles(['C:/v/a.mp4']).single;
-    c.read(videoPreviewProvider.notifier).showVideo(video);
+    c.read(videoPreviewProvider.notifier).showMedia(video);
     await tester.pumpAndSettle();
 
     await tester.sendKeyEvent(LogicalKeyboardKey.space);
@@ -59,7 +59,7 @@ void main() {
     final video = editor.importFiles(['C:/v/a.mp4']).single;
     editor.addVideoNode(Position.zero,
         videoId: video, type: DefaultNodeType.branchedVideo);
-    c.read(videoPreviewProvider.notifier).showVideo(video);
+    c.read(videoPreviewProvider.notifier).showMedia(video);
     await tester.pumpAndSettle();
 
     await tester.tap(find.ancestor(
@@ -77,7 +77,7 @@ void main() {
     final video = editor.importFiles(['C:/v/a.mp4']).single;
     // A node without a video shows the "choose a video" button.
     editor.addVideoNode(Position.zero, type: DefaultNodeType.branchedVideo);
-    c.read(videoPreviewProvider.notifier).showVideo(video);
+    c.read(videoPreviewProvider.notifier).showMedia(video);
     await tester.pumpAndSettle();
 
     final buttons = tester

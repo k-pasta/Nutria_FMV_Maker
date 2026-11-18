@@ -17,7 +17,9 @@ T _$identity<T>(T value) => value;
 mixin _$MediaAsset {
 
  String get id;/// Absolute path on the machine that last saved the project.
- String get path;
+ String get path;/// For a video: the id of the subtitle file linked to it, if any.
+/// Linked subtitles are listed with their video, not on their own.
+ String? get subtitleId;
 /// Create a copy of MediaAsset
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -31,20 +33,20 @@ $MediaAssetCopyWith<MediaAsset> get copyWith => _$MediaAssetCopyWithImpl<MediaAs
 @override
 bool operator ==(Object other) {
   final _this = this as MediaAsset;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MediaAsset&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.path, _this.path) || other.path == _this.path));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is MediaAsset&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.path, _this.path) || other.path == _this.path)&&(identical(other.subtitleId, _this.subtitleId) || other.subtitleId == _this.subtitleId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as MediaAsset;
-  return Object.hash(runtimeType,_this.id,_this.path);
+  return Object.hash(runtimeType,_this.id,_this.path,_this.subtitleId);
 }
 
 @override
 String toString() {
   final _this = this as MediaAsset;
-  return 'MediaAsset(id: ${_this.id}, path: ${_this.path})';
+  return 'MediaAsset(id: ${_this.id}, path: ${_this.path}, subtitleId: ${_this.subtitleId})';
 }
 
 
@@ -55,7 +57,7 @@ abstract mixin class $MediaAssetCopyWith<$Res>  {
   factory $MediaAssetCopyWith(MediaAsset value, $Res Function(MediaAsset) _then) = _$MediaAssetCopyWithImpl;
 @useResult
 $Res call({
- String id, String path
+ String id, String path, String? subtitleId
 });
 
 
@@ -72,11 +74,12 @@ class _$MediaAssetCopyWithImpl<$Res>
 
 /// Create a copy of MediaAsset
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? path = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? path = null,Object? subtitleId = freezed,}) {
   return _then(MediaAsset(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,
+as String,subtitleId: freezed == subtitleId ? _self.subtitleId : subtitleId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -161,10 +164,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String path)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String path,  String? subtitleId)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _MediaAsset() when $default != null:
-return $default(_that.id,_that.path);case _:
+return $default(_that.id,_that.path,_that.subtitleId);case _:
   return orElse();
 
 }
@@ -182,10 +185,10 @@ return $default(_that.id,_that.path);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String path)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String path,  String? subtitleId)  $default,) {final _that = this;
 switch (_that) {
 case _MediaAsset():
-return $default(_that.id,_that.path);case _:
+return $default(_that.id,_that.path,_that.subtitleId);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +205,10 @@ return $default(_that.id,_that.path);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String path)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String path,  String? subtitleId)?  $default,) {final _that = this;
 switch (_that) {
 case _MediaAsset() when $default != null:
-return $default(_that.id,_that.path);case _:
+return $default(_that.id,_that.path,_that.subtitleId);case _:
   return null;
 
 }
@@ -217,12 +220,15 @@ return $default(_that.id,_that.path);case _:
 @JsonSerializable()
 
 class _MediaAsset extends MediaAsset {
-  const _MediaAsset({required this.id, required this.path}): super._();
+  const _MediaAsset({required this.id, required this.path, this.subtitleId}): super._();
   factory _MediaAsset.fromJson(Map<String, dynamic> json) => _$MediaAssetFromJson(json);
 
 @override final  String id;
 /// Absolute path on the machine that last saved the project.
 @override final  String path;
+/// For a video: the id of the subtitle file linked to it, if any.
+/// Linked subtitles are listed with their video, not on their own.
+@override final  String? subtitleId;
 
 /// Create a copy of MediaAsset
 /// with the given fields replaced by the non-null parameter values.
@@ -237,18 +243,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MediaAsset&&(identical(other.id, id) || other.id == id)&&(identical(other.path, path) || other.path == path));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MediaAsset&&(identical(other.id, id) || other.id == id)&&(identical(other.path, path) || other.path == path)&&(identical(other.subtitleId, subtitleId) || other.subtitleId == subtitleId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,path);
+    return Object.hash(runtimeType,id,path,subtitleId);
 }
 
 @override
 String toString() {
-    return 'MediaAsset(id: $id, path: $path)';
+    return 'MediaAsset(id: $id, path: $path, subtitleId: $subtitleId)';
 }
 
 
@@ -259,7 +265,7 @@ abstract mixin class _$MediaAssetCopyWith<$Res> implements $MediaAssetCopyWith<$
   factory _$MediaAssetCopyWith(_MediaAsset value, $Res Function(_MediaAsset) _then) = __$MediaAssetCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String path
+ String id, String path, String? subtitleId
 });
 
 
@@ -276,11 +282,12 @@ class __$MediaAssetCopyWithImpl<$Res>
 
 /// Create a copy of MediaAsset
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? path = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? path = null,Object? subtitleId = freezed,}) {
   return _then(_MediaAsset(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,path: null == path ? _self.path : path // ignore: cast_nullable_to_non_nullable
-as String,
+as String,subtitleId: freezed == subtitleId ? _self.subtitleId : subtitleId // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

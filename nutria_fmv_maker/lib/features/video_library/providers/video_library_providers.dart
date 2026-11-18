@@ -1,11 +1,13 @@
 // Cached file information and thumbnails for imported videos, keyed by path,
 // and the library's collapsed groups.
-import 'dart:typed_data';
+import 'dart:convert';
 
+import 'package:flutter/services.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
 import 'package:nutria_fmv_maker/services/thumbnail_service.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'video_library_providers.g.dart';
@@ -26,6 +28,38 @@ Set<String> missingMedia(Ref ref) {
       if (!files.exists(asset.path)) asset.id,
   };
 }
+
+/// The cues of the subtitle file at [path], or `null` if it can't be read.
+@Riverpod(keepAlive: true)
+Future<List<FmvSubtitleCue>?> subtitleCues(Ref ref, String path) async {
+  final bytes = await ref.watch(mediaFilesProvider).readBytes(path);
+  if (bytes == null) return null;
+  // Most .srt files are UTF-8; others still show, with odd characters.
+  return parseSrt(utf8.decode(bytes, allowMalformed: true));
+}
+
+/// The font family name under which the font file at [path] is loaded for
+/// the app (to preview it), or `null` if it can't be loaded.
+@Riverpod(keepAlive: true)
+Future<String?> mediaFontFamily(Ref ref, String path) async {
+  final bytes = await ref.watch(mediaFilesProvider).readBytes(path);
+  if (bytes == null) return null;
+  final family = 'nutria-media-font-${path.hashCode}';
+  try {
+    await (FontLoader(family)
+          ..addFont(Future.value(ByteData.sublistView(bytes))))
+        .load();
+  } on Object {
+    return null;
+  }
+  return family;
+}
+
+/// The ids of the subtitle files linked to a video.
+@riverpod
+Set<String> linkedSubtitleIds(Ref ref) => {
+  for (final asset in ref.watch(mediaAssetsProvider)) ?asset.subtitleId,
+};
 
 /// The library groups the user has collapsed this session (see
 /// `LibraryGroup.key`). Not saved.

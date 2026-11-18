@@ -2,7 +2,6 @@
 import 'dart:async';
 
 import 'package:flutter/foundation.dart';
-
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:media_kit/media_kit.dart';
@@ -132,11 +131,13 @@ PreviewPlayer previewPlayer(Ref ref) {
   return player;
 }
 
-/// What the preview shows: a node's video, or a video from the library.
+/// What the preview shows: a node's video, or a file from the library.
 @freezed
 abstract class PreviewTarget with _$PreviewTarget {
   const factory PreviewTarget({
-    required String videoId,
+    /// The imported file shown; the player plays it if it is a video or
+    /// audio.
+    required String mediaId,
 
     /// The node being previewed, if the preview came from a node.
     String? nodeId,
@@ -167,33 +168,47 @@ class VideoPreviewNotifier extends _$VideoPreviewNotifier {
     final doc = ref.read(documentProvider).document;
     final videoId = doc.nodes[nodeId]?.videoIdOrNull;
     if (videoId == null) return;
-    _show(PreviewTarget(videoId: videoId, nodeId: nodeId));
+    _show(PreviewTarget(mediaId: videoId, nodeId: nodeId));
   }
 
-  /// Previews library video [videoId], not tied to a node.
-  void showVideo(String videoId) => _show(PreviewTarget(videoId: videoId));
+  /// Previews library file [mediaId], not tied to a node.
+  void showMedia(String mediaId) => _show(PreviewTarget(mediaId: mediaId));
 
   void clear() => _show(null);
 
   PreviewTarget? _retarget(PreviewTarget target, ProjectDocument doc) {
     final nodeId = target.nodeId;
     if (nodeId == null) {
-      return doc.mediaById(target.videoId) == null ? null : target;
+      return doc.mediaById(target.mediaId) == null ? null : target;
     }
     final videoId = doc.nodes[nodeId]?.videoIdOrNull;
-    return videoId == null ? null : target.copyWith(videoId: videoId);
+    return videoId == null ? null : target.copyWith(mediaId: videoId);
   }
 
   void _show(PreviewTarget? target) {
     if (target == state) return;
-    final previousVideo = state?.videoId;
+    final previous = state?.mediaId;
     state = target;
     final player = ref.read(previewPlayerProvider);
-    if (target == null) {
+    final asset = target == null
+        ? null
+        : ref.read(documentProvider).document.mediaById(target.mediaId);
+    if (asset == null || !asset.isPlayable) {
       unawaited(player.stop());
-    } else if (target.videoId != previousVideo) {
-      final path = ref.read(documentProvider).document.mediaById(target.videoId)?.path;
-      if (path != null) unawaited(player.open(path));
+    } else if (asset.id != previous) {
+      unawaited(player.open(asset.path));
     }
   }
+}
+
+/// Whether the preview shows something the player plays (a video or audio),
+/// so the transport controls and player shortcuts apply.
+@riverpod
+bool previewIsPlayable(Ref ref) {
+  final id = ref.watch(videoPreviewProvider.select((p) => p?.mediaId));
+  return ref.watch(
+    documentProvider.select(
+      (s) => s.document.mediaById(id)?.isPlayable ?? false,
+    ),
+  );
 }

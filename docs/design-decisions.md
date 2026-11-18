@@ -158,3 +158,42 @@ change any of them and I'll adapt.
   check again when its window regains focus?
 - **Replacing with a file that is already imported** keeps both entries.
   They aren't merged.
+
+## Phase 3c: previews and subtitles
+- **Clicking any file previews it:**
+  - Videos as before.
+  - Audio plays in the player, with the transport controls and its
+    details. The picture area shows a note icon.
+  - Images show the picture.
+  - Fonts show sample text in the font, in three sizes. The sample is a
+    pangram in the app's language.
+  - Subtitles list every line, each with a small, quiet "0:09.000 –
+    0:12.500" time range above it.
+- **Space and the other player keys** work only for videos and audio.
+- **Linking subtitles:**
+  - Drop a subtitle file on a video in the library, or on a video node,
+    which links it to that node's video.
+  - Importing a video and a subtitle file with the same name (ignoring
+    extension and case) links them automatically. This is the new
+    preference "Link Subtitles by Name", on by default. It applies when
+    importing, not to files already imported.
+- **A video has at most one subtitle file,** and a subtitle file belongs to
+  at most one video. Linking it to another video moves it. **Ask:** do
+  you want several languages per video later?
+- **Linked subtitles** are hidden from the list. The video shows a "CC"
+  icon, a tooltip with the file name, and "Unlink Subtitles" on
+  right-click, which lists the file again.
+- **"Longer than the video" notice:** after a drop, if the last subtitle
+  ends after the video, a notice says by how much ("The subtitles go on
+  0:03 longer than the video"). Automatic links don't check this.
+- **Protocol:**
+  - The exported node gets an optional `"subtitles"` path. It is written
+    only when set, so older Players ignore it.
+  - The SubRip parser lives in the shared package (`parseSrt`), so the
+    Player can show subtitles exactly as the Maker reads them.
+  - The Player still needs to show them. That is part of the Player
+    update you haven't approved yet.
+- **Not done yet:** subtitles over the video in the Maker's own preview,
+  and audio tags such as title and artist. Audio shows what the media
+  details already show: duration, codec, bitrate, sample rate, channels
+  and size.

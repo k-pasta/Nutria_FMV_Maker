@@ -1,6 +1,7 @@
 // Whether imported files exist, and what a folder holds, for finding files
 // that were moved.
 import 'dart:io';
+import 'dart:typed_data';
 
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -13,6 +14,9 @@ abstract interface class MediaFiles {
   /// The files directly in [folder] (not in its subfolders); empty if the
   /// folder can't be read.
   List<String> filesIn(String folder);
+
+  /// The contents of the file at [path], or `null` if it can't be read.
+  Future<Uint8List?> readBytes(String path);
 }
 
 /// [MediaFiles] on the local disk.
@@ -31,6 +35,15 @@ class LocalMediaFiles implements MediaFiles {
       ];
     } on FileSystemException {
       return const [];
+    }
+  }
+
+  @override
+  Future<Uint8List?> readBytes(String path) async {
+    try {
+      return await File(path).readAsBytes();
+    } on FileSystemException {
+      return null;
     }
   }
 }

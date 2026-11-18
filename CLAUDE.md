@@ -64,12 +64,13 @@ lib/
 ### Document and undo (`core/`, `features/project/providers/`)
 - `ProjectDocument` (freezed, immutable) holds:
   - `nodes` (`Map<String, Node>`) and `edges` (connections are `Edge(from: PortRef, to: PortRef)`, not stored on nodes)
-  - `videos` (`VideoAsset`, absolute path), `info` (title and description), `settings` (`VideoSettings`, the project defaults), `variables`
+  - `media` (`MediaAsset`, `core/document/media.dart`): imported videos, audio, images, subtitles and fonts, by absolute path. The kind comes from the extension. A video can link a subtitle file (`subtitleId`); linked subtitles aren't listed on their own.
+  - `info` (title and description), `settings` (`VideoSettings`, the defaults of the first color), `colorDefaults` (other colors' defaults), `variables`
 - `Node` is a sealed freezed union: `OriginNode` (exactly one, can't be deleted or copied), `SimpleVideoNode` and `BranchedVideoNode`.
   - A branched node has `choices`; each choice's `id` is also its output port key.
   - Per-node `VideoSettingsOverride` overrides the project settings.
 - All edits are pure functions in `core/graph/`:
-  - `graph_ops.dart`: nodes, edges, choices, videos
+  - `graph_ops.dart`: nodes, edges, choices, media, color defaults
   - `fragment.dart`: copy/paste
   - `variable_ops.dart`: variables
 - `documentProvider` (`DocumentNotifier`) is the **only** way to change the document: `apply(label, (doc) => newDoc, {mergeKey})`, or `beginTransaction`, several `apply` calls, then `commit` for a whole gesture.
@@ -95,13 +96,15 @@ lib/
 - **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`); add a body widget.
 
 ### File formats
-- **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus video paths relative to the project file.
+- **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus media paths relative to the project file.
   - New fields need defaults so older files still load.
-  - Older formats are rejected, not migrated, unless an upgrade step is added in `decode`.
+  - Older formats are rejected, not migrated, unless an upgrade step is added in `decode` (version 1 to 2 renames `videos` to `media`).
 - **`.fmv`**: the format (`FmvProject`: `{ProjectInfo, ProjectSettings, Nodes}`), writing it and lenient reading live in `packages/nutria_fmv_protocol`, shared with the Player.
   - `core/protocol/fmv_exporter.dart` only maps a `ProjectDocument` to an `FmvProject`: nodes reachable from the origin, with sequential ids from `001` (playback starts at the first node), and only connected choices.
   - Any change to the package is a protocol change for both apps; `test/core/golden/` pins the Maker's output.
   - Keep the package Dart 3.5-compatible.
+  - Newer optional node keys (`question`, `subtitles`) are written only when set; older Players ignore them. Color defaults are folded into each node's `overrides`.
+  - The package also has the SubRip parser (`parseSrt`), so both apps read subtitles alike.
   - Variables are not exported yet.
 
 ### UI, theme, shortcuts
@@ -126,7 +129,7 @@ lib/
 
 ## Tests
 - `test/core/`: pure unit tests. `fixtures.dart` has `storyFixture()` and `sequentialIds()`.
-- `test/features/harness.dart`: `Harness.create()` gives a `ProviderContainer` with in-memory fakes (`MemoryProjectFiles`, `FakePlayer`).
+- `test/features/harness.dart`: `Harness.create()` gives a `ProviderContainer` with in-memory fakes (`MemoryProjectFiles`, `FakePlayer`, `FakeMediaFiles`, where every file exists unless listed as missing).
 - `test/features/app_tester.dart`: `pumpApp(tester, {overrides, mediaInfo, player, startView})` pumps the whole app in a 1600x900 window with fake services.
   - It resets the view so canvas (0, 0) is centered at 100%; pass `startView: true` to keep the startup framing.
   - Video file names on nodes contain zero-width spaces (so they wrap anywhere): find them with `NodeMetrics.wrappable(name)` or `kNoVideo`.

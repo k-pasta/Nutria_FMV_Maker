@@ -93,6 +93,8 @@ void main() {
 
   testWidgets('the library groups by kind; a group collapses', (tester) async {
     final c = await pumpApp(tester);
+    // b.srt would be linked to b.mp4 and listed with it.
+    c.read(preferencesProvider.notifier).setAutoLinkSubtitles(false);
     c.read(graphEditorProvider).importFiles(_files);
     await tester.pumpAndSettle();
     expect(find.byType(VideoLibraryEntry), findsNWidgets(_files.length));

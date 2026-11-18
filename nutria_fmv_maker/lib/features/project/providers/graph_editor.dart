@@ -315,6 +315,14 @@ class GraphEditor {
     _document.commit();
   }
 
+  /// Links subtitle file [subtitleId] to video [videoId], as one undo step.
+  void linkSubtitle(String videoId, String subtitleId) => _document.apply(
+      'Link subtitles', (d) => d.linkSubtitle(videoId, subtitleId));
+
+  /// Video [videoId] no longer has subtitles.
+  void unlinkSubtitle(String videoId) => _document.apply(
+      'Unlink subtitles', (d) => d.unlinkSubtitle(videoId));
+
   /// Points imported file [id] at [path] instead, as one undo step. Nodes
   /// using it follow.
   void relinkMedia(String id, String path) =>
@@ -344,7 +352,8 @@ class GraphEditor {
         doc = next;
         ids.add(id);
       }
-      return doc;
+      final autoLink = _ref.read(preferencesProvider).autoLinkSubtitles;
+      return autoLink ? doc.autoLinkSubtitles() : doc;
     });
     return ids;
   }

@@ -85,6 +85,36 @@ class AppLocalizationsEl extends AppLocalizations {
   }
 
   @override
+  String get mediaUnlinkSubtitles => 'Αποσύνδεση Υποτίτλων';
+
+  @override
+  String tooltipHasSubtitles(String name) {
+    return 'Υπότιτλοι: $name';
+  }
+
+  @override
+  String notifySubtitlesLonger(String time) {
+    return 'Οι υπότιτλοι συνεχίζουν $time μετά το τέλος του βίντεο';
+  }
+
+  @override
+  String previewLinkedTo(String name) {
+    return 'Συνδεδεμένοι με $name';
+  }
+
+  @override
+  String get previewUnreadable => 'Αυτό το αρχείο δεν διαβάζεται.';
+
+  @override
+  String get previewNoCues => 'Δεν βρέθηκαν υπότιτλοι σε αυτό το αρχείο.';
+
+  @override
+  String get previewFontSample => 'Ξεσκεπάζω την ψυχοφθόρα βδελυγμία';
+
+  @override
+  String get prefAutoLinkSubtitles => 'Σύνδεση Υποτίτλων κατά Όνομα';
+
+  @override
   String get mediaKindVideo => 'Βίντεο';
 
   @override

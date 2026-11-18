@@ -110,9 +110,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                     preferences: preferences,
                     canUndo: history.canUndo,
                     canRedo: history.canRedo,
-                    canPlay: ref.watch(
-                      videoPreviewProvider.select((p) => p != null),
-                    ),
+                    canPlay: ref.watch(previewIsPlayableProvider),
                     canCopy: ref.watch(canCopySelectionProvider),
                     canPaste: ref.watch(clipboardHasNodesProvider),
                   ),

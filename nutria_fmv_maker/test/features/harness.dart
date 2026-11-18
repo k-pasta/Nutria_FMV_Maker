@@ -129,11 +129,20 @@ class FakeMediaFiles implements MediaFiles {
   final Set<String> missing = {};
   final Map<String, List<String>> folders = {};
 
+  /// Text contents of files, by path.
+  final Map<String, String> contents = {};
+
   @override
   bool exists(String path) => !missing.contains(path);
 
   @override
   List<String> filesIn(String folder) => folders[folder] ?? const [];
+
+  @override
+  Future<Uint8List?> readBytes(String path) async => switch (contents[path]) {
+    final text? => utf8.encode(text),
+    null => null,
+  };
 }
 
 /// Everything a provider test needs.

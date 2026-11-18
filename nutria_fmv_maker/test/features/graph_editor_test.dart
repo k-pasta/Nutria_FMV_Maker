@@ -75,7 +75,7 @@ void main() {
         ..tap('B', additive: false)
         ..dropVideo('B', 'v1');
       expect(h.player.opened.last, r'C:\videos\a.mp4');
-      expect(h.container.read(videoPreviewProvider)?.videoId, 'v1');
+      expect(h.container.read(videoPreviewProvider)?.mediaId, 'v1');
     });
 
     test('deleting the previewed node clears the preview', () {

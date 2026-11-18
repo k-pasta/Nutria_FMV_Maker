@@ -23,6 +23,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_confirm_dialog.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher.dart';
 
@@ -70,6 +71,30 @@ class AppCommands {
     final found =
         _ref.read(graphEditorProvider).relinkFromFolder(missing, folder);
     _notify(_t.notifyLocatedFiles(found, missing.length));
+  }
+
+  /// Links subtitle file [subtitleId] to video [videoId], with a notice if
+  /// the subtitles go on after the video ends.
+  Future<void> linkSubtitle(String videoId, String subtitleId) async {
+    _ref.read(graphEditorProvider).linkSubtitle(videoId, subtitleId);
+    final doc = _ref.read(projectDocumentProvider);
+    final video = doc.mediaById(videoId);
+    final subtitles = doc.mediaById(subtitleId);
+    if (video?.subtitleId != subtitleId || subtitles == null) return;
+    final cues = await _ref.read(subtitleCuesProvider(subtitles.path).future);
+    final info = await _ref.read(videoInfoProvider(video!.path).future);
+    final duration = info?.duration;
+    if (cues == null || duration == null || !_context.mounted) return;
+    final over = subtitlesEnd(cues) - duration;
+    if (over > Duration.zero) {
+      _notify(_t.notifySubtitlesLonger(_clock(over)));
+    }
+  }
+
+  /// m:ss, rounded up to the second.
+  static String _clock(Duration d) {
+    final seconds = (d.inMilliseconds / 1000).ceil();
+    return '${seconds ~/ 60}:${(seconds % 60).toString().padLeft(2, '0')}';
   }
 
   /// Asks for the file that missing file [id] should point at. A file with
@@ -196,9 +221,9 @@ class AppCommands {
   // ----------------------------------------------------------------- player
 
   /// The preview player, if a video is loaded in it.
-  PreviewPlayer? get _loadedPlayer => _ref.read(videoPreviewProvider) == null
-      ? null
-      : _ref.read(previewPlayerProvider);
+  PreviewPlayer? get _loadedPlayer => _ref.read(previewIsPlayableProvider)
+      ? _ref.read(previewPlayerProvider)
+      : null;
 
   void playPause() => _loadedPlayer?.playOrPause();
 

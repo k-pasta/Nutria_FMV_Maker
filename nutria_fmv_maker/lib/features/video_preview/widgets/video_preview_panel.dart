@@ -2,12 +2,14 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:media_kit_video/media_kit_video.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/video_info_format.dart';
+import 'package:nutria_fmv_maker/features/video_preview/widgets/media_details.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
@@ -29,9 +31,16 @@ class VideoPreviewPanel extends ConsumerWidget {
     final theme = context.appTheme;
     final player = ref.watch(previewPlayerProvider);
     final target = ref.watch(videoPreviewProvider);
-    final path = target == null
+    final asset = target == null
         ? null
-        : ref.watch(videoAssetProvider(target.videoId).select((v) => v?.path));
+        : ref.watch(videoAssetProvider(target.mediaId));
+    if (asset != null && !asset.isPlayable) {
+      return NutriaScrollArea(
+        padding: EdgeInsets.all(theme.dSectionPadding),
+        child: MediaDetails(asset: asset),
+      );
+    }
+    final path = asset?.path;
     final info = path == null ? null : ref.watch(videoInfoProvider(path)).value;
     return NutriaScrollArea(
       padding: EdgeInsets.all(theme.dSectionPadding),
@@ -42,7 +51,13 @@ class VideoPreviewPanel extends ConsumerWidget {
             aspectRatio: 16 / 9,
             child: ColoredBox(
               color: theme.cBackground,
-              child: player is MediaKitPreviewPlayer
+              child: asset?.kind == MediaKind.audio
+                  ? Icon(
+                      Icons.music_note,
+                      size: theme.dButtonHeight * 1.5,
+                      color: theme.cTextInactive,
+                    )
+                  : player is MediaKitPreviewPlayer
                   ? Video(
                       controller: player.controller,
                       controls: NoVideoControls,

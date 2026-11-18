@@ -372,6 +372,65 @@ extension GraphOps on ProjectDocument {
     return (copyWith(media: [...media, asset]), asset.id);
   }
 
+  /// The ids of the subtitle files that are linked to a video.
+  Set<String> get linkedSubtitleIds => {
+    for (final asset in media) ?asset.subtitleId,
+  };
+
+  /// Links subtitle file [subtitleId] to video [videoId] (and unlinks it
+  /// from any other video). Does nothing unless the kinds fit.
+  ProjectDocument linkSubtitle(String videoId, String subtitleId) {
+    final video = mediaById(videoId);
+    final subtitle = mediaById(subtitleId);
+    if (video == null ||
+        !video.isVideo ||
+        subtitle?.kind != MediaKind.subtitle ||
+        video.subtitleId == subtitleId) {
+      return this;
+    }
+    return copyWith(
+      media: [
+        for (final asset in media)
+          if (asset.id == videoId)
+            asset.copyWith(subtitleId: subtitleId)
+          else if (asset.subtitleId == subtitleId)
+            asset.copyWith(subtitleId: null)
+          else
+            asset,
+      ],
+    );
+  }
+
+  /// Video [videoId] no longer has subtitles; the file stays imported.
+  ProjectDocument unlinkSubtitle(String videoId) {
+    if (mediaById(videoId)?.subtitleId == null) return this;
+    return copyWith(
+      media: [
+        for (final asset in media)
+          asset.id == videoId ? asset.copyWith(subtitleId: null) : asset,
+      ],
+    );
+  }
+
+  /// Links every video without subtitles to an unlinked subtitle file of
+  /// the same name (ignoring case and extension), if there is one.
+  ProjectDocument autoLinkSubtitles() {
+    var doc = this;
+    for (final video in media.where((m) => m.isVideo)) {
+      if (video.subtitleId != null) continue;
+      final linked = doc.linkedSubtitleIds;
+      for (final subtitle in media) {
+        if (subtitle.kind == MediaKind.subtitle &&
+            !linked.contains(subtitle.id) &&
+            subtitle.baseName == video.baseName) {
+          doc = doc.linkSubtitle(video.id, subtitle.id);
+          break;
+        }
+      }
+    }
+    return doc;
+  }
+
   /// Points asset [id] at the file at [path]; nodes using it follow.
   ProjectDocument setMediaPath(String id, String path) => copyWith(
     media: [

@@ -97,7 +97,7 @@ final class VideoPreviewNotifierProvider
 }
 
 String _$videoPreviewNotifierHash() =>
-    r'8208af99a149170fa1569a89ea02d7ac7c981a1b';
+    r'9f7b865536a28647e9009bc858c9d52b6bd58df5';
 
 /// The preview's target (`null` when empty). Follows the document: if the
 /// previewed node gets another video (also via undo) the preview switches, and
@@ -120,3 +120,52 @@ abstract class _$VideoPreviewNotifier extends $Notifier<PreviewTarget?> {
     return element.handleCreate(ref, build);
   }
 }
+
+/// Whether the preview shows something the player plays (a video or audio),
+/// so the transport controls and player shortcuts apply.
+
+@ProviderFor(previewIsPlayable)
+final previewIsPlayableProvider = PreviewIsPlayableProvider._();
+
+/// Whether the preview shows something the player plays (a video or audio),
+/// so the transport controls and player shortcuts apply.
+
+final class PreviewIsPlayableProvider
+    extends $FunctionalProvider<bool, bool, bool>
+    with $Provider<bool> {
+  /// Whether the preview shows something the player plays (a video or audio),
+  /// so the transport controls and player shortcuts apply.
+  PreviewIsPlayableProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'previewIsPlayableProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$previewIsPlayableHash();
+
+  @$internal
+  @override
+  $ProviderElement<bool> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  bool create(Ref ref) {
+    return previewIsPlayable(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(bool value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<bool>(value),
+    );
+  }
+}
+
+String _$previewIsPlayableHash() => r'07a226201dda7f86674c1fad7fd1be1ceda4466f';

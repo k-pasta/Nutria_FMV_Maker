@@ -8,3 +8,4 @@ library;
 
 export 'src/enums.dart';
 export 'src/fmv_project.dart';
+export 'src/srt.dart';
