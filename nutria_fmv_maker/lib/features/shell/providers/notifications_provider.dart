@@ -25,8 +25,10 @@ class NotificationsNotifier extends _$NotificationsNotifier {
     return null;
   }
 
-  /// Shows [message] now, or after the messages already waiting.
+  /// Shows [message] now, or after the messages already waiting, and keeps
+  /// it in the history.
   void post(String message) {
+    ref.read(notificationHistoryProvider.notifier)._add(message);
     _queue.add(message);
     if (_timer == null) _showNext();
   }
@@ -41,5 +43,26 @@ class NotificationsNotifier extends _$NotificationsNotifier {
       state = null;
       _timer = Timer(kNotificationGap, _showNext);
     });
+  }
+}
+
+/// One past notification and when it was posted.
+typedef PastNotification = ({String message, DateTime at});
+
+/// How many past notifications are kept.
+const kNotificationHistoryLength = 200;
+
+/// Every notification of this session, oldest first (capped at
+/// [kNotificationHistoryLength]), for the "all notifications" window.
+@Riverpod(keepAlive: true)
+class NotificationHistory extends _$NotificationHistory {
+  @override
+  List<PastNotification> build() => const [];
+
+  void _add(String message) {
+    final next = [...state, (message: message, at: DateTime.now())];
+    state = next.length > kNotificationHistoryLength
+        ? next.sublist(next.length - kNotificationHistoryLength)
+        : next;
   }
 }

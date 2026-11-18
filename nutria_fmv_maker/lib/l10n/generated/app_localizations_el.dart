@@ -332,6 +332,15 @@ class AppLocalizationsEl extends AppLocalizations {
   String get statusUnsavedFile => 'Μη αποθηκευμένο αρχείο';
 
   @override
+  String get statusShowNotifications => 'Εμφάνιση Όλων των Ειδοποιήσεων…';
+
+  @override
+  String get statusNotificationsTitle => 'Ειδοποιήσεις';
+
+  @override
+  String get statusNoNotifications => 'Δεν υπάρχουν ειδοποιήσεις ακόμα.';
+
+  @override
   String get videoMetadataDateCreated => 'Ημερομηνία Τροποποίησης';
 
   @override

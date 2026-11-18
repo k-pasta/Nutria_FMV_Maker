@@ -57,7 +57,7 @@ final class RenamingNodeNotifierProvider
 }
 
 String _$renamingNodeNotifierHash() =>
-    r'a1fa1c40a3ebf38f0f7c447bbcd1d7f9b82b6dc2';
+    r'e321d619c5adb025d776e2e1d54662417045f746';
 
 /// The node whose name is being edited in its strip, or `null`.
 ///

@@ -15,6 +15,7 @@ import 'package:nutria_fmv_maker/features/preferences/providers/preferences_prov
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
+import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
@@ -195,6 +196,10 @@ class _ModalLayer extends ConsumerWidget {
     return switch (modal) {
       null => const SizedBox.shrink(),
       AppModal.about => NutriaModal(onClose: close, child: const AboutWindow()),
+      AppModal.notifications => NutriaModal(
+        onClose: close,
+        child: const NotificationsWindow(),
+      ),
     };
   }
 }

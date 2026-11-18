@@ -331,6 +331,15 @@ class AppLocalizationsEn extends AppLocalizations {
   String get statusUnsavedFile => 'Unsaved File';
 
   @override
+  String get statusShowNotifications => 'Show All Notifications…';
+
+  @override
+  String get statusNotificationsTitle => 'Notifications';
+
+  @override
+  String get statusNoNotifications => 'No notifications yet.';
+
+  @override
   String get videoMetadataDateCreated => 'Date Created';
 
   @override

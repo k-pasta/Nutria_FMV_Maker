@@ -718,6 +718,24 @@ abstract class AppLocalizations {
   /// **'Unsaved File'**
   String get statusUnsavedFile;
 
+  /// No description provided for @statusShowNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'Show All Notifications…'**
+  String get statusShowNotifications;
+
+  /// No description provided for @statusNotificationsTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Notifications'**
+  String get statusNotificationsTitle;
+
+  /// No description provided for @statusNoNotifications.
+  ///
+  /// In en, this message translates to:
+  /// **'No notifications yet.'**
+  String get statusNoNotifications;
+
   /// No description provided for @videoMetadataDateCreated.
   ///
   /// In en, this message translates to:

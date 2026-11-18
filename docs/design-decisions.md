@@ -66,3 +66,11 @@ change any of them and I'll adapt.
   above the choices (no output). Stored in the project; exported as an
   optional `"question"` key only when not empty. The current Player ignores
   it, so old Players still work.
+
+### Phase 1d: notification history
+- **Right-click the status bar** for "Show All Notifications…". It opens a
+  window listing them newest first, with the time (hh:mm:ss) in small, quiet
+  text on the left.
+- **Only this session's notifications** are kept, at most 200. They are not
+  saved to disk. **Ask:** do you want them kept across restarts?
+- No "clear" button for now; closing the app clears them.
