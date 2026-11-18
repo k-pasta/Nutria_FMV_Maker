@@ -164,7 +164,9 @@ class _CommentFrameState extends ConsumerState<CommentFrame> {
                 ),
                 onPanEnd: (_) => _gestures.end(),
                 onPanCancel: _gestures.end,
+                // The card takes the comment's whole width.
                 child: Stack(
+                  fit: StackFit.passthrough,
                   children: [
                     card,
                     NodeResizeHandle(nodeId: resized, fromLeft: true),

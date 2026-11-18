@@ -10,6 +10,9 @@ enum NutriaTextState {
 
   /// On an accent-filled button.
   onAccent,
+
+  /// In the accent color, for something wrong (e.g. a missing file).
+  error,
 }
 
 /// Weight and slant of a [NutriaText].
@@ -56,6 +59,7 @@ class NutriaText extends StatelessWidget {
         color: switch (state) {
           NutriaTextState.accented => theme.cTextActive,
           NutriaTextState.inactive => theme.cTextInactive,
+          NutriaTextState.error => theme.cAccent,
           NutriaTextState.normal => theme.cText,
           NutriaTextState.onAccent => theme.cOnAccent,
         },

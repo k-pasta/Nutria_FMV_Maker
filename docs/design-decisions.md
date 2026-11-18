@@ -256,3 +256,19 @@ change any of them and I'll adapt.
 - **Saved** in `.nfmv` as a new node type. **Never exported**; the Player
   doesn't know about comments.
 - Not measured with the drag performance test yet.
+
+### Real-app check after Phases 2–4
+I ran a profile build with a demo project and checked:
+- The Defaults groups, the library kinds and the missing-file window.
+- The subtitle and font previews.
+- Bold and italic in questions, choices and comments.
+- An attached comment above its node, and editing a comment by
+  double-click.
+
+Fixed from what I saw:
+- **Missing files** now show a clean tile with a broken-link icon, and
+  their name in the accent color. The faded "No thumbnail" text used to
+  show through the icon.
+- **A free comment** now takes its whole width instead of shrinking to its
+  text.
+- **Multi-line fields** no longer show a "38/500" character counter.

@@ -353,7 +353,7 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
       maxLines: grid ? 2 : 1,
       textAlign: grid ? TextAlign.center : TextAlign.start,
       // Missing files stand out, in the accent color.
-      state: missing ? NutriaTextState.accented : NutriaTextState.normal,
+      state: missing ? NutriaTextState.error : NutriaTextState.normal,
     );
     final subtitlesMark = Icon(
       Icons.closed_caption,
@@ -363,8 +363,9 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
 
     Widget? picture = width == null
         ? null
+        : missing
+        ? _MissingTile(width: width)
         : MediaThumbnail(asset: asset, width: width);
-    if (picture != null && missing) picture = _MissingMark(child: picture);
     if (picture != null && grid && subtitles != null) {
       picture = Stack(
         children: [
@@ -479,21 +480,20 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
   }
 }
 
-/// [child] dimmed, with a broken-link icon over it: the file is missing.
-class _MissingMark extends StatelessWidget {
-  const _MissingMark({required this.child});
+/// A 16:9 tile [width] wide with a broken-link icon: the file is missing.
+class _MissingTile extends StatelessWidget {
+  const _MissingTile({required this.width});
 
-  final Widget child;
+  final double width;
 
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    return Stack(
-      alignment: Alignment.center,
-      children: [
-        Opacity(opacity: 0.35, child: child),
-        Icon(Icons.link_off, color: theme.cAccent, size: theme.dButtonHeight),
-      ],
+    return Container(
+      width: width,
+      height: width * 9 / 16,
+      color: theme.cTextField,
+      child: Icon(Icons.link_off, color: theme.cAccent, size: width * 0.22),
     );
   }
 }

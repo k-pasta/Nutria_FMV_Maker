@@ -233,6 +233,10 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
           contextMenuBuilder: null,
           maxLines: widget.maxLines,
           maxLength: kTextFieldMaxLength,
+          // The limit is a safety net, not something to show.
+          buildCounter:
+              (_, {required currentLength, required isFocused, maxLength}) =>
+                  null,
           textAlign: widget.textAlign,
           decoration: bare != null
               ? InputDecoration.collapsed(
