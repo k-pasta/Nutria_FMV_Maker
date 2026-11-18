@@ -12,6 +12,7 @@ import 'package:nutria_fmv_maker/features/canvas/providers/marquee_provider.dart
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/comment_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
@@ -193,6 +194,14 @@ class _EmptyCanvasArea extends ConsumerWidget {
       onTap: ref.read(selectionProvider.notifier).clear,
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
       itemsAt: (local) => [
+        NutriaContextMenuItem(
+          icon: Icons.sticky_note_2,
+          label: t.contextComment,
+          onSelected: () {
+            final id = editor.addComment(nodePositionAt(local));
+            ref.read(editingCommentProvider.notifier).start(id);
+          },
+        ),
         NutriaContextMenuItem(
           icon: Icons.videocam,
           label: t.contextSimpleVideoNode,

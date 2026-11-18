@@ -14,6 +14,7 @@ import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_space.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/comment_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
@@ -75,6 +76,15 @@ List<NutriaContextMenuItem> _nodeMenu(
       label: t.nodeRename,
       onSelected: () => ref.read(renamingNodeProvider.notifier).start(node.id),
     ),
+    if (doc.commentOf(node.id) == null)
+      NutriaContextMenuItem(
+        icon: Icons.sticky_note_2,
+        label: t.nodeAddComment,
+        onSelected: () {
+          final id = editor.addComment(node.position, attachTo: node.id);
+          ref.read(editingCommentProvider.notifier).start(id);
+        },
+      ),
     if (connected)
       NutriaContextMenuItem(
         icon: Icons.link_off,
@@ -169,7 +179,11 @@ class _NodeFrameState extends ConsumerState<NodeFrame> {
       fileName: fileName,
     );
     final expansion = widget.expansion;
-    final lit = _hovered || selected;
+    // Also when a dragged comment would be attached to it.
+    final lit =
+        _hovered ||
+        selected ||
+        ref.watch(commentDropTargetProvider.select((id) => id == node.id));
     return SizedBox(
       width: node.width + kNodePadding * 2,
       child: Stack(
@@ -350,8 +364,8 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
                   ],
                 ),
               ),
-              _ResizeHandle(nodeId: node.id, fromLeft: true),
-              _ResizeHandle(nodeId: node.id, fromLeft: false),
+              NodeResizeHandle(nodeId: node.id, fromLeft: true),
+              NodeResizeHandle(nodeId: node.id, fromLeft: false),
             ],
           ),
         ),
@@ -422,9 +436,14 @@ class _SwatchStrip extends ConsumerWidget {
   }
 }
 
-/// A grab area on the left or right edge of the node body.
-class _ResizeHandle extends ConsumerWidget {
-  const _ResizeHandle({required this.nodeId, required this.fromLeft});
+/// A grab area on the left or right edge of a node (or comment) that
+/// resizes the node.
+class NodeResizeHandle extends ConsumerWidget {
+  const NodeResizeHandle({
+    super.key,
+    required this.nodeId,
+    required this.fromLeft,
+  });
 
   final String nodeId;
   final bool fromLeft;
@@ -488,8 +507,8 @@ class _Expansion extends ConsumerWidget {
             padding: EdgeInsets.all(theme.dPanelPadding),
             child: child,
           ),
-          _ResizeHandle(nodeId: node.id, fromLeft: true),
-          _ResizeHandle(nodeId: node.id, fromLeft: false),
+          NodeResizeHandle(nodeId: node.id, fromLeft: true),
+          NodeResizeHandle(nodeId: node.id, fromLeft: false),
         ],
       ),
     );

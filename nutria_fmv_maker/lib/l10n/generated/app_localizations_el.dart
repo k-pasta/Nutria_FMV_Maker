@@ -247,6 +247,21 @@ class AppLocalizationsEl extends AppLocalizations {
   String get nodeRename => 'Μετονομασία';
 
   @override
+  String get contextComment => 'Σχόλιο';
+
+  @override
+  String get nodeAddComment => 'Προσθήκη Σχολίου';
+
+  @override
+  String get commentEdit => 'Επεξεργασία Σχολίου';
+
+  @override
+  String get commentDetach => 'Αποσύνδεση από τον Κόμβο';
+
+  @override
+  String get commentHint => 'Σχόλιο…';
+
+  @override
   String get nodeRenameHint => 'Όνομα κόμβου';
 
   @override

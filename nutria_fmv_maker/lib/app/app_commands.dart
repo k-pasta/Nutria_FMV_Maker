@@ -5,10 +5,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/comment_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
@@ -195,10 +197,15 @@ class AppCommands {
       _ref.read(graphEditorProvider).disconnectSelection();
 
   /// Renames the selected node in place (the first one, if several are).
+  /// F2: renames the first selected node, or edits it if it's a comment.
   void renameSelected() {
     final selected = _ref.read(selectionProvider).selected;
-    if (selected.isNotEmpty) {
-      _ref.read(renamingNodeProvider.notifier).start(selected.first);
+    if (selected.isEmpty) return;
+    final id = selected.first;
+    if (_ref.read(projectDocumentProvider).nodes[id] is CommentNode) {
+      _ref.read(editingCommentProvider.notifier).start(id);
+    } else {
+      _ref.read(renamingNodeProvider.notifier).start(id);
     }
   }
 

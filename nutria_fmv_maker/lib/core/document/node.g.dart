@@ -102,3 +102,28 @@ Map<String, dynamic> _$BranchedVideoNodeToJson(BranchedVideoNode instance) =>
       'question': instance.question,
       'type': instance.$type,
     };
+
+CommentNode _$CommentNodeFromJson(Map<String, dynamic> json) => CommentNode(
+  id: json['id'] as String,
+  position: Position.fromJson(json['position'] as Map<String, dynamic>),
+  width: (json['width'] as num?)?.toDouble() ?? kDefaultNodeWidth,
+  name: json['name'] as String?,
+  swatch: (json['swatch'] as num?)?.toInt() ?? 0,
+  isExpanded: json['isExpanded'] as bool? ?? false,
+  text: json['text'] as String? ?? '',
+  attachedTo: json['attachedTo'] as String?,
+  $type: json['type'] as String?,
+);
+
+Map<String, dynamic> _$CommentNodeToJson(CommentNode instance) =>
+    <String, dynamic>{
+      'id': instance.id,
+      'position': instance.position.toJson(),
+      'width': instance.width,
+      'name': instance.name,
+      'swatch': instance.swatch,
+      'isExpanded': instance.isExpanded,
+      'text': instance.text,
+      'attachedTo': instance.attachedTo,
+      'type': instance.$type,
+    };

@@ -79,9 +79,29 @@ extension FragmentOps on ProjectDocument {
   /// Nodes [ids] (never the origin) with their connections among each other
   /// and their videos.
   NodeFragment copyFragment(Iterable<String> ids) {
-    final picked = {
+    final chosen = {
       for (final id in ids)
         if (nodes[id] case final node? when node is! OriginNode) id: node,
+    };
+    // Comments come along with their nodes; one copied without its node
+    // stands on its own, just above where the node is.
+    final picked = <String, Node>{
+      for (final MapEntry(:key, :value) in chosen.entries)
+        key: switch (value) {
+          CommentNode(:final attachedTo?)
+              when !chosen.containsKey(attachedTo) =>
+            value.copyWith(
+              attachedTo: null,
+              position: switch (nodes[attachedTo]) {
+                final host? => Position(host.position.x, host.position.y - 100),
+                null => value.position,
+              },
+            ),
+          _ => value,
+        },
+      for (final node in nodes.values)
+        if (node is CommentNode && chosen.containsKey(node.attachedTo))
+          node.id: node,
     };
     final videoIds = {for (final node in picked.values) ?node.videoIdOrNull};
     return NodeFragment(
@@ -120,7 +140,12 @@ extension FragmentOps on ProjectDocument {
     final nodeIds = <String, String>{};
     // Old choice id (= output port key) to new, per old node id.
     final portIds = <String, Map<String, String>>{};
-    for (final node in fragment.nodes) {
+    // Comments last, so the nodes they're attached to have their new ids.
+    final ordered = [
+      ...fragment.nodes.where((n) => n is! CommentNode),
+      ...fragment.nodes.whereType<CommentNode>(),
+    ];
+    for (final node in ordered) {
       if (node is OriginNode) continue;
       final id = newId();
       nodeIds[node.id] = id;
@@ -144,6 +169,11 @@ extension FragmentOps on ProjectDocument {
                 id: (portIds[node.id] ??= {})[choice.id] = newId(),
               ),
           ],
+        ),
+        CommentNode() => node.copyWith(
+          id: id,
+          position: position,
+          attachedTo: nodeIds[node.attachedTo],
         ),
         OriginNode() => throw StateError('unreachable'),
       };

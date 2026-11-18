@@ -301,6 +301,10 @@ Node _$NodeFromJson(
           return BranchedVideoNode.fromJson(
             json
           );
+                case 'comment':
+          return CommentNode.fromJson(
+            json
+          );
         
           default:
             throw CheckedFromJsonException(
@@ -409,13 +413,14 @@ extension NodePatterns on Node {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OriginNode value)?  origin,TResult Function( SimpleVideoNode value)?  simpleVideo,TResult Function( BranchedVideoNode value)?  branchedVideo,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OriginNode value)?  origin,TResult Function( SimpleVideoNode value)?  simpleVideo,TResult Function( BranchedVideoNode value)?  branchedVideo,TResult Function( CommentNode value)?  comment,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that);case _:
+return branchedVideo(_that);case CommentNode() when comment != null:
+return comment(_that);case _:
   return orElse();
 
 }
@@ -433,13 +438,14 @@ return branchedVideo(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OriginNode value)  origin,required TResult Function( SimpleVideoNode value)  simpleVideo,required TResult Function( BranchedVideoNode value)  branchedVideo,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OriginNode value)  origin,required TResult Function( SimpleVideoNode value)  simpleVideo,required TResult Function( BranchedVideoNode value)  branchedVideo,required TResult Function( CommentNode value)  comment,}){
 final _that = this;
 switch (_that) {
 case OriginNode():
 return origin(_that);case SimpleVideoNode():
 return simpleVideo(_that);case BranchedVideoNode():
-return branchedVideo(_that);}
+return branchedVideo(_that);case CommentNode():
+return comment(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -453,13 +459,14 @@ return branchedVideo(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OriginNode value)?  origin,TResult? Function( SimpleVideoNode value)?  simpleVideo,TResult? Function( BranchedVideoNode value)?  branchedVideo,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OriginNode value)?  origin,TResult? Function( SimpleVideoNode value)?  simpleVideo,TResult? Function( BranchedVideoNode value)?  branchedVideo,TResult? Function( CommentNode value)?  comment,}){
 final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that);case _:
+return branchedVideo(_that);case CommentNode() when comment != null:
+return comment(_that);case _:
   return null;
 
 }
@@ -476,12 +483,13 @@ return branchedVideo(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case _:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode() when comment != null:
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case _:
   return orElse();
 
 }
@@ -499,12 +507,13 @@ return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)  branchedVideo,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)  branchedVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)  comment,}) {final _that = this;
 switch (_that) {
 case OriginNode():
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode():
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode():
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);}
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode():
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -518,12 +527,13 @@ return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case _:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode() when comment != null:
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case _:
   return null;
 
 }
@@ -847,6 +857,106 @@ $VideoSettingsOverrideCopyWith<$Res> get overrides {
   
   return $VideoSettingsOverrideCopyWith<$Res>(_self.overrides, (value) {
     return _then(_self.copyWith(overrides: value));
+  });
+}
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class CommentNode extends Node {
+  const CommentNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 0, this.isExpanded = false, this.text = '', this.attachedTo,  String? $type}): $type = $type ?? 'comment',super._();
+  factory CommentNode.fromJson(Map<String, dynamic> json) => _$CommentNodeFromJson(json);
+
+@override final  String id;
+@override final  Position position;
+@override@JsonKey() final  double width;
+@override final  String? name;
+@override@JsonKey() final  int swatch;
+@override@JsonKey() final  bool isExpanded;
+/// The text, with `**bold**` and `*italic*`.
+@JsonKey() final  String text;
+/// The node it is attached to, if any. A node has at most one.
+ final  String? attachedTo;
+
+@JsonKey(name: 'type')
+final String $type;
+
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CommentNodeCopyWith<CommentNode> get copyWith => _$CommentNodeCopyWithImpl<CommentNode>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CommentNodeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CommentNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.text, text) || other.text == text)&&(identical(other.attachedTo, attachedTo) || other.attachedTo == attachedTo));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,text,attachedTo);
+}
+
+@override
+String toString() {
+    return 'Node.comment(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, text: $text, attachedTo: $attachedTo)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CommentNodeCopyWith<$Res> implements $NodeCopyWith<$Res> {
+  factory $CommentNodeCopyWith(CommentNode value, $Res Function(CommentNode) _then) = _$CommentNodeCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, String text, String? attachedTo
+});
+
+
+@override $PositionCopyWith<$Res> get position;
+
+}
+/// @nodoc
+class _$CommentNodeCopyWithImpl<$Res>
+    implements $CommentNodeCopyWith<$Res> {
+  _$CommentNodeCopyWithImpl(this._self, this._then);
+
+  final CommentNode _self;
+  final $Res Function(CommentNode) _then;
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? text = null,Object? attachedTo = freezed,}) {
+  return _then(CommentNode(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Position,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as double,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,swatch: null == swatch ? _self.swatch : swatch // ignore: cast_nullable_to_non_nullable
+as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
+as bool,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String,attachedTo: freezed == attachedTo ? _self.attachedTo : attachedTo // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PositionCopyWith<$Res> get position {
+  
+  return $PositionCopyWith<$Res>(_self.position, (value) {
+    return _then(_self.copyWith(position: value));
   });
 }
 }

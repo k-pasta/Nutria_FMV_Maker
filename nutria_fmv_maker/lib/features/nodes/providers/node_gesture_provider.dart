@@ -1,8 +1,10 @@
 // Pointer gestures on nodes: click-selection, moving and resizing.
 import 'package:flutter/painting.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/snapping.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
@@ -23,9 +25,19 @@ sealed class NodeGesture {
 }
 
 class _Move extends NodeGesture {
-  _Move(this.start);
+  _Move(this.start, {this.comment, this.taken = const {}});
   final Map<String, Position> start;
   Offset total = Offset.zero;
+
+  /// The comment being moved, when it is the only thing moving: it can be
+  /// dropped onto a node.
+  final String? comment;
+
+  /// Nodes that have a comment already.
+  final Set<String> taken;
+
+  /// The node the comment would be attached to if dropped now.
+  String? attachTo;
 }
 
 class _Resize extends NodeGesture {
@@ -92,13 +104,41 @@ class NodeGestureNotifier extends _$NodeGestureNotifier {
     }
     _selection.raise(id);
 
-    final doc = ref.read(documentProvider).document;
     final ids = ref.read(selectionProvider).selected;
-    state = _Move({
-      for (final id in ids)
-        if (doc.nodes[id] != null) id: doc.nodes[id]!.position,
-    });
     _document.beginTransaction('Move nodes');
+    // A comment dragged without its node comes off it, where it is now.
+    final bounds = ref.read(nodeBoundsProvider);
+    final before = ref.read(documentProvider).document;
+    for (final id in ids) {
+      final node = before.nodes[id];
+      final host = before.hostOf(node!);
+      if (host == null || ids.contains(host.id)) continue;
+      final rect = bounds.rectOf(node, host: host);
+      _document.apply(
+        'Move nodes',
+        (d) => d.detachComment(
+          id,
+          Position(rect.left - kNodePadding, rect.top - kNodePadding),
+          host.width,
+        ),
+      );
+    }
+    final doc = ref.read(documentProvider).document;
+    final moving = [
+      for (final id in ids)
+        // Attached comments follow their node by themselves.
+        if (doc.nodes[id] case final node? when doc.hostOf(node) == null) node,
+    ];
+    final single = moving.length == 1 ? moving.single : null;
+    state = _Move(
+      {for (final node in moving) node.id: node.position},
+      comment: single is CommentNode ? single.id : null,
+      taken: {
+        if (single is CommentNode)
+          for (final node in doc.nodes.values)
+            if (node is CommentNode) ?node.attachedTo,
+      },
+    );
   }
 
   /// Moves the dragged nodes by [delta] (canvas units). Snaps to the grid if
@@ -123,6 +163,23 @@ class NodeGestureNotifier extends _$NodeGestureNotifier {
               : value + offset,
       }),
     );
+    final comment = gesture.comment;
+    if (comment != null) _findCommentTarget(gesture, comment);
+  }
+
+  /// The node whose card is under the middle of the moved comment, if it
+  /// can take a comment.
+  void _findCommentTarget(_Move gesture, String commentId) {
+    final doc = ref.read(documentProvider).document;
+    final bounds = ref.read(nodeBoundsProvider);
+    final center = bounds.rectOf(doc.node(commentId)).center;
+    String? target;
+    for (final node in doc.nodes.values) {
+      if (node is CommentNode || gesture.taken.contains(node.id)) continue;
+      if (bounds.rectOf(node).contains(center)) target = node.id;
+    }
+    gesture.attachTo = target;
+    ref.read(commentDropTargetProvider.notifier).set(target);
   }
 
   // ----------------------------------------------------------------- resize
@@ -157,10 +214,30 @@ class NodeGestureNotifier extends _$NodeGestureNotifier {
 
   // -------------------------------------------------------------------- end
 
-  /// Ends a move or resize as one undo step.
+  /// Ends a move or resize as one undo step. A comment dropped onto a node
+  /// is attached to it.
   void end() {
-    if (state == null) return;
+    final gesture = state;
+    if (gesture == null) return;
     state = null;
+    if (gesture is _Move) {
+      final comment = gesture.comment;
+      final host = gesture.attachTo;
+      if (comment != null && host != null) {
+        _document.apply('Move nodes', (d) => d.attachComment(comment, host));
+      }
+      ref.read(commentDropTargetProvider.notifier).set(null);
+    }
     _document.commit();
   }
+}
+
+/// The node a dragged comment would be attached to if dropped now, so it
+/// can light up.
+@Riverpod(keepAlive: true)
+class CommentDropTarget extends _$CommentDropTarget {
+  @override
+  String? build() => null;
+
+  void set(String? id) => state = id;
 }

@@ -44,7 +44,8 @@ class MarqueeNotifier extends _$MarqueeNotifier {
     ref.read(selectionProvider.notifier).setSelected({
       ..._base,
       for (final node in doc.nodes.values)
-        if (bounds.rectOf(node).overlaps(box)) node.id,
+        if (bounds.rectOf(node, host: doc.hostOf(node)).overlaps(box))
+          node.id,
     });
   }
 }

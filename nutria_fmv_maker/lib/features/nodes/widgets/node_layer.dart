@@ -1,9 +1,12 @@
 // All nodes, placed on the canvas in drawing order.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_registry.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/comment_frame.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 
@@ -44,6 +47,30 @@ class _NodeViewState extends ConsumerState<_NodeView> {
 
   @override
   Widget build(BuildContext context) {
+    // An attached comment sits on top of its node, as wide as it.
+    final hostId = ref.watch(
+      nodeProvider(
+        widget.id,
+      ).select((n) => n is CommentNode ? n.attachedTo : null),
+    );
+    if (hostId != null) {
+      final host = ref.watch(
+        nodeProvider(
+          hostId,
+        ).select((n) => n == null ? null : (n.position, n.width)),
+      );
+      if (host != null) {
+        final (position, width) = host;
+        return Positioned(
+          left: kCanvasCenter.dx + position.x,
+          bottom:
+              kCanvasSize -
+              (kCanvasCenter.dy + position.y + kNodePadding - kCommentGap),
+          width: width + kNodePadding * 2,
+          child: _content,
+        );
+      }
+    }
     final position = ref.watch(
       nodeProvider(widget.id).select((n) => n?.position),
     );
@@ -69,11 +96,13 @@ class _NodeContent extends ConsumerWidget {
     return NodeSizeReporter(
       id: id,
       bounds: ref.watch(nodeBoundsProvider),
-      child: NodeFrame(
-        node: node,
-        body: nodeBodyOf(node),
-        expansion: nodeExpansionOf(node),
-      ),
+      child: node is CommentNode
+          ? CommentFrame(node: node)
+          : NodeFrame(
+              node: node,
+              body: nodeBodyOf(node),
+              expansion: nodeExpansionOf(node),
+            ),
     );
   }
 }

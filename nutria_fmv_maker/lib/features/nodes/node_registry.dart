@@ -10,11 +10,13 @@ Widget nodeBodyOf(Node node) => switch (node) {
   OriginNode() => const OriginNodeBody(),
   SimpleVideoNode() => SimpleVideoNodeBody(node: node),
   BranchedVideoNode() => BranchedVideoNodeBody(node: node),
+  // Drawn whole by `CommentFrame` (see `node_layer.dart`).
+  CommentNode() => const SizedBox.shrink(),
 };
 
 /// What [node] shows below itself when expanded, or `null` if it can't be
 /// expanded.
 Widget? nodeExpansionOf(Node node) => switch (node) {
-  OriginNode() => null,
+  OriginNode() || CommentNode() => null,
   SimpleVideoNode() || BranchedVideoNode() => VideoNodeExpansion(node: node),
 };

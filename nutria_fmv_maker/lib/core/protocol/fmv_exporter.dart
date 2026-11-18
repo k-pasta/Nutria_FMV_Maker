@@ -47,7 +47,8 @@ FmvExport exportFmv(ProjectDocument document) {
   for (final nodeId in order) {
     final node = document.node(nodeId);
     switch (node) {
-      case OriginNode():
+      // Comments are for the author; they have no connections anyway.
+      case OriginNode() || CommentNode():
         continue;
       case SimpleVideoNode():
         nodes[ids[nodeId]!] = FmvNode(

@@ -532,6 +532,36 @@ abstract class AppLocalizations {
   /// **'Rename'**
   String get nodeRename;
 
+  /// No description provided for @contextComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment'**
+  String get contextComment;
+
+  /// No description provided for @nodeAddComment.
+  ///
+  /// In en, this message translates to:
+  /// **'Add Comment'**
+  String get nodeAddComment;
+
+  /// No description provided for @commentEdit.
+  ///
+  /// In en, this message translates to:
+  /// **'Edit Comment'**
+  String get commentEdit;
+
+  /// No description provided for @commentDetach.
+  ///
+  /// In en, this message translates to:
+  /// **'Detach from Node'**
+  String get commentDetach;
+
+  /// No description provided for @commentHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Comment…'**
+  String get commentHint;
+
   /// No description provided for @nodeRenameHint.
   ///
   /// In en, this message translates to:

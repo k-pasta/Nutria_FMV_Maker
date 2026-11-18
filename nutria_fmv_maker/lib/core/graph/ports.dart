@@ -13,11 +13,12 @@ List<String> outputPortsOf(Node node) => switch (node) {
   OriginNode() => const [kNextPortKey],
   SimpleVideoNode() => const [kNextPortKey],
   BranchedVideoNode(:final choices) => [for (final c in choices) c.id],
+  CommentNode() => const [],
 };
 
 /// Whether [node] can be the target of a flow connection.
 bool hasInputPort(Node node) => switch (node) {
-  OriginNode() => false,
+  OriginNode() || CommentNode() => false,
   SimpleVideoNode() || BranchedVideoNode() => true,
 };
 

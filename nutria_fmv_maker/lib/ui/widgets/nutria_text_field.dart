@@ -37,7 +37,8 @@ class NutriaTextField extends StatefulWidget {
   final String? hint;
   final ValueChanged<String>? onChanged;
   final ValueChanged<bool>? onFocusChanged;
-  final int maxLines;
+  /// `null`: grows with the text, and Enter starts a new line.
+  final int? maxLines;
   final TextAlign textAlign;
 
   /// Shows the text in the accent color, e.g. for a name that's taken.
@@ -214,7 +215,12 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
           // Clicking elsewhere ends editing, so the app's keyboard shortcuts
           // work again (desktop fields keep focus by default).
           onTapOutside: (_) => _focus.unfocus(),
-          textInputAction: TextInputAction.next,
+          textInputAction: widget.maxLines == null
+              ? TextInputAction.newline
+              : TextInputAction.next,
+          keyboardType: widget.maxLines == null
+              ? TextInputType.multiline
+              : TextInputType.text,
           cursorColor: theme.cText,
           style:
               bare ??

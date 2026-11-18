@@ -250,6 +250,21 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nodeRename => 'Renommer';
 
   @override
+  String get contextComment => 'Commentaire';
+
+  @override
+  String get nodeAddComment => 'Ajouter un commentaire';
+
+  @override
+  String get commentEdit => 'Modifier le commentaire';
+
+  @override
+  String get commentDetach => 'Détacher du nœud';
+
+  @override
+  String get commentHint => 'Commentaire…';
+
+  @override
   String get nodeRenameHint => 'Nom du nœud';
 
   @override

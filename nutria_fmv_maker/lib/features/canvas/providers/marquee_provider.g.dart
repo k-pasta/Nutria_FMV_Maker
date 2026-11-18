@@ -47,7 +47,7 @@ final class MarqueeNotifierProvider
   }
 }
 
-String _$marqueeNotifierHash() => r'674b545233f1b75161bb4355b567e82eb7e8aef9';
+String _$marqueeNotifierHash() => r'6d8ed83ab53644849da782337e40a3b486939b5a';
 
 /// The selection box being dragged, in node coordinates (relative to the
 /// canvas center), or `null`.

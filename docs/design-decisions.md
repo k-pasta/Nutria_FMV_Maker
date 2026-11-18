@@ -222,3 +222,37 @@ change any of them and I'll adapt.
   styles and hide the asterisks. It can call the same parser, or
   `plainTextOf` until it styles text.
 - No underline or other markdown, as you asked for bold and italic only.
+
+## Phase 4b: comment nodes
+- **Creating one:**
+  - Right-click the canvas and pick "Comment".
+  - Or right-click a node and pick "Add Comment", which attaches it to
+    that node. The entry is hidden when the node already has one.
+  - Either way, the comment opens for typing.
+- **Looks:** the node card color, no strip, no knots, and text that grows
+  with what you write. When selected, the outline uses the faint text
+  color, since comments have no color of their own.
+- **Editing:**
+  - A comment shows its formatted text, so it can be grabbed anywhere to
+    move it.
+  - Double-click, F2 or "Edit Comment" opens it for typing. Enter makes a
+    new line. Escape or a click elsewhere ends typing.
+  - One typing session is one undo step. Ctrl+B and Ctrl+I work.
+  - **Ask:** should a single click on a selected comment start typing?
+- **Attaching:**
+  - Drag a comment so that its middle is over a node without a comment.
+    The node lights up, and dropping attaches it.
+  - An attached comment sits right above the node, 5 units away (the
+    gap between a node and its settings), and takes the node's width.
+  - Dragging the node moves the comment. Dragging either edge of the
+    comment resizes the node, so the width can be changed along the whole
+    height.
+- **Detaching:** drag the comment away, or right-click it and pick "Detach
+  from Node". It keeps its current place and width.
+- **Deleting a node deletes its comment.** **Ask:** or should the comment
+  stay behind on its own?
+- **Copying a node** copies its comment too. A comment copied on its own
+  comes off its node.
+- **Saved** in `.nfmv` as a new node type. **Never exported**; the Player
+  doesn't know about comments.
+- Not measured with the drag performance test yet.

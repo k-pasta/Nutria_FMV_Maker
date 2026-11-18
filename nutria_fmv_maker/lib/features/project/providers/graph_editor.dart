@@ -9,6 +9,8 @@ import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
+import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
+import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
@@ -47,6 +49,41 @@ class GraphEditor {
     };
     _document.apply('Add node', (d) => d.putNode(node));
     return id;
+  }
+
+  /// Adds an empty comment at [position], or on top of node [attachTo], and
+  /// returns its id.
+  String addComment(Position position, {String? attachTo}) {
+    final id = _newId();
+    _document.apply('Add comment', (d) {
+      final doc = d.putNode(CommentNode(id: id, position: position));
+      return attachTo == null ? doc : doc.attachComment(id, attachTo);
+    });
+    _ref.read(selectionProvider.notifier).selectOnly(id);
+    return id;
+  }
+
+  /// Sets comment [id]'s text. Pass the same [mergeKey] for every keystroke
+  /// of one editing session.
+  void setCommentText(String id, String text, {Object? mergeKey}) =>
+      _document.apply('Edit comment', (d) => d.setCommentText(id, text),
+          mergeKey: mergeKey);
+
+  /// Takes comment [id] off its node; it stays where it is.
+  void detachComment(String id) {
+    final doc = _ref.read(documentProvider).document;
+    final comment = doc.nodes[id];
+    final host = comment == null ? null : doc.hostOf(comment);
+    if (host == null) return;
+    final rect = _ref.read(nodeBoundsProvider).rectOf(comment!, host: host);
+    _document.apply(
+      'Detach comment',
+      (d) => d.detachComment(
+        id,
+        Position(rect.left - kNodePadding, rect.top - kNodePadding),
+        host.width,
+      ),
+    );
   }
 
   /// Deletes the selected nodes (except the origin) and their connections.

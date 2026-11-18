@@ -152,6 +152,7 @@ class NodeLayout {
       SimpleVideoNode() =>
         port == kNextPortKey ? Offset(right, _thumbnailBottom) : null,
       // A question takes the first row; the choices follow it.
+      CommentNode() => null,
       BranchedVideoNode(:final choices, :final question) => switch (choices
           .indexWhere((c) => c.id == port)) {
         -1 => null,

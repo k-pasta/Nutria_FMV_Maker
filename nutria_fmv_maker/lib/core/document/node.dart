@@ -86,20 +86,39 @@ sealed class Node with _$Node {
     String? question,
   }) = BranchedVideoNode;
 
+  /// A note for the author: text only, never exported. It stands on the
+  /// canvas or, with [attachedTo], sits on top of that node, follows it and
+  /// takes its width (then its own position and width are not used).
+  @FreezedUnionValue('comment')
+  const factory Node.comment({
+    required String id,
+    required Position position,
+    @Default(kDefaultNodeWidth) double width,
+    String? name,
+    @Default(0) int swatch,
+    @Default(false) bool isExpanded,
+
+    /// The text, with `**bold**` and `*italic*`.
+    @Default('') String text,
+
+    /// The node it is attached to, if any. A node has at most one.
+    String? attachedTo,
+  }) = CommentNode;
+
   factory Node.fromJson(Map<String, dynamic> json) => _$NodeFromJson(json);
 
   /// The video this node plays, or `null` for non-video nodes / no video yet.
   String? get videoIdOrNull => switch (this) {
     SimpleVideoNode(:final videoId) => videoId,
     BranchedVideoNode(:final videoId) => videoId,
-    OriginNode() => null,
+    OriginNode() || CommentNode() => null,
   };
 
   /// This node's setting overrides, or `null` for non-video nodes.
   VideoSettingsOverride? get overridesOrNull => switch (this) {
     SimpleVideoNode(:final overrides) => overrides,
     BranchedVideoNode(:final overrides) => overrides,
-    OriginNode() => null,
+    OriginNode() || CommentNode() => null,
   };
 
   /// Whether this node plays a video (and so has video settings).

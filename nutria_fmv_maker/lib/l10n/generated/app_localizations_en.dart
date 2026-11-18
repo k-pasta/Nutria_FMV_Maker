@@ -246,6 +246,21 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nodeRename => 'Rename';
 
   @override
+  String get contextComment => 'Comment';
+
+  @override
+  String get nodeAddComment => 'Add Comment';
+
+  @override
+  String get commentEdit => 'Edit Comment';
+
+  @override
+  String get commentDetach => 'Detach from Node';
+
+  @override
+  String get commentHint => 'Comment…';
+
+  @override
   String get nodeRenameHint => 'Node name';
 
   @override

@@ -61,9 +61,15 @@ extension GraphOps on ProjectDocument {
   /// Removes the given nodes and every edge touching them.
   /// The origin node can't be removed and is silently skipped.
   ProjectDocument removeNodes(Iterable<String> ids) {
-    final removable = {
+    final hosts = {
       for (final id in ids)
         if (nodes[id] != null && nodes[id] is! OriginNode) id,
+    };
+    // A comment goes with the node it is attached to.
+    final removable = {
+      ...hosts,
+      for (final node in nodes.values)
+        if (node is CommentNode && hosts.contains(node.attachedTo)) node.id,
     };
     if (removable.isEmpty) return this;
     return copyWith(
@@ -97,6 +103,42 @@ extension GraphOps on ProjectDocument {
   );
 
   /// Sets the color swatch index shown on a node.
+  // --------------------------------------------------------------- comments
+
+  /// The comment attached to node [hostId], if any.
+  CommentNode? commentOf(String hostId) => nodes.values
+      .whereType<CommentNode>()
+      .where((c) => c.attachedTo == hostId)
+      .firstOrNull;
+
+  ProjectDocument setCommentText(String id, String text) => updateNode(
+    id,
+    (n) => n is CommentNode ? n.copyWith(text: text) : n,
+  );
+
+  /// Attaches comment [id] on top of node [hostId]. Does nothing unless
+  /// [hostId] is another node that isn't a comment and has no comment yet.
+  ProjectDocument attachComment(String id, String hostId) {
+    final comment = nodes[id];
+    final host = nodes[hostId];
+    if (comment is! CommentNode ||
+        host == null ||
+        host is CommentNode ||
+        commentOf(hostId) != null) {
+      return this;
+    }
+    return putNode(comment.copyWith(attachedTo: hostId));
+  }
+
+  /// Makes comment [id] stand on its own at [position], [width] wide.
+  ProjectDocument detachComment(String id, Position position, double width) {
+    final comment = nodes[id];
+    if (comment is! CommentNode || comment.attachedTo == null) return this;
+    return putNode(
+      comment.copyWith(attachedTo: null, position: position, width: width),
+    );
+  }
+
   /// Gives color [swatch] its own defaults, starting as a copy of the first
   /// color's. Does nothing for the first color or one that has them already.
   ProjectDocument addColorDefaults(int swatch) {
@@ -197,7 +239,7 @@ extension GraphOps on ProjectDocument {
     (n) => switch (n) {
       SimpleVideoNode() => n.copyWith(videoId: videoId),
       BranchedVideoNode() => n.copyWith(videoId: videoId),
-      OriginNode() => n,
+      OriginNode() || CommentNode() => n,
     },
   );
 
@@ -210,7 +252,7 @@ extension GraphOps on ProjectDocument {
     (n) => switch (n) {
       SimpleVideoNode() => n.copyWith(overrides: overrides),
       BranchedVideoNode() => n.copyWith(overrides: overrides),
-      OriginNode() => n,
+      OriginNode() || CommentNode() => n,
     },
   );
 
@@ -271,8 +313,8 @@ extension GraphOps on ProjectDocument {
                 ),
           ],
         );
-      case OriginNode():
-        throw ArgumentError('The origin node cannot be converted');
+      case OriginNode() || CommentNode():
+        throw ArgumentError('Only video nodes can be converted');
     }
   }
 

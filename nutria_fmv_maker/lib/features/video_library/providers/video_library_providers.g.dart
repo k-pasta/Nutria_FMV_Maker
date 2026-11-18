@@ -358,7 +358,7 @@ final class LinkedSubtitleIdsProvider
   }
 }
 
-String _$linkedSubtitleIdsHash() => r'48fe11a334540403d6fcf038281fe83ac8c9b2d3';
+String _$linkedSubtitleIdsHash() => r'2d30826c9fbbe176dcfd00d4c37284dd3e9c3a04';
 
 /// The library groups the user has collapsed this session (see
 /// `LibraryGroup.key`). Not saved.

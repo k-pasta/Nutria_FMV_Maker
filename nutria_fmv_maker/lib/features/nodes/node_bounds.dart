@@ -24,9 +24,18 @@ class NodeBounds {
   void forget(String id) => _sizes.remove(id);
 
   /// The visible card of [node] (without the knot padding), in node
-  /// coordinates (relative to the canvas center).
-  Rect rectOf(Node node) {
+  /// coordinates (relative to the canvas center). An attached comment is
+  /// placed on top of its [host] (see [attachedCommentRect]).
+  Rect rectOf(Node node, {Node? host}) {
     final size = _sizes[node.id];
+    if (node is CommentNode && host != null) {
+      // Attached comments have no padding above or below (see
+      // `CommentFrame`).
+      return attachedCommentRect(
+        rectOf(host),
+        size?.height ?? kUnmeasuredNodeHeight,
+      );
+    }
     final width = size == null ? node.width : size.width - kNodePadding * 2;
     final height = size == null
         ? kUnmeasuredNodeHeight
@@ -46,11 +55,30 @@ class NodeBounds {
     for (final id in ids ?? doc.nodes.keys) {
       final node = doc.nodes[id];
       if (node == null) continue;
-      final rect = rectOf(node);
+      final rect = rectOf(node, host: doc.hostOf(node));
       bounds = bounds?.expandToInclude(rect) ?? rect;
     }
     return bounds;
   }
+}
+
+/// Where a comment [height] tall sits on a node whose card is [hostCard]:
+/// right above it, [kCommentGap] away, as wide as the card.
+Rect attachedCommentRect(Rect hostCard, double height) => Rect.fromLTWH(
+  hostCard.left,
+  hostCard.top - kCommentGap - height,
+  hostCard.width,
+  height,
+);
+
+/// Space between an attached comment and its node, in canvas units (the
+/// same as between a node and its settings panel).
+const kCommentGap = 5.0;
+
+/// The node a comment is attached to.
+extension CommentHosts on ProjectDocument {
+  Node? hostOf(Node node) =>
+      node is CommentNode ? nodes[node.attachedTo] : null;
 }
 
 /// The app's node size registry.
