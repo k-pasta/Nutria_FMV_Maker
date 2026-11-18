@@ -30,7 +30,25 @@ class AppLocalizationsEl extends AppLocalizations {
   String get boardPreferences => 'Προτιμήσεις';
 
   @override
-  String get boardProjectSettings => 'Ρυθμίσεις Πρότζεκτ';
+  String get boardProjectSettings => 'Προεπιλογές';
+
+  @override
+  String get defaultsFirstColor => 'Χρώμα 1 και χρώματα χωρίς δικές τους';
+
+  @override
+  String defaultsColor(int number) {
+    return 'Χρώμα $number';
+  }
+
+  @override
+  String tooltipAddColorDefaults(int number) {
+    return 'Προσθήκη προεπιλογών για το χρώμα $number';
+  }
+
+  @override
+  String tooltipRemoveColorDefaults(int number) {
+    return 'Αφαίρεση των προεπιλογών του χρώματος $number';
+  }
 
   @override
   String get variablesEmpty =>

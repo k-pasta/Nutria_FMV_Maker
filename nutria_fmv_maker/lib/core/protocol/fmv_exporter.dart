@@ -3,6 +3,7 @@
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
@@ -52,7 +53,7 @@ FmvExport exportFmv(ProjectDocument document) {
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
           target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
-          overrides: _overrides(node.overrides),
+          overrides: _overrides(document, node, kSimpleNodeSettings),
         );
       case BranchedVideoNode():
         final choices = <FmvChoice>[];
@@ -75,7 +76,7 @@ FmvExport exportFmv(ProjectDocument document) {
             _ => null,
           },
           choices: choices.isEmpty ? null : choices,
-          overrides: _overrides(node.overrides),
+          overrides: _overrides(document, node, kBranchedNodeSettings),
         );
     }
   }
@@ -100,15 +101,28 @@ FmvExport exportFmv(ProjectDocument document) {
   );
 }
 
-FmvOverrides _overrides(VideoSettingsOverride o) => FmvOverrides(
-  selectionTimeMs: o.selectionTimeMs,
-  pauseOnEnd: o.pauseOnEnd,
-  showTimer: o.showTimer,
-  videoFit: o.videoFit == null ? null : _videoFit(o.videoFit!),
-  defaultSelection: o.defaultSelection == null
-      ? null
-      : _defaultSelection(o.defaultSelection!),
-);
+/// The node's own overrides plus its color's defaults, as overrides of the
+/// project defaults: the Player knows nothing about colors.
+FmvOverrides _overrides(
+  ProjectDocument document,
+  Node node,
+  List<VideoSettingType> types,
+) {
+  final o = node.overridesOrNull!.layeredOver(
+    document.settings,
+    document.defaultsFor(node.swatch),
+    types,
+  );
+  return FmvOverrides(
+    selectionTimeMs: o.selectionTimeMs,
+    pauseOnEnd: o.pauseOnEnd,
+    showTimer: o.showTimer,
+    videoFit: o.videoFit == null ? null : _videoFit(o.videoFit!),
+    defaultSelection: o.defaultSelection == null
+        ? null
+        : _defaultSelection(o.defaultSelection!),
+  );
+}
 
 /// The editor's values all exist in the protocol under the same names.
 FmvVideoFit _videoFit(VideoFit fit) => FmvVideoFit.values.byName(fit.name);

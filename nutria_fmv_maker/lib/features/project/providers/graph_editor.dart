@@ -216,9 +216,25 @@ class GraphEditor {
   /// Pass the same [mergeKey] for every keystroke of one typing session.
   void editProjectSettings(VideoSettings Function(VideoSettings s) edit,
           {Object? mergeKey}) =>
-      _document.apply('Change project settings',
-          (d) => d.copyWith(settings: edit(d.settings)),
+      editDefaults(0, edit, mergeKey: mergeKey);
+
+  /// Edits the defaults of color [swatch] (0, or a color without its own,
+  /// edits the first color's).
+  void editDefaults(int swatch, VideoSettings Function(VideoSettings s) edit,
+          {Object? mergeKey}) =>
+      _document.apply('Change defaults', (d) => d.editDefaults(swatch, edit),
           mergeKey: mergeKey);
+
+  /// Gives the next color without defaults its own, a copy of the first
+  /// color's. Does nothing when every color has them.
+  void addColorDefaults() => _document.apply('Add color defaults', (d) {
+        final swatch = d.nextColorWithoutDefaults;
+        return swatch == null ? d : d.addColorDefaults(swatch);
+      });
+
+  /// Color [swatch] goes back to the first color's defaults.
+  void removeColorDefaults(int swatch) => _document.apply(
+      'Remove color defaults', (d) => d.removeColorDefaults(swatch));
 
   // -------------------------------------------------------------- variables
 

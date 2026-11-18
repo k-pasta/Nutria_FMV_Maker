@@ -74,3 +74,32 @@ change any of them and I'll adapt.
 - **Only this session's notifications** are kept, at most 200. They are not
   saved to disk. **Ask:** do you want them kept across restarts?
 - No "clear" button for now; closing the app clears them.
+
+## Phase 2: Defaults and color presets
+- **"Project Settings" is now "Defaults"** (Greek "Προεπιλογές", French
+  "Valeurs par défaut"). Only the label changed; the code still calls it
+  project settings.
+- **There are 6 colors**, so "the first plus 5 more" covers all of them.
+  Each group's color is fixed, and the + button adds the lowest color that
+  has no group yet. Its tooltip names that color ("Add defaults for color 3").
+- **A new group starts as a copy of the first color's defaults.** After
+  that it is independent: changing the first group doesn't change it.
+  **Ask:** should groups follow the first group for the settings you haven't
+  changed in them, like node overrides do?
+- **Layout:**
+  - With no extra groups, the section looks as before, plus the + button.
+  - With groups, each has a thin bar of its color at the left and a title.
+    The titles are "Color 1 and colors without their own" and "Color N".
+  - Each extra group has an × button to remove it; that is one undo step.
+- **Node color squares** show a faint "…" (new theme token `cSwatchMark`,
+  black at 35%) on colors that have their own group.
+- **What a node plays with:** its own overrides, then its color's group,
+  then the first group. The node's "overridden" accent still means "this
+  node overrides it", not "its color group differs".
+- **Export:** the Player knows nothing about colors. Each node's exported
+  overrides are its own, plus every setting where its color's group
+  differs from the first group. The output is unchanged for projects
+  without groups (the golden test still passes).
+- **Saving:** stored as `colorDefaults` in `.nfmv`. Older files load with
+  no groups, so the format version did not change.
+- Not checked in the real app yet; widget tests render text as boxes.

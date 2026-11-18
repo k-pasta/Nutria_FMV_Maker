@@ -265,6 +265,7 @@ class VideoNodeExpansion extends ConsumerWidget {
         ),
       SwatchPicker(
         selected: node.swatch,
+        withDefaults: ref.watch(colorDefaultsProvider).keys.toSet(),
         onSelected: (swatch) => editor.setSwatch(node.id, swatch),
       ),
     ];
@@ -280,16 +281,21 @@ class VideoNodeExpansion extends ConsumerWidget {
   }
 }
 
-/// One square per theme swatch; the node's current color is outlined.
+/// One square per theme swatch; the node's current color is outlined, and
+/// colors with their own defaults show a faint "…".
 class SwatchPicker extends StatelessWidget {
   const SwatchPicker({
     super.key,
     required this.selected,
     required this.onSelected,
+    this.withDefaults = const {},
   });
 
   final int selected;
   final ValueChanged<int> onSelected;
+
+  /// The colors that have their own defaults.
+  final Set<int> withDefaults;
 
   @override
   Widget build(BuildContext context) {
@@ -322,6 +328,13 @@ class SwatchPicker extends StatelessWidget {
                               )
                             : null,
                       ),
+                      child: withDefaults.contains(i)
+                          ? Icon(
+                              Icons.more_horiz,
+                              color: theme.cSwatchMark,
+                              size: theme.dButtonHeight * 0.5,
+                            )
+                          : null,
                     ),
                   ),
                 ),

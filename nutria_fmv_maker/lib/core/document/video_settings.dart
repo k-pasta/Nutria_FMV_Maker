@@ -42,6 +42,15 @@ abstract class VideoSettings with _$VideoSettings {
 
   factory VideoSettings.fromJson(Map<String, dynamic> json) =>
       _$VideoSettingsFromJson(json);
+
+  /// The value of setting [type], for comparing two sets of settings.
+  Object valueOf(VideoSettingType type) => switch (type) {
+    VideoSettingType.selectionTime => selectionTimeMs,
+    VideoSettingType.pauseOnEnd => pauseOnEnd,
+    VideoSettingType.showTimer => showTimer,
+    VideoSettingType.videoFit => videoFit,
+    VideoSettingType.defaultSelection => defaultSelection,
+  };
 }
 
 /// A node's deviations from the project [VideoSettings]. A `null` field means
@@ -95,6 +104,24 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
           defaultSelection: base.defaultSelection,
         ),
       };
+
+  /// This override, plus every setting of [types] it leaves alone in which
+  /// [layer] differs from [base]. Used to export a node whose color has its
+  /// own defaults ([layer]) as overrides of the project defaults ([base]).
+  VideoSettingsOverride layeredOver(
+    VideoSettings base,
+    VideoSettings layer,
+    Iterable<VideoSettingType> types,
+  ) {
+    var result = this;
+    final own = activeTypes;
+    for (final type in types) {
+      if (!own.contains(type) && base.valueOf(type) != layer.valueOf(type)) {
+        result = result.enable(type, layer);
+      }
+    }
+    return result;
+  }
 
   /// Stops overriding [type] (falls back to the project default).
   VideoSettingsOverride disable(VideoSettingType type) => switch (type) {

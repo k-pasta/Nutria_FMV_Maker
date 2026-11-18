@@ -637,19 +637,71 @@ final class ProjectSettingsProvider
 
 String _$projectSettingsHash() => r'1364c118fdaeec3402fbfa5d903befe844536948';
 
-/// The settings node [nodeId] actually plays with: the project settings with
+/// Defaults for other colors than the first, by swatch index.
+
+@ProviderFor(colorDefaults)
+final colorDefaultsProvider = ColorDefaultsProvider._();
+
+/// Defaults for other colors than the first, by swatch index.
+
+final class ColorDefaultsProvider
+    extends
+        $FunctionalProvider<
+          Map<int, VideoSettings>,
+          Map<int, VideoSettings>,
+          Map<int, VideoSettings>
+        >
+    with $Provider<Map<int, VideoSettings>> {
+  /// Defaults for other colors than the first, by swatch index.
+  ColorDefaultsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'colorDefaultsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$colorDefaultsHash();
+
+  @$internal
+  @override
+  $ProviderElement<Map<int, VideoSettings>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  Map<int, VideoSettings> create(Ref ref) {
+    return colorDefaults(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Map<int, VideoSettings> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Map<int, VideoSettings>>(value),
+    );
+  }
+}
+
+String _$colorDefaultsHash() => r'5ee47809d7f79f71b39fd3e76ae9aa421b737f91';
+
+/// The settings node [nodeId] actually plays with: its color's defaults with
 /// the node's overrides applied.
 
 @ProviderFor(effectiveSettings)
 final effectiveSettingsProvider = EffectiveSettingsFamily._();
 
-/// The settings node [nodeId] actually plays with: the project settings with
+/// The settings node [nodeId] actually plays with: its color's defaults with
 /// the node's overrides applied.
 
 final class EffectiveSettingsProvider
     extends $FunctionalProvider<VideoSettings, VideoSettings, VideoSettings>
     with $Provider<VideoSettings> {
-  /// The settings node [nodeId] actually plays with: the project settings with
+  /// The settings node [nodeId] actually plays with: its color's defaults with
   /// the node's overrides applied.
   EffectiveSettingsProvider._({
     required EffectiveSettingsFamily super.from,
@@ -702,9 +754,9 @@ final class EffectiveSettingsProvider
   }
 }
 
-String _$effectiveSettingsHash() => r'b355fb231ea421d009a2a5f4ef726dc29e0ac446';
+String _$effectiveSettingsHash() => r'2d39338898b877026a6f650e69690115ecf71902';
 
-/// The settings node [nodeId] actually plays with: the project settings with
+/// The settings node [nodeId] actually plays with: its color's defaults with
 /// the node's overrides applied.
 
 final class EffectiveSettingsFamily extends $Family
@@ -718,7 +770,7 @@ final class EffectiveSettingsFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// The settings node [nodeId] actually plays with: the project settings with
+  /// The settings node [nodeId] actually plays with: its color's defaults with
   /// the node's overrides applied.
 
   EffectiveSettingsProvider call(String nodeId) =>

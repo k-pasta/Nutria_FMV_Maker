@@ -30,7 +30,25 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boardPreferences => 'Preferences';
 
   @override
-  String get boardProjectSettings => 'Project Settings';
+  String get boardProjectSettings => 'Defaults';
+
+  @override
+  String get defaultsFirstColor => 'Color 1 and colors without their own';
+
+  @override
+  String defaultsColor(int number) {
+    return 'Color $number';
+  }
+
+  @override
+  String tooltipAddColorDefaults(int number) {
+    return 'Add defaults for color $number';
+  }
+
+  @override
+  String tooltipRemoveColorDefaults(int number) {
+    return 'Remove the defaults of color $number';
+  }
 
   @override
   String get variablesEmpty => 'No variables yet. Add one with +.';

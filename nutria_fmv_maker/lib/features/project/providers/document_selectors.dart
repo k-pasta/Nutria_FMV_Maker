@@ -97,11 +97,19 @@ ProjectInfo projectInfo(Ref ref) =>
 VideoSettings projectSettings(Ref ref) =>
     ref.watch(documentProvider.select((s) => s.document.settings));
 
-/// The settings node [nodeId] actually plays with: the project settings with
+/// Defaults for other colors than the first, by swatch index.
+@riverpod
+Map<int, VideoSettings> colorDefaults(Ref ref) =>
+    ref.watch(documentProvider.select((s) => s.document.colorDefaults));
+
+/// The settings node [nodeId] actually plays with: its color's defaults with
 /// the node's overrides applied.
 @riverpod
 VideoSettings effectiveSettings(Ref ref, String nodeId) {
-  final base = ref.watch(projectSettingsProvider);
+  final swatch = ref.watch(nodeProvider(nodeId).select((n) => n?.swatch));
+  final VideoSettings base =
+      ref.watch(colorDefaultsProvider)[swatch] ??
+      ref.watch(projectSettingsProvider);
   final overrides =
       ref.watch(nodeProvider(nodeId).select((n) => n?.overridesOrNull));
   return overrides?.applyTo(base) ?? base;

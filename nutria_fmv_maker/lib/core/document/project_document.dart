@@ -53,6 +53,9 @@ abstract class VideoAsset with _$VideoAsset {
   }
 }
 
+/// How many colors, after the first, can have their own defaults.
+const kMaxColorDefaults = 5;
+
 /// Videos by id, built once per document (documents never change).
 final _videoIndex = Expando<Map<String, VideoAsset>>('videos by id');
 
@@ -67,7 +70,14 @@ abstract class ProjectDocument with _$ProjectDocument {
   const factory ProjectDocument({
     @Default(kNfmvFormatVersion) int formatVersion,
     @Default(ProjectInfo()) ProjectInfo info,
+
+    /// The defaults: for the first color, and every color without its own
+    /// entry in [colorDefaults].
     @Default(VideoSettings()) VideoSettings settings,
+
+    /// Defaults for other colors, by swatch index (1 to [kMaxColorDefaults]).
+    /// Missing in older files, hence empty.
+    @Default(<int, VideoSettings>{}) Map<int, VideoSettings> colorDefaults,
 
     /// Nodes by id. Insertion order is kept but carries no meaning.
     @Default(<String, Node>{}) Map<String, Node> nodes,
@@ -91,6 +101,9 @@ abstract class ProjectDocument with _$ProjectDocument {
       ),
     },
   );
+
+  /// The defaults a node of color [swatch] starts from.
+  VideoSettings defaultsFor(int swatch) => colorDefaults[swatch] ?? settings;
 
   /// The single origin node (the story's start).
   OriginNode get origin => nodes.values.whereType<OriginNode>().first;

@@ -33,6 +33,14 @@ _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>
       settings: json['settings'] == null
           ? const VideoSettings()
           : VideoSettings.fromJson(json['settings'] as Map<String, dynamic>),
+      colorDefaults:
+          (json['colorDefaults'] as Map<String, dynamic>?)?.map(
+            (k, e) => MapEntry(
+              int.parse(k),
+              VideoSettings.fromJson(e as Map<String, dynamic>),
+            ),
+          ) ??
+          const <int, VideoSettings>{},
       nodes:
           (json['nodes'] as Map<String, dynamic>?)?.map(
             (k, e) => MapEntry(k, Node.fromJson(e as Map<String, dynamic>)),
@@ -60,6 +68,9 @@ Map<String, dynamic> _$ProjectDocumentToJson(_ProjectDocument instance) =>
       'formatVersion': instance.formatVersion,
       'info': instance.info.toJson(),
       'settings': instance.settings.toJson(),
+      'colorDefaults': instance.colorDefaults.map(
+        (k, e) => MapEntry(k.toString(), e.toJson()),
+      ),
       'nodes': instance.nodes.map((k, e) => MapEntry(k, e.toJson())),
       'edges': instance.edges.map((e) => e.toJson()).toList(),
       'videos': instance.videos.map((e) => e.toJson()).toList(),

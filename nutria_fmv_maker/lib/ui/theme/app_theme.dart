@@ -44,6 +44,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cTextField = const Color(0xff50505a),
     this.cTextFieldActive = const Color(0xff5a5a64),
     this.cDivider = const Color(0x26ffffff),
+    this.cSwatchMark = const Color(0x59000000),
     this.cOutlines = const Color(0x29ffffff),
     this.cShadow = const Color(0x99000000),
     this.cMenuBar = const Color(0xff212128),
@@ -123,6 +124,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
 
   /// Hairlines between panels and the canvas.
   final Color cDivider;
+
+  /// The "…" on a color square whose color has its own defaults.
+  final Color cSwatchMark;
 
   /// The few remaining lines: stripes, swatch borders.
   final Color cOutlines;
@@ -228,6 +232,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cTextField,
     Color? cTextFieldActive,
     Color? cDivider,
+    Color? cSwatchMark,
     Color? cOutlines,
     Color? cShadow,
     Color? cMenuBar,
@@ -278,6 +283,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     cTextField: cTextField ?? this.cTextField,
     cTextFieldActive: cTextFieldActive ?? this.cTextFieldActive,
     cDivider: cDivider ?? this.cDivider,
+    cSwatchMark: cSwatchMark ?? this.cSwatchMark,
     cOutlines: cOutlines ?? this.cOutlines,
     cShadow: cShadow ?? this.cShadow,
     cMenuBar: cMenuBar ?? this.cMenuBar,

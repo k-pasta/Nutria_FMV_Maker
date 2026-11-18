@@ -6,7 +6,32 @@
   "libraryListWithThumbnails": "List with Thumbnails",
   "libraryList": "List",
   "boardPreferences": "Preferences",
-  "boardProjectSettings": "Project Settings",
+  "boardProjectSettings": "Defaults",
+  "defaultsFirstColor": "Color 1 and colors without their own",
+  "defaultsColor": "Color {number}",
+  "@defaultsColor": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipAddColorDefaults": "Add defaults for color {number}",
+  "@tooltipAddColorDefaults": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
+  "tooltipRemoveColorDefaults": "Remove the defaults of color {number}",
+  "@tooltipRemoveColorDefaults": {
+    "placeholders": {
+      "number": {
+        "type": "int"
+      }
+    }
+  },
   "variablesEmpty": "No variables yet. Add one with +.",
   "variableDefaultName": "variable",
   "variableName": "Name",

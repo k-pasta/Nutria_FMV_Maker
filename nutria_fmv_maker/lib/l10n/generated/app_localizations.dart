@@ -145,8 +145,32 @@ abstract class AppLocalizations {
   /// No description provided for @boardProjectSettings.
   ///
   /// In en, this message translates to:
-  /// **'Project Settings'**
+  /// **'Defaults'**
   String get boardProjectSettings;
+
+  /// No description provided for @defaultsFirstColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color 1 and colors without their own'**
+  String get defaultsFirstColor;
+
+  /// No description provided for @defaultsColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Color {number}'**
+  String defaultsColor(int number);
+
+  /// No description provided for @tooltipAddColorDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Add defaults for color {number}'**
+  String tooltipAddColorDefaults(int number);
+
+  /// No description provided for @tooltipRemoveColorDefaults.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the defaults of color {number}'**
+  String tooltipRemoveColorDefaults(int number);
 
   /// No description provided for @variablesEmpty.
   ///

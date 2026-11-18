@@ -96,6 +96,46 @@ extension GraphOps on ProjectDocument {
   );
 
   /// Sets the color swatch index shown on a node.
+  /// Gives color [swatch] its own defaults, starting as a copy of the first
+  /// color's. Does nothing for the first color or one that has them already.
+  ProjectDocument addColorDefaults(int swatch) {
+    if (swatch < 1 ||
+        swatch > kMaxColorDefaults ||
+        colorDefaults.containsKey(swatch)) {
+      return this;
+    }
+    return copyWith(colorDefaults: {...colorDefaults, swatch: settings});
+  }
+
+  /// Color [swatch] goes back to using the first color's defaults.
+  ProjectDocument removeColorDefaults(int swatch) {
+    if (!colorDefaults.containsKey(swatch)) return this;
+    return copyWith(colorDefaults: {...colorDefaults}..remove(swatch));
+  }
+
+  /// Edits the defaults of color [swatch] (the first color's for 0 or a
+  /// color without its own).
+  ProjectDocument editDefaults(
+    int swatch,
+    VideoSettings Function(VideoSettings s) edit,
+  ) {
+    if (!colorDefaults.containsKey(swatch)) {
+      return copyWith(settings: edit(settings));
+    }
+    return copyWith(
+      colorDefaults: {...colorDefaults, swatch: edit(colorDefaults[swatch]!)},
+    );
+  }
+
+  /// The first color, after the first, that has no defaults of its own yet,
+  /// or `null` when they all do.
+  int? get nextColorWithoutDefaults {
+    for (var i = 1; i <= kMaxColorDefaults; i++) {
+      if (!colorDefaults.containsKey(i)) return i;
+    }
+    return null;
+  }
+
   ProjectDocument setSwatch(String id, int swatch) =>
       updateNode(id, (n) => n.copyWith(swatch: swatch));
 
@@ -108,23 +148,31 @@ extension GraphOps on ProjectDocument {
   /// Sets node [id]'s name exactly as given (even empty, while it's being
   /// typed). Unchanged documents stay the same instance.
   ProjectDocument setNodeName(String id, String? name) =>
-      nodes[id]?.name == name ? this : updateNode(id, (n) => n.copyWith(name: name));
+      nodes[id]?.name == name
+      ? this
+      : updateNode(id, (n) => n.copyWith(name: name));
 
   /// Turns the question of branched node [id] on (an empty text) or off.
-  ProjectDocument setQuestionEnabled(String id, bool enabled) =>
-      updateNode(id, (n) => switch (n) {
-            BranchedVideoNode() => n.copyWith(
-                question: enabled ? (n.question ?? '') : null),
-            _ => n,
-          });
+  ProjectDocument setQuestionEnabled(String id, bool enabled) => updateNode(
+    id,
+    (n) => switch (n) {
+      BranchedVideoNode() => n.copyWith(
+        question: enabled ? (n.question ?? '') : null,
+      ),
+      _ => n,
+    },
+  );
 
   /// Sets the question text of branched node [id] (if it has a question).
-  ProjectDocument setQuestion(String id, String text) =>
-      updateNode(id, (n) => switch (n) {
-            BranchedVideoNode(:final question?) when question != text =>
-              n.copyWith(question: text),
-            _ => n,
-          });
+  ProjectDocument setQuestion(String id, String text) => updateNode(
+    id,
+    (n) => switch (n) {
+      BranchedVideoNode(:final question?) when question != text => n.copyWith(
+        question: text,
+      ),
+      _ => n,
+    },
+  );
 
   /// Shows or hides a node's settings panel.
   ProjectDocument toggleExpanded(String id) =>
