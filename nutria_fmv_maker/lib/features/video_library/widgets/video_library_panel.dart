@@ -7,6 +7,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/app/app_commands.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -22,36 +23,36 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 /// Thumbnail width of each library view; `null` for views without one.
 double? libraryThumbnailWidth(LibraryView view) => switch (view) {
-      LibraryView.largeThumbnails => 180,
-      LibraryView.thumbnails => 120,
-      LibraryView.smallThumbnails => 80,
-      LibraryView.listWithThumbnails => 48,
-      LibraryView.list => null,
-    };
+  LibraryView.largeThumbnails => 180,
+  LibraryView.thumbnails => 120,
+  LibraryView.smallThumbnails => 80,
+  LibraryView.listWithThumbnails => 48,
+  LibraryView.list => null,
+};
 
 /// The icon standing for media of [kind] where there's no thumbnail.
 IconData mediaKindIcon(MediaKind kind) => switch (kind) {
-      MediaKind.video => Icons.movie,
-      MediaKind.audio => Icons.music_note,
-      MediaKind.image => Icons.image,
-      MediaKind.subtitle => Icons.subtitles,
-      MediaKind.font => Icons.font_download,
-    };
+  MediaKind.video => Icons.movie,
+  MediaKind.audio => Icons.music_note,
+  MediaKind.image => Icons.image,
+  MediaKind.subtitle => Icons.subtitles,
+  MediaKind.font => Icons.font_download,
+};
 
 /// The title of a library group (see [LibraryGroup.key]).
 String libraryGroupTitle(AppLocalizations t, Object? key) => switch (key) {
-      MediaKind.video => t.mediaKindVideo,
-      MediaKind.audio => t.mediaKindAudio,
-      MediaKind.image => t.mediaKindImage,
-      MediaKind.subtitle => t.mediaKindSubtitle,
-      MediaKind.font => t.mediaKindFont,
-      final String extension when extension.isNotEmpty =>
-        extension.toUpperCase(),
-      _ => '?',
-    };
+  MediaKind.video => t.mediaKindVideo,
+  MediaKind.audio => t.mediaKindAudio,
+  MediaKind.image => t.mediaKindImage,
+  MediaKind.subtitle => t.mediaKindSubtitle,
+  MediaKind.font => t.mediaKindFont,
+  final String extension when extension.isNotEmpty => extension.toUpperCase(),
+  _ => '?',
+};
 
 /// The imported media as a grid or a list, optionally in collapsible groups,
 /// with an import (+) button that floats over them. Ctrl+wheel, or the
@@ -65,8 +66,11 @@ class VideoLibraryPanel extends ConsumerWidget {
     final t = AppLocalizations.of(context);
     final media = ref.watch(mediaAssetsProvider);
     final previewed = ref.watch(videoPreviewProvider.select((p) => p?.videoId));
-    final (view, sort, grouping) = ref.watch(preferencesProvider
-        .select((p) => (p.libraryView, p.librarySort, p.libraryGrouping)));
+    final (view, sort, grouping) = ref.watch(
+      preferencesProvider.select(
+        (p) => (p.libraryView, p.librarySort, p.libraryGrouping),
+      ),
+    );
     final collapsed = ref.watch(collapsedLibraryGroupsProvider);
     final preferences = ref.read(preferencesProvider.notifier);
     final grid = view.index <= LibraryView.smallThumbnails.index;
@@ -108,19 +112,32 @@ class VideoLibraryPanel extends ConsumerWidget {
                 theme.dButtonHeight + theme.dSectionPadding * 2,
               ),
               child: NutriaContextMenuArea(
-                onOpenChanged:
-                    ref.read(overlayProvider.notifier).setContextMenuOpen,
+                onOpenChanged: ref
+                    .read(overlayProvider.notifier)
+                    .setContextMenuOpen,
                 behavior: HitTestBehavior.opaque,
                 itemsAt: (_) => [
                   for (final (option, label, icon) in [
-                    (LibraryView.largeThumbnails, t.libraryLargeThumbnails,
-                        Icons.photo_size_select_large),
-                    (LibraryView.thumbnails, t.libraryThumbnails,
-                        Icons.grid_view),
-                    (LibraryView.smallThumbnails, t.librarySmallThumbnails,
-                        Icons.apps),
-                    (LibraryView.listWithThumbnails,
-                        t.libraryListWithThumbnails, Icons.view_list),
+                    (
+                      LibraryView.largeThumbnails,
+                      t.libraryLargeThumbnails,
+                      Icons.photo_size_select_large,
+                    ),
+                    (
+                      LibraryView.thumbnails,
+                      t.libraryThumbnails,
+                      Icons.grid_view,
+                    ),
+                    (
+                      LibraryView.smallThumbnails,
+                      t.librarySmallThumbnails,
+                      Icons.apps,
+                    ),
+                    (
+                      LibraryView.listWithThumbnails,
+                      t.libraryListWithThumbnails,
+                      Icons.view_list,
+                    ),
                     (LibraryView.list, t.libraryList, Icons.list),
                   ])
                     NutriaContextMenuItem(
@@ -130,8 +147,11 @@ class VideoLibraryPanel extends ConsumerWidget {
                     ),
                   const NutriaContextMenuItem.divider(),
                   for (final (option, label, icon) in [
-                    (LibrarySort.dateAdded, t.librarySortDateAdded,
-                        Icons.schedule),
+                    (
+                      LibrarySort.dateAdded,
+                      t.librarySortDateAdded,
+                      Icons.schedule,
+                    ),
                     (LibrarySort.name, t.librarySortName, Icons.sort_by_alpha),
                     (LibrarySort.type, t.librarySortType, Icons.category),
                   ])
@@ -142,12 +162,21 @@ class VideoLibraryPanel extends ConsumerWidget {
                     ),
                   const NutriaContextMenuItem.divider(),
                   for (final (option, label, icon) in [
-                    (LibraryGrouping.none, t.libraryGroupNone,
-                        Icons.view_agenda),
-                    (LibraryGrouping.kind, t.libraryGroupKind,
-                        Icons.folder_copy),
-                    (LibraryGrouping.fileType, t.libraryGroupFileType,
-                        Icons.description),
+                    (
+                      LibraryGrouping.none,
+                      t.libraryGroupNone,
+                      Icons.view_agenda,
+                    ),
+                    (
+                      LibraryGrouping.kind,
+                      t.libraryGroupKind,
+                      Icons.folder_copy,
+                    ),
+                    (
+                      LibraryGrouping.fileType,
+                      t.libraryGroupFileType,
+                      Icons.description,
+                    ),
                   ])
                     NutriaContextMenuItem(
                       icon: option == grouping ? Icons.check : icon,
@@ -168,7 +197,8 @@ class VideoLibraryPanel extends ConsumerWidget {
                     GestureBinding.instance.pointerSignalResolver.register(
                       event,
                       (_) => preferences.stepLibraryView(
-                          event.scrollDelta.dy > 0 ? 1 : -1),
+                        event.scrollDelta.dy > 0 ? 1 : -1,
+                      ),
                     );
                   },
                   // Fills the panel, so the empty space below the videos
@@ -176,10 +206,11 @@ class VideoLibraryPanel extends ConsumerWidget {
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
                       minHeight: math.max(
-                          0,
-                          constraints.maxHeight -
-                              theme.dButtonHeight -
-                              theme.dSectionPadding * 2),
+                        0,
+                        constraints.maxHeight -
+                            theme.dButtonHeight -
+                            theme.dSectionPadding * 2,
+                      ),
                       minWidth: double.infinity,
                     ),
                     child: grouping == LibraryGrouping.none
@@ -193,8 +224,9 @@ class VideoLibraryPanel extends ConsumerWidget {
                                   count: group.media.length,
                                   isCollapsed: collapsed.contains(group.key),
                                   onTap: () => ref
-                                      .read(collapsedLibraryGroupsProvider
-                                          .notifier)
+                                      .read(
+                                        collapsedLibraryGroupsProvider.notifier,
+                                      )
                                       .toggle(group.key!),
                                 ),
                                 if (!collapsed.contains(group.key)) ...[
@@ -303,11 +335,18 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
     final thumbnail = width == null
         ? null
         : MediaThumbnail(asset: asset, width: width);
+    final t = AppLocalizations.of(context);
+    final missing = ref.watch(
+      missingMediaProvider.select((ids) => ids.contains(asset.id)),
+    );
     final name = NutriaText(
       text: widget.video.fileName,
       maxLines: grid ? 2 : 1,
       textAlign: grid ? TextAlign.center : TextAlign.start,
+      // Missing files stand out, in the accent color.
+      state: missing ? NutriaTextState.accented : NutriaTextState.normal,
     );
+    final commands = AppCommands(context, ref);
     return Draggable<MediaAsset>(
       data: asset,
       // The pointer is at the drop position; the thumbnail is centered on it.
@@ -316,55 +355,105 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
         translation: const Offset(-0.5, -0.5),
         child: MediaThumbnail(asset: asset, width: 120),
       ),
-      child: MouseRegion(
-        cursor: SystemMouseCursors.click,
-        onEnter: (_) => setState(() => _hovered = true),
-        onExit: (_) => setState(() => _hovered = false),
-        child: GestureDetector(
-          onTap: asset.isVideo
-              ? () => ref.read(videoPreviewProvider.notifier).showVideo(asset.id)
-              : null,
-          child: Container(
-            padding: EdgeInsets.all(
-                grid ? theme.dPanelPadding : theme.dPanelPadding / 2),
-            // Blends into the panel; a fill shows hover. The previewed video
-            // is filled too, and raised in themes with elevation.
-            decoration: BoxDecoration(
-              color: widget.isPreviewed
-                  ? theme.cListSelected
-                  : (_hovered ? theme.cButtonHovered : null),
-              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-              boxShadow: widget.isPreviewed && theme.dElevation > 0
-                  ? theme.cardShadow()
-                  : null,
+      child: NutriaContextMenuArea(
+        onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
+        itemsAt: (_) => [
+          if (missing)
+            NutriaContextMenuItem(
+              icon: Icons.search,
+              label: t.mediaFindMissing,
+              onSelected: () => commands.findMissingFile(asset.id),
             ),
-            child: grid
-                ? Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      ?thumbnail,
-                      SizedBox(height: theme.dPanelPadding),
-                      SizedBox(width: width, child: name),
-                    ],
-                  )
-                : Row(
-                    children: [
-                      if (thumbnail != null)
-                        thumbnail
-                      else
-                        // The plain list shows what kind each file is.
-                        Icon(
-                          mediaKindIcon(asset.kind),
-                          size: theme.dTextHeight * 1.2,
-                          color: theme.cTextInactive,
-                        ),
-                      SizedBox(width: theme.dPanelPadding),
-                      Expanded(child: name),
-                    ],
-                  ),
+          NutriaContextMenuItem(
+            icon: Icons.swap_horiz,
+            label: t.mediaReplace,
+            onSelected: () => commands.replaceMedia(asset.id),
+          ),
+        ],
+        child: NutriaTooltip(
+          message: missing ? t.tooltipMissingFile(asset.path) : null,
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            onEnter: (_) => setState(() => _hovered = true),
+            onExit: (_) => setState(() => _hovered = false),
+            child: GestureDetector(
+              onTap: asset.isVideo
+                  ? () => ref
+                        .read(videoPreviewProvider.notifier)
+                        .showVideo(asset.id)
+                  : null,
+              child: Container(
+                padding: EdgeInsets.all(
+                  grid ? theme.dPanelPadding : theme.dPanelPadding / 2,
+                ),
+                // Blends into the panel; a fill shows hover. The previewed video
+                // is filled too, and raised in themes with elevation.
+                decoration: BoxDecoration(
+                  color: widget.isPreviewed
+                      ? theme.cListSelected
+                      : (_hovered ? theme.cButtonHovered : null),
+                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+                  boxShadow: widget.isPreviewed && theme.dElevation > 0
+                      ? theme.cardShadow()
+                      : null,
+                ),
+                child: grid
+                    ? Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (thumbnail != null)
+                            missing
+                                ? _MissingMark(child: thumbnail)
+                                : thumbnail,
+                          SizedBox(height: theme.dPanelPadding),
+                          SizedBox(width: width, child: name),
+                        ],
+                      )
+                    : Row(
+                        children: [
+                          if (thumbnail != null)
+                            missing ? _MissingMark(child: thumbnail) : thumbnail
+                          else if (missing)
+                            Icon(
+                              Icons.link_off,
+                              size: theme.dTextHeight * 1.2,
+                              color: theme.cAccent,
+                            )
+                          else
+                            // The plain list shows what kind each file is.
+                            Icon(
+                              mediaKindIcon(asset.kind),
+                              size: theme.dTextHeight * 1.2,
+                              color: theme.cTextInactive,
+                            ),
+                          SizedBox(width: theme.dPanelPadding),
+                          Expanded(child: name),
+                        ],
+                      ),
+              ),
+            ),
           ),
         ),
       ),
+    );
+  }
+}
+
+/// [child] dimmed, with a broken-link icon over it: the file is missing.
+class _MissingMark extends StatelessWidget {
+  const _MissingMark({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    return Stack(
+      alignment: Alignment.center,
+      children: [
+        Opacity(opacity: 0.35, child: child),
+        Icon(Icons.link_off, color: theme.cAccent, size: theme.dButtonHeight),
+      ],
     );
   }
 }
@@ -379,22 +468,21 @@ class MediaThumbnail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => switch (asset.kind) {
-        MediaKind.video => LibraryThumbnail(path: asset.path, width: width),
-        MediaKind.image => SizedBox(
-            width: width,
-            height: width * 9 / 16,
-            child: Image.file(
-              File(asset.path),
-              fit: BoxFit.cover,
-              cacheWidth:
-                  (width * MediaQuery.devicePixelRatioOf(context)).round(),
-              gaplessPlayback: true,
-              errorBuilder: (_, _, _) =>
-                  MediaKindTile(kind: asset.kind, width: width),
-            ),
-          ),
-        _ => MediaKindTile(kind: asset.kind, width: width),
-      };
+    MediaKind.video => LibraryThumbnail(path: asset.path, width: width),
+    MediaKind.image => SizedBox(
+      width: width,
+      height: width * 9 / 16,
+      child: Image.file(
+        File(asset.path),
+        fit: BoxFit.cover,
+        cacheWidth: (width * MediaQuery.devicePixelRatioOf(context)).round(),
+        gaplessPlayback: true,
+        errorBuilder: (_, _, _) =>
+            MediaKindTile(kind: asset.kind, width: width),
+      ),
+    ),
+    _ => MediaKindTile(kind: asset.kind, width: width),
+  };
 }
 
 /// A 16:9 tile [width] wide with the icon of [kind].

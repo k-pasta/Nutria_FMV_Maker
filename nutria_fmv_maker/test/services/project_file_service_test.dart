@@ -23,6 +23,8 @@ class FakeDialogs implements FileDialogs {
   @override
   Future<List<String>> pickFiles({required List<String> extensions}) async =>
       const [];
+  @override
+  Future<String?> pickFolder() async => null;
 
   @override
   Future<String?> saveFile({

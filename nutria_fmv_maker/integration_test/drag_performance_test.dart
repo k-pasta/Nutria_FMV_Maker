@@ -188,6 +188,8 @@ class _NoDialogs implements FileDialogs {
   Future<List<String>> pickFiles({required List<String> extensions}) async =>
       const [];
   @override
+  Future<String?> pickFolder() async => null;
+  @override
   Future<String?> saveFile(
           {required String fileName, required Uint8List bytes}) async =>
       null;

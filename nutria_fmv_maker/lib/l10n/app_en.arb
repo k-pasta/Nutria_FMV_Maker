@@ -11,6 +11,41 @@
   "libraryGroupNone": "Don’t Group",
   "libraryGroupKind": "Group by Kind",
   "libraryGroupFileType": "Group by File Type",
+  "fileLocateMissing": "Locate Missing Files…",
+  "mediaFindMissing": "Find Missing File…",
+  "mediaReplace": "Replace…",
+  "tooltipMissingFile": "Not found: {path}",
+  "@tooltipMissingFile": {
+    "placeholders": {
+      "path": {
+        "type": "String"
+      }
+    }
+  },
+  "missingFilesTitle": "Missing Files",
+  "missingFilesMessage": "These files can’t be found. They may have been moved or renamed.",
+  "missingFilesNone": "Every file was found.",
+  "missingFilesLocate": "Look in a Folder…",
+  "notifyLocatedFiles": "Found {found} of {total} missing files",
+  "@notifyLocatedFiles": {
+    "placeholders": {
+      "found": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "notifyNoMissingFiles": "No files are missing",
+  "notifyFileNameDiffers": "The chosen file has another name: {name}",
+  "@notifyFileNameDiffers": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
   "mediaKindVideo": "Videos",
   "mediaKindAudio": "Audio",
   "mediaKindImage": "Images",

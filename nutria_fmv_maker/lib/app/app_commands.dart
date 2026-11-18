@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
@@ -17,6 +18,7 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
@@ -48,8 +50,47 @@ class AppCommands {
   }
 
   Future<void> open() => _guard(() async {
-        if (await _confirmDiscard()) await _document.open();
+        if (!await _confirmDiscard()) return;
+        if (await _document.open() == FileOutcome.done &&
+            _ref.read(missingMediaProvider).isNotEmpty) {
+          _ref.read(overlayProvider.notifier).showModal(AppModal.missingFiles);
+        }
       });
+
+  /// Points the missing files at same-named files in a folder the user
+  /// picks (not its subfolders).
+  Future<void> locateMissingFiles() async {
+    final missing = _ref.read(missingMediaProvider);
+    if (missing.isEmpty) {
+      _notify(_t.notifyNoMissingFiles);
+      return;
+    }
+    final folder = await _ref.read(projectFileServiceProvider).pickFolder();
+    if (folder == null) return;
+    final found =
+        _ref.read(graphEditorProvider).relinkFromFolder(missing, folder);
+    _notify(_t.notifyLocatedFiles(found, missing.length));
+  }
+
+  /// Asks for the file that missing file [id] should point at. A file with
+  /// another name is used too, with a notice.
+  Future<void> findMissingFile(String id) => _relink(id, noticeIfRenamed: true);
+
+  /// Asks for a file of the same kind to use instead of [id]'s.
+  Future<void> replaceMedia(String id) => _relink(id, noticeIfRenamed: false);
+
+  Future<void> _relink(String id, {required bool noticeIfRenamed}) async {
+    final asset = _ref.read(projectDocumentProvider).mediaById(id);
+    if (asset == null) return;
+    final path =
+        await _ref.read(projectFileServiceProvider).pickFileOf(asset.kind);
+    if (path == null) return;
+    _ref.read(graphEditorProvider).relinkMedia(id, path);
+    final name = fileNameOf(path);
+    if (noticeIfRenamed && name.toLowerCase() != asset.fileName.toLowerCase()) {
+      _notify(_t.notifyFileNameDiffers(name));
+    }
+  }
 
   Future<void> save() => _guard(() async {
         if (await _document.save() == FileOutcome.done) _notifySaved();

@@ -50,6 +50,10 @@ List<NutriaMenu> buildAppMenus({
             shortcut: kShortcutExport,
             onPressed: commands.export),
         NutriaMenuEntry(
+            label: t.fileLocateMissing,
+            icon: Icons.find_in_page,
+            onPressed: commands.locateMissingFiles),
+        NutriaMenuEntry(
             label: t.fileExit,
             icon: Icons.close,
             shortcut: kShortcutExit,

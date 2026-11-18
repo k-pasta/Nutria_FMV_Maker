@@ -14,6 +14,7 @@ import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.d
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/services/clipboard_service.dart';
+import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -312,6 +313,24 @@ class GraphEditor {
     final ids = importFiles(paths);
     setVideo(nodeId, ids.first);
     _document.commit();
+  }
+
+  /// Points imported file [id] at [path] instead, as one undo step. Nodes
+  /// using it follow.
+  void relinkMedia(String id, String path) =>
+      _document.apply('Relink file', (d) => d.setMediaPath(id, path));
+
+  /// Points each missing file of [ids] at the file of the same name directly
+  /// in [folder], as one undo step. Returns how many were found.
+  int relinkFromFolder(Set<String> ids, String folder) {
+    final files = _ref.read(mediaFilesProvider).filesIn(folder);
+    var found = 0;
+    _document.apply('Locate missing files', (d) {
+      final (next, relinked) = d.relinkByName(ids, files);
+      found = relinked.length;
+      return next;
+    });
+    return found;
   }
 
   /// Imports [paths] as one undo step. Already imported files are reused.

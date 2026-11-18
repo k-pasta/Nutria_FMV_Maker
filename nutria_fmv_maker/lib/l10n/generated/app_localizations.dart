@@ -172,6 +172,72 @@ abstract class AppLocalizations {
   /// **'Group by File Type'**
   String get libraryGroupFileType;
 
+  /// No description provided for @fileLocateMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Locate Missing Files…'**
+  String get fileLocateMissing;
+
+  /// No description provided for @mediaFindMissing.
+  ///
+  /// In en, this message translates to:
+  /// **'Find Missing File…'**
+  String get mediaFindMissing;
+
+  /// No description provided for @mediaReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace…'**
+  String get mediaReplace;
+
+  /// No description provided for @tooltipMissingFile.
+  ///
+  /// In en, this message translates to:
+  /// **'Not found: {path}'**
+  String tooltipMissingFile(String path);
+
+  /// No description provided for @missingFilesTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Missing Files'**
+  String get missingFilesTitle;
+
+  /// No description provided for @missingFilesMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'These files can’t be found. They may have been moved or renamed.'**
+  String get missingFilesMessage;
+
+  /// No description provided for @missingFilesNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Every file was found.'**
+  String get missingFilesNone;
+
+  /// No description provided for @missingFilesLocate.
+  ///
+  /// In en, this message translates to:
+  /// **'Look in a Folder…'**
+  String get missingFilesLocate;
+
+  /// No description provided for @notifyLocatedFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'Found {found} of {total} missing files'**
+  String notifyLocatedFiles(int found, int total);
+
+  /// No description provided for @notifyNoMissingFiles.
+  ///
+  /// In en, this message translates to:
+  /// **'No files are missing'**
+  String get notifyNoMissingFiles;
+
+  /// No description provided for @notifyFileNameDiffers.
+  ///
+  /// In en, this message translates to:
+  /// **'The chosen file has another name: {name}'**
+  String notifyFileNameDiffers(String name);
+
   /// No description provided for @mediaKindVideo.
   ///
   /// In en, this message translates to:

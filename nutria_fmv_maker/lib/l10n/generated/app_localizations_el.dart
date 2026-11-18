@@ -45,6 +45,46 @@ class AppLocalizationsEl extends AppLocalizations {
   String get libraryGroupFileType => 'Ομαδοποίηση κατά Τύπο Αρχείου';
 
   @override
+  String get fileLocateMissing => 'Εντοπισμός Αρχείων που Λείπουν…';
+
+  @override
+  String get mediaFindMissing => 'Εύρεση Αρχείου που Λείπει…';
+
+  @override
+  String get mediaReplace => 'Αντικατάσταση…';
+
+  @override
+  String tooltipMissingFile(String path) {
+    return 'Δεν βρέθηκε: $path';
+  }
+
+  @override
+  String get missingFilesTitle => 'Αρχεία που Λείπουν';
+
+  @override
+  String get missingFilesMessage =>
+      'Αυτά τα αρχεία δεν βρέθηκαν. Ίσως μετακινήθηκαν ή μετονομάστηκαν.';
+
+  @override
+  String get missingFilesNone => 'Όλα τα αρχεία βρέθηκαν.';
+
+  @override
+  String get missingFilesLocate => 'Αναζήτηση σε Φάκελο…';
+
+  @override
+  String notifyLocatedFiles(int found, int total) {
+    return 'Βρέθηκαν $found από $total αρχεία που έλειπαν';
+  }
+
+  @override
+  String get notifyNoMissingFiles => 'Δεν λείπει κανένα αρχείο';
+
+  @override
+  String notifyFileNameDiffers(String name) {
+    return 'Το αρχείο που επιλέξατε έχει άλλο όνομα: $name';
+  }
+
+  @override
   String get mediaKindVideo => 'Βίντεο';
 
   @override

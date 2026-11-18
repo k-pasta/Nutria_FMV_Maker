@@ -4,12 +4,14 @@ import 'dart:convert';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/services/file_dialogs.dart';
+import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -35,6 +37,16 @@ class MemoryProjectFiles extends ProjectFileService {
 
   @override
   Future<List<String>> pickVideoFiles() async => nextVideos;
+
+  /// What the next "pick a file" and "pick a folder" dialogs return.
+  String? nextFile;
+  String? nextFolder;
+
+  @override
+  Future<String?> pickFileOf(MediaKind kind) async => nextFile;
+
+  @override
+  Future<String?> pickFolder() async => nextFolder;
 
   @override
   Future<ProjectDocument> readProject(String path) async => files[path]!;
@@ -66,6 +78,8 @@ class _NoDialogs implements FileDialogs {
   @override
   Future<List<String>> pickFiles({required List<String> extensions}) async =>
       const [];
+  @override
+  Future<String?> pickFolder() async => null;
   @override
   Future<String?> saveFile(
           {required String fileName, required Uint8List bytes}) async =>
@@ -109,6 +123,19 @@ class FakePlayer implements PreviewPlayer {
   void dispose() {}
 }
 
+/// Files on a pretend disk: everything exists except [missing]; [folders]
+/// lists what each folder holds.
+class FakeMediaFiles implements MediaFiles {
+  final Set<String> missing = {};
+  final Map<String, List<String>> folders = {};
+
+  @override
+  bool exists(String path) => !missing.contains(path);
+
+  @override
+  List<String> filesIn(String folder) => folders[folder] ?? const [];
+}
+
 /// Everything a provider test needs.
 class Harness {
   Harness._(this.container, this.files, this.player);
@@ -131,6 +158,7 @@ class Harness {
       projectFileServiceProvider.overrideWithValue(files),
       previewPlayerProvider.overrideWithValue(player),
       idGeneratorProvider.overrideWithValue(sequentialIds('new')),
+      mediaFilesProvider.overrideWithValue(FakeMediaFiles()),
     ]);
     files.files['story.nfmv'] = storyFixture();
     await container.read(documentProvider.notifier).openPath('story.nfmv');

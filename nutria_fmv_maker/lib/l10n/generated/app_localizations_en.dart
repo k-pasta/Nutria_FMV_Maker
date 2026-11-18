@@ -45,6 +45,46 @@ class AppLocalizationsEn extends AppLocalizations {
   String get libraryGroupFileType => 'Group by File Type';
 
   @override
+  String get fileLocateMissing => 'Locate Missing Files…';
+
+  @override
+  String get mediaFindMissing => 'Find Missing File…';
+
+  @override
+  String get mediaReplace => 'Replace…';
+
+  @override
+  String tooltipMissingFile(String path) {
+    return 'Not found: $path';
+  }
+
+  @override
+  String get missingFilesTitle => 'Missing Files';
+
+  @override
+  String get missingFilesMessage =>
+      'These files can’t be found. They may have been moved or renamed.';
+
+  @override
+  String get missingFilesNone => 'Every file was found.';
+
+  @override
+  String get missingFilesLocate => 'Look in a Folder…';
+
+  @override
+  String notifyLocatedFiles(int found, int total) {
+    return 'Found $found of $total missing files';
+  }
+
+  @override
+  String get notifyNoMissingFiles => 'No files are missing';
+
+  @override
+  String notifyFileNameDiffers(String name) {
+    return 'The chosen file has another name: $name';
+  }
+
+  @override
   String get mediaKindVideo => 'Videos';
 
   @override

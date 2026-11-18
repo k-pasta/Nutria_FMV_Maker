@@ -18,6 +18,7 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
+import 'package:nutria_fmv_maker/features/video_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -199,6 +200,10 @@ class _ModalLayer extends ConsumerWidget {
       AppModal.notifications => NutriaModal(
         onClose: close,
         child: const NotificationsWindow(),
+      ),
+      AppModal.missingFiles => NutriaModal(
+        onClose: close,
+        child: const MissingFilesWindow(),
       ),
     };
   }

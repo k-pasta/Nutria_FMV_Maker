@@ -96,6 +96,55 @@ final class VideoInfoFamily extends $Family
   String toString() => r'videoInfoProvider';
 }
 
+/// The ids of imported files that can't be found on disk. Checked again
+/// whenever the media list changes (import, relink, undo).
+
+@ProviderFor(missingMedia)
+final missingMediaProvider = MissingMediaProvider._();
+
+/// The ids of imported files that can't be found on disk. Checked again
+/// whenever the media list changes (import, relink, undo).
+
+final class MissingMediaProvider
+    extends $FunctionalProvider<Set<String>, Set<String>, Set<String>>
+    with $Provider<Set<String>> {
+  /// The ids of imported files that can't be found on disk. Checked again
+  /// whenever the media list changes (import, relink, undo).
+  MissingMediaProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'missingMediaProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$missingMediaHash();
+
+  @$internal
+  @override
+  $ProviderElement<Set<String>> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  Set<String> create(Ref ref) {
+    return missingMedia(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(Set<String> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<Set<String>>(value),
+    );
+  }
+}
+
+String _$missingMediaHash() => r'dd3e1f798400ba2cf43df483d5f5b50528c81d5a';
+
 /// The library groups the user has collapsed this session (see
 /// `LibraryGroup.key`). Not saved.
 

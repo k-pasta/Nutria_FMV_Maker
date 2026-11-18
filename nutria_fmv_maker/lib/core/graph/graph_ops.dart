@@ -371,4 +371,35 @@ extension GraphOps on ProjectDocument {
     }
     return (copyWith(media: [...media, asset]), asset.id);
   }
+
+  /// Points asset [id] at the file at [path]; nodes using it follow.
+  ProjectDocument setMediaPath(String id, String path) => copyWith(
+    media: [
+      for (final asset in media)
+        asset.id == id ? asset.copyWith(path: path) : asset,
+    ],
+  );
+
+  /// Points each asset of [ids] at the file in [files] with the same name
+  /// (ignoring case). Returns the document and the ids that were found.
+  (ProjectDocument, Set<String>) relinkByName(
+    Set<String> ids,
+    Iterable<String> files,
+  ) {
+    final byName = {for (final f in files) fileNameOf(f).toLowerCase(): f};
+    final found = <String>{};
+    final next = <MediaAsset>[];
+    for (final asset in media) {
+      final path = ids.contains(asset.id)
+          ? byName[asset.fileName.toLowerCase()]
+          : null;
+      if (path == null) {
+        next.add(asset);
+      } else {
+        next.add(asset.copyWith(path: path));
+        found.add(asset.id);
+      }
+    }
+    return (found.isEmpty ? this : copyWith(media: next), found);
+  }
 }

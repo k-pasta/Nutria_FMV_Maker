@@ -133,3 +133,28 @@ change any of them and I'll adapt.
 - **Right-click menus now fit their real size** in the window. Before, they
   used a fixed size estimate, so the longer library menu could go off the
   bottom.
+
+## Phase 3b: missing files
+- **After opening a project**, a window lists the files that can't be
+  found, with their old paths. It has a "Look in a Folder…" button. The
+  list updates as files are found, and says "Every file was found." at the
+  end.
+- **File > Locate Missing Files…** asks for a folder and looks only in that
+  folder, not its subfolders. It matches file names, ignoring upper and
+  lower case. A notice says how many were found ("Found 2 of 3 missing
+  files"). It is one undo step. With nothing missing, it only says so.
+- **In the library,** a missing file has its name in the accent color, a
+  dimmed picture with a broken-link icon, and a tooltip with the old path.
+- **Right-click a file:**
+  - "Find Missing File…" (missing files only) asks for one file of the
+    same kind. If its name differs, a notice says so, and the file is
+    used anyway.
+  - "Replace…" (every file) does the same without the notice.
+  - Both keep the file's place in the project, so nodes using it follow.
+    Each is one undo step.
+- **When files are checked:** whenever the list of files changes (import,
+  relink, undo, open). A file that disappears while the app is open shows
+  as missing only after the next such change. **Ask:** should the app also
+  check again when its window regains focus?
+- **Replacing with a file that is already imported** keeps both entries.
+  They aren't merged.

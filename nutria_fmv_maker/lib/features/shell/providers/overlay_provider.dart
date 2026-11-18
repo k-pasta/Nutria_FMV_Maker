@@ -6,7 +6,7 @@ part 'overlay_provider.freezed.dart';
 part 'overlay_provider.g.dart';
 
 /// Modal dialogs the app can show.
-enum AppModal { about, notifications }
+enum AppModal { about, notifications, missingFiles }
 
 /// What is open over the editor: the menu bar, a context menu, a dialog.
 @freezed

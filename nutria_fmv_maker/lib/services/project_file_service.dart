@@ -47,6 +47,13 @@ class ProjectFileService {
   Future<List<String>> pickMedia() =>
       _dialogs.pickFiles(extensions: kAllMediaExtensions);
 
+  /// Asks the user for one file of [kind].
+  Future<String?> pickFileOf(MediaKind kind) =>
+      _dialogs.pickFile(extensions: kMediaExtensions[kind]!);
+
+  /// Asks the user for a folder.
+  Future<String?> pickFolder() => _dialogs.pickFolder();
+
   /// Asks the user for video files only.
   Future<List<String>> pickVideoFiles() =>
       _dialogs.pickFiles(extensions: kMediaExtensions[MediaKind.video]!);

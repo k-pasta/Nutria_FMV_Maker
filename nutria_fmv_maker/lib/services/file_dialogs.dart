@@ -15,6 +15,9 @@ abstract interface class FileDialogs {
   /// Lets the user pick any number of files with one of [extensions].
   Future<List<String>> pickFiles({required List<String> extensions});
 
+  /// Lets the user pick a folder.
+  Future<String?> pickFolder();
+
   /// Asks where to save, writes [bytes] there and returns the chosen path.
   Future<String?> saveFile({required String fileName, required Uint8List bytes});
 }
@@ -43,6 +46,9 @@ class FilePickerDialogs implements FileDialogs {
         if (file.path != null) file.path!,
     ];
   }
+
+  @override
+  Future<String?> pickFolder() => FilePicker.getDirectoryPath();
 
   @override
   Future<String?> saveFile({
