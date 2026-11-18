@@ -65,8 +65,12 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
     if (side == PanelSide.left) {
       s = s.copyWith(intendedLeft: s.intendedLeft + delta);
       final intended = s.intendedLeft;
-      if (intended >= kMinLeftPanel && intended <= kMaxLeftPanel && !s.leftClosed) {
-        if (intended + s.handlesWidth < totalWidth) s = s.copyWith(left: intended);
+      if (intended >= kMinLeftPanel &&
+          intended <= kMaxLeftPanel &&
+          !s.leftClosed) {
+        if (intended + s.handlesWidth < totalWidth) {
+          s = s.copyWith(left: intended);
+        }
         if (intended + s.right + s.handlesWidth > totalWidth) {
           s = s.right - delta >= kMinRightPanel
               ? s.copyWith(right: s.right - delta)
@@ -83,8 +87,12 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
     } else {
       s = s.copyWith(intendedRight: s.intendedRight - delta);
       final intended = s.intendedRight;
-      if (intended >= kMinRightPanel && intended <= kMaxRightPanel && !s.rightClosed) {
-        if (intended + s.handlesWidth < totalWidth) s = s.copyWith(right: intended);
+      if (intended >= kMinRightPanel &&
+          intended <= kMaxRightPanel &&
+          !s.rightClosed) {
+        if (intended + s.handlesWidth < totalWidth) {
+          s = s.copyWith(right: intended);
+        }
         if (intended + s.left + s.handlesWidth > totalWidth) {
           s = s.left + delta >= kMinLeftPanel
               ? s.copyWith(left: s.left + delta)
@@ -110,7 +118,9 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
 
   /// Opens or closes the panel on [side].
   void toggle(PanelSide side, double totalWidth) {
-    final closed = side == PanelSide.left ? state.leftClosed : state.rightClosed;
+    final closed = side == PanelSide.left
+        ? state.leftClosed
+        : state.rightClosed;
     state = closed ? _open(state, side, totalWidth) : _close(state, side);
   }
 
@@ -118,7 +128,9 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
   /// [totalWidth] wide. Shrinks the panels if they no longer fit.
   void windowResized(double dx, double totalWidth) {
     var s = state;
-    if (totalWidth - (s.left + s.right + s.handlesWidth) >= 0 || dx <= 0) return;
+    if (totalWidth - (s.left + s.right + s.handlesWidth) >= 0 || dx <= 0) {
+      return;
+    }
     if (!s.leftClosed && !s.rightClosed) {
       s = s.copyWith(left: s.left - dx / 2, right: s.right - dx / 2);
     } else if (!s.leftClosed) {
@@ -127,7 +139,9 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
       s = s.copyWith(right: s.right - dx);
     }
     if (s.left < kMinLeftPanel && !s.leftClosed) s = _close(s, PanelSide.left);
-    if (s.right < kMinRightPanel && !s.rightClosed) s = _close(s, PanelSide.right);
+    if (s.right < kMinRightPanel && !s.rightClosed) {
+      s = _close(s, PanelSide.right);
+    }
     state = s.copyWith(intendedLeft: s.left, intendedRight: s.right);
   }
 
@@ -137,8 +151,12 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
 
   /// Opens [side] at its remembered size if it fits, otherwise squeezes the
   /// other panel, otherwise closes the other panel, otherwise stays closed.
-  PanelLayout _open(PanelLayout s, PanelSide side, double totalWidth,
-      {bool rememberSize = true}) {
+  PanelLayout _open(
+    PanelLayout s,
+    PanelSide side,
+    double totalWidth, {
+    bool rememberSize = true,
+  }) {
     final isLeft = side == PanelSide.left;
     // Mark open first so handlesWidth counts this panel's handle.
     s = isLeft ? s.copyWith(leftClosed: false) : s.copyWith(rightClosed: false);
@@ -162,11 +180,18 @@ class PanelLayoutNotifier extends _$PanelLayoutNotifier {
           : s.copyWith(intendedLeft: s.left);
     } else if (minThis + handles < totalWidth) {
       final mine = min(wanted, totalWidth - handles);
-      s = _close(withSizes(mine, other), isLeft ? PanelSide.right : PanelSide.left);
+      s = _close(
+        withSizes(mine, other),
+        isLeft ? PanelSide.right : PanelSide.left,
+      );
     } else {
-      return isLeft ? s.copyWith(leftClosed: true) : s.copyWith(rightClosed: true);
+      return isLeft
+          ? s.copyWith(leftClosed: true)
+          : s.copyWith(rightClosed: true);
     }
     if (!rememberSize) return s;
-    return isLeft ? s.copyWith(intendedLeft: s.left) : s.copyWith(intendedRight: s.right);
+    return isLeft
+        ? s.copyWith(intendedLeft: s.left)
+        : s.copyWith(intendedRight: s.right);
   }
 }

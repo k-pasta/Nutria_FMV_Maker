@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/raised_edge.dart';
 
 /// A single- or multi-line text field.
@@ -20,6 +21,7 @@ class NutriaTextField extends StatefulWidget {
     this.maxLines = 1,
     this.textAlign = TextAlign.left,
     this.isError = false,
+    this.isAccented = false,
     this.inputFormatters,
     this.horizontalPadding,
   });
@@ -33,6 +35,9 @@ class NutriaTextField extends StatefulWidget {
 
   /// Shows the text in the accent color, e.g. for a name that's taken.
   final bool isError;
+
+  /// Shows the text in the accent color, e.g. for an overridden setting.
+  final bool isAccented;
 
   /// Limits what can be typed, e.g. to digits.
   final List<TextInputFormatter>? inputFormatters;
@@ -139,60 +144,128 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     // Raised a little in themes with elevation, like buttons.
     return RaisedEdge(
       radius: theme.dButtonBorderRadius,
-      child: Shortcuts(
-        shortcuts: _blockedShortcuts,
-        child: TextField(
-          controller: _controller,
-          focusNode: _focus,
-          onChanged: widget.onChanged,
-          inputFormatters: widget.inputFormatters,
-          // Clicking elsewhere ends editing, so the app's keyboard shortcuts
-          // work again (desktop fields keep focus by default).
-          onTapOutside: (_) => _focus.unfocus(),
-          textInputAction: TextInputAction.next,
-          cursorColor: theme.cText,
-          style: TextStyle(
-            color: widget.isError
-                ? theme.cAccent
-                : (focused ? theme.cTextActive : theme.cText),
-            fontSize: theme.dTextHeight,
-          ),
-          maxLines: widget.maxLines,
-          maxLength: kTextFieldMaxLength,
-          textAlign: widget.textAlign,
-          decoration: InputDecoration(
-            // Allows heights below Material's 48px minimum.
-            isDense: true,
-            // Vertically centers one line in a button-high field (+0.5 by eye).
-            contentPadding: EdgeInsets.symmetric(
-              vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
-              horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
+      // Our own right-click menu: the built-in one is drawn in the field's
+      // coordinates, so on a zoomed-out canvas it shrinks with the node.
+      child: NutriaContextMenuArea(
+        fromPointerEvents: true,
+        itemsAt: (_) => _menu(context),
+        child: Shortcuts(
+          shortcuts: _blockedShortcuts,
+          child: TextField(
+            controller: _controller,
+            focusNode: _focus,
+            onChanged: widget.onChanged,
+            inputFormatters: widget.inputFormatters,
+            // Clicking elsewhere ends editing, so the app's keyboard shortcuts
+            // work again (desktop fields keep focus by default).
+            onTapOutside: (_) => _focus.unfocus(),
+            textInputAction: TextInputAction.next,
+            cursorColor: theme.cText,
+            style: TextStyle(
+              color: widget.isError || widget.isAccented
+                  ? theme.cAccent
+                  : (focused ? theme.cTextActive : theme.cText),
+              fontSize: theme.dTextHeight,
             ),
-            counterText: '',
-            hintText: widget.hint,
-            hintStyle: TextStyle(color: theme.cTextInactive),
-            // Flat: the fill shows the field, a darker fill shows focus.
-            border: OutlineInputBorder(
-              borderRadius: radius,
-              borderSide: hidden,
+            contextMenuBuilder: null,
+            maxLines: widget.maxLines,
+            maxLength: kTextFieldMaxLength,
+            textAlign: widget.textAlign,
+            decoration: InputDecoration(
+              // Allows heights below Material's 48px minimum.
+              isDense: true,
+              // Vertically centers one line in a button-high field (+0.5 by eye).
+              contentPadding: EdgeInsets.symmetric(
+                vertical: (theme.dButtonHeight - theme.dTextHeight) / 2 + 0.5,
+                horizontal: widget.horizontalPadding ?? theme.dTextfieldPadding,
+              ),
+              counterText: '',
+              hintText: widget.hint,
+              hintStyle: TextStyle(color: theme.cTextInactive),
+              // Flat: the fill shows the field, a darker fill shows focus.
+              border: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: hidden,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: hidden,
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: hidden,
+              ),
+              disabledBorder: OutlineInputBorder(
+                borderRadius: radius,
+                borderSide: hidden,
+              ),
+              filled: true,
+              fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
             ),
-            enabledBorder: OutlineInputBorder(
-              borderRadius: radius,
-              borderSide: hidden,
-            ),
-            focusedBorder: OutlineInputBorder(
-              borderRadius: radius,
-              borderSide: hidden,
-            ),
-            disabledBorder: OutlineInputBorder(
-              borderRadius: radius,
-              borderSide: hidden,
-            ),
-            filled: true,
-            fillColor: focused ? theme.cTextFieldActive : theme.cTextField,
           ),
         ),
       ),
     );
+  }
+
+  /// Cut, Copy, Paste and Select all, as the platform labels them.
+  List<NutriaContextMenuItem> _menu(BuildContext context) {
+    final labels = MaterialLocalizations.of(context);
+    final selection = _controller.selection;
+    final hasSelection = selection.isValid && !selection.isCollapsed;
+    if (!_focus.hasFocus) _focus.requestFocus();
+    return [
+      if (hasSelection) ...[
+        NutriaContextMenuItem(
+          icon: Icons.content_cut,
+          label: labels.cutButtonLabel,
+          onSelected: () {
+            Clipboard.setData(
+              ClipboardData(text: selection.textInside(_controller.text)),
+            );
+            _replaceSelection('');
+          },
+        ),
+        NutriaContextMenuItem(
+          icon: Icons.content_copy,
+          label: labels.copyButtonLabel,
+          onSelected: () => Clipboard.setData(
+            ClipboardData(text: selection.textInside(_controller.text)),
+          ),
+        ),
+      ],
+      NutriaContextMenuItem(
+        icon: Icons.content_paste,
+        label: labels.pasteButtonLabel,
+        onSelected: () async {
+          final text = (await Clipboard.getData(Clipboard.kTextPlain))?.text;
+          if (text != null && mounted) _replaceSelection(text);
+        },
+      ),
+      NutriaContextMenuItem(
+        icon: Icons.select_all,
+        label: labels.selectAllButtonLabel,
+        onSelected: () => _controller.selection = TextSelection(
+          baseOffset: 0,
+          extentOffset: _controller.text.length,
+        ),
+      ),
+    ];
+  }
+
+  /// Puts [text] in place of the selection (or at the cursor), through the
+  /// field's input filters, and reports the change like typing would.
+  void _replaceSelection(String text) {
+    final value = _controller.value;
+    final selection = value.selection.isValid
+        ? value.selection
+        : TextSelection.collapsed(offset: value.text.length);
+    var next = value.replaced(selection, text);
+    for (final formatter in widget.inputFormatters ?? const []) {
+      next = formatter.formatEditUpdate(value, next);
+    }
+    if (next.text.length > kTextFieldMaxLength) return;
+    _controller.value = next;
+    if (next.text != value.text) widget.onChanged?.call(next.text);
   }
 }

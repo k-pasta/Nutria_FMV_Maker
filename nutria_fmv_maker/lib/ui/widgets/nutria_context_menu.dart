@@ -1,4 +1,5 @@
 // Right-click menu over any area, with items supplied by the caller.
+import 'package:flutter/gestures.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
@@ -29,6 +30,7 @@ class NutriaContextMenuArea extends StatefulWidget {
     this.onTap,
     this.onOpenChanged,
     this.behavior = HitTestBehavior.deferToChild,
+    this.fromPointerEvents = false,
   });
 
   final List<NutriaContextMenuItem> Function(Offset localPosition) itemsAt;
@@ -40,6 +42,10 @@ class NutriaContextMenuArea extends StatefulWidget {
 
   /// Use [HitTestBehavior.opaque] when [child] paints nothing itself.
   final HitTestBehavior behavior;
+
+  /// Opens on raw pointer events instead of a gesture, for children that
+  /// claim right-clicks themselves (text fields select text on them).
+  final bool fromPointerEvents;
 
   @override
   State<NutriaContextMenuArea> createState() => _NutriaContextMenuAreaState();
@@ -81,11 +87,11 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     return Offset(x, y);
   }
 
-  void _open(TapUpDetails details) {
+  void _open(Offset localPosition, Offset globalPosition) {
     _close();
-    final items = widget.itemsAt(details.localPosition);
+    final items = widget.itemsAt(localPosition);
     if (items.isEmpty) return;
-    final position = _fit(details.globalPosition);
+    final position = _fit(globalPosition);
     final theme = context.appTheme;
     final itemStyle = NutriaMenuStyles(theme).item;
 
@@ -149,11 +155,30 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     widget.onOpenChanged?.call(false);
   }
 
+  /// Whether the pointer went down with the right button ([fromPointerEvents]).
+  bool _secondaryDown = false;
+
   @override
-  Widget build(BuildContext context) => GestureDetector(
-    behavior: widget.behavior,
-    onTap: widget.onTap,
-    onSecondaryTapUp: _open,
-    child: widget.child,
-  );
+  Widget build(BuildContext context) {
+    if (widget.fromPointerEvents) {
+      return Listener(
+        behavior: widget.behavior,
+        onPointerDown: (event) =>
+            _secondaryDown = event.buttons & kSecondaryMouseButton != 0,
+        onPointerUp: (event) {
+          if (!_secondaryDown) return;
+          _secondaryDown = false;
+          _open(event.localPosition, event.position);
+        },
+        child: widget.child,
+      );
+    }
+    return GestureDetector(
+      behavior: widget.behavior,
+      onTap: widget.onTap,
+      onSecondaryTapUp: (details) =>
+          _open(details.localPosition, details.globalPosition),
+      child: widget.child,
+    );
+  }
 }

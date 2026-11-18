@@ -15,6 +15,7 @@ class NutriaNumberField extends StatelessWidget {
     required this.onStep,
     required this.onChanged,
     this.decimals = false,
+    this.isAccented = false,
     this.hint,
     this.onFocusChanged,
   });
@@ -25,6 +26,9 @@ class NutriaNumberField extends StatelessWidget {
 
   /// Allows a decimal point (or comma); otherwise only whole numbers.
   final bool decimals;
+
+  /// Shows the number in the accent color, e.g. for an overridden setting.
+  final bool isAccented;
   final String? hint;
   final ValueChanged<bool>? onFocusChanged;
 
@@ -53,6 +57,7 @@ class NutriaNumberField extends StatelessWidget {
         children: [
           Positioned.fill(
             child: NutriaTextField(
+              isAccented: isAccented,
               text: text,
               hint: hint,
               textAlign: TextAlign.center,

@@ -108,6 +108,7 @@ class _VideoSettingRowState extends State<VideoSettingRow> {
           ? NutriaNumberField(
               text: _seconds(settings.selectionTimeMs),
               decimals: true,
+              isAccented: widget.isOverridden,
               onStep: widget.onStep,
               onFocusChanged: (focused) {
                 if (focused) _typing = Object();

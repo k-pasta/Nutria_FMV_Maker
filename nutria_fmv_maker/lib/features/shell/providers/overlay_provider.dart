@@ -30,8 +30,16 @@ class OverlayNotifier extends _$OverlayNotifier {
   @override
   ShellOverlays build() => const ShellOverlays();
 
+  /// How many menu-bar menus report being open.
+  int _openMenus = 0;
+
+  /// A menu-bar menu opened or closed. Counted rather than stored: moving
+  /// from one menu to the next can report "open" for the new one before
+  /// "closed" for the old one.
   void setMenuOpen(bool open) {
-    if (state.menuOpen != open) state = state.copyWith(menuOpen: open);
+    _openMenus = open ? _openMenus + 1 : (_openMenus - 1).clamp(0, 1 << 20);
+    final anyOpen = _openMenus > 0;
+    if (state.menuOpen != anyOpen) state = state.copyWith(menuOpen: anyOpen);
   }
 
   void setContextMenuOpen(bool open) {

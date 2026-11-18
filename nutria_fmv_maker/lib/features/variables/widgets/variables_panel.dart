@@ -121,6 +121,8 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
         children: [
           NutriaTooltip(
             message: nameError ? t.variableNameError : null,
+            // The error comes and goes while typing; keep the field.
+            stable: true,
             child: NutriaTextField(
               text: variable.name,
               hint: t.variableName,
