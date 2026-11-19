@@ -272,3 +272,40 @@ Fixed from what I saw:
 - **A free comment** now takes its whole width instead of shrinking to its
   text.
 - **Multi-line fields** no longer show a "38/500" character counter.
+
+## Phase 5: logic nodes
+
+### Phase 5a: protocol
+Everything here lives in the shared package, so the Player computes exactly
+what the Maker checks.
+- **Expressions** (`FmvExpression`): numbers, `true`/`false`, variable
+  names, `+ - * / ^ ( )`, comparisons `< <= > >= == !=`, and `and`, `or`,
+  `not`.
+  - `&&`, `||`, `!` and the display symbols `× ÷ −` are accepted too, and
+    `=` means "equals".
+  - Power is right-associative, so `2^3^2` is 512.
+  - Errors give their position, so the Maker can mark the exact spot.
+- **Variable names with `-`:** `a-b` reads as the name only if such a
+  variable exists; otherwise it means a minus b.
+- **Storing results:**
+  - Whole-number variables round half away from zero (2.5 becomes 3,
+    −2.5 becomes −3).
+  - Min and max clamp after every change.
+  - A division by zero, or an invalid expression, leaves the variable
+    unchanged.
+  - In a compare node, anything that can't be evaluated counts as false.
+- **Change operations:** set, add, subtract, multiply, divide, power,
+  absolute, toggle, and, or, xor. This is your Set and Edit merged into
+  one node, without nor, nand and xnor, as proposed.
+- **Compare node:** condition rows with All or Any, or one expression that
+  replaces them.
+- **File format:**
+  - A "Variables" section, written only when there are variables.
+  - Nodes get `"type": "change"` or `"compare"`. Video nodes are written
+    exactly as before, with no type.
+  - Variables are referenced by name, which is easier to read and debug.
+- **Player:** `FmvVariableState` is a ready-made runtime it can use
+  directly.
+  - **Old Players can't play files that contain logic nodes:** they would
+    read them as video nodes without a video.
+  - The Player needs the update you haven't approved yet.

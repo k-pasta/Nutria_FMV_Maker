@@ -32,6 +32,11 @@ enum FmvDefaultSelection {
 String fmvEnumKey(String value) =>
     value.toLowerCase().replaceAll(RegExp(r'[\s_-]'), '');
 
+/// The value of [values] whose name matches [value] leniently (see
+/// [fmvEnumKey]), or `null`.
+T? fmvParseEnum<T extends Enum>(List<T> values, String value) =>
+    _parse(values, value);
+
 T? _parse<T extends Enum>(List<T> values, Object? value) {
   if (value is! String) return null;
   final key = fmvEnumKey(value);

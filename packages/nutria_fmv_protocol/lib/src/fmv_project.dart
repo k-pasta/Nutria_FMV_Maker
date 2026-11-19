@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 import 'package:nutria_fmv_protocol/src/enums.dart';
+import 'package:nutria_fmv_protocol/src/logic.dart';
 
 /// Thrown by [FmvProject.decode] for text that isn't a .fmv project.
 class FmvFormatException implements Exception {
@@ -26,9 +27,13 @@ class FmvFormatException implements Exception {
 ///             "overrides": {"showTimer": false}},
 ///     "002": {"video": "C:/b.mp4", "target": "003"},
 ///     "003": {"video": "C:/c.mp4"}
-///   }
+///   },
+///   "Variables": {"coins": {"type": "integer", "initial": 0, "min": 0}}
 /// }
 /// ```
+///
+/// "Variables" and the logic nodes ("type": "change" or "compare") were
+/// added after version 1.0; files without them are written as before.
 ///
 /// Playback starts at the first node of [nodes] (map order is kept; the
 /// Maker writes "001" first).
@@ -37,6 +42,7 @@ class FmvProject {
     this.info = const FmvProjectInfo(),
     this.settings = const FmvSettings(),
     this.nodes = const {},
+    this.variables = const {},
   });
 
   final FmvProjectInfo info;
@@ -44,6 +50,9 @@ class FmvProject {
 
   /// Nodes by id, in file order.
   final Map<String, FmvNode> nodes;
+
+  /// The story's variables by name.
+  final Map<String, FmvVariable> variables;
 
   /// The id of the node playback starts at, or `null` for an empty project.
   String? get startNodeId => nodes.isEmpty ? null : nodes.keys.first;
@@ -54,6 +63,11 @@ class FmvProject {
         'Nodes': {
           for (final entry in nodes.entries) entry.key: entry.value.toJson(),
         },
+        if (variables.isNotEmpty)
+          'Variables': {
+            for (final entry in variables.entries)
+              entry.key: entry.value.toJson(),
+          },
       };
 
   /// Reads the JSON object of a .fmv file. Missing parts get their defaults.
@@ -68,6 +82,11 @@ class FmvProject {
       nodes: {
         for (final entry in nodes.entries)
           '${entry.key}': FmvNode.fromJson(_map(entry.value)),
+      },
+      variables: {
+        for (final entry in _map(json['Variables']).entries)
+          if (FmvVariable.fromJson(_map(entry.value)) case final variable?)
+            entry.key: variable,
       },
     );
   }
@@ -197,25 +216,78 @@ class FmvOverrides {
         pauseOnEnd: _bool(json[FmvKeys.pauseOnEnd]),
         showTimer: _bool(json[FmvKeys.showTimer]),
         videoFit: FmvVideoFit.parse(json[FmvKeys.videoFit]),
-        defaultSelection: FmvDefaultSelection.parse(json[FmvKeys.defaultSelection]),
+        defaultSelection:
+            FmvDefaultSelection.parse(json[FmvKeys.defaultSelection]),
       );
 }
 
-/// One video and what follows it.
+/// What a node does.
+enum FmvNodeType {
+  /// Plays a video (the only type before logic nodes; written without a
+  /// "type").
+  video,
+
+  /// Changes a variable, then continues to [FmvNode.target].
+  change,
+
+  /// Tests variables, then continues to [FmvNode.whenTrue] or
+  /// [FmvNode.whenFalse].
+  compare,
+}
+
+/// One step of the story.
 ///
-/// A node with [choices] lets the viewer pick; otherwise playback continues
-/// to [target], or ends if there is none. Only choices that lead somewhere
-/// are written, so a branched node whose choices are all unconnected is
-/// written (and read) like an ending.
+/// A video node with [choices] lets the viewer pick; otherwise playback
+/// continues to [target], or ends if there is none. Only choices that lead
+/// somewhere are written, so a branched node whose choices are all
+/// unconnected is written (and read) like an ending.
+///
+/// Change nodes ([FmvNodeType.change]) set [variable] by [operation] and
+/// [value], then go on to [target]. Compare nodes test [conditions] (all,
+/// or any with [matchAny]) or, if set, [expression], and go on to
+/// [whenTrue] or [whenFalse].
 class FmvNode {
   const FmvNode({
+    this.type = FmvNodeType.video,
     this.video,
     this.subtitles,
     this.question,
     this.target,
     this.choices,
     this.overrides = const FmvOverrides(),
+    this.variable,
+    this.operation,
+    this.value,
+    this.conditions = const [],
+    this.matchAny = false,
+    this.expression,
+    this.whenTrue,
+    this.whenFalse,
   });
+
+  final FmvNodeType type;
+
+  /// Change nodes: the variable changed.
+  final String? variable;
+
+  /// Change nodes: how it is changed.
+  final FmvChangeOperation? operation;
+
+  /// Change nodes: the expression the operation uses, if it takes one.
+  final String? value;
+
+  /// Compare nodes: the conditions tested.
+  final List<FmvCondition> conditions;
+
+  /// Compare nodes: whether one true condition is enough.
+  final bool matchAny;
+
+  /// Compare nodes: a true/false expression used instead of [conditions].
+  final String? expression;
+
+  /// Compare nodes: where to go when the test holds, or doesn't.
+  final String? whenTrue;
+  final String? whenFalse;
 
   /// Path of the video file; `null` if the author didn't pick one.
   final String? video;
@@ -237,7 +309,29 @@ class FmvNode {
 
   bool get isBranched => choices != null;
 
-  Map<String, Object?> toJson() => {
+  Map<String, Object?> toJson() => switch (type) {
+        FmvNodeType.video => _videoJson(),
+        FmvNodeType.change => {
+            'type': type.name,
+            'variable': variable,
+            'operation': operation?.name,
+            if (value != null) 'value': value,
+            if (target != null) 'target': target,
+          },
+        FmvNodeType.compare => {
+            'type': type.name,
+            if (expression != null)
+              'expression': expression
+            else ...{
+              'conditions': [for (final c in conditions) c.toJson()],
+              'match': matchAny ? 'any' : 'all',
+            },
+            if (whenTrue != null) 'true': whenTrue,
+            if (whenFalse != null) 'false': whenFalse,
+          },
+      };
+
+  Map<String, Object?> _videoJson() => {
         'video': video,
         if (subtitles != null) 'subtitles': subtitles,
         if (question != null) 'question': question,
@@ -248,6 +342,35 @@ class FmvNode {
       };
 
   factory FmvNode.fromJson(Map<String, Object?> json) {
+    final type = switch (json['type']) {
+      final String name => fmvParseEnum(FmvNodeType.values, name),
+      _ => FmvNodeType.video,
+    };
+    if (type == FmvNodeType.change) {
+      return FmvNode(
+        type: type!,
+        variable: _string(json['variable']),
+        operation: FmvChangeOperation.parse(json['operation']),
+        value: _string(json['value']),
+        target: _string(json['target']),
+      );
+    }
+    if (type == FmvNodeType.compare) {
+      final conditions = json['conditions'];
+      return FmvNode(
+        type: type!,
+        conditions: [
+          if (conditions is List)
+            for (final c in conditions)
+              if (FmvCondition.fromJson(_map(c)) case final condition?)
+                condition,
+        ],
+        matchAny: json['match'] == 'any',
+        expression: _string(json['expression']),
+        whenTrue: _string(json['true']),
+        whenFalse: _string(json['false']),
+      );
+    }
     final choices = json['choices'];
     return FmvNode(
       video: _string(json['video']),
