@@ -136,6 +136,74 @@ class AppLocalizationsEl extends AppLocalizations {
   String get boardProjectSettings => 'Προεπιλογές';
 
   @override
+  String get boardProject => 'Έργο';
+
+  @override
+  String get projectInformation => 'Πληροφορίες';
+
+  @override
+  String get projectLanguages => 'Γλώσσες';
+
+  @override
+  String get projectAddLanguage => 'Προσθήκη Γλώσσας…';
+
+  @override
+  String get projectMainLanguage => 'Κύρια';
+
+  @override
+  String get projectMakeMain => 'Ορισμός ως Κύρια Γλώσσα';
+
+  @override
+  String get projectRemoveLanguage => 'Αφαίρεση γλώσσας';
+
+  @override
+  String get projectLanguagesNote =>
+      'Η πρώτη είναι η κύρια γλώσσα. Με περισσότερες από μία, η σύνδεση υποτίτλων ρωτά σε ποια γλώσσα είναι.';
+
+  @override
+  String get projectOverview => 'Επισκόπηση';
+
+  @override
+  String get projectFile => 'Αρχείο';
+
+  @override
+  String get projectFilesUsed => 'Αρχεία σε Χρήση';
+
+  @override
+  String projectFilesSize(int count, String size) {
+    return '$count · $size';
+  }
+
+  @override
+  String projectUnreadable(int count) {
+    return '$count από τα αρχεία σε χρήση δεν διαβάζονται, οπότε το μέγεθος είναι μικρότερο από το πραγματικό.';
+  }
+
+  @override
+  String get projectShortest => 'Συντομότερη Διαδρομή';
+
+  @override
+  String get projectLongest => 'Μακρύτερη Διαδρομή';
+
+  @override
+  String get projectNoEnding => 'Χωρίς τέλος';
+
+  @override
+  String get projectLoops => 'Χωρίς όριο (βρόχοι)';
+
+  @override
+  String get projectReading => 'Ανάγνωση…';
+
+  @override
+  String get projectLengthNote =>
+      'Οι διαδρομές μετρούν τα βίντεο από την αρχή ως ένα τέλος, όχι τον χρόνο των επιλογών.';
+
+  @override
+  String projectUnknownLengths(int count) {
+    return '$count βίντεο άγνωστης διάρκειας μετρούν ως 0:00.';
+  }
+
+  @override
   String get defaultsFirstColor => 'Χρώμα 1 και χρώματα χωρίς δικές τους';
 
   @override

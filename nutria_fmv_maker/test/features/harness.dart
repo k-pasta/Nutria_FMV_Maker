@@ -140,6 +140,13 @@ class FakeMediaFiles implements MediaFiles {
   @override
   bool exists(String path) => !missing.contains(path);
 
+  /// File sizes by path; others are 1 MB (missing files have none).
+  final Map<String, int> sizes = {};
+
+  @override
+  int? sizeOf(String path) =>
+      missing.contains(path) ? null : (sizes[path] ?? 1 << 20);
+
   @override
   List<String> filesIn(String folder) => folders[folder] ?? const [];
 

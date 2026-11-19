@@ -86,6 +86,44 @@ Nothing changes where the answer kept the current behaviour.
   warning that names the preference. New branched nodes still start with
   two answer slots either way.
 
+### Step 3: the Project section and languages
+- **A new left-panel section, "Project"** (between Main Menu Design and
+  Defaults), rather than more rows in Defaults, which is about playback.
+  It has three parts:
+  - **Information:** title and description (the same as on the origin
+    node).
+  - **Languages:** add from a searchable list of 80 languages, written
+    in their own language with the code ("Ελληνικά (el)"). The first is
+    the main one; right-click another to make it main; (x) removes.
+  - **Overview** (read-only): the file name; the files the export uses
+    (count and total size); the shortest and longest ways from the start
+    to an ending.
+- **"Files used"** = what an export would contain: videos, subtitles and
+  music of nodes reachable from the start, menu music, the menu
+  background and the fonts of its elements. Unconnected nodes don't
+  count.
+- **Ways through the story** add up video lengths only, not the time
+  spent choosing (that depends on the viewer). With a loop, the longest
+  way is "No limit (loops)". Videos whose length can't be read count as
+  0:00, with a note saying how many.
+- **Subtitles per language:** with two or more languages, dropping a
+  subtitle file on a video (node or library) opens a menu of the
+  languages. With one or none, it links as before.
+  - **Earlier links:** links made before languages were chosen count
+    as the main language's. Choosing languages pins them to the main
+    one, so changing the main language later doesn't move them.
+  - **Removed languages:** a removed language's links stay in the
+    project but aren't exported.
+- **Formats:**
+  - **`.nfmv` version 3:** version 2 files are upgraded. An older Maker
+    can't open version 3 files.
+  - **`.fmv`:** gets optional `languages` (project info) and
+    `subtitleTracks` (per node, only with two or more languages).
+    `subtitles` stays the main language's file, so the current Player
+    keeps working.
+- **Ask:** the Player should let the viewer pick a subtitle language
+  (in its settings, or on the main menu?).
+
 ### Cleanup plan (your request, 2026-11-19)
 **FFmpeg:** the Maker hasn't used it since the refactor started (commit
 `ffe6c9b`); nothing downloaded an FFmpeg for it on this computer. Its three

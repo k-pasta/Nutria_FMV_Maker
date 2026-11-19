@@ -136,6 +136,74 @@ class AppLocalizationsEn extends AppLocalizations {
   String get boardProjectSettings => 'Defaults';
 
   @override
+  String get boardProject => 'Project';
+
+  @override
+  String get projectInformation => 'Information';
+
+  @override
+  String get projectLanguages => 'Languages';
+
+  @override
+  String get projectAddLanguage => 'Add a Language…';
+
+  @override
+  String get projectMainLanguage => 'Main';
+
+  @override
+  String get projectMakeMain => 'Make Main Language';
+
+  @override
+  String get projectRemoveLanguage => 'Remove this language';
+
+  @override
+  String get projectLanguagesNote =>
+      'The first is the main language. With more than one, linking subtitles asks which language they are in.';
+
+  @override
+  String get projectOverview => 'Overview';
+
+  @override
+  String get projectFile => 'File';
+
+  @override
+  String get projectFilesUsed => 'Files Used';
+
+  @override
+  String projectFilesSize(int count, String size) {
+    return '$count · $size';
+  }
+
+  @override
+  String projectUnreadable(int count) {
+    return '$count of the files used can\'t be read, so the size is less than the real one.';
+  }
+
+  @override
+  String get projectShortest => 'Shortest Way';
+
+  @override
+  String get projectLongest => 'Longest Way';
+
+  @override
+  String get projectNoEnding => 'No ending';
+
+  @override
+  String get projectLoops => 'No limit (loops)';
+
+  @override
+  String get projectReading => 'Reading…';
+
+  @override
+  String get projectLengthNote =>
+      'Ways count the videos from the start to an ending, not the time spent choosing.';
+
+  @override
+  String projectUnknownLengths(int count) {
+    return '$count videos of unknown length count as 0:00.';
+  }
+
+  @override
   String get defaultsFirstColor => 'Color 1 and colors without their own';
 
   @override

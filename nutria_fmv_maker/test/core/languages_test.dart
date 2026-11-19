@@ -44,9 +44,16 @@ void main() {
     );
     expect(after.subtitlesOf('v'), {'el': 'el'});
     // Linking the main language replaces it, not adds a second one.
-    expect(
-      after.linkSubtitle('v', 'en', language: 'el').subtitlesOf('v'),
-      {'el': 'en'},
-    );
+    expect(after.linkSubtitle('v', 'en', language: 'el').subtitlesOf('v'), {
+      'el': 'en',
+    });
+  });
+
+  test('choosing languages pins links without one to the main language', () {
+    final doc = _doc().linkSubtitle('v', 'el').setLanguages(['el', 'en']);
+    expect(doc.mediaById('v')!.subtitles, {'el': 'el'});
+    // Now English becomes main: the Greek link stays Greek.
+    final swapped = doc.setLanguages(['en', 'el']);
+    expect(swapped.subtitlesOf('v'), {'el': 'el'});
   });
 }

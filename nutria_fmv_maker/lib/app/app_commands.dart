@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
+import 'package:nutria_fmv_maker/core/document/languages.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
@@ -27,6 +28,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_confirm_dialog.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 import 'package:path/path.dart' as p;
 import 'package:url_launcher/url_launcher.dart';
@@ -79,15 +81,45 @@ class AppCommands {
   }
 
   /// Links subtitle file [subtitleId] to video [videoId], with a notice if
-  /// the subtitles go on after the video ends.
-  Future<void> linkSubtitle(String videoId, String subtitleId) async {
-    _ref.read(graphEditorProvider).linkSubtitle(videoId, subtitleId);
+  /// the subtitles go on after the video ends. When the story has more than
+  /// one language, a menu at [at] (global) first asks which one they are.
+  Future<void> linkSubtitle(
+    String videoId,
+    String subtitleId, {
+    Offset? at,
+  }) async {
+    final languages = _ref.read(projectDocumentProvider).info.languages;
+    if (languages.length < 2 || at == null) {
+      return _linkSubtitle(videoId, subtitleId, '');
+    }
+    showNutriaMenu(_context, at, [
+      for (final code in languages)
+        NutriaContextMenuItem(
+          icon: Icons.closed_caption,
+          label: languageLabel(code),
+          onSelected: () => _linkSubtitle(videoId, subtitleId, code),
+        ),
+    ], onOpenChanged: _ref.read(overlayProvider.notifier).setContextMenuOpen);
+  }
+
+  Future<void> _linkSubtitle(
+    String videoId,
+    String subtitleId,
+    String language,
+  ) async {
+    _ref
+        .read(graphEditorProvider)
+        .linkSubtitle(videoId, subtitleId, language: language);
     final doc = _ref.read(projectDocumentProvider);
     final video = doc.mediaById(videoId);
     final subtitles = doc.mediaById(subtitleId);
-    if (video?.subtitleId != subtitleId || subtitles == null) return;
+    if (video == null ||
+        subtitles == null ||
+        !video.subtitles.containsValue(subtitleId)) {
+      return;
+    }
     final cues = await _ref.read(subtitleCuesProvider(subtitles.path).future);
-    final info = await _ref.read(videoInfoProvider(video!.path).future);
+    final info = await _ref.read(videoInfoProvider(video.path).future);
     final duration = info?.duration;
     if (cues == null || duration == null || !_context.mounted) return;
     final over = subtitlesEnd(cues) - duration;

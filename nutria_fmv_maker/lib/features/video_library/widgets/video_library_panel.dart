@@ -344,9 +344,16 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
     final missing = ref.watch(
       missingMediaProvider.select((ids) => ids.contains(asset.id)),
     );
-    final subtitles = asset.subtitleId == null
-        ? null
-        : ref.watch(videoAssetProvider(asset.subtitleId!));
+    // The linked subtitle files' names, for the tooltip.
+    final subtitleNames = ref.watch(
+      mediaAssetsProvider.select(
+        (media) => [
+          for (final id in asset.subtitles.values)
+            ?media.where((m) => m.id == id).firstOrNull?.fileName,
+        ].join(', '),
+      ),
+    );
+    final subtitles = subtitleNames.isEmpty ? null : subtitleNames;
     final commands = AppCommands(context, ref);
     final name = NutriaText(
       text: asset.fileName,
@@ -453,9 +460,7 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
         child: NutriaTooltip(
           message: missing
               ? t.tooltipMissingFile(asset.path)
-              : (subtitles == null
-                    ? null
-                    : t.tooltipHasSubtitles(subtitles.fileName)),
+              : (subtitles == null ? null : t.tooltipHasSubtitles(subtitles)),
           child: MouseRegion(
             cursor: SystemMouseCursors.click,
             onEnter: (_) => setState(() => _hovered = true),
@@ -467,8 +472,11 @@ class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
               child: DragTarget<MediaAsset>(
                 onWillAcceptWithDetails: (details) =>
                     asset.isVideo && details.data.kind == MediaKind.subtitle,
-                onAcceptWithDetails: (details) =>
-                    commands.linkSubtitle(asset.id, details.data.id),
+                onAcceptWithDetails: (details) => commands.linkSubtitle(
+                  asset.id,
+                  details.data.id,
+                  at: details.offset,
+                ),
                 builder: (context, candidates, _) =>
                     card(_hovered || candidates.isNotEmpty),
               ),

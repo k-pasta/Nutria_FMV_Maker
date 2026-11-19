@@ -328,6 +328,126 @@ abstract class AppLocalizations {
   /// **'Defaults'**
   String get boardProjectSettings;
 
+  /// No description provided for @boardProject.
+  ///
+  /// In en, this message translates to:
+  /// **'Project'**
+  String get boardProject;
+
+  /// No description provided for @projectInformation.
+  ///
+  /// In en, this message translates to:
+  /// **'Information'**
+  String get projectInformation;
+
+  /// No description provided for @projectLanguages.
+  ///
+  /// In en, this message translates to:
+  /// **'Languages'**
+  String get projectLanguages;
+
+  /// No description provided for @projectAddLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a Language…'**
+  String get projectAddLanguage;
+
+  /// No description provided for @projectMainLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Main'**
+  String get projectMainLanguage;
+
+  /// No description provided for @projectMakeMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Make Main Language'**
+  String get projectMakeMain;
+
+  /// No description provided for @projectRemoveLanguage.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this language'**
+  String get projectRemoveLanguage;
+
+  /// No description provided for @projectLanguagesNote.
+  ///
+  /// In en, this message translates to:
+  /// **'The first is the main language. With more than one, linking subtitles asks which language they are in.'**
+  String get projectLanguagesNote;
+
+  /// No description provided for @projectOverview.
+  ///
+  /// In en, this message translates to:
+  /// **'Overview'**
+  String get projectOverview;
+
+  /// No description provided for @projectFile.
+  ///
+  /// In en, this message translates to:
+  /// **'File'**
+  String get projectFile;
+
+  /// No description provided for @projectFilesUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Files Used'**
+  String get projectFilesUsed;
+
+  /// No description provided for @projectFilesSize.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} · {size}'**
+  String projectFilesSize(int count, String size);
+
+  /// No description provided for @projectUnreadable.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} of the files used can\'t be read, so the size is less than the real one.'**
+  String projectUnreadable(int count);
+
+  /// No description provided for @projectShortest.
+  ///
+  /// In en, this message translates to:
+  /// **'Shortest Way'**
+  String get projectShortest;
+
+  /// No description provided for @projectLongest.
+  ///
+  /// In en, this message translates to:
+  /// **'Longest Way'**
+  String get projectLongest;
+
+  /// No description provided for @projectNoEnding.
+  ///
+  /// In en, this message translates to:
+  /// **'No ending'**
+  String get projectNoEnding;
+
+  /// No description provided for @projectLoops.
+  ///
+  /// In en, this message translates to:
+  /// **'No limit (loops)'**
+  String get projectLoops;
+
+  /// No description provided for @projectReading.
+  ///
+  /// In en, this message translates to:
+  /// **'Reading…'**
+  String get projectReading;
+
+  /// No description provided for @projectLengthNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Ways count the videos from the start to an ending, not the time spent choosing.'**
+  String get projectLengthNote;
+
+  /// No description provided for @projectUnknownLengths.
+  ///
+  /// In en, this message translates to:
+  /// **'{count} videos of unknown length count as 0:00.'**
+  String projectUnknownLengths(int count);
+
   /// No description provided for @defaultsFirstColor.
   ///
   /// In en, this message translates to:

@@ -11,6 +11,7 @@ import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/logic_check.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/story_stats.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 /// A problem found while exporting. Export still succeeds; the editor can
@@ -47,7 +48,7 @@ FmvExport exportFmv(
   ProjectDocument document, {
   bool allowSingleChoice = false,
 }) {
-  final order = _reachableInBfsOrder(document);
+  final order = reachableNodeIds(document);
   final ids = {
     for (final (index, nodeId) in order.indexed)
       nodeId: index.toString().padLeft(3, '0'),
@@ -237,13 +238,18 @@ FmvMusic? _music(ProjectDocument document, MusicCue? cue) {
   );
 }
 
-/// The paths of the subtitles linked to [node]'s video, by language.
-Map<String, String> _subtitleTracks(ProjectDocument document, Node node) => {
-  for (final MapEntry(:key, :value) in document
-      .subtitlesOf(node.videoIdOrNull)
-      .entries)
-    if (document.mediaById(value) case final file?) key: file.path,
-};
+/// The paths of the subtitles linked to [node]'s video, by language: only
+/// the story's languages (links for a language since removed are kept in
+/// the project but not exported).
+Map<String, String> _subtitleTracks(ProjectDocument document, Node node) {
+  final languages = document.info.languages;
+  return {
+    for (final MapEntry(:key, :value)
+        in document.subtitlesOf(node.videoIdOrNull).entries)
+      if (languages.isEmpty || languages.contains(key))
+        if (document.mediaById(value) case final file?) key: file.path,
+  };
+}
 
 /// The path of the subtitles in the main language (or the only ones) of
 /// [node]'s video, for Players that know one subtitle file per video.
@@ -287,28 +293,6 @@ FmvVideoFit _videoFit(VideoFit fit) => FmvVideoFit.values.byName(fit.name);
 
 FmvDefaultSelection _defaultSelection(DefaultSelectionMethod method) =>
     FmvDefaultSelection.values.byName(method.name);
-
-/// Node ids reachable from the origin, breadth-first, following each node's
-/// outputs in port order. Edges into deleted nodes are ignored.
-List<String> _reachableInBfsOrder(ProjectDocument document) {
-  final start = document.origin.id;
-  final visited = <String>{start};
-  final order = <String>[];
-  final queue = <String>[start];
-  while (queue.isNotEmpty) {
-    final nodeId = queue.removeAt(0);
-    order.add(nodeId);
-    for (final port in outputRefsOf(document.node(nodeId))) {
-      final next = document.edgeFrom(port)?.to.nodeId;
-      if (next != null &&
-          document.nodes.containsKey(next) &&
-          visited.add(next)) {
-        queue.add(next);
-      }
-    }
-  }
-  return order;
-}
 
 String? _videoPath(
   ProjectDocument document,

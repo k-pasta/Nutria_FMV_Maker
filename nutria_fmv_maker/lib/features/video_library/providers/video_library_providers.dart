@@ -58,7 +58,7 @@ Future<String?> mediaFontFamily(Ref ref, String path) async {
 /// The ids of the subtitle files linked to a video.
 @riverpod
 Set<String> linkedSubtitleIds(Ref ref) => {
-  for (final asset in ref.watch(mediaAssetsProvider)) ?asset.subtitleId,
+  for (final asset in ref.watch(mediaAssetsProvider)) ...asset.subtitles.values,
 };
 
 /// The library groups the user has collapsed this session (see

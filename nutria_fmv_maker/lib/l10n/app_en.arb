@@ -82,6 +82,50 @@
   "mediaKindFont": "Fonts",
   "boardPreferences": "Preferences",
   "boardProjectSettings": "Defaults",
+  "boardProject": "Project",
+  "projectInformation": "Information",
+  "projectLanguages": "Languages",
+  "projectAddLanguage": "Add a Language…",
+  "projectMainLanguage": "Main",
+  "projectMakeMain": "Make Main Language",
+  "projectRemoveLanguage": "Remove this language",
+  "projectLanguagesNote": "The first is the main language. With more than one, linking subtitles asks which language they are in.",
+  "projectOverview": "Overview",
+  "projectFile": "File",
+  "projectFilesUsed": "Files Used",
+  "projectFilesSize": "{count} · {size}",
+  "@projectFilesSize": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "size": {
+        "type": "String"
+      }
+    }
+  },
+  "projectUnreadable": "{count} of the files used can't be read, so the size is less than the real one.",
+  "@projectUnreadable": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "projectShortest": "Shortest Way",
+  "projectLongest": "Longest Way",
+  "projectNoEnding": "No ending",
+  "projectLoops": "No limit (loops)",
+  "projectReading": "Reading…",
+  "projectLengthNote": "Ways count the videos from the start to an ending, not the time spent choosing.",
+  "projectUnknownLengths": "{count} videos of unknown length count as 0:00.",
+  "@projectUnknownLengths": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      }
+    }
+  },
   "defaultsFirstColor": "Color 1 and colors without their own",
   "defaultsColor": "Color {number}",
   "@defaultsColor": {

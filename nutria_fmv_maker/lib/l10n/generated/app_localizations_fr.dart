@@ -138,6 +138,74 @@ class AppLocalizationsFr extends AppLocalizations {
   String get boardProjectSettings => 'Valeurs par défaut';
 
   @override
+  String get boardProject => 'Projet';
+
+  @override
+  String get projectInformation => 'Informations';
+
+  @override
+  String get projectLanguages => 'Langues';
+
+  @override
+  String get projectAddLanguage => 'Ajouter une langue…';
+
+  @override
+  String get projectMainLanguage => 'Principale';
+
+  @override
+  String get projectMakeMain => 'Définir comme langue principale';
+
+  @override
+  String get projectRemoveLanguage => 'Retirer cette langue';
+
+  @override
+  String get projectLanguagesNote =>
+      'La première est la langue principale. S\'il y en a plusieurs, lier des sous-titres demande leur langue.';
+
+  @override
+  String get projectOverview => 'Aperçu';
+
+  @override
+  String get projectFile => 'Fichier';
+
+  @override
+  String get projectFilesUsed => 'Fichiers utilisés';
+
+  @override
+  String projectFilesSize(int count, String size) {
+    return '$count · $size';
+  }
+
+  @override
+  String projectUnreadable(int count) {
+    return '$count des fichiers utilisés sont illisibles : la taille réelle est plus grande.';
+  }
+
+  @override
+  String get projectShortest => 'Parcours le plus court';
+
+  @override
+  String get projectLongest => 'Parcours le plus long';
+
+  @override
+  String get projectNoEnding => 'Pas de fin';
+
+  @override
+  String get projectLoops => 'Sans limite (boucles)';
+
+  @override
+  String get projectReading => 'Lecture…';
+
+  @override
+  String get projectLengthNote =>
+      'Les parcours comptent les vidéos du début à une fin, pas le temps des choix.';
+
+  @override
+  String projectUnknownLengths(int count) {
+    return '$count vidéos de durée inconnue comptent pour 0:00.';
+  }
+
+  @override
   String get defaultsFirstColor => 'Couleur 1 et couleurs sans les leurs';
 
   @override

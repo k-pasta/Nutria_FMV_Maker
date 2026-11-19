@@ -27,7 +27,7 @@ class MediaDetails extends ConsumerWidget {
         ? ref.watch(
             mediaAssetsProvider.select(
               (media) => media
-                  .where((m) => m.subtitleId == asset.id)
+                  .where((m) => m.subtitles.containsValue(asset.id))
                   .firstOrNull
                   ?.fileName,
             ),

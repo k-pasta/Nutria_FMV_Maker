@@ -510,6 +510,34 @@ extension GraphOps on ProjectDocument {
     };
   }
 
+  /// Sets the story's [languages] (main first). Subtitle links without a
+  /// language are pinned to the main language first, so changing which
+  /// language is main doesn't move them.
+  ProjectDocument setLanguages(List<String> languages) {
+    final unique = [
+      ...{...languages},
+    ];
+    final main = info.languages.firstOrNull ?? unique.firstOrNull;
+    return copyWith(
+      info: info.copyWith(languages: unique),
+      media: main == null
+          ? media
+          : [
+              for (final asset in media)
+                if (asset.subtitles.containsKey(''))
+                  asset.copyWith(
+                    subtitles: {
+                      for (final MapEntry(:key, :value)
+                          in asset.subtitles.entries)
+                        key.isEmpty ? main : key: value,
+                    },
+                  )
+                else
+                  asset,
+            ],
+    );
+  }
+
   /// Links subtitle file [subtitleId] to video [videoId] for [language]
   /// (`''`: the main language, or none), replacing that language's file
   /// and unlinking [subtitleId] from anywhere else. Does nothing unless the
@@ -534,8 +562,9 @@ extension GraphOps on ProjectDocument {
           if (asset.id == videoId)
             asset.copyWith(
               subtitles: {
-                for (final MapEntry(key: k, :value) in subtitlesOf(videoId)
-                    .entries)
+                for (final MapEntry(key: k, :value) in subtitlesOf(
+                  videoId,
+                ).entries)
                   if (k != key && value != subtitleId) k: value,
                 key: subtitleId,
               },

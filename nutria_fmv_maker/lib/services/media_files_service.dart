@@ -17,6 +17,9 @@ abstract interface class MediaFiles {
 
   /// The contents of the file at [path], or `null` if it can't be read.
   Future<Uint8List?> readBytes(String path);
+
+  /// The size of the file at [path] in bytes, or `null` if it can't be read.
+  int? sizeOf(String path);
 }
 
 /// [MediaFiles] on the local disk.
@@ -25,6 +28,15 @@ class LocalMediaFiles implements MediaFiles {
 
   @override
   bool exists(String path) => File(path).existsSync();
+
+  @override
+  int? sizeOf(String path) {
+    try {
+      return File(path).lengthSync();
+    } on FileSystemException {
+      return null;
+    }
+  }
 
   @override
   List<String> filesIn(String folder) {

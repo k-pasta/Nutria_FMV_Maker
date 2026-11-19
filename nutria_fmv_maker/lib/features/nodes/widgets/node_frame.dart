@@ -303,7 +303,10 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
       case MediaKind.video:
         _gestures.dropVideo(node.id, asset.id);
       case MediaKind.subtitle:
-        AppCommands(context, ref).linkSubtitle(node.videoIdOrNull!, asset.id);
+        AppCommands(
+          context,
+          ref,
+        ).linkSubtitle(node.videoIdOrNull!, asset.id, at: details.offset);
       case MediaKind.audio when node is OriginNode:
         editor.setMenuMusic(asset.id);
       case MediaKind.audio when node is BranchedVideoNode:

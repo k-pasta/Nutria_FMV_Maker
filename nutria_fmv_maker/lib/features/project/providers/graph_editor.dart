@@ -541,6 +541,30 @@ class GraphEditor {
     mergeKey: mergeKey,
   );
 
+  /// Adds language [code] to the story (last, or first if it's the only).
+  void addLanguage(String code) => _document.apply(
+    'Add language',
+    (d) => d.setLanguages([...d.info.languages, code]),
+  );
+
+  void removeLanguage(String code) => _document.apply(
+    'Remove language',
+    (d) => d.setLanguages([
+      for (final l in d.info.languages)
+        if (l != code) l,
+    ]),
+  );
+
+  /// Makes [code] the story's main language (the first).
+  void makeMainLanguage(String code) => _document.apply(
+    'Change main language',
+    (d) => d.setLanguages([
+      code,
+      for (final l in d.info.languages)
+        if (l != code) l,
+    ]),
+  );
+
   void setProjectDescription(String description, {Object? mergeKey}) =>
       _document.apply(
         'Edit description',
@@ -678,10 +702,15 @@ class GraphEditor {
     _document.commit();
   }
 
-  /// Links subtitle file [subtitleId] to video [videoId], as one undo step.
-  void linkSubtitle(String videoId, String subtitleId) => _document.apply(
+  /// Links subtitle file [subtitleId] to video [videoId] for [language]
+  /// (`''`: the main one), as one undo step.
+  void linkSubtitle(
+    String videoId,
+    String subtitleId, {
+    String language = '',
+  }) => _document.apply(
     'Link subtitles',
-    (d) => d.linkSubtitle(videoId, subtitleId),
+    (d) => d.linkSubtitle(videoId, subtitleId, language: language),
   );
 
   /// Video [videoId] no longer has subtitles.
