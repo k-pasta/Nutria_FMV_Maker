@@ -157,4 +157,17 @@ void main() {
     expect(read.menuScreen.elements.single.style.textColor, 0xFFFF0000);
     expect(const FmvProject().toJson().containsKey('Screens'), isFalse);
   });
+
+  test('copies are separate; restoring keeps only fitting values', () {
+    final state = FmvVariableState({
+      'coins': const FmvVariable(type: FmvVariableType.integer, initial: 1),
+      'key': const FmvVariable(type: FmvVariableType.boolean, initial: false),
+    });
+    final copy = state.copy()..change('coins', FmvChangeOperation.add, '2');
+    expect(copy.values['coins'], 3);
+    expect(state.values['coins'], 1);
+
+    state.restore({'coins': 7, 'key': 'yes', 'gone': true});
+    expect(state.values, {'coins': 7, 'key': false});
+  });
 }

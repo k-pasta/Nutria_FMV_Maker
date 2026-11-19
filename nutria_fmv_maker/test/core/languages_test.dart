@@ -1,8 +1,8 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:nutria_fmv_maker/core/document/languages.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 ProjectDocument _doc({List<String> languages = const []}) =>
     ProjectDocument.empty().copyWith(
@@ -17,8 +17,8 @@ ProjectDocument _doc({List<String> languages = const []}) =>
 
 void main() {
   test('languages show in their own name with the code', () {
-    expect(languageLabel('el'), 'Ελληνικά (el)');
-    expect(languageLabel('xx'), 'xx');
+    expect(fmvLanguageLabel('el'), 'Ελληνικά (el)');
+    expect(fmvLanguageLabel('xx'), 'xx');
   });
 
   test('one subtitle file per language; a file links to one place', () {

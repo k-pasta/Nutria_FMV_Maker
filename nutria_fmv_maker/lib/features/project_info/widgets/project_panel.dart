@@ -2,7 +2,6 @@
 // and languages, and an overview (file, size, how long it plays).
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
-import 'package:nutria_fmv_maker/core/document/languages.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_info/providers/project_overview_provider.dart';
@@ -15,6 +14,7 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 /// [bytes] in the largest unit that keeps a number above 1 ("1.4 GB").
 String formatBytes(int bytes) {
@@ -60,7 +60,7 @@ class _ProjectPanelState extends ConsumerState<ProjectPanel> {
     final info = ref.watch(projectDocumentProvider.select((d) => d.info));
     final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
     final addable = [
-      for (final code in kStoryLanguages.keys)
+      for (final code in kFmvLanguageNames.keys)
         if (!info.languages.contains(code)) code,
     ];
 
@@ -108,7 +108,7 @@ class _ProjectPanelState extends ConsumerState<ProjectPanel> {
             children: [
               Expanded(
                 child: NutriaText(
-                  text: languageLabel(code),
+                  text: fmvLanguageLabel(code),
                   state: i == 0
                       ? NutriaTextState.accented
                       : NutriaTextState.normal,
@@ -133,7 +133,7 @@ class _ProjectPanelState extends ConsumerState<ProjectPanel> {
       NutriaSearchMenu(
         label: t.projectAddLanguage,
         isPlaceholder: true,
-        options: [for (final code in addable) languageLabel(code)],
+        options: [for (final code in addable) fmvLanguageLabel(code)],
         searchHint: t.logicSearchVariables,
         onSelected: (i) => editor.addLanguage(addable[i]),
         onOpenChanged: menuOpen,

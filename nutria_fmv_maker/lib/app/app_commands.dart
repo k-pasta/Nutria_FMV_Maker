@@ -4,7 +4,6 @@ import 'dart:io';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
-import 'package:nutria_fmv_maker/core/document/languages.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
@@ -96,7 +95,7 @@ class AppCommands {
       for (final code in languages)
         NutriaContextMenuItem(
           icon: Icons.closed_caption,
-          label: languageLabel(code),
+          label: fmvLanguageLabel(code),
           onSelected: () => _linkSubtitle(videoId, subtitleId, code),
         ),
     ], onOpenChanged: _ref.read(overlayProvider.notifier).setContextMenuOpen);

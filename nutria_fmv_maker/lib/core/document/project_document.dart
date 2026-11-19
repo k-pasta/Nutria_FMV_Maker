@@ -25,7 +25,7 @@ abstract class ProjectInfo with _$ProjectInfo {
     String? title,
     String? description,
 
-    /// The story's languages as codes (see `kStoryLanguages`), the main one
+    /// The story's languages as codes (see `kFmvLanguageNames`), the main one
     /// first. Empty: not said (one language).
     @Default(<String>[]) List<String> languages,
   }) = _ProjectInfo;

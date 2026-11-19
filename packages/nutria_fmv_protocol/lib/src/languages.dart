@@ -2,7 +2,7 @@
 
 /// Language names in their own language, by ISO 639-1 code, so they read
 /// the same whatever the editor's language. In alphabetical order of code.
-const kStoryLanguages = {
+const kFmvLanguageNames = {
   'af': 'Afrikaans',
   'am': 'አማርኛ',
   'ar': 'العربية',
@@ -87,7 +87,7 @@ const kStoryLanguages = {
 
 /// How language [code] is shown: its own name and the code, e.g.
 /// "Ελληνικά (el)"; codes not in the list show as they are.
-String languageLabel(String code) => switch (kStoryLanguages[code]) {
-  final name? => '$name ($code)',
-  null => code,
-};
+String fmvLanguageLabel(String code) => switch (kFmvLanguageNames[code]) {
+      final name? => '$name ($code)',
+      null => code,
+    };

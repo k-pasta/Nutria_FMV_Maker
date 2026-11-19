@@ -178,6 +178,24 @@ class FmvVariableState {
   /// Current values by name.
   final Map<String, Object> values;
 
+  /// A separate state with the same values (to try what logic nodes would
+  /// do without changing this one).
+  FmvVariableState copy() =>
+      FmvVariableState(definitions)..values.addAll(values);
+
+  /// Sets the values saved earlier ([values] of another state), keeping
+  /// only variables that still exist with a value of the right type.
+  void restore(Map<String, Object?> saved) {
+    for (final MapEntry(:key, :value) in saved.entries) {
+      final definition = definitions[key];
+      if (definition == null || value == null) continue;
+      final fits = definition.type == FmvVariableType.boolean
+          ? value is bool
+          : value is num;
+      if (fits) values[key] = definition.store(value);
+    }
+  }
+
   Map<String, FmvValueType> get _types => {
         for (final MapEntry(:key, :value) in definitions.entries)
           key: value.type.valueType,

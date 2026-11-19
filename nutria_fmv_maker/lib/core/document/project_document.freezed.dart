@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectInfo {
 
- String? get title; String? get description;/// The story's languages as codes (see `kStoryLanguages`), the main one
+ String? get title; String? get description;/// The story's languages as codes (see `kFmvLanguageNames`), the main one
 /// first. Empty: not said (one language).
  List<String> get languages;
 /// Create a copy of ProjectInfo
@@ -224,10 +224,10 @@ class _ProjectInfo implements ProjectInfo {
 
 @override final  String? title;
 @override final  String? description;
-/// The story's languages as codes (see `kStoryLanguages`), the main one
+/// The story's languages as codes (see `kFmvLanguageNames`), the main one
 /// first. Empty: not said (one language).
  final  List<String> _languages;
-/// The story's languages as codes (see `kStoryLanguages`), the main one
+/// The story's languages as codes (see `kFmvLanguageNames`), the main one
 /// first. Empty: not said (one language).
 @override@JsonKey() List<String> get languages {
   if (_languages is EqualUnmodifiableListView) return _languages;

@@ -104,12 +104,10 @@ class FmvProject {
         for (final entry in nodes.entries)
           '${entry.key}': FmvNode.fromJson(_map(entry.value)),
       },
-      menuScreen:
-          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['menu'])),
+      menuScreen: FmvMenuScreen.fromJson(_map(_map(json['Screens'])['menu'])),
       choiceScreen:
           FmvMenuScreen.fromJson(_map(_map(json['Screens'])['choice'])),
-      pauseScreen:
-          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['pause'])),
+      pauseScreen: FmvMenuScreen.fromJson(_map(_map(json['Screens'])['pause'])),
       variables: {
         for (final entry in _map(json['Variables']).entries)
           if (FmvVariable.fromJson(_map(entry.value)) case final variable?)
