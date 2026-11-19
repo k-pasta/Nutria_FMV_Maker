@@ -840,6 +840,9 @@ what the Maker checks.
 - **Player:** it draws the node's own answer screen and the designed
   settings and saved-games screens (Load opens the saved games when the
   story designed that screen), with defaults for older stories.
+- **Answers fade in** in the Player (under half a second), so the screen
+  over a frozen last frame doesn't jump in. Other animations (a slow pulse,
+  the effects from the shader list) are still to come.
 - **Not done (as you suggested, for later):** the node editor's video
   player showing the screens over the videos.
 - **Ask:** in the pie layout the question sits in the middle, where the
