@@ -1,6 +1,9 @@
-// The left (library/settings) and right (video preview) panels around the canvas.
+// The left (library/settings) and right (video preview, or the screen
+// designer's lists) panels around the canvas.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
+import 'package:nutria_fmv_maker/features/screens/widgets/screens_side_panel.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/left_panel.dart';
 import 'package:nutria_fmv_maker/features/video_preview/widgets/video_preview_panel.dart';
@@ -31,7 +34,10 @@ class SidePanels extends ConsumerWidget {
       onOpenRequested: (side, total) => panels.toggle(_side(side), total),
       onWindowResized: panels.windowResized,
       left: const LeftPanel(),
-      right: const VideoPreviewPanel(),
+      // The screen designer has its own right panel.
+      right: ref.watch(editorViewProvider) == EditorView.screens
+          ? const ScreensSidePanel()
+          : const VideoPreviewPanel(),
     );
   }
 }

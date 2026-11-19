@@ -1,6 +1,8 @@
-// Editor state of the Screens view: which view is shown, the selected
-// element, and dragging elements with snapping.
+// Editor state of the Screens view: which view is shown, which screen and
+// element are selected, the preview scenario, and dragging elements with
+// snapping.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
@@ -19,7 +21,59 @@ class EditorViewNotifier extends _$EditorViewNotifier {
   void show(EditorView view) => state = view;
 }
 
-/// The selected element of the menu screen, or `null`.
+/// The screen being designed.
+@Riverpod(keepAlive: true)
+class SelectedScreen extends _$SelectedScreen {
+  @override
+  ScreenKind build() => ScreenKind.menu;
+
+  void select(ScreenKind screen) {
+    if (screen == state) return;
+    state = screen;
+    ref.read(selectedScreenElementProvider.notifier).select(null);
+  }
+}
+
+/// The style being edited when no element is selected (picked from the
+/// style list), or `null`.
+@Riverpod(keepAlive: true)
+class SelectedScreenStyle extends _$SelectedScreenStyle {
+  @override
+  String? build() => null;
+
+  void select(String? id) => state = id;
+}
+
+/// What the choice screen preview shows: how many answers, whether they are
+/// long, and whether there is a question. Not saved.
+typedef ChoiceScenario = ({int answers, bool longText, bool question});
+
+@Riverpod(keepAlive: true)
+class ChoiceScenarioNotifier extends _$ChoiceScenarioNotifier {
+  @override
+  ChoiceScenario build() => (answers: 3, longText: false, question: true);
+
+  /// Between 1 and [kMaxChoices].
+  void setAnswers(int answers) => state = (
+    answers: answers.clamp(1, kMaxChoices),
+    longText: state.longText,
+    question: state.question,
+  );
+
+  void toggleLongText() => state = (
+    answers: state.answers,
+    longText: !state.longText,
+    question: state.question,
+  );
+
+  void toggleQuestion() => state = (
+    answers: state.answers,
+    longText: state.longText,
+    question: !state.question,
+  );
+}
+
+/// The selected element of the screen being designed, or `null`.
 @Riverpod(keepAlive: true)
 class SelectedScreenElement extends _$SelectedScreenElement {
   @override
@@ -28,7 +82,10 @@ class SelectedScreenElement extends _$SelectedScreenElement {
     return null;
   }
 
-  void select(String? id) => state = id;
+  void select(String? id) {
+    state = id;
+    if (id != null) ref.read(selectedScreenStyleProvider.notifier).select(null);
+  }
 }
 
 /// The lines a dragged element snapped to (fractions), for drawing guides.
@@ -48,13 +105,7 @@ class ScreenDragNotifier extends _$ScreenDragNotifier {
   DocumentNotifier get _document => ref.read(documentProvider.notifier);
 
   void begin(String id) {
-    final element = ref
-        .read(documentProvider)
-        .document
-        .menuScreen
-        .elements
-        .where((e) => e.id == id)
-        .firstOrNull;
+    final element = ref.read(documentProvider).document.screenElement(id);
     if (element == null) return;
     ref.read(selectedScreenElementProvider.notifier).select(id);
     _id = id;
@@ -70,12 +121,11 @@ class ScreenDragNotifier extends _$ScreenDragNotifier {
     if (id == null) return;
     _x += dx;
     _y += dy;
-    final others = ref
-        .read(documentProvider)
-        .document
-        .menuScreen
-        .elements
-        .where((e) => e.id != id);
+    final doc = ref.read(documentProvider).document;
+    final others = [
+      for (final e in doc.screenOf(doc.screenKindOf(id)!).elements)
+        if (e.id != id) e,
+    ];
     final snapped = snapScreenPoint(_x, _y, others: others);
     _document.apply(
       'Move element',

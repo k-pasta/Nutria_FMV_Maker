@@ -327,7 +327,9 @@ mixin _$ScreenElement {
 
  String get id; ScreenElementKind get kind; double get x; double get y; double get width;/// The style, or `null` for the default of its kind.
  String? get styleId;/// Text instead of the default (the project title, "Start", …).
- String? get text;
+ String? get text;/// [ScreenElementKind.choices]: the space between answers, as a
+/// fraction of the screen height.
+ double get gap;
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -341,20 +343,20 @@ $ScreenElementCopyWith<ScreenElement> get copyWith => _$ScreenElementCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenElement;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.gap, _this.gap) || other.gap == _this.gap));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenElement;
-  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text);
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text,_this.gap);
 }
 
 @override
 String toString() {
   final _this = this as ScreenElement;
-  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text})';
+  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text}, gap: ${_this.gap})';
 }
 
 
@@ -365,7 +367,7 @@ abstract mixin class $ScreenElementCopyWith<$Res>  {
   factory $ScreenElementCopyWith(ScreenElement value, $Res Function(ScreenElement) _then) = _$ScreenElementCopyWithImpl;
 @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap
 });
 
 
@@ -382,7 +384,7 @@ class _$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,}) {
   return _then(ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -391,7 +393,8 @@ as double,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as double,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as double,styleId: freezed == styleId ? _self.styleId : styleId // ignore: cast_nullable_to_non_nullable
 as String?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 
@@ -476,10 +479,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
   return orElse();
 
 }
@@ -497,10 +500,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement():
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -517,10 +520,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
   return null;
 
 }
@@ -532,7 +535,7 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 @JsonSerializable()
 
 class _ScreenElement implements ScreenElement {
-  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text});
+  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text, this.gap = 0.015});
   factory _ScreenElement.fromJson(Map<String, dynamic> json) => _$ScreenElementFromJson(json);
 
 @override final  String id;
@@ -544,6 +547,9 @@ class _ScreenElement implements ScreenElement {
 @override final  String? styleId;
 /// Text instead of the default (the project title, "Start", …).
 @override final  String? text;
+/// [ScreenElementKind.choices]: the space between answers, as a
+/// fraction of the screen height.
+@override@JsonKey() final  double gap;
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
@@ -558,18 +564,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text)&&(identical(other.gap, gap) || other.gap == gap));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text);
+    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text,gap);
 }
 
 @override
 String toString() {
-    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text)';
+    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text, gap: $gap)';
 }
 
 
@@ -580,7 +586,7 @@ abstract mixin class _$ScreenElementCopyWith<$Res> implements $ScreenElementCopy
   factory _$ScreenElementCopyWith(_ScreenElement value, $Res Function(_ScreenElement) _then) = __$ScreenElementCopyWithImpl;
 @override @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap
 });
 
 
@@ -597,7 +603,7 @@ class __$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,}) {
   return _then(_ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -606,7 +612,8 @@ as double,y: null == y ? _self.y : y // ignore: cast_nullable_to_non_nullable
 as double,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
 as double,styleId: freezed == styleId ? _self.styleId : styleId // ignore: cast_nullable_to_non_nullable
 as String?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nullable
+as double,
   ));
 }
 
@@ -615,44 +622,44 @@ as String?,
 
 
 /// @nodoc
-mixin _$MenuScreen {
+mixin _$ScreenDesign {
 
  String? get backgroundId; List<ScreenElement> get elements;
-/// Create a copy of MenuScreen
+/// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$MenuScreenCopyWith<MenuScreen> get copyWith => _$MenuScreenCopyWithImpl<MenuScreen>(this as MenuScreen, _$identity);
+$ScreenDesignCopyWith<ScreenDesign> get copyWith => _$ScreenDesignCopyWithImpl<ScreenDesign>(this as ScreenDesign, _$identity);
 
-  /// Serializes this MenuScreen to a JSON map.
+  /// Serializes this ScreenDesign to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  final _this = this as MenuScreen;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is MenuScreen&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements));
+  final _this = this as ScreenDesign;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenDesign&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-  final _this = this as MenuScreen;
+  final _this = this as ScreenDesign;
   return Object.hash(runtimeType,_this.backgroundId,const DeepCollectionEquality().hash(_this.elements));
 }
 
 @override
 String toString() {
-  final _this = this as MenuScreen;
-  return 'MenuScreen(backgroundId: ${_this.backgroundId}, elements: ${_this.elements})';
+  final _this = this as ScreenDesign;
+  return 'ScreenDesign(backgroundId: ${_this.backgroundId}, elements: ${_this.elements})';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $MenuScreenCopyWith<$Res>  {
-  factory $MenuScreenCopyWith(MenuScreen value, $Res Function(MenuScreen) _then) = _$MenuScreenCopyWithImpl;
+abstract mixin class $ScreenDesignCopyWith<$Res>  {
+  factory $ScreenDesignCopyWith(ScreenDesign value, $Res Function(ScreenDesign) _then) = _$ScreenDesignCopyWithImpl;
 @useResult
 $Res call({
  String? backgroundId, List<ScreenElement> elements
@@ -663,17 +670,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$MenuScreenCopyWithImpl<$Res>
-    implements $MenuScreenCopyWith<$Res> {
-  _$MenuScreenCopyWithImpl(this._self, this._then);
+class _$ScreenDesignCopyWithImpl<$Res>
+    implements $ScreenDesignCopyWith<$Res> {
+  _$ScreenDesignCopyWithImpl(this._self, this._then);
 
-  final MenuScreen _self;
-  final $Res Function(MenuScreen) _then;
+  final ScreenDesign _self;
+  final $Res Function(ScreenDesign) _then;
 
-/// Create a copy of MenuScreen
+/// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? backgroundId = freezed,Object? elements = null,}) {
-  return _then(MenuScreen(
+  return _then(ScreenDesign(
 backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self.elements : elements // ignore: cast_nullable_to_non_nullable
 as List<ScreenElement>,
@@ -683,8 +690,8 @@ as List<ScreenElement>,
 }
 
 
-/// Adds pattern-matching-related methods to [MenuScreen].
-extension MenuScreenPatterns on MenuScreen {
+/// Adds pattern-matching-related methods to [ScreenDesign].
+extension ScreenDesignPatterns on ScreenDesign {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -697,10 +704,10 @@ extension MenuScreenPatterns on MenuScreen {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _MenuScreen value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _ScreenDesign value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _MenuScreen() when $default != null:
+case _ScreenDesign() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -719,10 +726,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _MenuScreen value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _ScreenDesign value)  $default,){
 final _that = this;
 switch (_that) {
-case _MenuScreen():
+case _ScreenDesign():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -740,10 +747,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _MenuScreen value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _ScreenDesign value)?  $default,){
 final _that = this;
 switch (_that) {
-case _MenuScreen() when $default != null:
+case _ScreenDesign() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -763,7 +770,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? backgroundId,  List<ScreenElement> elements)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _MenuScreen() when $default != null:
+case _ScreenDesign() when $default != null:
 return $default(_that.backgroundId,_that.elements);case _:
   return orElse();
 
@@ -784,7 +791,7 @@ return $default(_that.backgroundId,_that.elements);case _:
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? backgroundId,  List<ScreenElement> elements)  $default,) {final _that = this;
 switch (_that) {
-case _MenuScreen():
+case _ScreenDesign():
 return $default(_that.backgroundId,_that.elements);case _:
   throw StateError('Unexpected subclass');
 
@@ -804,7 +811,7 @@ return $default(_that.backgroundId,_that.elements);case _:
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? backgroundId,  List<ScreenElement> elements)?  $default,) {final _that = this;
 switch (_that) {
-case _MenuScreen() when $default != null:
+case _ScreenDesign() when $default != null:
 return $default(_that.backgroundId,_that.elements);case _:
   return null;
 
@@ -816,9 +823,9 @@ return $default(_that.backgroundId,_that.elements);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _MenuScreen implements MenuScreen {
-  const _MenuScreen({this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[]}): _elements = elements;
-  factory _MenuScreen.fromJson(Map<String, dynamic> json) => _$MenuScreenFromJson(json);
+class _ScreenDesign implements ScreenDesign {
+  const _ScreenDesign({this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[]}): _elements = elements;
+  factory _ScreenDesign.fromJson(Map<String, dynamic> json) => _$ScreenDesignFromJson(json);
 
 @override final  String? backgroundId;
  final  List<ScreenElement> _elements;
@@ -829,20 +836,20 @@ class _MenuScreen implements MenuScreen {
 }
 
 
-/// Create a copy of MenuScreen
+/// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$MenuScreenCopyWith<_MenuScreen> get copyWith => __$MenuScreenCopyWithImpl<_MenuScreen>(this, _$identity);
+_$ScreenDesignCopyWith<_ScreenDesign> get copyWith => __$ScreenDesignCopyWithImpl<_ScreenDesign>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$MenuScreenToJson(this, );
+  return _$ScreenDesignToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _MenuScreen&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenDesign&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -853,15 +860,15 @@ int get hashCode {
 
 @override
 String toString() {
-    return 'MenuScreen(backgroundId: $backgroundId, elements: $elements)';
+    return 'ScreenDesign(backgroundId: $backgroundId, elements: $elements)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$MenuScreenCopyWith<$Res> implements $MenuScreenCopyWith<$Res> {
-  factory _$MenuScreenCopyWith(_MenuScreen value, $Res Function(_MenuScreen) _then) = __$MenuScreenCopyWithImpl;
+abstract mixin class _$ScreenDesignCopyWith<$Res> implements $ScreenDesignCopyWith<$Res> {
+  factory _$ScreenDesignCopyWith(_ScreenDesign value, $Res Function(_ScreenDesign) _then) = __$ScreenDesignCopyWithImpl;
 @override @useResult
 $Res call({
  String? backgroundId, List<ScreenElement> elements
@@ -872,17 +879,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$MenuScreenCopyWithImpl<$Res>
-    implements _$MenuScreenCopyWith<$Res> {
-  __$MenuScreenCopyWithImpl(this._self, this._then);
+class __$ScreenDesignCopyWithImpl<$Res>
+    implements _$ScreenDesignCopyWith<$Res> {
+  __$ScreenDesignCopyWithImpl(this._self, this._then);
 
-  final _MenuScreen _self;
-  final $Res Function(_MenuScreen) _then;
+  final _ScreenDesign _self;
+  final $Res Function(_ScreenDesign) _then;
 
-/// Create a copy of MenuScreen
+/// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? backgroundId = freezed,Object? elements = null,}) {
-  return _then(_MenuScreen(
+  return _then(_ScreenDesign(
 backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self._elements : elements // ignore: cast_nullable_to_non_nullable
 as List<ScreenElement>,

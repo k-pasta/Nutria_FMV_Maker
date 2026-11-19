@@ -65,8 +65,14 @@ class FmvScreenStyle {
 }
 
 /// One element, centered at ([x], [y]) and [width] wide (fractions).
-/// [kind] is "title", "description" or a button: "start", "load",
-/// "settings", "credits", "quit". [text] replaces the default text.
+/// [kind] is one of:
+/// - text: "title", "description", "question" (the choice's question);
+/// - buttons: "start", "load", "save", "settings", "credits", "quit",
+///   "resume" and "mainMenu" (back to the main menu);
+/// - "choices": the answers, one under the other, [gap] apart;
+/// - "timer": a bar that empties while the viewer chooses.
+///
+/// [text] replaces the default text. Readers skip kinds they don't know.
 class FmvScreenElement {
   const FmvScreenElement({
     required this.kind,
@@ -74,6 +80,7 @@ class FmvScreenElement {
     required this.y,
     required this.width,
     this.text,
+    this.gap,
     this.style = const FmvScreenStyle(),
   });
 
@@ -82,6 +89,10 @@ class FmvScreenElement {
   final double y;
   final double width;
   final String? text;
+
+  /// "choices": the space between answers, as a fraction of the screen
+  /// height. (Added with the choice screen.)
+  final double? gap;
   final FmvScreenStyle style;
 
   Map<String, Object?> toJson() => {
@@ -90,6 +101,7 @@ class FmvScreenElement {
         'y': y,
         'width': width,
         if (text != null) 'text': text,
+        if (gap != null) 'gap': gap,
         'style': style.toJson(),
       };
 
@@ -106,6 +118,7 @@ class FmvScreenElement {
       y: number(json['y'], 0.5),
       width: number(json['width'], 0.3),
       text: text is String ? text : null,
+      gap: json['gap'] is num ? (json['gap'] as num).toDouble() : null,
       style: FmvScreenStyle.fromJson(
         style is Map ? Map<String, Object?>.from(style) : const {},
       ),
@@ -113,8 +126,9 @@ class FmvScreenElement {
   }
 }
 
-/// The main menu's design: a background (image or video path) and
-/// elements.
+/// A designed screen: a background (image or video path) and elements.
+/// Used for the main menu, the choice screen (over the paused video, so
+/// usually without a background) and the pause screen.
 class FmvMenuScreen {
   const FmvMenuScreen({this.background, this.elements = const []});
 

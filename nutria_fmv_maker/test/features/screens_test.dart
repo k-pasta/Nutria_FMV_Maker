@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show AspectRatio;
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
@@ -57,6 +58,89 @@ void main() {
       isFalse,
       reason: 'nothing designed, nothing written',
     );
+  });
+
+  test('every screen has its elements; presets, styles and export', () {
+    var doc = ProjectDocument.empty();
+    final ids = sequentialIds('e');
+    doc = doc.applyScreenPreset(ScreenPreset.bottomChoices, ids);
+    final choices = doc.choiceScreen.elements.firstWhere(
+      (e) => e.kind == ScreenElementKind.choices,
+    );
+    expect(doc.screenKindOf(choices.id), ScreenKind.choice);
+    expect(doc.menuScreen.elements, isEmpty);
+
+    // Element edits find the element on its screen.
+    doc = doc
+        .setScreenElementGap(choices.id, 0.03)
+        .duplicateScreenStyle('button', 'mine', 'Mine')
+        .setScreenElementStyle(choices.id, 'mine');
+    expect(doc.screenElement(choices.id)!.gap, 0.03);
+    expect(doc.usesOfStyle('mine'), 1);
+
+    // Deleting a style gives its elements back their default.
+    final deleted = doc.removeScreenStyle('mine');
+    expect(deleted.styles.map((s) => s.id), isNot(contains('mine')));
+    expect(deleted.screenElement(choices.id)!.styleId, isNull);
+    expect(deleted.removeScreenStyle('button').styles, deleted.styles);
+
+    final exported = exportFmv(doc).project;
+    expect(exported.choiceScreen.elements.map((e) => e.kind), [
+      'question',
+      'choices',
+      'timer',
+    ]);
+    expect(exported.choiceScreen.elements[1].gap, 0.03);
+    expect(exported.menuScreen.isEmpty, isTrue);
+    expect(NfmvCodec.decode(NfmvCodec.encode(doc)), doc);
+  });
+
+  testWidgets('the switch button opens the designer; the right panel picks '
+      'the screen; a tray button dragged onto the stage lands there', (
+    tester,
+  ) async {
+    final c = await pumpApp(tester);
+    await tester.tap(find.byTooltip('Screen Designer (Ctrl+2)'));
+    await tester.pumpAndSettle();
+    expect(c.read(editorViewProvider), EditorView.screens);
+    expect(find.byTooltip('Story Graph (Ctrl+1)'), findsOneWidget);
+
+    await tester.tap(find.text('Choice Screen'));
+    await tester.pumpAndSettle();
+    expect(c.read(selectedScreenProvider), ScreenKind.choice);
+    expect(find.text('+ Answers'), findsOneWidget);
+    expect(find.text('+ Start'), findsNothing, reason: 'a main menu button');
+
+    final stage = tester.getRect(
+      find.descendant(
+        of: find.byType(ScreensView),
+        matching: find.byType(AspectRatio),
+      ),
+    );
+    final target = stage.topLeft + Offset(stage.width / 4, stage.height / 4);
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('+ Answers')),
+      kind: PointerDeviceKind.mouse,
+    );
+    final from = tester.getCenter(find.text('+ Answers'));
+    for (var i = 1; i <= 10; i++) {
+      await gesture.moveTo(Offset.lerp(from, target, i / 10)!);
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pumpAndSettle();
+    final added = c.read(projectDocumentProvider).choiceScreen.elements.single;
+    expect(added.kind, ScreenElementKind.choices);
+    // The drop point is the feedback's top left, close to a quarter in.
+    expect(added.x, closeTo(0.25, 0.08));
+    expect(added.y, closeTo(0.25, 0.08));
+
+    // A layout over existing elements asks first.
+    await tester.tap(find.text('Answers Below'));
+    await tester.pumpAndSettle();
+    await tester.tap(find.text('Replace'));
+    await tester.pumpAndSettle();
+    expect(c.read(projectDocumentProvider).choiceScreen.elements, hasLength(3));
   });
 
   testWidgets('Ctrl+2 opens the designer; elements are added, dragged with '

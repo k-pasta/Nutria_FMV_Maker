@@ -4,6 +4,7 @@ import 'dart:collection';
 
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
@@ -35,8 +36,8 @@ List<String> _nextOf(ProjectDocument document, String nodeId) => [
 ];
 
 /// The imported files an export of [document] uses: the videos, subtitles
-/// and music of reachable nodes, the menu music, the menu's background and
-/// the fonts of its elements.
+/// and music of reachable nodes, the menu music, and the backgrounds and
+/// fonts of the designed screens.
 Set<String> usedMediaIds(ProjectDocument document) {
   final ids = <String>{};
   for (final nodeId in reachableNodeIds(document)) {
@@ -44,10 +45,12 @@ Set<String> usedMediaIds(ProjectDocument document) {
     ids.addAll(node.mediaIds);
     ids.addAll(document.subtitlesOf(node.videoIdOrNull).values);
   }
-  final menu = document.menuScreen;
-  if (menu.backgroundId case final id?) ids.add(id);
-  for (final element in menu.elements) {
-    if (document.styleOf(element).fontId case final id?) ids.add(id);
+  for (final kind in ScreenKind.values) {
+    final screen = document.screenOf(kind);
+    if (screen.backgroundId case final id?) ids.add(id);
+    for (final element in screen.elements) {
+      if (document.styleOf(element).fontId case final id?) ids.add(id);
+    }
   }
   return {
     for (final id in ids)

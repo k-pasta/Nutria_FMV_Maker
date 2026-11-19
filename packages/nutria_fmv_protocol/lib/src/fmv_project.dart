@@ -46,6 +46,8 @@ class FmvProject {
     this.nodes = const {},
     this.variables = const {},
     this.menuScreen = const FmvMenuScreen(),
+    this.choiceScreen = const FmvMenuScreen(),
+    this.pauseScreen = const FmvMenuScreen(),
   });
 
   final FmvProjectInfo info;
@@ -60,6 +62,11 @@ class FmvProject {
   /// The main menu's design ("Screens" → "menu"; added after 1.0).
   final FmvMenuScreen menuScreen;
 
+  /// How choices are shown over the video ("Screens" → "choice"), and the
+  /// pause menu ("Screens" → "pause"). Empty: the Player's own.
+  final FmvMenuScreen choiceScreen;
+  final FmvMenuScreen pauseScreen;
+
   /// The id of the node playback starts at, or `null` for an empty project.
   String? get startNodeId => nodes.isEmpty ? null : nodes.keys.first;
 
@@ -69,7 +76,14 @@ class FmvProject {
         'Nodes': {
           for (final entry in nodes.entries) entry.key: entry.value.toJson(),
         },
-        if (!menuScreen.isEmpty) 'Screens': {'menu': menuScreen.toJson()},
+        if (!menuScreen.isEmpty ||
+            !choiceScreen.isEmpty ||
+            !pauseScreen.isEmpty)
+          'Screens': {
+            if (!menuScreen.isEmpty) 'menu': menuScreen.toJson(),
+            if (!choiceScreen.isEmpty) 'choice': choiceScreen.toJson(),
+            if (!pauseScreen.isEmpty) 'pause': pauseScreen.toJson(),
+          },
         if (variables.isNotEmpty)
           'Variables': {
             for (final entry in variables.entries)
@@ -92,6 +106,10 @@ class FmvProject {
       },
       menuScreen:
           FmvMenuScreen.fromJson(_map(_map(json['Screens'])['menu'])),
+      choiceScreen:
+          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['choice'])),
+      pauseScreen:
+          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['pause'])),
       variables: {
         for (final entry in _map(json['Variables']).entries)
           if (FmvVariable.fromJson(_map(entry.value)) case final variable?)

@@ -17,6 +17,7 @@ import 'package:nutria_fmv_maker/features/project/providers/document_selectors.d
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/screens/widgets/screens_view.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
@@ -26,6 +27,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/window_service.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_modal.dart';
@@ -154,6 +156,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                       children: [
                         _MainView(),
                         SidePanels(),
+                        _ViewSwitch(),
                         _LogoTail(),
                         _Dimmer(),
                         _ModalLayer(),
@@ -219,6 +222,32 @@ class _WindowButtons extends StatelessWidget {
         onMinimize: window.minimize,
         onToggleMaximize: window.toggleMaximize,
         onClose: window.close,
+      ),
+    );
+  }
+}
+
+/// The button at the top right of the main area, next to the right panel,
+/// that switches between the story graph and the screen designer. It shows
+/// the other view's icon.
+class _ViewSwitch extends ConsumerWidget {
+  const _ViewSwitch();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.appTheme;
+    final t = AppLocalizations.of(context);
+    final designing = ref.watch(editorViewProvider) == EditorView.screens;
+    final layout = ref.watch(panelLayoutProvider);
+    return Positioned(
+      top: theme.dSectionPadding,
+      right:
+          (layout.rightClosed ? 0 : layout.right + kPanelHandleWidth) +
+          theme.dSectionPadding,
+      child: NutriaButton.icon(
+        icon: designing ? Icons.polyline : Icons.palette,
+        tooltip: designing ? t.screenSwitchToGraph : t.screenSwitchToDesigner,
+        onTap: AppCommands(context, ref).toggleView,
       ),
     );
   }

@@ -42,6 +42,7 @@ _ScreenElement _$ScreenElementFromJson(Map<String, dynamic> json) =>
       width: (json['width'] as num?)?.toDouble() ?? 0.3,
       styleId: json['styleId'] as String?,
       text: json['text'] as String?,
+      gap: (json['gap'] as num?)?.toDouble() ?? 0.015,
     );
 
 Map<String, dynamic> _$ScreenElementToJson(_ScreenElement instance) =>
@@ -53,6 +54,7 @@ Map<String, dynamic> _$ScreenElementToJson(_ScreenElement instance) =>
       'width': instance.width,
       'styleId': instance.styleId,
       'text': instance.text,
+      'gap': instance.gap,
     };
 
 const _$ScreenElementKindEnumMap = {
@@ -63,18 +65,25 @@ const _$ScreenElementKindEnumMap = {
   ScreenElementKind.settings: 'settings',
   ScreenElementKind.credits: 'credits',
   ScreenElementKind.quit: 'quit',
+  ScreenElementKind.question: 'question',
+  ScreenElementKind.choices: 'choices',
+  ScreenElementKind.timer: 'timer',
+  ScreenElementKind.resume: 'resume',
+  ScreenElementKind.save: 'save',
+  ScreenElementKind.mainMenu: 'mainMenu',
 };
 
-_MenuScreen _$MenuScreenFromJson(Map<String, dynamic> json) => _MenuScreen(
-  backgroundId: json['backgroundId'] as String?,
-  elements:
-      (json['elements'] as List<dynamic>?)
-          ?.map((e) => ScreenElement.fromJson(e as Map<String, dynamic>))
-          .toList() ??
-      const <ScreenElement>[],
-);
+_ScreenDesign _$ScreenDesignFromJson(Map<String, dynamic> json) =>
+    _ScreenDesign(
+      backgroundId: json['backgroundId'] as String?,
+      elements:
+          (json['elements'] as List<dynamic>?)
+              ?.map((e) => ScreenElement.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ScreenElement>[],
+    );
 
-Map<String, dynamic> _$MenuScreenToJson(_MenuScreen instance) =>
+Map<String, dynamic> _$ScreenDesignToJson(_ScreenDesign instance) =>
     <String, dynamic>{
       'backgroundId': instance.backgroundId,
       'elements': instance.elements.map((e) => e.toJson()).toList(),

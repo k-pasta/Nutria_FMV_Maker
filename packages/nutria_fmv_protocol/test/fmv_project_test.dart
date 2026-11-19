@@ -79,6 +79,27 @@ void main() {
     );
   });
 
+  test('choice and pause screens are written only when designed', () {
+    const project = FmvProject(
+      choiceScreen: FmvMenuScreen(
+        elements: [
+          FmvScreenElement(
+            kind: 'choices',
+            x: 0.5,
+            y: 0.8,
+            width: 0.4,
+            gap: 0.02,
+          ),
+        ],
+      ),
+    );
+    final json = project.toJson();
+    expect((json['Screens'] as Map).keys, ['choice']);
+    final read = FmvProject.fromJson(json);
+    expect(read.choiceScreen.elements.single.gap, 0.02);
+    expect(read.pauseScreen.isEmpty, isTrue);
+  });
+
   test('a node can carry a question above its choices', () {
     const node = FmvNode(
       video: 'a.mp4',

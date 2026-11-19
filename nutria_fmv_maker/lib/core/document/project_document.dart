@@ -71,7 +71,11 @@ abstract class ProjectDocument with _$ProjectDocument {
     @Default(<Variable>[]) List<Variable> variables,
 
     /// The main menu's design. Missing in older files, hence empty.
-    @Default(MenuScreen()) MenuScreen menuScreen,
+    @Default(ScreenDesign()) ScreenDesign menuScreen,
+
+    /// How the answers are shown over the video, and the pause menu.
+    @Default(ScreenDesign()) ScreenDesign choiceScreen,
+    @Default(ScreenDesign()) ScreenDesign pauseScreen,
 
     /// Styles of screen elements. Older files get the defaults.
     @Default(kDefaultScreenStyles) List<ScreenStyle> styles,

@@ -312,7 +312,8 @@ mixin _$ProjectDocument {
  Map<String, Node> get nodes; List<Edge> get edges;/// Imported files, in import order (which is also "date added").
  List<MediaAsset> get media;/// Named values for the story. Missing in older files, hence empty.
  List<Variable> get variables;/// The main menu's design. Missing in older files, hence empty.
- MenuScreen get menuScreen;/// Styles of screen elements. Older files get the defaults.
+ ScreenDesign get menuScreen;/// How the answers are shown over the video, and the pause menu.
+ ScreenDesign get choiceScreen; ScreenDesign get pauseScreen;/// Styles of screen elements. Older files get the defaults.
  List<ScreenStyle> get styles;
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
@@ -327,20 +328,20 @@ $ProjectDocumentCopyWith<ProjectDocument> get copyWith => _$ProjectDocumentCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as ProjectDocument;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectDocument&&(identical(other.formatVersion, _this.formatVersion) || other.formatVersion == _this.formatVersion)&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _this.colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _this.nodes)&&const DeepCollectionEquality().equals(other.edges, _this.edges)&&const DeepCollectionEquality().equals(other.media, _this.media)&&const DeepCollectionEquality().equals(other.variables, _this.variables)&&(identical(other.menuScreen, _this.menuScreen) || other.menuScreen == _this.menuScreen)&&const DeepCollectionEquality().equals(other.styles, _this.styles));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectDocument&&(identical(other.formatVersion, _this.formatVersion) || other.formatVersion == _this.formatVersion)&&(identical(other.info, _this.info) || other.info == _this.info)&&(identical(other.settings, _this.settings) || other.settings == _this.settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _this.colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _this.nodes)&&const DeepCollectionEquality().equals(other.edges, _this.edges)&&const DeepCollectionEquality().equals(other.media, _this.media)&&const DeepCollectionEquality().equals(other.variables, _this.variables)&&(identical(other.menuScreen, _this.menuScreen) || other.menuScreen == _this.menuScreen)&&(identical(other.choiceScreen, _this.choiceScreen) || other.choiceScreen == _this.choiceScreen)&&(identical(other.pauseScreen, _this.pauseScreen) || other.pauseScreen == _this.pauseScreen)&&const DeepCollectionEquality().equals(other.styles, _this.styles));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ProjectDocument;
-  return Object.hash(runtimeType,_this.formatVersion,_this.info,_this.settings,const DeepCollectionEquality().hash(_this.colorDefaults),const DeepCollectionEquality().hash(_this.nodes),const DeepCollectionEquality().hash(_this.edges),const DeepCollectionEquality().hash(_this.media),const DeepCollectionEquality().hash(_this.variables),_this.menuScreen,const DeepCollectionEquality().hash(_this.styles));
+  return Object.hash(runtimeType,_this.formatVersion,_this.info,_this.settings,const DeepCollectionEquality().hash(_this.colorDefaults),const DeepCollectionEquality().hash(_this.nodes),const DeepCollectionEquality().hash(_this.edges),const DeepCollectionEquality().hash(_this.media),const DeepCollectionEquality().hash(_this.variables),_this.menuScreen,_this.choiceScreen,_this.pauseScreen,const DeepCollectionEquality().hash(_this.styles));
 }
 
 @override
 String toString() {
   final _this = this as ProjectDocument;
-  return 'ProjectDocument(formatVersion: ${_this.formatVersion}, info: ${_this.info}, settings: ${_this.settings}, colorDefaults: ${_this.colorDefaults}, nodes: ${_this.nodes}, edges: ${_this.edges}, media: ${_this.media}, variables: ${_this.variables}, menuScreen: ${_this.menuScreen}, styles: ${_this.styles})';
+  return 'ProjectDocument(formatVersion: ${_this.formatVersion}, info: ${_this.info}, settings: ${_this.settings}, colorDefaults: ${_this.colorDefaults}, nodes: ${_this.nodes}, edges: ${_this.edges}, media: ${_this.media}, variables: ${_this.variables}, menuScreen: ${_this.menuScreen}, choiceScreen: ${_this.choiceScreen}, pauseScreen: ${_this.pauseScreen}, styles: ${_this.styles})';
 }
 
 
@@ -351,11 +352,11 @@ abstract mixin class $ProjectDocumentCopyWith<$Res>  {
   factory $ProjectDocumentCopyWith(ProjectDocument value, $Res Function(ProjectDocument) _then) = _$ProjectDocumentCopyWithImpl;
 @useResult
 $Res call({
- int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables, MenuScreen menuScreen, List<ScreenStyle> styles
+ int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables, ScreenDesign menuScreen, ScreenDesign choiceScreen, ScreenDesign pauseScreen, List<ScreenStyle> styles
 });
 
 
-$ProjectInfoCopyWith<$Res> get info;$VideoSettingsCopyWith<$Res> get settings;$MenuScreenCopyWith<$Res> get menuScreen;
+$ProjectInfoCopyWith<$Res> get info;$VideoSettingsCopyWith<$Res> get settings;$ScreenDesignCopyWith<$Res> get menuScreen;$ScreenDesignCopyWith<$Res> get choiceScreen;$ScreenDesignCopyWith<$Res> get pauseScreen;
 
 }
 /// @nodoc
@@ -368,7 +369,7 @@ class _$ProjectDocumentCopyWithImpl<$Res>
 
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,Object? menuScreen = null,Object? styles = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,Object? menuScreen = null,Object? choiceScreen = null,Object? pauseScreen = null,Object? styles = null,}) {
   return _then(ProjectDocument(
 formatVersion: null == formatVersion ? _self.formatVersion : formatVersion // ignore: cast_nullable_to_non_nullable
 as int,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
@@ -379,7 +380,9 @@ as Map<String, Node>,edges: null == edges ? _self.edges : edges // ignore: cast_
 as List<Edge>,media: null == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
 as List<MediaAsset>,variables: null == variables ? _self.variables : variables // ignore: cast_nullable_to_non_nullable
 as List<Variable>,menuScreen: null == menuScreen ? _self.menuScreen : menuScreen // ignore: cast_nullable_to_non_nullable
-as MenuScreen,styles: null == styles ? _self.styles : styles // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,choiceScreen: null == choiceScreen ? _self.choiceScreen : choiceScreen // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,pauseScreen: null == pauseScreen ? _self.pauseScreen : pauseScreen // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,styles: null == styles ? _self.styles : styles // ignore: cast_nullable_to_non_nullable
 as List<ScreenStyle>,
   ));
 }
@@ -405,10 +408,28 @@ $VideoSettingsCopyWith<$Res> get settings {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MenuScreenCopyWith<$Res> get menuScreen {
+$ScreenDesignCopyWith<$Res> get menuScreen {
   
-  return $MenuScreenCopyWith<$Res>(_self.menuScreen, (value) {
+  return $ScreenDesignCopyWith<$Res>(_self.menuScreen, (value) {
     return _then(_self.copyWith(menuScreen: value));
+  });
+}/// Create a copy of ProjectDocument
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ScreenDesignCopyWith<$Res> get choiceScreen {
+  
+  return $ScreenDesignCopyWith<$Res>(_self.choiceScreen, (value) {
+    return _then(_self.copyWith(choiceScreen: value));
+  });
+}/// Create a copy of ProjectDocument
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ScreenDesignCopyWith<$Res> get pauseScreen {
+  
+  return $ScreenDesignCopyWith<$Res>(_self.pauseScreen, (value) {
+    return _then(_self.copyWith(pauseScreen: value));
   });
 }
 }
@@ -492,10 +513,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  MenuScreen menuScreen,  List<ScreenStyle> styles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  ScreenDesign menuScreen,  ScreenDesign choiceScreen,  ScreenDesign pauseScreen,  List<ScreenStyle> styles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectDocument() when $default != null:
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.styles);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.choiceScreen,_that.pauseScreen,_that.styles);case _:
   return orElse();
 
 }
@@ -513,10 +534,10 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  MenuScreen menuScreen,  List<ScreenStyle> styles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  ScreenDesign menuScreen,  ScreenDesign choiceScreen,  ScreenDesign pauseScreen,  List<ScreenStyle> styles)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectDocument():
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.styles);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.choiceScreen,_that.pauseScreen,_that.styles);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -533,10 +554,10 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  MenuScreen menuScreen,  List<ScreenStyle> styles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int formatVersion,  ProjectInfo info,  VideoSettings settings,  Map<int, VideoSettings> colorDefaults,  Map<String, Node> nodes,  List<Edge> edges,  List<MediaAsset> media,  List<Variable> variables,  ScreenDesign menuScreen,  ScreenDesign choiceScreen,  ScreenDesign pauseScreen,  List<ScreenStyle> styles)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectDocument() when $default != null:
-return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.styles);case _:
+return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefaults,_that.nodes,_that.edges,_that.media,_that.variables,_that.menuScreen,_that.choiceScreen,_that.pauseScreen,_that.styles);case _:
   return null;
 
 }
@@ -548,7 +569,7 @@ return $default(_that.formatVersion,_that.info,_that.settings,_that.colorDefault
 @JsonSerializable()
 
 class _ProjectDocument extends ProjectDocument {
-  const _ProjectDocument({this.formatVersion = kNfmvFormatVersion, this.info = const ProjectInfo(), this.settings = const VideoSettings(),  Map<int, VideoSettings> colorDefaults = const <int, VideoSettings>{},  Map<String, Node> nodes = const <String, Node>{},  List<Edge> edges = const <Edge>[],  List<MediaAsset> media = const <MediaAsset>[],  List<Variable> variables = const <Variable>[], this.menuScreen = const MenuScreen(),  List<ScreenStyle> styles = kDefaultScreenStyles}): _colorDefaults = colorDefaults,_nodes = nodes,_edges = edges,_media = media,_variables = variables,_styles = styles,super._();
+  const _ProjectDocument({this.formatVersion = kNfmvFormatVersion, this.info = const ProjectInfo(), this.settings = const VideoSettings(),  Map<int, VideoSettings> colorDefaults = const <int, VideoSettings>{},  Map<String, Node> nodes = const <String, Node>{},  List<Edge> edges = const <Edge>[],  List<MediaAsset> media = const <MediaAsset>[],  List<Variable> variables = const <Variable>[], this.menuScreen = const ScreenDesign(), this.choiceScreen = const ScreenDesign(), this.pauseScreen = const ScreenDesign(),  List<ScreenStyle> styles = kDefaultScreenStyles}): _colorDefaults = colorDefaults,_nodes = nodes,_edges = edges,_media = media,_variables = variables,_styles = styles,super._();
   factory _ProjectDocument.fromJson(Map<String, dynamic> json) => _$ProjectDocumentFromJson(json);
 
 @override@JsonKey() final  int formatVersion;
@@ -602,7 +623,10 @@ class _ProjectDocument extends ProjectDocument {
 }
 
 /// The main menu's design. Missing in older files, hence empty.
-@override@JsonKey() final  MenuScreen menuScreen;
+@override@JsonKey() final  ScreenDesign menuScreen;
+/// How the answers are shown over the video, and the pause menu.
+@override@JsonKey() final  ScreenDesign choiceScreen;
+@override@JsonKey() final  ScreenDesign pauseScreen;
 /// Styles of screen elements. Older files get the defaults.
  final  List<ScreenStyle> _styles;
 /// Styles of screen elements. Older files get the defaults.
@@ -626,18 +650,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectDocument&&(identical(other.formatVersion, formatVersion) || other.formatVersion == formatVersion)&&(identical(other.info, info) || other.info == info)&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _nodes)&&const DeepCollectionEquality().equals(other.edges, _edges)&&const DeepCollectionEquality().equals(other.media, _media)&&const DeepCollectionEquality().equals(other.variables, _variables)&&(identical(other.menuScreen, menuScreen) || other.menuScreen == menuScreen)&&const DeepCollectionEquality().equals(other.styles, _styles));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectDocument&&(identical(other.formatVersion, formatVersion) || other.formatVersion == formatVersion)&&(identical(other.info, info) || other.info == info)&&(identical(other.settings, settings) || other.settings == settings)&&const DeepCollectionEquality().equals(other.colorDefaults, _colorDefaults)&&const DeepCollectionEquality().equals(other.nodes, _nodes)&&const DeepCollectionEquality().equals(other.edges, _edges)&&const DeepCollectionEquality().equals(other.media, _media)&&const DeepCollectionEquality().equals(other.variables, _variables)&&(identical(other.menuScreen, menuScreen) || other.menuScreen == menuScreen)&&(identical(other.choiceScreen, choiceScreen) || other.choiceScreen == choiceScreen)&&(identical(other.pauseScreen, pauseScreen) || other.pauseScreen == pauseScreen)&&const DeepCollectionEquality().equals(other.styles, _styles));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,formatVersion,info,settings,const DeepCollectionEquality().hash(_colorDefaults),const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_media),const DeepCollectionEquality().hash(_variables),menuScreen,const DeepCollectionEquality().hash(_styles));
+    return Object.hash(runtimeType,formatVersion,info,settings,const DeepCollectionEquality().hash(_colorDefaults),const DeepCollectionEquality().hash(_nodes),const DeepCollectionEquality().hash(_edges),const DeepCollectionEquality().hash(_media),const DeepCollectionEquality().hash(_variables),menuScreen,choiceScreen,pauseScreen,const DeepCollectionEquality().hash(_styles));
 }
 
 @override
 String toString() {
-    return 'ProjectDocument(formatVersion: $formatVersion, info: $info, settings: $settings, colorDefaults: $colorDefaults, nodes: $nodes, edges: $edges, media: $media, variables: $variables, menuScreen: $menuScreen, styles: $styles)';
+    return 'ProjectDocument(formatVersion: $formatVersion, info: $info, settings: $settings, colorDefaults: $colorDefaults, nodes: $nodes, edges: $edges, media: $media, variables: $variables, menuScreen: $menuScreen, choiceScreen: $choiceScreen, pauseScreen: $pauseScreen, styles: $styles)';
 }
 
 
@@ -648,11 +672,11 @@ abstract mixin class _$ProjectDocumentCopyWith<$Res> implements $ProjectDocument
   factory _$ProjectDocumentCopyWith(_ProjectDocument value, $Res Function(_ProjectDocument) _then) = __$ProjectDocumentCopyWithImpl;
 @override @useResult
 $Res call({
- int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables, MenuScreen menuScreen, List<ScreenStyle> styles
+ int formatVersion, ProjectInfo info, VideoSettings settings, Map<int, VideoSettings> colorDefaults, Map<String, Node> nodes, List<Edge> edges, List<MediaAsset> media, List<Variable> variables, ScreenDesign menuScreen, ScreenDesign choiceScreen, ScreenDesign pauseScreen, List<ScreenStyle> styles
 });
 
 
-@override $ProjectInfoCopyWith<$Res> get info;@override $VideoSettingsCopyWith<$Res> get settings;@override $MenuScreenCopyWith<$Res> get menuScreen;
+@override $ProjectInfoCopyWith<$Res> get info;@override $VideoSettingsCopyWith<$Res> get settings;@override $ScreenDesignCopyWith<$Res> get menuScreen;@override $ScreenDesignCopyWith<$Res> get choiceScreen;@override $ScreenDesignCopyWith<$Res> get pauseScreen;
 
 }
 /// @nodoc
@@ -665,7 +689,7 @@ class __$ProjectDocumentCopyWithImpl<$Res>
 
 /// Create a copy of ProjectDocument
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,Object? menuScreen = null,Object? styles = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? formatVersion = null,Object? info = null,Object? settings = null,Object? colorDefaults = null,Object? nodes = null,Object? edges = null,Object? media = null,Object? variables = null,Object? menuScreen = null,Object? choiceScreen = null,Object? pauseScreen = null,Object? styles = null,}) {
   return _then(_ProjectDocument(
 formatVersion: null == formatVersion ? _self.formatVersion : formatVersion // ignore: cast_nullable_to_non_nullable
 as int,info: null == info ? _self.info : info // ignore: cast_nullable_to_non_nullable
@@ -676,7 +700,9 @@ as Map<String, Node>,edges: null == edges ? _self._edges : edges // ignore: cast
 as List<Edge>,media: null == media ? _self._media : media // ignore: cast_nullable_to_non_nullable
 as List<MediaAsset>,variables: null == variables ? _self._variables : variables // ignore: cast_nullable_to_non_nullable
 as List<Variable>,menuScreen: null == menuScreen ? _self.menuScreen : menuScreen // ignore: cast_nullable_to_non_nullable
-as MenuScreen,styles: null == styles ? _self._styles : styles // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,choiceScreen: null == choiceScreen ? _self.choiceScreen : choiceScreen // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,pauseScreen: null == pauseScreen ? _self.pauseScreen : pauseScreen // ignore: cast_nullable_to_non_nullable
+as ScreenDesign,styles: null == styles ? _self._styles : styles // ignore: cast_nullable_to_non_nullable
 as List<ScreenStyle>,
   ));
 }
@@ -703,10 +729,28 @@ $VideoSettingsCopyWith<$Res> get settings {
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MenuScreenCopyWith<$Res> get menuScreen {
+$ScreenDesignCopyWith<$Res> get menuScreen {
   
-  return $MenuScreenCopyWith<$Res>(_self.menuScreen, (value) {
+  return $ScreenDesignCopyWith<$Res>(_self.menuScreen, (value) {
     return _then(_self.copyWith(menuScreen: value));
+  });
+}/// Create a copy of ProjectDocument
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ScreenDesignCopyWith<$Res> get choiceScreen {
+  
+  return $ScreenDesignCopyWith<$Res>(_self.choiceScreen, (value) {
+    return _then(_self.copyWith(choiceScreen: value));
+  });
+}/// Create a copy of ProjectDocument
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$ScreenDesignCopyWith<$Res> get pauseScreen {
+  
+  return $ScreenDesignCopyWith<$Res>(_self.pauseScreen, (value) {
+    return _then(_self.copyWith(pauseScreen: value));
   });
 }
 }

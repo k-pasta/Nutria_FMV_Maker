@@ -964,6 +964,240 @@ abstract class AppLocalizations {
   /// **'Quit'**
   String get screenQuit;
 
+  /// No description provided for @screenQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Question'**
+  String get screenQuestion;
+
+  /// No description provided for @screenChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers'**
+  String get screenChoices;
+
+  /// No description provided for @screenTimer.
+  ///
+  /// In en, this message translates to:
+  /// **'Timer'**
+  String get screenTimer;
+
+  /// No description provided for @screenResume.
+  ///
+  /// In en, this message translates to:
+  /// **'Resume'**
+  String get screenResume;
+
+  /// No description provided for @screenSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Save'**
+  String get screenSave;
+
+  /// No description provided for @screenMainMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Menu'**
+  String get screenMainMenu;
+
+  /// No description provided for @screenKindMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Menu'**
+  String get screenKindMenu;
+
+  /// No description provided for @screenKindChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice Screen'**
+  String get screenKindChoice;
+
+  /// No description provided for @screenKindPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Screen'**
+  String get screenKindPause;
+
+  /// No description provided for @screenScreens.
+  ///
+  /// In en, this message translates to:
+  /// **'Screens'**
+  String get screenScreens;
+
+  /// No description provided for @screenStyles.
+  ///
+  /// In en, this message translates to:
+  /// **'Styles'**
+  String get screenStyles;
+
+  /// No description provided for @screenNewStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'New Style'**
+  String get screenNewStyle;
+
+  /// No description provided for @screenNewStyleName.
+  ///
+  /// In en, this message translates to:
+  /// **'Style {number}'**
+  String screenNewStyleName(int number);
+
+  /// No description provided for @screenStyleUses.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =0{unused} =1{1 element} other{{count} elements}}'**
+  String screenStyleUses(int count);
+
+  /// No description provided for @screenDeleteStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete this style'**
+  String get screenDeleteStyle;
+
+  /// No description provided for @screenRenameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Style name'**
+  String get screenRenameHint;
+
+  /// No description provided for @screenPresets.
+  ///
+  /// In en, this message translates to:
+  /// **'Layouts'**
+  String get screenPresets;
+
+  /// No description provided for @screenPresetClassicMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get screenPresetClassicMenu;
+
+  /// No description provided for @screenPresetCenteredMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Centered'**
+  String get screenPresetCenteredMenu;
+
+  /// No description provided for @screenPresetSideMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'On the Side'**
+  String get screenPresetSideMenu;
+
+  /// No description provided for @screenPresetBottomChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers Below'**
+  String get screenPresetBottomChoices;
+
+  /// No description provided for @screenPresetSideChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers on the Side'**
+  String get screenPresetSideChoices;
+
+  /// No description provided for @screenPresetClassicPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic'**
+  String get screenPresetClassicPause;
+
+  /// No description provided for @screenPresetCornerPause.
+  ///
+  /// In en, this message translates to:
+  /// **'In the Corner'**
+  String get screenPresetCornerPause;
+
+  /// No description provided for @screenReplaceLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace the elements of this screen with the \"{name}\" layout? You can undo this.'**
+  String screenReplaceLayout(String name);
+
+  /// No description provided for @screenReplace.
+  ///
+  /// In en, this message translates to:
+  /// **'Replace'**
+  String get screenReplace;
+
+  /// No description provided for @screenVideoBehind.
+  ///
+  /// In en, this message translates to:
+  /// **'The video is behind this screen'**
+  String get screenVideoBehind;
+
+  /// No description provided for @screenPreviewAnswers.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers'**
+  String get screenPreviewAnswers;
+
+  /// No description provided for @screenPreviewLong.
+  ///
+  /// In en, this message translates to:
+  /// **'Long Answers'**
+  String get screenPreviewLong;
+
+  /// No description provided for @screenPreviewQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'With a Question'**
+  String get screenPreviewQuestion;
+
+  /// No description provided for @screenSampleAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer {number}'**
+  String screenSampleAnswer(int number);
+
+  /// No description provided for @screenSampleLongAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Answer {number}, which goes on long enough to need a second line'**
+  String screenSampleLongAnswer(int number);
+
+  /// No description provided for @screenSampleQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Which door do you open?'**
+  String get screenSampleQuestion;
+
+  /// No description provided for @screenGap.
+  ///
+  /// In en, this message translates to:
+  /// **'Space Between'**
+  String get screenGap;
+
+  /// No description provided for @screenSwitchToDesigner.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen Designer (Ctrl+2)'**
+  String get screenSwitchToDesigner;
+
+  /// No description provided for @screenSwitchToGraph.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Graph (Ctrl+1)'**
+  String get screenSwitchToGraph;
+
+  /// No description provided for @screenDesign.
+  ///
+  /// In en, this message translates to:
+  /// **'Design'**
+  String get screenDesign;
+
+  /// No description provided for @screenStyleHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click a style in the list to change it, or an element on the screen to change it and its style.'**
+  String get screenStyleHint;
+
+  /// No description provided for @screenPickColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a Color'**
+  String get screenPickColor;
+
   /// No description provided for @screenDropBackground.
   ///
   /// In en, this message translates to:

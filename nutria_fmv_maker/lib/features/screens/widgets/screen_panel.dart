@@ -1,5 +1,6 @@
-// The Screen section of the left panel: the menu's background and layout,
-// and the selected element with its style.
+// The Design section of the left panel (screen designer only): the screen's
+// background, and the selected element with its style, or a style picked
+// from the list.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
@@ -57,10 +58,14 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     final editor = ref.read(graphEditorProvider);
     final doc = ref.watch(projectDocumentProvider);
     final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
+    final screenKind = ref.watch(selectedScreenProvider);
+    final screen = doc.screenOf(screenKind);
     final selectedId = ref.watch(selectedScreenElementProvider);
-    final element = doc.menuScreen.elements
-        .where((e) => e.id == selectedId)
-        .firstOrNull;
+    final element = selectedId == null ? null : doc.screenElement(selectedId);
+    final pickedStyle = switch (ref.watch(selectedScreenStyleProvider)) {
+      final id? => doc.styles.where((s) => s.id == id).firstOrNull,
+      null => null,
+    };
     final backgrounds = [
       for (final m in doc.media)
         if (m.isVideo || m.kind == MediaKind.image) m,
@@ -71,49 +76,39 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     ];
     final gap = SizedBox(height: theme.dPanelPadding);
     final rows = <Widget>[
-      if (ref.watch(editorViewProvider) != EditorView.screens)
-        NutriaButton(
-          isAccented: true,
-          onTap: () =>
-              ref.read(editorViewProvider.notifier).show(EditorView.screens),
-          child: NutriaText(
-            text: t.screenOpenDesigner,
-            state: NutriaTextState.onAccent,
-          ),
-        ),
+      NutriaText(
+        text: screenKindLabel(screenKind, t),
+        textStyle: NutriaTextStyle.bold,
+      ),
       NutriaText(text: t.screenBackground, state: NutriaTextState.inactive),
       Row(
         children: [
           Expanded(
             child: NutriaSearchMenu(
               label:
-                  doc.mediaById(doc.menuScreen.backgroundId)?.fileName ??
+                  doc.mediaById(screen.backgroundId)?.fileName ??
                   t.screenNoBackground,
-              isPlaceholder: doc.menuScreen.backgroundId == null,
+              isPlaceholder: screen.backgroundId == null,
               options: [for (final m in backgrounds) m.fileName],
               searchHint: t.logicSearchVariables,
-              onSelected: (i) => editor.setMenuBackground(backgrounds[i].id),
+              onSelected: (i) => editor.setScreenBackground(backgrounds[i].id),
               onOpenChanged: menuOpen,
             ),
           ),
-          if (doc.menuScreen.backgroundId != null) ...[
+          if (screen.backgroundId != null) ...[
             SizedBox(width: theme.dPanelPadding),
             NutriaButton.icon(
               icon: Icons.close,
               tooltip: t.screenRemoveBackground,
-              onTap: () => editor.setMenuBackground(null),
+              onTap: () => editor.setScreenBackground(null),
             ),
           ],
         ],
       ),
-      NutriaButton(
-        onTap: editor.applyClassicMenu,
-        child: NutriaText(text: t.screenClassicLayout),
-      ),
     ];
 
-    if (element != null) {
-      final style = doc.styleOf(element);
+    /// The rows that change [style] (every element in it changes).
+    List<Widget> styleRows(ScreenStyle style) {
       void editStyle(ScreenStyle Function(ScreenStyle s) edit) =>
           editor.editScreenStyle(style.id, edit);
       Widget palette(int current, ValueChanged<int> onPicked) => Wrap(
@@ -140,69 +135,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
             ),
         ],
       );
-      final styleIds = [for (final s in doc.styles) s.id];
-      String styleName(String id) =>
-          doc.styles.where((s) => s.id == id).firstOrNull?.name ?? id;
-      rows.addAll([
-        SizedBox(height: theme.dSectionPadding),
-        Row(
-          children: [
-            Expanded(
-              child: NutriaText(
-                text: screenElementLabel(element.kind, t),
-                textStyle: NutriaTextStyle.bold,
-              ),
-            ),
-            NutriaButton.icon(
-              icon: Icons.delete,
-              tooltip: t.screenRemoveElement,
-              onTap: () => editor.removeScreenElement(element.id),
-            ),
-          ],
-        ),
-        NutriaTextField(
-          key: ValueKey('text-${element.id}'),
-          text: element.text ?? '',
-          markdown: true,
-          hint: t.screenTextHint,
-          onFocusChanged: (f) {
-            if (f) _textSession = Object();
-          },
-          onChanged: (text) => editor.setScreenElementText(
-            element.id,
-            text,
-            mergeKey: _textSession,
-          ),
-        ),
-        NutriaSettingRow(
-          label: t.screenWidth,
-          value: _percent(element.width),
-          onPrevious: () =>
-              editor.setScreenElementWidth(element.id, element.width - 0.05),
-          onNext: () =>
-              editor.setScreenElementWidth(element.id, element.width + 0.05),
-        ),
-        NutriaSettingRow(
-          label: t.screenStyle,
-          value: style.name,
-          onPrevious: () => editor.setScreenElementStyle(
-            element.id,
-            styleIds[(styleIds.indexOf(style.id) - 1) % styleIds.length],
-          ),
-          onNext: () => editor.setScreenElementStyle(
-            element.id,
-            styleIds[(styleIds.indexOf(style.id) + 1) % styleIds.length],
-          ),
-          options: [
-            for (final id in styleIds)
-              NutriaContextMenuItem(
-                icon: id == style.id ? Icons.check : Icons.circle_outlined,
-                label: styleName(id),
-                onSelected: () => editor.setScreenElementStyle(element.id, id),
-              ),
-          ],
-          onOptionsOpenChanged: menuOpen,
-        ),
+      return [
         NutriaText(
           text: t.screenStyleNote(style.name),
           state: NutriaTextState.inactive,
@@ -285,11 +218,129 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
             (s) => s.copyWith(padding: (s.padding + 0.005).clamp(0, 0.1)),
           ),
         ),
+      ];
+    }
+
+    if (element != null) {
+      final style = doc.styleOf(element);
+      final styleIds = [for (final s in doc.styles) s.id];
+      String styleName(String id) =>
+          doc.styles.where((s) => s.id == id).firstOrNull?.name ?? id;
+      rows.addAll([
+        SizedBox(height: theme.dSectionPadding),
+        Row(
+          children: [
+            Expanded(
+              child: NutriaText(
+                text: screenElementLabel(element.kind, t),
+                textStyle: NutriaTextStyle.bold,
+              ),
+            ),
+            NutriaButton.icon(
+              icon: Icons.delete,
+              tooltip: t.screenRemoveElement,
+              onTap: () => editor.removeScreenElement(element.id),
+            ),
+          ],
+        ),
+        if (element.kind != ScreenElementKind.choices &&
+            element.kind != ScreenElementKind.timer)
+          NutriaTextField(
+            key: ValueKey('text-${element.id}'),
+            text: element.text ?? '',
+            markdown: true,
+            hint: t.screenTextHint,
+            onFocusChanged: (f) {
+              if (f) _textSession = Object();
+            },
+            onChanged: (text) => editor.setScreenElementText(
+              element.id,
+              text,
+              mergeKey: _textSession,
+            ),
+          ),
+        NutriaSettingRow(
+          label: t.screenWidth,
+          value: _percent(element.width),
+          onPrevious: () =>
+              editor.setScreenElementWidth(element.id, element.width - 0.05),
+          onNext: () =>
+              editor.setScreenElementWidth(element.id, element.width + 0.05),
+        ),
+        if (element.kind == ScreenElementKind.choices)
+          NutriaSettingRow(
+            label: t.screenGap,
+            value: _percent(element.gap),
+            onPrevious: () =>
+                editor.setScreenElementGap(element.id, element.gap - 0.005),
+            onNext: () =>
+                editor.setScreenElementGap(element.id, element.gap + 0.005),
+          ),
+        NutriaSettingRow(
+          label: t.screenStyle,
+          value: style.name,
+          onPrevious: () => editor.setScreenElementStyle(
+            element.id,
+            styleIds[(styleIds.indexOf(style.id) - 1) % styleIds.length],
+          ),
+          onNext: () => editor.setScreenElementStyle(
+            element.id,
+            styleIds[(styleIds.indexOf(style.id) + 1) % styleIds.length],
+          ),
+          options: [
+            for (final id in styleIds)
+              NutriaContextMenuItem(
+                icon: id == style.id ? Icons.check : Icons.circle_outlined,
+                label: styleName(id),
+                onSelected: () => editor.setScreenElementStyle(element.id, id),
+              ),
+          ],
+          onOptionsOpenChanged: menuOpen,
+        ),
+        ...styleRows(style),
+      ]);
+    } else if (pickedStyle != null) {
+      final builtIn = ScreenOps.isBuiltInStyle(pickedStyle.id);
+      rows.addAll([
+        SizedBox(height: theme.dSectionPadding),
+        Row(
+          children: [
+            Expanded(
+              child: NutriaTextField(
+                key: ValueKey('style-name-${pickedStyle.id}'),
+                text: pickedStyle.name,
+                hint: t.screenRenameHint,
+                onFocusChanged: (f) {
+                  if (f) _textSession = Object();
+                },
+                onChanged: (name) => editor.renameScreenStyle(
+                  pickedStyle.id,
+                  name,
+                  mergeKey: _textSession,
+                ),
+              ),
+            ),
+            if (!builtIn) ...[
+              SizedBox(width: theme.dPanelPadding),
+              NutriaButton.icon(
+                icon: Icons.delete,
+                tooltip: t.screenDeleteStyle,
+                onTap: () => editor.removeScreenStyle(pickedStyle.id),
+              ),
+            ],
+          ],
+        ),
+        NutriaText(
+          text: t.screenStyleUses(doc.usesOfStyle(pickedStyle.id)),
+          state: NutriaTextState.inactive,
+          sizeMultiplier: 0.85,
+        ),
+        ...styleRows(pickedStyle),
       ]);
     } else {
       rows.add(
         NutriaText(
-          text: t.screenSelectHint,
+          text: '${t.screenSelectHint}\n\n${t.screenStyleHint}',
           state: NutriaTextState.inactive,
           maxLines: 4,
         ),

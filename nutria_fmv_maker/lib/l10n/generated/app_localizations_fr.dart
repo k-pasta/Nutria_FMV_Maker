@@ -476,6 +476,141 @@ class AppLocalizationsFr extends AppLocalizations {
   String get screenQuit => 'Quitter';
 
   @override
+  String get screenQuestion => 'Question';
+
+  @override
+  String get screenChoices => 'Réponses';
+
+  @override
+  String get screenTimer => 'Minuteur';
+
+  @override
+  String get screenResume => 'Reprendre';
+
+  @override
+  String get screenSave => 'Sauvegarder';
+
+  @override
+  String get screenMainMenu => 'Menu principal';
+
+  @override
+  String get screenKindMenu => 'Menu principal';
+
+  @override
+  String get screenKindChoice => 'Écran des choix';
+
+  @override
+  String get screenKindPause => 'Écran de pause';
+
+  @override
+  String get screenScreens => 'Écrans';
+
+  @override
+  String get screenStyles => 'Styles';
+
+  @override
+  String get screenNewStyle => 'Nouveau style';
+
+  @override
+  String screenNewStyleName(int number) {
+    return 'Style $number';
+  }
+
+  @override
+  String screenStyleUses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count éléments',
+      one: '1 élément',
+      zero: 'inutilisé',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get screenDeleteStyle => 'Supprimer ce style';
+
+  @override
+  String get screenRenameHint => 'Nom du style';
+
+  @override
+  String get screenPresets => 'Dispositions';
+
+  @override
+  String get screenPresetClassicMenu => 'Classique';
+
+  @override
+  String get screenPresetCenteredMenu => 'Centrée';
+
+  @override
+  String get screenPresetSideMenu => 'Sur le côté';
+
+  @override
+  String get screenPresetBottomChoices => 'Réponses en bas';
+
+  @override
+  String get screenPresetSideChoices => 'Réponses sur le côté';
+
+  @override
+  String get screenPresetClassicPause => 'Classique';
+
+  @override
+  String get screenPresetCornerPause => 'Dans le coin';
+
+  @override
+  String screenReplaceLayout(String name) {
+    return 'Remplacer les éléments de cet écran par la disposition « $name » ? Vous pourrez l\'annuler.';
+  }
+
+  @override
+  String get screenReplace => 'Remplacer';
+
+  @override
+  String get screenVideoBehind => 'La vidéo est derrière cet écran';
+
+  @override
+  String get screenPreviewAnswers => 'Réponses';
+
+  @override
+  String get screenPreviewLong => 'Réponses longues';
+
+  @override
+  String get screenPreviewQuestion => 'Avec une question';
+
+  @override
+  String screenSampleAnswer(int number) {
+    return 'Réponse $number';
+  }
+
+  @override
+  String screenSampleLongAnswer(int number) {
+    return 'Réponse $number, assez longue pour tenir sur deux lignes';
+  }
+
+  @override
+  String get screenSampleQuestion => 'Quelle porte ouvres-tu ?';
+
+  @override
+  String get screenGap => 'Espacement';
+
+  @override
+  String get screenSwitchToDesigner => 'Conception des écrans (Ctrl+2)';
+
+  @override
+  String get screenSwitchToGraph => 'Graphe de l\'histoire (Ctrl+1)';
+
+  @override
+  String get screenDesign => 'Conception';
+
+  @override
+  String get screenStyleHint =>
+      'Cliquez sur un style de la liste pour le modifier, ou sur un élément de l\'écran pour le modifier avec son style.';
+
+  @override
+  String get screenPickColor => 'Choisir une couleur';
+
+  @override
   String get screenDropBackground =>
       'Déposez ici une image ou une vidéo pour le fond';
 

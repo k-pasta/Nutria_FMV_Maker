@@ -4,6 +4,7 @@ import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
@@ -170,15 +171,17 @@ FmvExport exportFmv(
       ),
       nodes: nodes,
       variables: {for (final v in document.variables) v.name: _variable(v)},
-      menuScreen: _menuScreen(document),
+      menuScreen: _screen(document, ScreenKind.menu),
+      choiceScreen: _screen(document, ScreenKind.choice),
+      pauseScreen: _screen(document, ScreenKind.pause),
     ),
     issues: issues,
   );
 }
 
-/// The main menu design, with every element's style written out.
-FmvMenuScreen _menuScreen(ProjectDocument document) {
-  final screen = document.menuScreen;
+/// The design of [kind], with every element's style written out.
+FmvMenuScreen _screen(ProjectDocument document, ScreenKind kind) {
+  final screen = document.screenOf(kind);
   return FmvMenuScreen(
     background: document.mediaById(screen.backgroundId)?.path,
     elements: [
@@ -190,6 +193,7 @@ FmvMenuScreen _menuScreen(ProjectDocument document) {
             y: e.y,
             width: e.width,
             text: e.text,
+            gap: e.kind == ScreenElementKind.choices ? e.gap : null,
             style: FmvScreenStyle(
               fontSize: style.fontSize,
               bold: style.bold,

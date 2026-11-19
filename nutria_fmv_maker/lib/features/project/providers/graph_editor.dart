@@ -109,10 +109,17 @@ class GraphEditor {
 
   // ---------------------------------------------------------------- screens
 
-  /// Adds a menu element of [kind] and selects it.
-  void addScreenElement(ScreenElementKind kind) {
+  ScreenKind get _screen => _ref.read(selectedScreenProvider);
+
+  /// Adds an element of [kind] to the screen being designed, at ([x], [y])
+  /// if given (fractions of the screen), and selects it.
+  void addScreenElement(ScreenElementKind kind, {double? x, double? y}) {
     final id = _newId();
-    _document.apply('Add element', (d) => d.addScreenElement(id, kind));
+    final screen = _screen;
+    _document.apply(
+      'Add element',
+      (d) => d.addScreenElement(screen, id, kind, x: x, y: y),
+    );
     _ref.read(selectedScreenElementProvider.notifier).select(id);
   }
 
@@ -121,17 +128,35 @@ class GraphEditor {
     _ref.read(selectedScreenElementProvider.notifier).select(null);
   }
 
+  /// The background of the screen being designed.
+  void setScreenBackground(String? mediaId) {
+    final screen = _screen;
+    _document.apply(
+      'Set background',
+      (d) => d.setScreenBackground(screen, mediaId),
+    );
+  }
+
+  /// The main menu's background.
   void setMenuBackground(String? mediaId) =>
       _document.apply('Set background', (d) => d.setMenuBackground(mediaId));
 
+  /// Replaces the elements of [preset]'s screen with its layout.
+  void applyScreenPreset(ScreenPreset preset) {
+    _document.apply('Layout', (d) => d.applyScreenPreset(preset, _newId));
+    _ref.read(selectedScreenElementProvider.notifier).select(null);
+  }
+
   /// Replaces the menu's elements with the classic layout.
-  void applyClassicMenu() =>
-      _document.apply('Classic layout', (d) => d.applyClassicMenu(_newId));
+  void applyClassicMenu() => applyScreenPreset(ScreenPreset.classicMenu);
 
   void setScreenElementWidth(String id, double width) => _document.apply(
     'Change element',
     (d) => d.setScreenElementWidth(id, width),
   );
+
+  void setScreenElementGap(String id, double gap) =>
+      _document.apply('Change element', (d) => d.setScreenElementGap(id, gap));
 
   void setScreenElementStyle(String id, String? styleId) => _document.apply(
     'Change element',
@@ -148,6 +173,36 @@ class GraphEditor {
   /// Edits screen style [id] (every element using it changes).
   void editScreenStyle(String id, ScreenStyle Function(ScreenStyle s) edit) =>
       _document.apply('Change style', (d) => d.editScreenStyle(id, edit));
+
+  /// Adds a style copied from [fromId] (or the plain button style), named
+  /// [name], gives it to the selected element if there is one, and returns
+  /// its id.
+  String addScreenStyle(String name, {String fromId = 'button'}) {
+    final id = _newId();
+    final element = _ref.read(selectedScreenElementProvider);
+    _document.apply('New style', (d) {
+      final added = d.duplicateScreenStyle(fromId, id, name);
+      return element == null ? added : added.setScreenElementStyle(element, id);
+    });
+    if (element == null) {
+      _ref.read(selectedScreenStyleProvider.notifier).select(id);
+    }
+    return id;
+  }
+
+  void renameScreenStyle(String id, String name, {Object? mergeKey}) =>
+      _document.apply(
+        'Rename style',
+        (d) => d.renameScreenStyle(id, name),
+        mergeKey: mergeKey,
+      );
+
+  void removeScreenStyle(String id) {
+    _document.apply('Delete style', (d) => d.removeScreenStyle(id));
+    if (_ref.read(selectedScreenStyleProvider) == id) {
+      _ref.read(selectedScreenStyleProvider.notifier).select(null);
+    }
+  }
 
   /// Adds a Change Variable node at [position] and returns its id.
   String addChangeNode(Position position) {

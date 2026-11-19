@@ -474,6 +474,141 @@ class AppLocalizationsEl extends AppLocalizations {
   String get screenQuit => 'Έξοδος';
 
   @override
+  String get screenQuestion => 'Ερώτηση';
+
+  @override
+  String get screenChoices => 'Απαντήσεις';
+
+  @override
+  String get screenTimer => 'Χρονόμετρο';
+
+  @override
+  String get screenResume => 'Συνέχεια';
+
+  @override
+  String get screenSave => 'Αποθήκευση';
+
+  @override
+  String get screenMainMenu => 'Κύριο Μενού';
+
+  @override
+  String get screenKindMenu => 'Κύριο Μενού';
+
+  @override
+  String get screenKindChoice => 'Οθόνη Επιλογών';
+
+  @override
+  String get screenKindPause => 'Οθόνη Παύσης';
+
+  @override
+  String get screenScreens => 'Οθόνες';
+
+  @override
+  String get screenStyles => 'Στυλ';
+
+  @override
+  String get screenNewStyle => 'Νέο Στυλ';
+
+  @override
+  String screenNewStyleName(int number) {
+    return 'Στυλ $number';
+  }
+
+  @override
+  String screenStyleUses(int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count στοιχεία',
+      one: '1 στοιχείο',
+      zero: 'δεν χρησιμοποιείται',
+    );
+    return '$_temp0';
+  }
+
+  @override
+  String get screenDeleteStyle => 'Διαγραφή στυλ';
+
+  @override
+  String get screenRenameHint => 'Όνομα στυλ';
+
+  @override
+  String get screenPresets => 'Διατάξεις';
+
+  @override
+  String get screenPresetClassicMenu => 'Κλασική';
+
+  @override
+  String get screenPresetCenteredMenu => 'Στο Κέντρο';
+
+  @override
+  String get screenPresetSideMenu => 'Στο Πλάι';
+
+  @override
+  String get screenPresetBottomChoices => 'Απαντήσεις Κάτω';
+
+  @override
+  String get screenPresetSideChoices => 'Απαντήσεις στο Πλάι';
+
+  @override
+  String get screenPresetClassicPause => 'Κλασική';
+
+  @override
+  String get screenPresetCornerPause => 'Στη Γωνία';
+
+  @override
+  String screenReplaceLayout(String name) {
+    return 'Αντικατάσταση των στοιχείων αυτής της οθόνης με τη διάταξη «$name»; Μπορείτε να το αναιρέσετε.';
+  }
+
+  @override
+  String get screenReplace => 'Αντικατάσταση';
+
+  @override
+  String get screenVideoBehind => 'Το βίντεο είναι πίσω από αυτή την οθόνη';
+
+  @override
+  String get screenPreviewAnswers => 'Απαντήσεις';
+
+  @override
+  String get screenPreviewLong => 'Μεγάλες Απαντήσεις';
+
+  @override
+  String get screenPreviewQuestion => 'Με Ερώτηση';
+
+  @override
+  String screenSampleAnswer(int number) {
+    return 'Απάντηση $number';
+  }
+
+  @override
+  String screenSampleLongAnswer(int number) {
+    return 'Απάντηση $number, αρκετά μεγάλη ώστε να χρειάζεται δεύτερη γραμμή';
+  }
+
+  @override
+  String get screenSampleQuestion => 'Ποια πόρτα ανοίγεις;';
+
+  @override
+  String get screenGap => 'Απόσταση';
+
+  @override
+  String get screenSwitchToDesigner => 'Σχεδίαση Οθονών (Ctrl+2)';
+
+  @override
+  String get screenSwitchToGraph => 'Γράφος Ιστορίας (Ctrl+1)';
+
+  @override
+  String get screenDesign => 'Σχεδίαση';
+
+  @override
+  String get screenStyleHint =>
+      'Κάντε κλικ σε ένα στυλ στη λίστα για να το αλλάξετε, ή σε ένα στοιχείο στην οθόνη για να αλλάξετε αυτό και το στυλ του.';
+
+  @override
+  String get screenPickColor => 'Επιλογή Χρώματος';
+
+  @override
   String get screenDropBackground =>
       'Ρίξτε εδώ μια εικόνα ή ένα βίντεο για φόντο';
 

@@ -1,13 +1,26 @@
-// Designed screens (for now the main menu): elements placed on a background
-// in fractions of the screen, so they fit any resolution, and the styles
-// they share.
+// Designed screens (the main menu, the choice screen and the pause menu):
+// elements placed on a background in fractions of the screen, so they fit
+// any resolution, and the styles they share.
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'screen.freezed.dart';
 part 'screen.g.dart';
 
-/// What a menu element is. The Player shows the title and description of
-/// the project, and makes the others buttons.
+/// The screens an author can design.
+enum ScreenKind {
+  /// Before the story: title, Start, Load, …
+  menu,
+
+  /// Over the video while the viewer picks an answer.
+  choice,
+
+  /// When the viewer pauses: Resume, Save, …
+  pause,
+}
+
+/// What a screen element is. The Player shows the title and description of
+/// the project and the question as text, [choices] as the answers and
+/// [timer] as a bar that empties; the others are buttons.
 enum ScreenElementKind {
   title,
   description,
@@ -16,7 +29,40 @@ enum ScreenElementKind {
   settings,
   credits,
   quit,
+  question,
+  choices,
+  timer,
+  resume,
+  save,
+  mainMenu,
 }
+
+/// The elements each screen offers, in the order of its tray.
+const kScreenElementKinds = {
+  ScreenKind.menu: [
+    ScreenElementKind.title,
+    ScreenElementKind.description,
+    ScreenElementKind.start,
+    ScreenElementKind.load,
+    ScreenElementKind.settings,
+    ScreenElementKind.credits,
+    ScreenElementKind.quit,
+  ],
+  ScreenKind.choice: [
+    ScreenElementKind.question,
+    ScreenElementKind.choices,
+    ScreenElementKind.timer,
+  ],
+  ScreenKind.pause: [
+    ScreenElementKind.title,
+    ScreenElementKind.resume,
+    ScreenElementKind.save,
+    ScreenElementKind.load,
+    ScreenElementKind.settings,
+    ScreenElementKind.mainMenu,
+    ScreenElementKind.quit,
+  ],
+};
 
 /// How elements look. Sizes are fractions of the screen height, so a style
 /// looks the same at every resolution.
@@ -68,7 +114,7 @@ const kDefaultScreenStyles = [
 /// The style an element of [kind] uses unless it has its own.
 String defaultStyleIdFor(ScreenElementKind kind) => switch (kind) {
   ScreenElementKind.title => 'heading',
-  ScreenElementKind.description => 'text',
+  ScreenElementKind.description || ScreenElementKind.question => 'text',
   _ => 'button',
 };
 
@@ -88,22 +134,28 @@ abstract class ScreenElement with _$ScreenElement {
 
     /// Text instead of the default (the project title, "Start", …).
     String? text,
+
+    /// [ScreenElementKind.choices]: the space between answers, as a
+    /// fraction of the screen height.
+    @Default(0.015) double gap,
   }) = _ScreenElement;
 
   factory ScreenElement.fromJson(Map<String, dynamic> json) =>
       _$ScreenElementFromJson(json);
 }
 
-/// The main menu: a background (an imported image or video) and elements.
+/// A designed screen: a background (an imported image or video) and
+/// elements. The choice screen is shown over the video, so its background
+/// is usually left empty.
 @freezed
-abstract class MenuScreen with _$MenuScreen {
-  const factory MenuScreen({
+abstract class ScreenDesign with _$ScreenDesign {
+  const factory ScreenDesign({
     String? backgroundId,
     @Default(<ScreenElement>[]) List<ScreenElement> elements,
-  }) = _MenuScreen;
+  }) = _ScreenDesign;
 
-  factory MenuScreen.fromJson(Map<String, dynamic> json) =>
-      _$MenuScreenFromJson(json);
+  factory ScreenDesign.fromJson(Map<String, dynamic> json) =>
+      _$ScreenDesignFromJson(json);
 }
 
 /// Where a moved point snaps: to the middle, and to the centers of other

@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/preferences/widgets/preferences_panel.dart';
 import 'package:nutria_fmv_maker/features/project_info/widgets/project_panel.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/project_settings_panel.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/screens/widgets/screen_panel.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/variables/widgets/variables_panel.dart';
@@ -21,7 +22,20 @@ class LeftPanel extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
-    final section = ref.watch(panelLayoutProvider.select((l) => l.section));
+    // Each view has its own sections; the screen designer hides those about
+    // the story (variables, project, defaults).
+    final available = ref.watch(editorViewProvider) == EditorView.screens
+        ? const [
+            LeftPanelSection.screen,
+            LeftPanelSection.media,
+            LeftPanelSection.preferences,
+          ]
+        : [
+            for (final s in LeftPanelSection.values)
+              if (s != LeftPanelSection.screen) s,
+          ];
+    final chosen = ref.watch(panelLayoutProvider.select((l) => l.section));
+    final section = available.contains(chosen) ? chosen : available.first;
     return Padding(
       padding: EdgeInsets.only(top: theme.dSectionPadding),
       child: Column(
@@ -31,7 +45,7 @@ class LeftPanel extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
             child: NutriaDropdown(
               options: [
-                for (final s in LeftPanelSection.values)
+                for (final s in available)
                   switch (s) {
                     LeftPanelSection.media => NutriaDropdownOption(
                       icon: Icons.camera_roll,
@@ -42,8 +56,8 @@ class LeftPanel extends ConsumerWidget {
                       text: t.boardVariables,
                     ),
                     LeftPanelSection.screen => NutriaDropdownOption(
-                      icon: Icons.dashboard_customize,
-                      text: t.boardScreen,
+                      icon: Icons.palette,
+                      text: t.screenDesign,
                     ),
                     LeftPanelSection.project => NutriaDropdownOption(
                       icon: Icons.info_outline,
@@ -59,10 +73,10 @@ class LeftPanel extends ConsumerWidget {
                     ),
                   },
               ],
-              selectedIndex: section.index,
+              selectedIndex: available.indexOf(section),
               onSelected: (i) => ref
                   .read(panelLayoutProvider.notifier)
-                  .showSection(LeftPanelSection.values[i]),
+                  .showSection(available[i]),
             ),
           ),
           SizedBox(height: theme.dPanelPadding),

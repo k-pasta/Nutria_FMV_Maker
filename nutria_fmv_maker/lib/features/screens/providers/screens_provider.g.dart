@@ -62,15 +62,189 @@ abstract class _$EditorViewNotifier extends $Notifier<EditorView> {
   }
 }
 
-/// The selected element of the menu screen, or `null`.
+/// The screen being designed.
+
+@ProviderFor(SelectedScreen)
+final selectedScreenProvider = SelectedScreenProvider._();
+
+/// The screen being designed.
+final class SelectedScreenProvider
+    extends $NotifierProvider<SelectedScreen, ScreenKind> {
+  /// The screen being designed.
+  SelectedScreenProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedScreenProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedScreenHash();
+
+  @$internal
+  @override
+  SelectedScreen create() => SelectedScreen();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScreenKind value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScreenKind>(value),
+    );
+  }
+}
+
+String _$selectedScreenHash() => r'7e0991adf852c5a0cc39489f8c8d770ff408c8d6';
+
+/// The screen being designed.
+
+abstract class _$SelectedScreen extends $Notifier<ScreenKind> {
+  ScreenKind build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<ScreenKind, ScreenKind>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ScreenKind, ScreenKind>,
+              ScreenKind,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// The style being edited when no element is selected (picked from the
+/// style list), or `null`.
+
+@ProviderFor(SelectedScreenStyle)
+final selectedScreenStyleProvider = SelectedScreenStyleProvider._();
+
+/// The style being edited when no element is selected (picked from the
+/// style list), or `null`.
+final class SelectedScreenStyleProvider
+    extends $NotifierProvider<SelectedScreenStyle, String?> {
+  /// The style being edited when no element is selected (picked from the
+  /// style list), or `null`.
+  SelectedScreenStyleProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'selectedScreenStyleProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$selectedScreenStyleHash();
+
+  @$internal
+  @override
+  SelectedScreenStyle create() => SelectedScreenStyle();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(String? value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<String?>(value),
+    );
+  }
+}
+
+String _$selectedScreenStyleHash() =>
+    r'cfe0daaada034302c213354050836aa0cb99d57d';
+
+/// The style being edited when no element is selected (picked from the
+/// style list), or `null`.
+
+abstract class _$SelectedScreenStyle extends $Notifier<String?> {
+  String? build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<String?, String?>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<String?, String?>,
+              String?,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+@ProviderFor(ChoiceScenarioNotifier)
+final choiceScenarioProvider = ChoiceScenarioNotifierProvider._();
+
+final class ChoiceScenarioNotifierProvider
+    extends $NotifierProvider<ChoiceScenarioNotifier, ChoiceScenario> {
+  ChoiceScenarioNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'choiceScenarioProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$choiceScenarioNotifierHash();
+
+  @$internal
+  @override
+  ChoiceScenarioNotifier create() => ChoiceScenarioNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ChoiceScenario value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ChoiceScenario>(value),
+    );
+  }
+}
+
+String _$choiceScenarioNotifierHash() =>
+    r'29df82d057cfd2ee2ecaf54336fa16cbfac7fccd';
+
+abstract class _$ChoiceScenarioNotifier extends $Notifier<ChoiceScenario> {
+  ChoiceScenario build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<ChoiceScenario, ChoiceScenario>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<ChoiceScenario, ChoiceScenario>,
+              ChoiceScenario,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
+/// The selected element of the screen being designed, or `null`.
 
 @ProviderFor(SelectedScreenElement)
 final selectedScreenElementProvider = SelectedScreenElementProvider._();
 
-/// The selected element of the menu screen, or `null`.
+/// The selected element of the screen being designed, or `null`.
 final class SelectedScreenElementProvider
     extends $NotifierProvider<SelectedScreenElement, String?> {
-  /// The selected element of the menu screen, or `null`.
+  /// The selected element of the screen being designed, or `null`.
   SelectedScreenElementProvider._()
     : super(
         from: null,
@@ -99,9 +273,9 @@ final class SelectedScreenElementProvider
 }
 
 String _$selectedScreenElementHash() =>
-    r'59d478e77f73011b72cbcc2a89cf68bee4fe70bb';
+    r'cf9cff705b97c339ee7af46c25562cf829e43dd2';
 
-/// The selected element of the menu screen, or `null`.
+/// The selected element of the screen being designed, or `null`.
 
 abstract class _$SelectedScreenElement extends $Notifier<String?> {
   String? build();
@@ -161,7 +335,7 @@ final class ScreenDragNotifierProvider
 }
 
 String _$screenDragNotifierHash() =>
-    r'f1b15117e8419c4ea1d1509975ff4397e37ed372';
+    r'f524db68f6ef9f154c54b83fb878ed9c6929987d';
 
 /// Dragging an element on the stage: one undo step per drag, snapping to
 /// the middle and to other elements.

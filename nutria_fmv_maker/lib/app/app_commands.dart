@@ -268,7 +268,8 @@ class AppCommands {
     _ref.read(graphEditorProvider).removeSelection();
   }
 
-  /// Shows the story graph or the screen designer (with its panel section).
+  /// Shows the story graph or the screen designer (with its Design
+  /// section).
   void showView(EditorView view) {
     _ref.read(editorViewProvider.notifier).show(view);
     if (view == EditorView.screens) {
@@ -277,6 +278,13 @@ class AppCommands {
           .showSection(LeftPanelSection.screen);
     }
   }
+
+  /// Switches between the story graph and the screen designer.
+  void toggleView() => showView(
+    _ref.read(editorViewProvider) == EditorView.screens
+        ? EditorView.graph
+        : EditorView.screens,
+  );
 
   Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
   Future<void> cut() => _ref.read(graphEditorProvider).cutSelection();
