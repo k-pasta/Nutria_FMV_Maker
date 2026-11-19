@@ -105,6 +105,30 @@ void main() {
     expect(nodeOf(container, id).position, Position.zero);
   });
 
+  testWidgets('a node can also be dragged by its expanded settings', (
+    tester,
+  ) async {
+    final container = await pumpApp(tester);
+    final id = await addNode(tester, container);
+    if (container.read(preferencesProvider).gridSnapping) {
+      container.read(preferencesProvider.notifier).toggleGridSnapping();
+    }
+    container.read(graphEditorProvider).toggleExpanded(id);
+    await tester.pumpAndSettle();
+
+    final gesture = await tester.startGesture(
+      tester.getCenter(find.text('Music')),
+      kind: PointerDeviceKind.mouse,
+    );
+    for (var i = 0; i < 10; i++) {
+      await gesture.moveBy(const Offset(10, 0));
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(nodeOf(container, id).position.x, greaterThan(80));
+  });
+
   testWidgets('moving a node rebuilds no node content', (tester) async {
     final container = await pumpApp(tester);
     await addNode(tester, container);

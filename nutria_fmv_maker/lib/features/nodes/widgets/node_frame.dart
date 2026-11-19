@@ -327,37 +327,6 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
     }
   }
 
-  /// Whether this drag pulls a noodle (Alt) rather than moving the node.
-  bool _pullingNoodle = false;
-
-  /// Alt+drag starts dragging the node's first free output (see
-  /// [firstFreeOutput]); a plain drag moves the node.
-  void _beginDrag(Node node, DragStartDetails details) {
-    if (HardwareKeyboard.instance.isAltPressed) {
-      final doc = ref.read(projectDocumentProvider);
-      final port = firstFreeOutput(node, (p) => doc.edgeFrom(p) != null);
-      if (port != null) {
-        _pullingNoodle = true;
-        final pointer =
-            CanvasSpace.maybeOf(context)?.fromGlobal(details.globalPosition) ??
-            Offset.zero;
-        _drag.beginFromOutput(port, pointer);
-        return;
-      }
-    }
-    _pullingNoodle = false;
-    _gestures.beginMove(node.id, additive: _additive);
-  }
-
-  void _endDrag() {
-    if (_pullingNoodle) {
-      _pullingNoodle = false;
-      _drag.end();
-    } else {
-      _gestures.end();
-    }
-  }
-
   Widget _body(BuildContext context, bool dropping) {
     final theme = context.appTheme;
     final node = widget.node;
@@ -368,19 +337,8 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
       child: MouseRegion(
         onEnter: (_) => _drag.hover(HoverTarget.node(node.id)),
         onExit: (_) => _drag.hover(const HoverTarget.none()),
-        child: GestureDetector(
-          behavior: HitTestBehavior.opaque,
-          onTap: () => _gestures.tap(node.id, additive: _additive),
-          onPanStart: (details) => _beginDrag(node, details),
-          // Local deltas are in canvas units: the node is inside the canvas.
-          onPanUpdate: (details) => _pullingNoodle
-              ? _drag.updatePointer(details.delta)
-              : _gestures.updateMove(
-                  details.delta,
-                  snap: HardwareKeyboard.instance.isShiftPressed,
-                ),
-          onPanEnd: (_) => _endDrag(),
-          onPanCancel: _endDrag,
+        child: _MoveArea(
+          node: node,
           child: Stack(
             children: [
               // One rounded card: color strip on top, content below.
@@ -540,22 +498,98 @@ class _Expansion extends ConsumerWidget {
     return NutriaContextMenuArea(
       itemsAt: (_) => _nodeMenu(ref, node, AppLocalizations.of(context)),
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
-      child: Stack(
-        children: [
-          Container(
-            decoration: _card(theme, lit: lit),
-            foregroundDecoration: _selectionOutline(
-              theme,
-              node,
-              selected: selected,
+      child: _MoveArea(
+        node: node,
+        child: Stack(
+          children: [
+            Container(
+              decoration: _card(theme, lit: lit),
+              foregroundDecoration: _selectionOutline(
+                theme,
+                node,
+                selected: selected,
+              ),
+              padding: EdgeInsets.all(theme.dPanelPadding),
+              child: child,
             ),
-            padding: EdgeInsets.all(theme.dPanelPadding),
-            child: child,
-          ),
-          NodeResizeHandle(nodeId: node.id, fromLeft: true),
-          NodeResizeHandle(nodeId: node.id, fromLeft: false),
-        ],
+            NodeResizeHandle(nodeId: node.id, fromLeft: true),
+            NodeResizeHandle(nodeId: node.id, fromLeft: false),
+          ],
+        ),
       ),
+    );
+  }
+}
+
+/// The part of a node (body or expansion) that a click selects and a drag
+/// moves; Alt+drag pulls a noodle instead. Controls inside that handle
+/// their own drags (number fields) win over it.
+class _MoveArea extends ConsumerStatefulWidget {
+  const _MoveArea({required this.node, required this.child});
+
+  final Node node;
+  final Widget child;
+
+  @override
+  ConsumerState<_MoveArea> createState() => _MoveAreaState();
+}
+
+class _MoveAreaState extends ConsumerState<_MoveArea> {
+  late final NodeGestureNotifier _gestures = ref.read(
+    nodeGestureProvider.notifier,
+  );
+  late final ConnectionDragNotifier _drag = ref.read(
+    connectionDragProvider.notifier,
+  );
+
+  /// Whether this drag pulls a noodle (Alt) rather than moving the node.
+  bool _pullingNoodle = false;
+
+  /// Alt+drag starts dragging the node's first free output (see
+  /// [firstFreeOutput]); a plain drag moves the node.
+  void _beginDrag(Node node, DragStartDetails details) {
+    if (HardwareKeyboard.instance.isAltPressed) {
+      final doc = ref.read(projectDocumentProvider);
+      final port = firstFreeOutput(node, (p) => doc.edgeFrom(p) != null);
+      if (port != null) {
+        _pullingNoodle = true;
+        final pointer =
+            CanvasSpace.maybeOf(context)?.fromGlobal(details.globalPosition) ??
+            Offset.zero;
+        _drag.beginFromOutput(port, pointer);
+        return;
+      }
+    }
+    _pullingNoodle = false;
+    _gestures.beginMove(node.id, additive: _additive);
+  }
+
+  void _endDrag() {
+    if (_pullingNoodle) {
+      _pullingNoodle = false;
+      _drag.end();
+    } else {
+      _gestures.end();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final node = widget.node;
+    return GestureDetector(
+      behavior: HitTestBehavior.opaque,
+      onTap: () => _gestures.tap(node.id, additive: _additive),
+      onPanStart: (details) => _beginDrag(node, details),
+      // Local deltas are in canvas units: the node is inside the canvas.
+      onPanUpdate: (details) => _pullingNoodle
+          ? _drag.updatePointer(details.delta)
+          : _gestures.updateMove(
+              details.delta,
+              snap: HardwareKeyboard.instance.isShiftPressed,
+            ),
+      onPanEnd: (_) => _endDrag(),
+      onPanCancel: _endDrag,
+      child: widget.child,
     );
   }
 }
