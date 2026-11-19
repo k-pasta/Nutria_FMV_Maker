@@ -13,7 +13,7 @@ part 'project_document.g.dart';
 
 /// Version of the `.nfmv` format written by this code. Bump it when the
 /// format changes and add an upgrade step in `nfmv_codec.dart`.
-const int kNfmvFormatVersion = 2;
+const int kNfmvFormatVersion = 3;
 
 /// Id of the origin node in a new project.
 const String kOriginNodeId = 'origin';
@@ -21,8 +21,14 @@ const String kOriginNodeId = 'origin';
 /// Information shown on the Player's start screen.
 @freezed
 abstract class ProjectInfo with _$ProjectInfo {
-  const factory ProjectInfo({String? title, String? description}) =
-      _ProjectInfo;
+  const factory ProjectInfo({
+    String? title,
+    String? description,
+
+    /// The story's languages as codes (see `kStoryLanguages`), the main one
+    /// first. Empty: not said (one language).
+    @Default(<String>[]) List<String> languages,
+  }) = _ProjectInfo;
 
   factory ProjectInfo.fromJson(Map<String, dynamic> json) =>
       _$ProjectInfoFromJson(json);

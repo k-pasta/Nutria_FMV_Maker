@@ -57,6 +57,17 @@ void main() {
     expect(read.formatVersion, kNfmvFormatVersion);
   });
 
+  test('reads version 2, which linked one subtitle file per video', () {
+    final json = jsonDecode(NfmvCodec.encode(storyFixture())) as Map;
+    json['formatVersion'] = 2;
+    final media = json['media'] as List;
+    (media.first as Map)['subtitleId'] = 'srt';
+    media.add({'id': 'srt', 'path': r'C:.srt'});
+    final read = NfmvCodec.decode(jsonEncode(json));
+    expect(read.media.first.subtitles, {'': 'srt'});
+    expect(read.formatVersion, kNfmvFormatVersion);
+  });
+
   test('rejects files from a newer version', () {
     expect(
       () => NfmvCodec.decode('{"formatVersion": 999}'),

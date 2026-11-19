@@ -9,12 +9,16 @@ part of 'project_document.dart';
 _ProjectInfo _$ProjectInfoFromJson(Map<String, dynamic> json) => _ProjectInfo(
   title: json['title'] as String?,
   description: json['description'] as String?,
+  languages:
+      (json['languages'] as List<dynamic>?)?.map((e) => e as String).toList() ??
+      const <String>[],
 );
 
 Map<String, dynamic> _$ProjectInfoToJson(_ProjectInfo instance) =>
     <String, dynamic>{
       'title': instance.title,
       'description': instance.description,
+      'languages': instance.languages,
     };
 
 _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>

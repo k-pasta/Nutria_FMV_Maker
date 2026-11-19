@@ -73,13 +73,18 @@ abstract class MediaAsset with _$MediaAsset {
     /// Absolute path on the machine that last saved the project.
     required String path,
 
-    /// For a video: the id of the subtitle file linked to it, if any.
-    /// Linked subtitles are listed with their video, not on their own.
-    String? subtitleId,
+    /// For a video: the subtitle files linked to it, by language code (see
+    /// [ProjectInfo.languages]); the key `''` is "no language chosen", read
+    /// as the project's main language. Linked subtitles are listed with
+    /// their video, not on their own.
+    @Default(<String, String>{}) Map<String, String> subtitles,
   }) = _MediaAsset;
 
   factory MediaAsset.fromJson(Map<String, dynamic> json) =>
       _$MediaAssetFromJson(json);
+
+  /// A subtitle file linked to this video (any language), if any.
+  String? get subtitleId => subtitles.isEmpty ? null : subtitles.values.first;
 
   /// File name including extension, independent of the path separator.
   String get fileName => fileNameOf(path);

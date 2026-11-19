@@ -491,40 +491,83 @@ extension GraphOps on ProjectDocument {
 
   /// The ids of the subtitle files that are linked to a video.
   Set<String> get linkedSubtitleIds => {
-    for (final asset in media) ?asset.subtitleId,
+    for (final asset in media) ...asset.subtitles.values,
   };
 
-  /// Links subtitle file [subtitleId] to video [videoId] (and unlinks it
-  /// from any other video). Does nothing unless the kinds fit.
-  ProjectDocument linkSubtitle(String videoId, String subtitleId) {
+  /// The language a subtitle link is stored under: `''` while the project
+  /// has no languages, and the main language for `''` once it has some.
+  String _subtitleKey(String language) =>
+      language.isEmpty ? (info.languages.firstOrNull ?? '') : language;
+
+  /// The subtitle files of video [videoId] by language: links made before
+  /// languages were chosen count as the main language's.
+  Map<String, String> subtitlesOf(String? videoId) {
+    final video = mediaById(videoId);
+    if (video == null) return const {};
+    return {
+      for (final MapEntry(:key, :value) in video.subtitles.entries)
+        _subtitleKey(key): value,
+    };
+  }
+
+  /// Links subtitle file [subtitleId] to video [videoId] for [language]
+  /// (`''`: the main language, or none), replacing that language's file
+  /// and unlinking [subtitleId] from anywhere else. Does nothing unless the
+  /// kinds fit.
+  ProjectDocument linkSubtitle(
+    String videoId,
+    String subtitleId, {
+    String language = '',
+  }) {
     final video = mediaById(videoId);
     final subtitle = mediaById(subtitleId);
+    final key = _subtitleKey(language);
     if (video == null ||
         !video.isVideo ||
         subtitle?.kind != MediaKind.subtitle ||
-        video.subtitleId == subtitleId) {
+        subtitlesOf(videoId)[key] == subtitleId) {
       return this;
     }
     return copyWith(
       media: [
         for (final asset in media)
           if (asset.id == videoId)
-            asset.copyWith(subtitleId: subtitleId)
-          else if (asset.subtitleId == subtitleId)
-            asset.copyWith(subtitleId: null)
+            asset.copyWith(
+              subtitles: {
+                for (final MapEntry(key: k, :value) in subtitlesOf(videoId)
+                    .entries)
+                  if (k != key && value != subtitleId) k: value,
+                key: subtitleId,
+              },
+            )
+          else if (asset.subtitles.containsValue(subtitleId))
+            asset.copyWith(
+              subtitles: {
+                for (final MapEntry(:key, :value) in asset.subtitles.entries)
+                  if (value != subtitleId) key: value,
+              },
+            )
           else
             asset,
       ],
     );
   }
 
-  /// Video [videoId] no longer has subtitles; the file stays imported.
-  ProjectDocument unlinkSubtitle(String videoId) {
-    if (mediaById(videoId)?.subtitleId == null) return this;
+  /// Video [videoId] no longer has subtitles (in any language, or only in
+  /// [language]); the files stay imported.
+  ProjectDocument unlinkSubtitle(String videoId, {String? language}) {
+    final video = mediaById(videoId);
+    if (video == null || video.subtitles.isEmpty) return this;
+    final kept = language == null
+        ? const <String, String>{}
+        : {
+            for (final MapEntry(:key, :value) in subtitlesOf(videoId).entries)
+              if (key != _subtitleKey(language)) key: value,
+          };
     return copyWith(
       media: [
         for (final asset in media)
-          asset.id == videoId ? asset.copyWith(subtitleId: null) : asset,
+          asset.id == videoId ? asset.copyWith(subtitles: kept) : asset,
       ],
     );
   }

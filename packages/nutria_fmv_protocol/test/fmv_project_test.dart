@@ -60,6 +60,25 @@ void main() {
     expect(project.settings.toJson()['videoFit'], 'fillWidth');
   });
 
+  test('languages and subtitles per language, written only when set', () {
+    const info = FmvProjectInfo(title: 'T', languages: ['el', 'en']);
+    expect(FmvProjectInfo.fromJson(info.toJson()).languages, ['el', 'en']);
+    expect(const FmvProjectInfo().toJson().containsKey('languages'), isFalse);
+
+    const node = FmvNode(
+      video: 'a.mp4',
+      subtitles: 'a.el.srt',
+      subtitleTracks: {'el': 'a.el.srt', 'en': 'a.en.srt'},
+    );
+    final read = FmvNode.fromJson(node.toJson());
+    expect(read.subtitles, 'a.el.srt', reason: 'older Players read this');
+    expect(read.subtitleTracks, {'el': 'a.el.srt', 'en': 'a.en.srt'});
+    expect(
+      const FmvNode(video: 'a.mp4').toJson().containsKey('subtitleTracks'),
+      isFalse,
+    );
+  });
+
   test('a node can carry a question above its choices', () {
     const node = FmvNode(
       video: 'a.mp4',

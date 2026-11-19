@@ -85,7 +85,9 @@ abstract final class NfmvCodec {
         foundVersion: version,
       );
     }
-    final upgraded = version < 2 ? _v1ToV2(decoded) : decoded;
+    var upgraded = decoded;
+    if (version < 2) upgraded = _v1ToV2(upgraded);
+    if (version < 3) upgraded = _v2ToV3(upgraded);
 
     final ProjectDocument document;
     try {
@@ -122,6 +124,24 @@ abstract final class NfmvCodec {
     for (final MapEntry(:key, :value) in json.entries)
       key == 'videos' ? 'media' : key: value,
     'formatVersion': 2,
+  };
+
+  /// Version 2 linked one subtitle file to a video (`subtitleId`); version
+  /// 3 links one per language (`subtitles`), where `''` is "no language".
+  static Map<String, dynamic> _v2ToV3(Map<String, dynamic> json) => {
+    ...json,
+    'media': [
+      for (final asset in (json['media'] as List?) ?? const [])
+        if (asset is Map<String, dynamic>)
+          {
+            for (final MapEntry(:key, :value) in asset.entries)
+              if (key != 'subtitleId') key: value,
+            if (asset['subtitleId'] case final String id) 'subtitles': {'': id},
+          }
+        else
+          asset,
+    ],
+    'formatVersion': 3,
   };
 
   static String _resolvePath({

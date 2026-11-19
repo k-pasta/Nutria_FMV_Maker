@@ -118,10 +118,19 @@ class FmvProject {
 
 /// Title and description of the project.
 class FmvProjectInfo {
-  const FmvProjectInfo({this.title, this.description, this.menuMusic});
+  const FmvProjectInfo({
+    this.title,
+    this.description,
+    this.menuMusic,
+    this.languages = const [],
+  });
 
   final String? title;
   final String? description;
+
+  /// The languages of the story, as codes (`en`, `el`, …), the main one
+  /// first. Empty when the author didn't say. (Added after version 1.0.)
+  final List<String> languages;
 
   /// Music looping in the main menu. (Added after version 1.0.)
   final FmvLoopMusic? menuMusic;
@@ -130,13 +139,22 @@ class FmvProjectInfo {
         if (title != null) 'title': title,
         if (description != null) 'description': description,
         if (menuMusic != null) 'menuMusic': menuMusic!.toJson(),
+        if (languages.isNotEmpty) 'languages': languages,
       };
 
-  factory FmvProjectInfo.fromJson(Map<String, Object?> json) => FmvProjectInfo(
-        title: _string(json['title']),
-        description: _string(json['description']),
-        menuMusic: FmvLoopMusic.fromJson(_map(json['menuMusic'])),
-      );
+  factory FmvProjectInfo.fromJson(Map<String, Object?> json) {
+    final languages = json['languages'];
+    return FmvProjectInfo(
+      title: _string(json['title']),
+      description: _string(json['description']),
+      menuMusic: FmvLoopMusic.fromJson(_map(json['menuMusic'])),
+      languages: [
+        if (languages is List)
+          for (final code in languages)
+            if (code is String) code,
+      ],
+    );
+  }
 }
 
 /// Playback settings of the whole project. Each node can override any of
@@ -265,6 +283,7 @@ class FmvNode {
     this.type = FmvNodeType.video,
     this.video,
     this.subtitles,
+    this.subtitleTracks = const {},
     this.question,
     this.target,
     this.choices,
@@ -319,6 +338,11 @@ class FmvNode {
   /// after version 1.0; older readers ignore it.)
   final String? subtitles;
 
+  /// SubRip files by language code, when the video has subtitles in more
+  /// than one language; [subtitles] is then the main language's. (Added
+  /// after version 1.0; older readers ignore it.)
+  final Map<String, String> subtitleTracks;
+
   /// A question shown above the [choices]; `null` for none. (Added after
   /// version 1.0; older readers ignore it.)
   final String? question;
@@ -357,6 +381,7 @@ class FmvNode {
   Map<String, Object?> _videoJson() => {
         'video': video,
         if (subtitles != null) 'subtitles': subtitles,
+        if (subtitleTracks.isNotEmpty) 'subtitleTracks': subtitleTracks,
         if (question != null) 'question': question,
         if (target != null) 'target': target,
         if (choices != null)
@@ -397,9 +422,16 @@ class FmvNode {
       );
     }
     final choices = json['choices'];
+    final tracks = json['subtitleTracks'];
     return FmvNode(
       video: _string(json['video']),
       subtitles: _string(json['subtitles']),
+      subtitleTracks: {
+        if (tracks is Map)
+          for (final entry in tracks.entries)
+            if (entry.key is String && entry.value is String)
+              entry.key as String: entry.value as String,
+      },
       question: _string(json['question']),
       target: _string(json['target']),
       choices: choices is List

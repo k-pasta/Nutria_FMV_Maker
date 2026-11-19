@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -69,6 +70,36 @@ void main() {
           e.issues.any((i) => i.type == ExportIssueType.singleChoice);
       expect(warns(exportFmv(doc)), isTrue);
       expect(warns(exportFmv(doc, allowSingleChoice: true)), isFalse);
+    });
+
+    test('subtitles per language: the main one, plus every track', () {
+      final doc = ProjectDocument.empty()
+          .copyWith(
+            info: const ProjectInfo(languages: ['el', 'en']),
+            media: const [
+              MediaAsset(id: 'v', path: 'a.mp4'),
+              MediaAsset(id: 'el', path: 'a.el.srt'),
+              MediaAsset(id: 'en', path: 'a.en.srt'),
+            ],
+          )
+          .putNode(
+            const SimpleVideoNode(
+              id: 'N',
+              position: Position.zero,
+              videoId: 'v',
+            ),
+          )
+          .linkSubtitle('v', 'en', language: 'en')
+          .linkSubtitle('v', 'el', language: 'el');
+      final linked = doc.connect(
+        PortRef(nodeId: doc.origin.id, port: kNextPortKey),
+        PortRef.input('N'),
+      );
+      final project = exportFmv(linked).project;
+      expect(project.info.languages, ['el', 'en']);
+      final node = project.nodes['001']!;
+      expect(node.subtitles, 'a.el.srt');
+      expect(node.subtitleTracks, {'el': 'a.el.srt', 'en': 'a.en.srt'});
     });
 
     test('an empty project exports no nodes', () {

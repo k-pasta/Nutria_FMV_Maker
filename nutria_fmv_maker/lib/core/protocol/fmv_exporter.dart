@@ -104,6 +104,7 @@ FmvExport exportFmv(
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
           subtitles: _subtitlesPath(document, node),
+          subtitleTracks: _moreTracks(document, node),
           target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
           overrides: _overrides(document, node, kSimpleNodeSettings),
           music: _music(document, node.music),
@@ -127,6 +128,7 @@ FmvExport exportFmv(
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
           subtitles: _subtitlesPath(document, node),
+          subtitleTracks: _moreTracks(document, node),
           // An empty question (turned on, never written) isn't exported.
           question: switch (node.question?.trim()) {
             final q? when q.isNotEmpty => node.question,
@@ -152,6 +154,7 @@ FmvExport exportFmv(
       info: FmvProjectInfo(
         title: document.info.title,
         description: document.info.description,
+        languages: document.info.languages,
         menuMusic: switch (document.mediaById(document.origin.menuMusicId)) {
           final audio? => FmvLoopMusic(track: audio.path),
           null => null,
@@ -234,10 +237,26 @@ FmvMusic? _music(ProjectDocument document, MusicCue? cue) {
   );
 }
 
-/// The path of the subtitles linked to [node]'s video, if any.
+/// The paths of the subtitles linked to [node]'s video, by language.
+Map<String, String> _subtitleTracks(ProjectDocument document, Node node) => {
+  for (final MapEntry(:key, :value) in document
+      .subtitlesOf(node.videoIdOrNull)
+      .entries)
+    if (document.mediaById(value) case final file?) key: file.path,
+};
+
+/// The path of the subtitles in the main language (or the only ones) of
+/// [node]'s video, for Players that know one subtitle file per video.
 String? _subtitlesPath(ProjectDocument document, Node node) {
-  final video = document.mediaById(node.videoIdOrNull);
-  return document.mediaById(video?.subtitleId)?.path;
+  final tracks = _subtitleTracks(document, node);
+  return tracks[document.info.languages.firstOrNull ?? ''] ??
+      tracks.values.firstOrNull;
+}
+
+/// Every language's subtitles, when there are more than one.
+Map<String, String> _moreTracks(ProjectDocument document, Node node) {
+  final tracks = _subtitleTracks(document, node);
+  return tracks.length > 1 ? tracks : const {};
 }
 
 /// The node's own overrides plus its color's defaults, as overrides of the

@@ -16,7 +16,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$ProjectInfo {
 
- String? get title; String? get description;
+ String? get title; String? get description;/// The story's languages as codes (see `kStoryLanguages`), the main one
+/// first. Empty: not said (one language).
+ List<String> get languages;
 /// Create a copy of ProjectInfo
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +32,20 @@ $ProjectInfoCopyWith<ProjectInfo> get copyWith => _$ProjectInfoCopyWithImpl<Proj
 @override
 bool operator ==(Object other) {
   final _this = this as ProjectInfo;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectInfo&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ProjectInfo&&(identical(other.title, _this.title) || other.title == _this.title)&&(identical(other.description, _this.description) || other.description == _this.description)&&const DeepCollectionEquality().equals(other.languages, _this.languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ProjectInfo;
-  return Object.hash(runtimeType,_this.title,_this.description);
+  return Object.hash(runtimeType,_this.title,_this.description,const DeepCollectionEquality().hash(_this.languages));
 }
 
 @override
 String toString() {
   final _this = this as ProjectInfo;
-  return 'ProjectInfo(title: ${_this.title}, description: ${_this.description})';
+  return 'ProjectInfo(title: ${_this.title}, description: ${_this.description}, languages: ${_this.languages})';
 }
 
 
@@ -54,7 +56,7 @@ abstract mixin class $ProjectInfoCopyWith<$Res>  {
   factory $ProjectInfoCopyWith(ProjectInfo value, $Res Function(ProjectInfo) _then) = _$ProjectInfoCopyWithImpl;
 @useResult
 $Res call({
- String? title, String? description
+ String? title, String? description, List<String> languages
 });
 
 
@@ -71,11 +73,12 @@ class _$ProjectInfoCopyWithImpl<$Res>
 
 /// Create a copy of ProjectInfo
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? description = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? description = freezed,Object? languages = null,}) {
   return _then(ProjectInfo(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,languages: null == languages ? _self.languages : languages // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
@@ -160,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  String? description)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  String? description,  List<String> languages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ProjectInfo() when $default != null:
-return $default(_that.title,_that.description);case _:
+return $default(_that.title,_that.description,_that.languages);case _:
   return orElse();
 
 }
@@ -181,10 +184,10 @@ return $default(_that.title,_that.description);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  String? description)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  String? description,  List<String> languages)  $default,) {final _that = this;
 switch (_that) {
 case _ProjectInfo():
-return $default(_that.title,_that.description);case _:
+return $default(_that.title,_that.description,_that.languages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +204,10 @@ return $default(_that.title,_that.description);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  String? description)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  String? description,  List<String> languages)?  $default,) {final _that = this;
 switch (_that) {
 case _ProjectInfo() when $default != null:
-return $default(_that.title,_that.description);case _:
+return $default(_that.title,_that.description,_that.languages);case _:
   return null;
 
 }
@@ -216,11 +219,22 @@ return $default(_that.title,_that.description);case _:
 @JsonSerializable()
 
 class _ProjectInfo implements ProjectInfo {
-  const _ProjectInfo({this.title, this.description});
+  const _ProjectInfo({this.title, this.description,  List<String> languages = const <String>[]}): _languages = languages;
   factory _ProjectInfo.fromJson(Map<String, dynamic> json) => _$ProjectInfoFromJson(json);
 
 @override final  String? title;
 @override final  String? description;
+/// The story's languages as codes (see `kStoryLanguages`), the main one
+/// first. Empty: not said (one language).
+ final  List<String> _languages;
+/// The story's languages as codes (see `kStoryLanguages`), the main one
+/// first. Empty: not said (one language).
+@override@JsonKey() List<String> get languages {
+  if (_languages is EqualUnmodifiableListView) return _languages;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_languages);
+}
+
 
 /// Create a copy of ProjectInfo
 /// with the given fields replaced by the non-null parameter values.
@@ -235,18 +249,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectInfo&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ProjectInfo&&(identical(other.title, title) || other.title == title)&&(identical(other.description, description) || other.description == description)&&const DeepCollectionEquality().equals(other.languages, _languages));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,title,description);
+    return Object.hash(runtimeType,title,description,const DeepCollectionEquality().hash(_languages));
 }
 
 @override
 String toString() {
-    return 'ProjectInfo(title: $title, description: $description)';
+    return 'ProjectInfo(title: $title, description: $description, languages: $languages)';
 }
 
 
@@ -257,7 +271,7 @@ abstract mixin class _$ProjectInfoCopyWith<$Res> implements $ProjectInfoCopyWith
   factory _$ProjectInfoCopyWith(_ProjectInfo value, $Res Function(_ProjectInfo) _then) = __$ProjectInfoCopyWithImpl;
 @override @useResult
 $Res call({
- String? title, String? description
+ String? title, String? description, List<String> languages
 });
 
 
@@ -274,11 +288,12 @@ class __$ProjectInfoCopyWithImpl<$Res>
 
 /// Create a copy of ProjectInfo
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? description = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? description = freezed,Object? languages = null,}) {
   return _then(_ProjectInfo(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,languages: null == languages ? _self._languages : languages // ignore: cast_nullable_to_non_nullable
+as List<String>,
   ));
 }
 
