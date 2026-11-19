@@ -9,7 +9,7 @@ Nothing changes where the answer kept the current behaviour.
 
 1. **Player:** yes. `git init` it and commit it as it is first.
 2. **Variable names:** any Unicode letter (Greek, accented…), not just
-   ASCII. The protocol's expression parser must accept them too.
+   ASCII. This was already so (Phase 1b); the question was mistaken.
 3. **Min/max:** keep dropping them when switching int ↔ float.
 4. **F2:** keeps working while typing.
 5. **Lone Alt:** works fine; nothing to do.
@@ -36,6 +36,43 @@ Nothing changes where the answer kept the current behaviour.
     drag it onto the stage.
 18. **Screens:** a full colour picker, and creating, renaming and deleting
     styles. A new layout for the designer (see "To do" below).
+
+### Done from these answers (step 1)
+- **Missing files** are checked again when the window regains focus.
+- **Comments:** a click on a selected comment starts editing (the cursor
+  goes to the end of the text, not where you clicked).
+- **Tab** in an expression moves to the next field when nothing completes.
+- **Caution sign** on the strip of logic nodes with a problem or a warning
+  (rounding). Video nodes don't get one: a missing video already shows on
+  the node, and their strip is often too thin for an icon.
+- **Music picker:** Music (video nodes), Pause Music (branched) and Menu
+  Music (origin) are always shown, as a searchable list of imported audio.
+  Right-click plays the track in the preview; (x) removes it. The origin
+  is one row taller because of it.
+- **Number fields** change by dragging their middle sideways: a step every
+  8 screen pixels (Shift: 24), the same at every zoom. Clicking still
+  types and the arrows still step. A drag is one undo step. Starting a
+  drag vertically moves the node instead.
+- **Music fades** are such number fields, in seconds: arrows and drags
+  step a quarter second; any length up to 60 s can be typed. The old
+  presets are on right-click.
+- **Nodes can be dragged by their expanded settings** (the bug).
+
+### Other requests
+- **Ctrl+X** cuts nodes (also in the Edit and node menus).
+- **Windows title bar:** hidden on Windows only; minimize, maximize/restore
+  and close at the right of the menu bar, in the system's sizes, the close
+  button red on hover (theme tokens `cWindowClose`, `cOnWindowClose`). The
+  empty part of the bar drags the window, a double-click maximizes or
+  restores, a right-click offers the same three actions. Closing by any
+  means (button, Alt+F4, taskbar) now asks about unsaved changes; before,
+  only File > Exit did.
+- **Repositories:** `legacy` branches keep your own code in both repos
+  (Maker: `9541768`; Player: `0478e8c`, your uncommitted May 2025 edits
+  committed as they were). `main` of the Maker is fast-forwarded to this
+  work. Nothing is pushed. The Player stays where it is and in its own
+  repository (separate releases); I deleted the empty
+  `Sensilab_AR_Sandbox_christmas` folder next to it.
 
 ### To do from these answers
 - **Project information editor**, in a renamed Defaults/Project section:

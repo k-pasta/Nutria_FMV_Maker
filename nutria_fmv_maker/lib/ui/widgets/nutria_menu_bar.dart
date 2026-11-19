@@ -77,11 +77,10 @@ class NutriaMenuBar extends StatelessWidget {
             width: double.infinity,
             child: ColoredBox(
               color: theme.cMenuBar,
-              child: Row(
+              child: Stack(
                 children: [
-                  // Shrinks (and clips its menus) in a narrow window.
-                  Flexible(child: _menuBar(theme, styles)),
-                  Expanded(
+                  // The title area: wherever the menus and buttons aren't.
+                  Positioned.fill(
                     child: GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onPanStart: onTitleDragStart == null
@@ -93,7 +92,14 @@ class NutriaMenuBar extends StatelessWidget {
                           : (d) => onTitleSecondaryTap!(d.globalPosition),
                     ),
                   ),
-                  ?trailing,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Shrinks (and clips its menus) in a narrow window.
+                      Flexible(child: _menuBar(theme, styles)),
+                      ?trailing,
+                    ],
+                  ),
                 ],
               ),
             ),

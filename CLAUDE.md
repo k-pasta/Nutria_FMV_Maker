@@ -38,7 +38,8 @@ flutter drive --profile -d windows --driver=test_driver/perf_driver.dart --targe
 - **Localizations:** `.arb` files are in `lib/l10n/` (`app_en.arb` is the template; also `el`, `fr`). Add every new string to all three. Import `package:nutria_fmv_maker/l10n/generated/app_localizations.dart` (not the old `flutter_gen` synthetic package).
   - If `AppLocalizations` suddenly goes missing, run `flutter pub get`, which regenerates the files.
   - Two Flutter processes on the project at once (VS Code plus a terminal) can delete the folder mid-generation. They can also break Windows builds with "Cannot open source file ... ephemeral\cpp_client_wrapper"; just rerun.
-- `MediaKit.ensureInitialized()` and a preloaded `SharedPreferences` (overriding `sharedPreferencesProvider`) are required in `main()` before `runApp`.
+- `MediaKit.ensureInitialized()`, `NativeWindowControls.instance.init()` and a preloaded `SharedPreferences` (overriding `sharedPreferencesProvider`) are required in `main()` before `runApp`.
+- **Window frame:** on Windows only, the system title bar is hidden (`window_manager` 0.5; 0.7 pulls in a native C toolchain) and the menu bar acts as it (`services/window_service.dart`, `NutriaWindowButtons`). Closing by any means goes through `AppCommands.exitApp`. Tests get a `FakeWindowControls` (no custom frame unless asked).
 - **No FFmpeg.**
   - Thumbnails come from `fc_native_video_thumbnail` (background thread, queued two at a time).
   - Metadata comes from `media_metadata`.
@@ -122,7 +123,7 @@ lib/
   - Adding a token means touching the constructor default, the field and `copyWith` in `AppTheme`.
 - **Components:** use the `Nutria*` widgets in `ui/widgets/`:
   - `NutriaButton` (give icon-only buttons a `tooltip`; a test checks this) and `NutriaTextField`
-  - `NutriaNumberField` (arrows plus typing; accepts a comma as decimal point) and `NutriaSettingRow` (`options` gives a right-click menu of all values)
+  - `NutriaNumberField` (arrows, typing, and dragging its middle sideways; accepts a comma as decimal point; a drag is one undo step via `GraphEditor.beginValueDrag`/`endValueDrag`) and `NutriaSettingRow` (`options` gives a right-click menu of all values)
   - `NutriaContextMenuArea`, `showNutriaChoiceDialog`, and others
 - **Shortcuts:** all commands go through `AppCommands`. The key table is in `app_shortcuts.dart`; the menus show the same activators.
   - `NutriaTextField` swallows every character key and keeps Ctrl+C/X/V/A for its own text, so single-key app shortcuts (T, N, F, Space, …) never fire while typing.
