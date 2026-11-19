@@ -103,6 +103,34 @@ extension GraphOps on ProjectDocument {
   );
 
   /// Sets the color swatch index shown on a node.
+  // ------------------------------------------------------------------ logic
+
+  /// Edits change node [id] (no-op for other nodes).
+  ProjectDocument updateChange(
+    String id,
+    ChangeVariableNode Function(ChangeVariableNode n) edit,
+  ) => updateNode(id, (n) => n is ChangeVariableNode ? edit(n) : n);
+
+  /// Edits compare node [id] (no-op for other nodes).
+  ProjectDocument updateCompare(
+    String id,
+    CompareNode Function(CompareNode n) edit,
+  ) => updateNode(id, (n) => n is CompareNode ? edit(n) : n);
+
+  /// Edits condition [conditionId] of compare node [id].
+  ProjectDocument updateCondition(
+    String id,
+    String conditionId,
+    LogicCondition Function(LogicCondition c) edit,
+  ) => updateCompare(
+    id,
+    (n) => n.copyWith(
+      conditions: [
+        for (final c in n.conditions) c.id == conditionId ? edit(c) : c,
+      ],
+    ),
+  );
+
   // --------------------------------------------------------------- comments
 
   /// The comment attached to node [hostId], if any.
@@ -239,7 +267,7 @@ extension GraphOps on ProjectDocument {
     (n) => switch (n) {
       SimpleVideoNode() => n.copyWith(videoId: videoId),
       BranchedVideoNode() => n.copyWith(videoId: videoId),
-      OriginNode() || CommentNode() => n,
+      _ => n,
     },
   );
 
@@ -252,7 +280,7 @@ extension GraphOps on ProjectDocument {
     (n) => switch (n) {
       SimpleVideoNode() => n.copyWith(overrides: overrides),
       BranchedVideoNode() => n.copyWith(overrides: overrides),
-      OriginNode() || CommentNode() => n,
+      _ => n,
     },
   );
 
@@ -313,7 +341,10 @@ extension GraphOps on ProjectDocument {
                 ),
           ],
         );
-      case OriginNode() || CommentNode():
+      case OriginNode() ||
+          CommentNode() ||
+          ChangeVariableNode() ||
+          CompareNode():
         throw ArgumentError('Only video nodes can be converted');
     }
   }

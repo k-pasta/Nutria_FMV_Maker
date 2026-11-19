@@ -211,6 +211,149 @@ class AppLocalizationsEl extends AppLocalizations {
   String get contextBranchingVideoNode => 'Βιντεο Πολλαπλών Επιλογών';
 
   @override
+  String get contextChangeVariable => 'Αλλαγή Μεταβλητής';
+
+  @override
+  String get contextCompare => 'Σύγκριση';
+
+  @override
+  String get logicTitleSet => 'Ορισμός Μεταβλητής';
+
+  @override
+  String get logicTitleIncrement => 'Αύξηση';
+
+  @override
+  String get logicTitleDecrement => 'Μείωση';
+
+  @override
+  String get logicTitleToggle => 'Εναλλαγή';
+
+  @override
+  String get logicTitleAbsolute => 'Απόλυτη Τιμή';
+
+  @override
+  String get logicTitleChange => 'Αλλαγή Μεταβλητής';
+
+  @override
+  String get logicTitleCompare => 'Σύγκριση';
+
+  @override
+  String get logicOpSet => 'Ορισμός';
+
+  @override
+  String get logicOpAdd => 'Πρόσθεση';
+
+  @override
+  String get logicOpSubtract => 'Αφαίρεση';
+
+  @override
+  String get logicOpMultiply => 'Πολλαπλασιασμός';
+
+  @override
+  String get logicOpDivide => 'Διαίρεση';
+
+  @override
+  String get logicOpPower => 'Δύναμη';
+
+  @override
+  String get logicOpAbsolute => 'Απόλυτη';
+
+  @override
+  String get logicOpToggle => 'Εναλλαγή';
+
+  @override
+  String get logicOpAnd => 'Και';
+
+  @override
+  String get logicOpOr => 'Ή';
+
+  @override
+  String get logicOpXor => 'Αποκλειστικό Ή';
+
+  @override
+  String get logicPickVariable => 'Επιλογή Μεταβλητής…';
+
+  @override
+  String get logicMissingVariable => 'Διαγραμμένη Μεταβλητή';
+
+  @override
+  String get logicSearchVariables => 'Αναζήτηση…';
+
+  @override
+  String get logicNoVariables =>
+      'Δεν υπάρχουν μεταβλητές ακόμα. Προσθέστε στην ενότητα Μεταβλητές.';
+
+  @override
+  String get logicNewValueHint => 'Νέα τιμή…';
+
+  @override
+  String get logicByValueHint => 'Κατά…';
+
+  @override
+  String get logicValueHint => 'Τιμή…';
+
+  @override
+  String get logicExpressionHint => 'π.χ. coins > 3 and has_key';
+
+  @override
+  String get logicAddCondition => 'Προσθήκη συνθήκης';
+
+  @override
+  String get logicRemoveCondition => 'Αφαίρεση συνθήκης';
+
+  @override
+  String get logicMatchAll => 'Να Ισχύουν Όλες';
+
+  @override
+  String get logicMatchAny => 'Αρκεί Μία';
+
+  @override
+  String get logicTrue => 'Αληθές';
+
+  @override
+  String get logicFalse => 'Ψευδές';
+
+  @override
+  String get logicUseExpression => 'Χρήση Έκφρασης';
+
+  @override
+  String get logicProblemNoVariable => 'Επιλέξτε μεταβλητή.';
+
+  @override
+  String get logicProblemUnknownVariable => 'Αυτή η μεταβλητή διαγράφηκε.';
+
+  @override
+  String get logicProblemWrongOperation =>
+      'Δεν ταιριάζει σε αυτό το είδος μεταβλητής.';
+
+  @override
+  String get logicProblemNoConditions => 'Προσθέστε μια συνθήκη.';
+
+  @override
+  String get logicProblemEmpty =>
+      'Δώστε μια τιμή. Χωρίς αυτή, τίποτα δεν αλλάζει.';
+
+  @override
+  String get logicProblemExpression =>
+      'Η τιμή δεν διαβάζεται ή είναι λάθος είδους (αριθμός ή αληθές/ψευδές).';
+
+  @override
+  String logicProblemUnknownName(String name) {
+    return 'Δεν υπάρχει μεταβλητή με όνομα $name.';
+  }
+
+  @override
+  String get logicWarningRounded =>
+      'Το αποτέλεσμα μπορεί να έχει δεκαδικά· στρογγυλοποιείται.';
+
+  @override
+  String get prefSimpleMath => 'Απλά Μαθηματικά';
+
+  @override
+  String get notifyExportLogicIssues =>
+      'Κάποιοι κόμβοι λογικής έχουν προβλήματα· το Player θα τους παραλείψει';
+
+  @override
   String get contextCompareNode => 'Σύγκριση Τιμής';
 
   @override

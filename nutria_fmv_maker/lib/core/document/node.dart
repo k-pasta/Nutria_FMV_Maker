@@ -2,6 +2,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 part 'node.freezed.dart';
 part 'node.g.dart';
@@ -31,6 +32,24 @@ abstract class Choice with _$Choice {
       _Choice;
 
   factory Choice.fromJson(Map<String, dynamic> json) => _$ChoiceFromJson(json);
+}
+
+/// The swatch new logic nodes get: the last color.
+const int kLogicNodeSwatch = 5;
+
+/// One test of a [CompareNode]: variable [variableId] [comparison] [value]
+/// (an expression).
+@freezed
+abstract class LogicCondition with _$LogicCondition {
+  const factory LogicCondition({
+    required String id,
+    String? variableId,
+    @Default(FmvComparison.equal) FmvComparison comparison,
+    @Default('') String value,
+  }) = _LogicCondition;
+
+  factory LogicCondition.fromJson(Map<String, dynamic> json) =>
+      _$LogicConditionFromJson(json);
 }
 
 /// A node in the story graph.
@@ -105,21 +124,54 @@ sealed class Node with _$Node {
     String? attachedTo,
   }) = CommentNode;
 
+  /// Changes a variable ([operation] with [value], an expression), then
+  /// continues to a single next node.
+  @FreezedUnionValue('changeVariable')
+  const factory Node.changeVariable({
+    required String id,
+    required Position position,
+    @Default(kDefaultNodeWidth) double width,
+    String? name,
+    @Default(kLogicNodeSwatch) int swatch,
+    @Default(false) bool isExpanded,
+    String? variableId,
+    @Default(FmvChangeOperation.set) FmvChangeOperation operation,
+    @Default('') String value,
+  }) = ChangeVariableNode;
+
+  /// Tests [conditions] (all, or any with [matchAny]) or, when not `null`,
+  /// [expression], and continues to its "true" or "false" output.
+  @FreezedUnionValue('compare')
+  const factory Node.compare({
+    required String id,
+    required Position position,
+    @Default(kDefaultNodeWidth) double width,
+    String? name,
+    @Default(kLogicNodeSwatch) int swatch,
+    @Default(false) bool isExpanded,
+    @Default(<LogicCondition>[]) List<LogicCondition> conditions,
+    @Default(false) bool matchAny,
+    String? expression,
+  }) = CompareNode;
+
   factory Node.fromJson(Map<String, dynamic> json) => _$NodeFromJson(json);
 
   /// The video this node plays, or `null` for non-video nodes / no video yet.
   String? get videoIdOrNull => switch (this) {
     SimpleVideoNode(:final videoId) => videoId,
     BranchedVideoNode(:final videoId) => videoId,
-    OriginNode() || CommentNode() => null,
+    _ => null,
   };
 
   /// This node's setting overrides, or `null` for non-video nodes.
   VideoSettingsOverride? get overridesOrNull => switch (this) {
     SimpleVideoNode(:final overrides) => overrides,
     BranchedVideoNode(:final overrides) => overrides,
-    OriginNode() || CommentNode() => null,
+    _ => null,
   };
+
+  /// Whether this node changes or tests variables.
+  bool get isLogicNode => this is ChangeVariableNode || this is CompareNode;
 
   /// Whether this node plays a video (and so has video settings).
   bool get isVideoNode => this is SimpleVideoNode || this is BranchedVideoNode;

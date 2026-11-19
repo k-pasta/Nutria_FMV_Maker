@@ -309,3 +309,42 @@ what the Maker checks.
   - **Old Players can't play files that contain logic nodes:** they would
     read them as video nodes without a video.
   - The Player needs the update you haven't approved yet.
+
+### Phase 5b/5c: logic nodes in the Maker
+- **Adding them:** right-click the canvas for "Change Variable" or
+  "Compare". They get the last color, as you asked.
+- **Their titles** come from what they do: "Set Variable", "Increment"
+  (add 1), "Decrement" (subtract 1), "Toggle", "Absolute", otherwise
+  "Change Variable", and "Compare". Renaming them works like any node.
+- **Change Variable** has three rows:
+  - A variable picker: a button that opens a list with a search field.
+    Type to filter, and Enter takes the first match.
+  - The operation: arrows, with every option on right-click.
+  - The value, which is hidden for Toggle and Absolute.
+  - Picking a true/false variable switches an operation that doesn't fit
+    to "Set", and starts the value at true.
+- **Compare** has two rows per condition:
+  - The variable picker, with × when there are several conditions.
+  - The comparison and the value.
+  - Below them, + adds a condition. With two or more, a button switches
+    between "All Must Hold" and "One Is Enough".
+  - Last come the True and False rows with their knots.
+- **Knots:** the input, and a Change node's output, are level with the
+  first row. True and False are level with their rows, as tested.
+- **Simple Math** (a preference, on by default):
+  - A value must be one number, true/false, or one variable name.
+  - Power, absolute, and/or/xor and the expression mode are hidden.
+  - True/false values become a True/False button.
+  - With it off, values are full expressions, and Compare can use one
+    expression (node settings: "Use an Expression").
+- **Problems** show the field in the accent color, with a tooltip saying
+  what's wrong: no variable, deleted variable, a name that doesn't exist,
+  wrong kind. The rounding warning is also a tooltip on the value.
+  **Ask:** I chose tooltips over the error line above the node that you
+  described, because an extra row would move the knots. Is that OK?
+- **Export:** problems are reported ("Some logic nodes have problems…"),
+  but the nodes are exported anyway.
+- **Not done yet (5d):**
+  - Colouring the expression text.
+  - Tab completion of variable names.
+  - Showing `*` as `×`.

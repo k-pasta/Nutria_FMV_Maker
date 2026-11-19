@@ -18,6 +18,7 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/services/clipboard_service.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'graph_editor.g.dart';
@@ -38,18 +39,172 @@ class GraphEditor {
 
   /// Adds a video node at [position] and returns its id. The node is of
   /// [type], or of the type chosen in the preferences.
-  String addVideoNode(Position position,
-      {String? videoId, DefaultNodeType? type}) {
+  String addVideoNode(
+    Position position, {
+    String? videoId,
+    DefaultNodeType? type,
+  }) {
     final id = _newId();
-    final node = switch (type ?? _ref.read(preferencesProvider).defaultNodeType) {
-      DefaultNodeType.simpleVideo =>
-        SimpleVideoNode(id: id, position: position, videoId: videoId),
+    final node = switch (type ??
+        _ref.read(preferencesProvider).defaultNodeType) {
+      DefaultNodeType.simpleVideo => SimpleVideoNode(
+        id: id,
+        position: position,
+        videoId: videoId,
+      ),
       DefaultNodeType.branchedVideo => newBranchedVideoNode(
-          id: id, position: position, videoId: videoId, newId: _newId),
+        id: id,
+        position: position,
+        videoId: videoId,
+        newId: _newId,
+      ),
     };
     _document.apply('Add node', (d) => d.putNode(node));
     return id;
   }
+
+  /// Adds a Change Variable node at [position] and returns its id.
+  String addChangeNode(Position position) {
+    final id = _newId();
+    _document.apply(
+      'Add node',
+      (d) => d.putNode(ChangeVariableNode(id: id, position: position)),
+    );
+    return id;
+  }
+
+  /// Adds a Compare node with one empty condition at [position] and
+  /// returns its id.
+  String addCompareNode(Position position) {
+    final id = _newId();
+    _document.apply(
+      'Add node',
+      (d) => d.putNode(
+        CompareNode(
+          id: id,
+          position: position,
+          conditions: [LogicCondition(id: _newId())],
+        ),
+      ),
+    );
+    return id;
+  }
+
+  /// Picks the variable change node [id] changes. An operation that
+  /// doesn't fit the variable's kind becomes "set".
+  void setChangeVariable(String id, String variableId) =>
+      _document.apply('Change variable', (d) {
+        final isBool =
+            d.variables.where((v) => v.id == variableId).firstOrNull
+                is BoolVariable;
+        return d.updateChange(id, (n) {
+          final fits = isBool
+              ? n.operation.isForBooleans
+              : n.operation.isForNumbers;
+          return n.copyWith(
+            variableId: variableId,
+            operation: fits ? n.operation : FmvChangeOperation.set,
+            value: isBool && n.value.trim().isEmpty ? 'true' : n.value,
+          );
+        });
+      });
+
+  void setChangeOperation(String id, FmvChangeOperation operation) =>
+      _document.apply(
+        'Change operation',
+        (d) => d.updateChange(id, (n) => n.copyWith(operation: operation)),
+      );
+
+  void setChangeValue(String id, String value, {Object? mergeKey}) =>
+      _document.apply(
+        'Change value',
+        (d) => d.updateChange(id, (n) => n.copyWith(value: value)),
+        mergeKey: mergeKey,
+      );
+
+  void setConditionVariable(String id, String conditionId, String variableId) =>
+      _document.apply('Change condition', (d) {
+        final isBool =
+            d.variables.where((v) => v.id == variableId).firstOrNull
+                is BoolVariable;
+        return d.updateCondition(
+          id,
+          conditionId,
+          (c) => c.copyWith(
+            variableId: variableId,
+            comparison: isBool && !c.comparison.isForBooleans
+                ? FmvComparison.equal
+                : c.comparison,
+            value: isBool && c.value.trim().isEmpty ? 'true' : c.value,
+          ),
+        );
+      });
+
+  void setConditionComparison(
+    String id,
+    String conditionId,
+    FmvComparison comparison,
+  ) => _document.apply(
+    'Change condition',
+    (d) => d.updateCondition(
+      id,
+      conditionId,
+      (c) => c.copyWith(comparison: comparison),
+    ),
+  );
+
+  void setConditionValue(
+    String id,
+    String conditionId,
+    String value, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change condition',
+    (d) => d.updateCondition(id, conditionId, (c) => c.copyWith(value: value)),
+    mergeKey: mergeKey,
+  );
+
+  void addCondition(String id) => _document.apply(
+    'Add condition',
+    (d) => d.updateCompare(
+      id,
+      (n) => n.copyWith(
+        conditions: [
+          ...n.conditions,
+          LogicCondition(id: _newId()),
+        ],
+      ),
+    ),
+  );
+
+  void removeCondition(String id, String conditionId) => _document.apply(
+    'Remove condition',
+    (d) => d.updateCompare(
+      id,
+      (n) => n.copyWith(
+        conditions: [
+          for (final c in n.conditions)
+            if (c.id != conditionId) c,
+        ],
+      ),
+    ),
+  );
+
+  void setMatchAny(String id, bool any) => _document.apply(
+    'Change condition',
+    (d) => d.updateCompare(id, (n) => n.copyWith(matchAny: any)),
+  );
+
+  /// Sets compare node [id]'s expression; `null` goes back to conditions.
+  void setCompareExpression(
+    String id,
+    String? expression, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change expression',
+    (d) => d.updateCompare(id, (n) => n.copyWith(expression: expression)),
+    mergeKey: mergeKey,
+  );
 
   /// Adds an empty comment at [position], or on top of node [attachTo], and
   /// returns its id.
@@ -66,8 +221,11 @@ class GraphEditor {
   /// Sets comment [id]'s text. Pass the same [mergeKey] for every keystroke
   /// of one editing session.
   void setCommentText(String id, String text, {Object? mergeKey}) =>
-      _document.apply('Edit comment', (d) => d.setCommentText(id, text),
-          mergeKey: mergeKey);
+      _document.apply(
+        'Edit comment',
+        (d) => d.setCommentText(id, text),
+        mergeKey: mergeKey,
+      );
 
   /// Takes comment [id] off its node; it stays where it is.
   void detachComment(String id) {
@@ -109,16 +267,16 @@ class GraphEditor {
       .setSelected(_current.nodes.keys.toSet());
 
   /// Closes the settings of every node.
-  void collapseAll() =>
-      _document.apply('Collapse all', (d) => d.collapseAll());
+  void collapseAll() => _document.apply('Collapse all', (d) => d.collapseAll());
 
   // -------------------------------------------------------------- clipboard
 
   /// Puts the selected nodes (not the origin) on the clipboard, with their
   /// connections among each other and their videos.
   Future<void> copySelection() async {
-    final fragment =
-        _current.copyFragment(_ref.read(selectionProvider).selected);
+    final fragment = _current.copyFragment(
+      _ref.read(selectionProvider).selected,
+    );
     if (fragment.isEmpty) return;
     if (await _ref.read(clipboardServiceProvider).write(fragment.encode())) {
       _ref.read(clipboardHasNodesProvider.notifier).copied();
@@ -128,19 +286,24 @@ class GraphEditor {
   /// Pastes copied nodes centered on [at] (node coordinates) and selects
   /// them. Clipboard text that isn't copied nodes is ignored.
   Future<void> paste(Offset at) async {
-    final fragment =
-        NodeFragment.decode(await _ref.read(clipboardServiceProvider).read());
+    final fragment = NodeFragment.decode(
+      await _ref.read(clipboardServiceProvider).read(),
+    );
     if (fragment == null || fragment.isEmpty) return;
     final center = fragment.center;
-    _insert('Paste nodes', fragment,
-        Position(at.dx - center.x, at.dy - center.y));
+    _insert(
+      'Paste nodes',
+      fragment,
+      Position(at.dx - center.x, at.dy - center.y),
+    );
   }
 
   /// Copies the selected nodes in place, one grid step down and right, and
   /// selects the copies. Doesn't touch the clipboard.
   void duplicateSelection() {
-    final fragment =
-        _current.copyFragment(_ref.read(selectionProvider).selected);
+    final fragment = _current.copyFragment(
+      _ref.read(selectionProvider).selected,
+    );
     if (fragment.isEmpty) return;
     final step = _ref.read(preferencesProvider).gridSize;
     _insert('Duplicate nodes', fragment, Position(step, step));
@@ -149,8 +312,11 @@ class GraphEditor {
   void _insert(String label, NodeFragment fragment, Position offset) {
     var pasted = const <String>[];
     _document.apply(label, (d) {
-      final (doc, ids) =
-          d.pasteFragment(fragment, offset: offset, newId: _newId);
+      final (doc, ids) = d.pasteFragment(
+        fragment,
+        offset: offset,
+        newId: _newId,
+      );
       pasted = ids;
       return doc;
     });
@@ -162,29 +328,40 @@ class GraphEditor {
   }
 
   /// Removes every connection into or out of the selected nodes.
-  void disconnectSelection() => _document.apply('Disconnect nodes',
-      (d) => d.disconnectNodes(_ref.read(selectionProvider).selected));
+  void disconnectSelection() => _document.apply(
+    'Disconnect nodes',
+    (d) => d.disconnectNodes(_ref.read(selectionProvider).selected),
+  );
 
   /// From node [id]'s menu: disconnects the whole selection if [id] is part
   /// of it, otherwise just [id].
   void disconnectNodeOrSelection(String id) {
     final selected = _ref.read(selectionProvider).selected;
-    _document.apply('Disconnect nodes',
-        (d) => d.disconnectNodes(selected.contains(id) ? selected : {id}));
+    _document.apply(
+      'Disconnect nodes',
+      (d) => d.disconnectNodes(selected.contains(id) ? selected : {id}),
+    );
   }
 
   /// Turns the question of branched node [id] on or off.
   void setQuestionEnabled(String id, bool enabled) => _document.apply(
-      'Toggle question', (d) => d.setQuestionEnabled(id, enabled));
+    'Toggle question',
+    (d) => d.setQuestionEnabled(id, enabled),
+  );
 
   /// Pass the same [mergeKey] for every keystroke of one typing session.
   void setQuestion(String id, String text, {Object? mergeKey}) =>
-      _document.apply('Edit question', (d) => d.setQuestion(id, text),
-          mergeKey: mergeKey);
+      _document.apply(
+        'Edit question',
+        (d) => d.setQuestion(id, text),
+        mergeKey: mergeKey,
+      );
 
   /// Switches a video node between simple and branched.
   void convertNode(String id) => _document.apply(
-      'Convert node', (d) => d.convertVideoNode(id, newId: _newId));
+    'Convert node',
+    (d) => d.convertVideoNode(id, newId: _newId),
+  );
 
   void setSwatch(String id, int swatch) =>
       _document.apply('Change color', (d) => d.setSwatch(id, swatch));
@@ -198,37 +375,49 @@ class GraphEditor {
 
   /// Sets the text of choice [index]; typing just past the last choice adds
   /// one. Pass the same [mergeKey] for every keystroke of one editing session.
-  void setChoiceText(String nodeId, int index, String text,
-          {Object? mergeKey}) =>
-      _document.apply(
-        'Edit choice',
-        (d) => d.setChoiceText(nodeId, index, text, newId: _newId),
-        mergeKey: mergeKey,
-      );
+  void setChoiceText(
+    String nodeId,
+    int index,
+    String text, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Edit choice',
+    (d) => d.setChoiceText(nodeId, index, text, newId: _newId),
+    mergeKey: mergeKey,
+  );
 
   // -------------------------------------------------------------- overrides
 
   /// Starts overriding [type] on a node, starting from the project value.
-  void enableOverride(String nodeId, VideoSettingType type) =>
-      _updateOverrides('Override setting', nodeId,
-          (o) => o.enable(type, _current.settings));
+  void enableOverride(String nodeId, VideoSettingType type) => _updateOverrides(
+    'Override setting',
+    nodeId,
+    (o) => o.enable(type, _current.settings),
+  );
 
   /// Stops overriding [type] on a node.
   void disableOverride(String nodeId, VideoSettingType type) =>
       _updateOverrides('Remove override', nodeId, (o) => o.disable(type));
 
   /// Changes override values, e.g. `(o) => o.copyWith(showTimer: false)`.
-  void editOverrides(String nodeId,
-          VideoSettingsOverride Function(VideoSettingsOverride o) edit,
-          {Object? mergeKey}) =>
-      _updateOverrides('Change setting', nodeId, edit, mergeKey: mergeKey);
+  void editOverrides(
+    String nodeId,
+    VideoSettingsOverride Function(VideoSettingsOverride o) edit, {
+    Object? mergeKey,
+  }) => _updateOverrides('Change setting', nodeId, edit, mergeKey: mergeKey);
 
   void clearOverrides(String nodeId) => _updateOverrides(
-      'Remove overrides', nodeId, (_) => const VideoSettingsOverride());
+    'Remove overrides',
+    nodeId,
+    (_) => const VideoSettingsOverride(),
+  );
 
-  void _updateOverrides(String label, String nodeId,
-      VideoSettingsOverride Function(VideoSettingsOverride o) edit,
-      {Object? mergeKey}) {
+  void _updateOverrides(
+    String label,
+    String nodeId,
+    VideoSettingsOverride Function(VideoSettingsOverride o) edit, {
+    Object? mergeKey,
+  }) {
     _document.apply(label, (d) {
       final current = d.node(nodeId).overridesOrNull;
       if (current == null) return d;
@@ -239,10 +428,10 @@ class GraphEditor {
   // ---------------------------------------------------------------- project
 
   void setProjectTitle(String title, {Object? mergeKey}) => _document.apply(
-        'Edit title',
-        (d) => d.copyWith(info: d.info.copyWith(title: title)),
-        mergeKey: mergeKey,
-      );
+    'Edit title',
+    (d) => d.copyWith(info: d.info.copyWith(title: title)),
+    mergeKey: mergeKey,
+  );
 
   void setProjectDescription(String description, {Object? mergeKey}) =>
       _document.apply(
@@ -253,27 +442,35 @@ class GraphEditor {
 
   /// Changes project-wide settings, e.g. `(s) => s.copyWith(showTimer: true)`.
   /// Pass the same [mergeKey] for every keystroke of one typing session.
-  void editProjectSettings(VideoSettings Function(VideoSettings s) edit,
-          {Object? mergeKey}) =>
-      editDefaults(0, edit, mergeKey: mergeKey);
+  void editProjectSettings(
+    VideoSettings Function(VideoSettings s) edit, {
+    Object? mergeKey,
+  }) => editDefaults(0, edit, mergeKey: mergeKey);
 
   /// Edits the defaults of color [swatch] (0, or a color without its own,
   /// edits the first color's).
-  void editDefaults(int swatch, VideoSettings Function(VideoSettings s) edit,
-          {Object? mergeKey}) =>
-      _document.apply('Change defaults', (d) => d.editDefaults(swatch, edit),
-          mergeKey: mergeKey);
+  void editDefaults(
+    int swatch,
+    VideoSettings Function(VideoSettings s) edit, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change defaults',
+    (d) => d.editDefaults(swatch, edit),
+    mergeKey: mergeKey,
+  );
 
   /// Gives the next color without defaults its own, a copy of the first
   /// color's. Does nothing when every color has them.
   void addColorDefaults() => _document.apply('Add color defaults', (d) {
-        final swatch = d.nextColorWithoutDefaults;
-        return swatch == null ? d : d.addColorDefaults(swatch);
-      });
+    final swatch = d.nextColorWithoutDefaults;
+    return swatch == null ? d : d.addColorDefaults(swatch);
+  });
 
   /// Color [swatch] goes back to the first color's defaults.
   void removeColorDefaults(int swatch) => _document.apply(
-      'Remove color defaults', (d) => d.removeColorDefaults(swatch));
+    'Remove color defaults',
+    (d) => d.removeColorDefaults(swatch),
+  );
 
   // -------------------------------------------------------------- variables
 
@@ -282,9 +479,11 @@ class GraphEditor {
   String addVariable(String baseName) {
     final id = _newId();
     _document.apply(
-        'Add variable',
-        (d) => d.addVariable(
-            Variable.boolean(id: id, name: d.freeVariableName(baseName))));
+      'Add variable',
+      (d) => d.addVariable(
+        Variable.boolean(id: id, name: d.freeVariableName(baseName)),
+      ),
+    );
     return id;
   }
 
@@ -293,45 +492,64 @@ class GraphEditor {
 
   /// Pass the same [mergeKey] for every keystroke of one editing session.
   void renameVariable(String id, String name, {Object? mergeKey}) =>
-      _document.apply('Rename variable', (d) => d.renameVariable(id, name),
-          mergeKey: mergeKey);
+      _document.apply(
+        'Rename variable',
+        (d) => d.renameVariable(id, name),
+        mergeKey: mergeKey,
+      );
 
   /// Changes the type, converting the starting value.
   void setVariableType(String id, VariableType type) => _document.apply(
-      'Change variable type', (d) => d.setVariableType(id, type));
+    'Change variable type',
+    (d) => d.setVariableType(id, type),
+  );
 
   /// Sets the starting value from typed [text]. Text that isn't a value of
   /// the variable's type (e.g. half-typed "-") changes nothing.
   void setVariableInitialText(String id, String text, {Object? mergeKey}) =>
       _document.apply(
-          'Edit variable',
-          (d) => d.updateVariable(id, (v) => v.withInitialText(text) ?? v),
-          mergeKey: mergeKey);
+        'Edit variable',
+        (d) => d.updateVariable(id, (v) => v.withInitialText(text) ?? v),
+        mergeKey: mergeKey,
+      );
 
   /// Sets the minimum ([isMin]) or maximum of a number variable from typed
   /// [text]; empty removes the limit.
-  void setVariableLimit(String id,
-          {required bool isMin, required String text, Object? mergeKey}) =>
-      _document.apply('Edit variable',
-          (d) => d.setVariableLimit(id, isMin: isMin, text: text),
-          mergeKey: mergeKey);
+  void setVariableLimit(
+    String id, {
+    required bool isMin,
+    required String text,
+    Object? mergeKey,
+  }) => _document.apply(
+    'Edit variable',
+    (d) => d.setVariableLimit(id, isMin: isMin, text: text),
+    mergeKey: mergeKey,
+  );
 
   /// Steps the starting value with the field's arrows (see
   /// [Variable.stepped]).
   void stepVariable(String id, int direction) => _document.apply(
-      'Edit variable', (d) => d.updateVariable(id, (v) => v.stepped(direction)));
+    'Edit variable',
+    (d) => d.updateVariable(id, (v) => v.stepped(direction)),
+  );
 
   /// Sets a true/false variable's starting value.
   void setVariableBool(String id, bool value) => _document.apply(
-      'Edit variable',
-      (d) => d.updateVariable(
-          id, (v) => v is BoolVariable ? v.copyWith(initial: value) : v));
+    'Edit variable',
+    (d) => d.updateVariable(
+      id,
+      (v) => v is BoolVariable ? v.copyWith(initial: value) : v,
+    ),
+  );
 
   /// Flips a true/false variable's starting value.
   void toggleVariable(String id) => _document.apply(
-      'Edit variable',
-      (d) => d.updateVariable(
-          id, (v) => v is BoolVariable ? v.copyWith(initial: !v.initial) : v));
+    'Edit variable',
+    (d) => d.updateVariable(
+      id,
+      (v) => v is BoolVariable ? v.copyWith(initial: !v.initial) : v,
+    ),
+  );
 
   // ------------------------------------------------------------------ media
 
@@ -354,11 +572,13 @@ class GraphEditor {
 
   /// Links subtitle file [subtitleId] to video [videoId], as one undo step.
   void linkSubtitle(String videoId, String subtitleId) => _document.apply(
-      'Link subtitles', (d) => d.linkSubtitle(videoId, subtitleId));
+    'Link subtitles',
+    (d) => d.linkSubtitle(videoId, subtitleId),
+  );
 
   /// Video [videoId] no longer has subtitles.
-  void unlinkSubtitle(String videoId) => _document.apply(
-      'Unlink subtitles', (d) => d.unlinkSubtitle(videoId));
+  void unlinkSubtitle(String videoId) =>
+      _document.apply('Unlink subtitles', (d) => d.unlinkSubtitle(videoId));
 
   /// Points imported file [id] at [path] instead, as one undo step. Nodes
   /// using it follow.
@@ -385,7 +605,9 @@ class GraphEditor {
     _document.apply('Import files', (d) {
       var doc = d;
       for (final path in paths) {
-        final (next, id) = doc.importMedia(MediaAsset(id: _newId(), path: path));
+        final (next, id) = doc.importMedia(
+          MediaAsset(id: _newId(), path: path),
+        );
         doc = next;
         ids.add(id);
       }

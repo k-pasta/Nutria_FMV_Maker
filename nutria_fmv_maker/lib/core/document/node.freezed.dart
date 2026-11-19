@@ -285,6 +285,285 @@ as String,
 
 }
 
+
+/// @nodoc
+mixin _$LogicCondition {
+
+ String get id; String? get variableId; FmvComparison get comparison; String get value;
+/// Create a copy of LogicCondition
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$LogicConditionCopyWith<LogicCondition> get copyWith => _$LogicConditionCopyWithImpl<LogicCondition>(this as LogicCondition, _$identity);
+
+  /// Serializes this LogicCondition to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  final _this = this as LogicCondition;
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is LogicCondition&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.variableId, _this.variableId) || other.variableId == _this.variableId)&&(identical(other.comparison, _this.comparison) || other.comparison == _this.comparison)&&(identical(other.value, _this.value) || other.value == _this.value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+  final _this = this as LogicCondition;
+  return Object.hash(runtimeType,_this.id,_this.variableId,_this.comparison,_this.value);
+}
+
+@override
+String toString() {
+  final _this = this as LogicCondition;
+  return 'LogicCondition(id: ${_this.id}, variableId: ${_this.variableId}, comparison: ${_this.comparison}, value: ${_this.value})';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $LogicConditionCopyWith<$Res>  {
+  factory $LogicConditionCopyWith(LogicCondition value, $Res Function(LogicCondition) _then) = _$LogicConditionCopyWithImpl;
+@useResult
+$Res call({
+ String id, String? variableId, FmvComparison comparison, String value
+});
+
+
+
+
+}
+/// @nodoc
+class _$LogicConditionCopyWithImpl<$Res>
+    implements $LogicConditionCopyWith<$Res> {
+  _$LogicConditionCopyWithImpl(this._self, this._then);
+
+  final LogicCondition _self;
+  final $Res Function(LogicCondition) _then;
+
+/// Create a copy of LogicCondition
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? variableId = freezed,Object? comparison = null,Object? value = null,}) {
+  return _then(LogicCondition(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,variableId: freezed == variableId ? _self.variableId : variableId // ignore: cast_nullable_to_non_nullable
+as String?,comparison: null == comparison ? _self.comparison : comparison // ignore: cast_nullable_to_non_nullable
+as FmvComparison,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [LogicCondition].
+extension LogicConditionPatterns on LogicCondition {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _LogicCondition value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _LogicCondition() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _LogicCondition value)  $default,){
+final _that = this;
+switch (_that) {
+case _LogicCondition():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _LogicCondition value)?  $default,){
+final _that = this;
+switch (_that) {
+case _LogicCondition() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? variableId,  FmvComparison comparison,  String value)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _LogicCondition() when $default != null:
+return $default(_that.id,_that.variableId,_that.comparison,_that.value);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? variableId,  FmvComparison comparison,  String value)  $default,) {final _that = this;
+switch (_that) {
+case _LogicCondition():
+return $default(_that.id,_that.variableId,_that.comparison,_that.value);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? variableId,  FmvComparison comparison,  String value)?  $default,) {final _that = this;
+switch (_that) {
+case _LogicCondition() when $default != null:
+return $default(_that.id,_that.variableId,_that.comparison,_that.value);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class _LogicCondition implements LogicCondition {
+  const _LogicCondition({required this.id, this.variableId, this.comparison = FmvComparison.equal, this.value = ''});
+  factory _LogicCondition.fromJson(Map<String, dynamic> json) => _$LogicConditionFromJson(json);
+
+@override final  String id;
+@override final  String? variableId;
+@override@JsonKey() final  FmvComparison comparison;
+@override@JsonKey() final  String value;
+
+/// Create a copy of LogicCondition
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$LogicConditionCopyWith<_LogicCondition> get copyWith => __$LogicConditionCopyWithImpl<_LogicCondition>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$LogicConditionToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _LogicCondition&&(identical(other.id, id) || other.id == id)&&(identical(other.variableId, variableId) || other.variableId == variableId)&&(identical(other.comparison, comparison) || other.comparison == comparison)&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,variableId,comparison,value);
+}
+
+@override
+String toString() {
+    return 'LogicCondition(id: $id, variableId: $variableId, comparison: $comparison, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$LogicConditionCopyWith<$Res> implements $LogicConditionCopyWith<$Res> {
+  factory _$LogicConditionCopyWith(_LogicCondition value, $Res Function(_LogicCondition) _then) = __$LogicConditionCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, String? variableId, FmvComparison comparison, String value
+});
+
+
+
+
+}
+/// @nodoc
+class __$LogicConditionCopyWithImpl<$Res>
+    implements _$LogicConditionCopyWith<$Res> {
+  __$LogicConditionCopyWithImpl(this._self, this._then);
+
+  final _LogicCondition _self;
+  final $Res Function(_LogicCondition) _then;
+
+/// Create a copy of LogicCondition
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? variableId = freezed,Object? comparison = null,Object? value = null,}) {
+  return _then(_LogicCondition(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,variableId: freezed == variableId ? _self.variableId : variableId // ignore: cast_nullable_to_non_nullable
+as String?,comparison: null == comparison ? _self.comparison : comparison // ignore: cast_nullable_to_non_nullable
+as FmvComparison,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
 Node _$NodeFromJson(
   Map<String, dynamic> json
 ) {
@@ -303,6 +582,14 @@ Node _$NodeFromJson(
           );
                 case 'comment':
           return CommentNode.fromJson(
+            json
+          );
+                case 'changeVariable':
+          return ChangeVariableNode.fromJson(
+            json
+          );
+                case 'compare':
+          return CompareNode.fromJson(
             json
           );
         
@@ -413,14 +700,16 @@ extension NodePatterns on Node {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OriginNode value)?  origin,TResult Function( SimpleVideoNode value)?  simpleVideo,TResult Function( BranchedVideoNode value)?  branchedVideo,TResult Function( CommentNode value)?  comment,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( OriginNode value)?  origin,TResult Function( SimpleVideoNode value)?  simpleVideo,TResult Function( BranchedVideoNode value)?  branchedVideo,TResult Function( CommentNode value)?  comment,TResult Function( ChangeVariableNode value)?  changeVariable,TResult Function( CompareNode value)?  compare,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that);case BranchedVideoNode() when branchedVideo != null:
 return branchedVideo(_that);case CommentNode() when comment != null:
-return comment(_that);case _:
+return comment(_that);case ChangeVariableNode() when changeVariable != null:
+return changeVariable(_that);case CompareNode() when compare != null:
+return compare(_that);case _:
   return orElse();
 
 }
@@ -438,14 +727,16 @@ return comment(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OriginNode value)  origin,required TResult Function( SimpleVideoNode value)  simpleVideo,required TResult Function( BranchedVideoNode value)  branchedVideo,required TResult Function( CommentNode value)  comment,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( OriginNode value)  origin,required TResult Function( SimpleVideoNode value)  simpleVideo,required TResult Function( BranchedVideoNode value)  branchedVideo,required TResult Function( CommentNode value)  comment,required TResult Function( ChangeVariableNode value)  changeVariable,required TResult Function( CompareNode value)  compare,}){
 final _that = this;
 switch (_that) {
 case OriginNode():
 return origin(_that);case SimpleVideoNode():
 return simpleVideo(_that);case BranchedVideoNode():
 return branchedVideo(_that);case CommentNode():
-return comment(_that);}
+return comment(_that);case ChangeVariableNode():
+return changeVariable(_that);case CompareNode():
+return compare(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -459,14 +750,16 @@ return comment(_that);}
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OriginNode value)?  origin,TResult? Function( SimpleVideoNode value)?  simpleVideo,TResult? Function( BranchedVideoNode value)?  branchedVideo,TResult? Function( CommentNode value)?  comment,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( OriginNode value)?  origin,TResult? Function( SimpleVideoNode value)?  simpleVideo,TResult? Function( BranchedVideoNode value)?  branchedVideo,TResult? Function( CommentNode value)?  comment,TResult? Function( ChangeVariableNode value)?  changeVariable,TResult? Function( CompareNode value)?  compare,}){
 final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that);case BranchedVideoNode() when branchedVideo != null:
 return branchedVideo(_that);case CommentNode() when comment != null:
-return comment(_that);case _:
+return comment(_that);case ChangeVariableNode() when changeVariable != null:
+return changeVariable(_that);case CompareNode() when compare != null:
+return compare(_that);case _:
   return null;
 
 }
@@ -483,13 +776,15 @@ return comment(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
 return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode() when comment != null:
-return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case _:
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode() when changeVariable != null:
+return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode() when compare != null:
+return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);case _:
   return orElse();
 
 }
@@ -507,13 +802,15 @@ return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)  branchedVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)  comment,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)  branchedVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)  comment,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)  changeVariable,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)  compare,}) {final _that = this;
 switch (_that) {
 case OriginNode():
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode():
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode():
 return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode():
-return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);}
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode():
+return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode():
+return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///
@@ -527,13 +824,15 @@ return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question)?  branchedVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
 return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides);case BranchedVideoNode() when branchedVideo != null:
 return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question);case CommentNode() when comment != null:
-return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case _:
+return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode() when changeVariable != null:
+return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode() when compare != null:
+return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);case _:
   return null;
 
 }
@@ -945,6 +1244,212 @@ as String?,swatch: null == swatch ? _self.swatch : swatch // ignore: cast_nullab
 as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
 as bool,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String,attachedTo: freezed == attachedTo ? _self.attachedTo : attachedTo // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PositionCopyWith<$Res> get position {
+  
+  return $PositionCopyWith<$Res>(_self.position, (value) {
+    return _then(_self.copyWith(position: value));
+  });
+}
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class ChangeVariableNode extends Node {
+  const ChangeVariableNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = kLogicNodeSwatch, this.isExpanded = false, this.variableId, this.operation = FmvChangeOperation.set, this.value = '',  String? $type}): $type = $type ?? 'changeVariable',super._();
+  factory ChangeVariableNode.fromJson(Map<String, dynamic> json) => _$ChangeVariableNodeFromJson(json);
+
+@override final  String id;
+@override final  Position position;
+@override@JsonKey() final  double width;
+@override final  String? name;
+@override@JsonKey() final  int swatch;
+@override@JsonKey() final  bool isExpanded;
+ final  String? variableId;
+@JsonKey() final  FmvChangeOperation operation;
+@JsonKey() final  String value;
+
+@JsonKey(name: 'type')
+final String $type;
+
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$ChangeVariableNodeCopyWith<ChangeVariableNode> get copyWith => _$ChangeVariableNodeCopyWithImpl<ChangeVariableNode>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$ChangeVariableNodeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is ChangeVariableNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.variableId, variableId) || other.variableId == variableId)&&(identical(other.operation, operation) || other.operation == operation)&&(identical(other.value, value) || other.value == value));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,variableId,operation,value);
+}
+
+@override
+String toString() {
+    return 'Node.changeVariable(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, variableId: $variableId, operation: $operation, value: $value)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $ChangeVariableNodeCopyWith<$Res> implements $NodeCopyWith<$Res> {
+  factory $ChangeVariableNodeCopyWith(ChangeVariableNode value, $Res Function(ChangeVariableNode) _then) = _$ChangeVariableNodeCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, String? variableId, FmvChangeOperation operation, String value
+});
+
+
+@override $PositionCopyWith<$Res> get position;
+
+}
+/// @nodoc
+class _$ChangeVariableNodeCopyWithImpl<$Res>
+    implements $ChangeVariableNodeCopyWith<$Res> {
+  _$ChangeVariableNodeCopyWithImpl(this._self, this._then);
+
+  final ChangeVariableNode _self;
+  final $Res Function(ChangeVariableNode) _then;
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? variableId = freezed,Object? operation = null,Object? value = null,}) {
+  return _then(ChangeVariableNode(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Position,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as double,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,swatch: null == swatch ? _self.swatch : swatch // ignore: cast_nullable_to_non_nullable
+as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
+as bool,variableId: freezed == variableId ? _self.variableId : variableId // ignore: cast_nullable_to_non_nullable
+as String?,operation: null == operation ? _self.operation : operation // ignore: cast_nullable_to_non_nullable
+as FmvChangeOperation,value: null == value ? _self.value : value // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$PositionCopyWith<$Res> get position {
+  
+  return $PositionCopyWith<$Res>(_self.position, (value) {
+    return _then(_self.copyWith(position: value));
+  });
+}
+}
+
+/// @nodoc
+@JsonSerializable()
+
+class CompareNode extends Node {
+  const CompareNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = kLogicNodeSwatch, this.isExpanded = false,  List<LogicCondition> conditions = const <LogicCondition>[], this.matchAny = false, this.expression,  String? $type}): _conditions = conditions,$type = $type ?? 'compare',super._();
+  factory CompareNode.fromJson(Map<String, dynamic> json) => _$CompareNodeFromJson(json);
+
+@override final  String id;
+@override final  Position position;
+@override@JsonKey() final  double width;
+@override final  String? name;
+@override@JsonKey() final  int swatch;
+@override@JsonKey() final  bool isExpanded;
+ final  List<LogicCondition> _conditions;
+@JsonKey() List<LogicCondition> get conditions {
+  if (_conditions is EqualUnmodifiableListView) return _conditions;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_conditions);
+}
+
+@JsonKey() final  bool matchAny;
+ final  String? expression;
+
+@JsonKey(name: 'type')
+final String $type;
+
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$CompareNodeCopyWith<CompareNode> get copyWith => _$CompareNodeCopyWithImpl<CompareNode>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$CompareNodeToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is CompareNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&const DeepCollectionEquality().equals(other.conditions, _conditions)&&(identical(other.matchAny, matchAny) || other.matchAny == matchAny)&&(identical(other.expression, expression) || other.expression == expression));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode {
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,const DeepCollectionEquality().hash(_conditions),matchAny,expression);
+}
+
+@override
+String toString() {
+    return 'Node.compare(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, conditions: $conditions, matchAny: $matchAny, expression: $expression)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $CompareNodeCopyWith<$Res> implements $NodeCopyWith<$Res> {
+  factory $CompareNodeCopyWith(CompareNode value, $Res Function(CompareNode) _then) = _$CompareNodeCopyWithImpl;
+@override @useResult
+$Res call({
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, List<LogicCondition> conditions, bool matchAny, String? expression
+});
+
+
+@override $PositionCopyWith<$Res> get position;
+
+}
+/// @nodoc
+class _$CompareNodeCopyWithImpl<$Res>
+    implements $CompareNodeCopyWith<$Res> {
+  _$CompareNodeCopyWithImpl(this._self, this._then);
+
+  final CompareNode _self;
+  final $Res Function(CompareNode) _then;
+
+/// Create a copy of Node
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? conditions = null,Object? matchAny = null,Object? expression = freezed,}) {
+  return _then(CompareNode(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
+as Position,width: null == width ? _self.width : width // ignore: cast_nullable_to_non_nullable
+as double,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,swatch: null == swatch ? _self.swatch : swatch // ignore: cast_nullable_to_non_nullable
+as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
+as bool,conditions: null == conditions ? _self._conditions : conditions // ignore: cast_nullable_to_non_nullable
+as List<LogicCondition>,matchAny: null == matchAny ? _self.matchAny : matchAny // ignore: cast_nullable_to_non_nullable
+as bool,expression: freezed == expression ? _self.expression : expression // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

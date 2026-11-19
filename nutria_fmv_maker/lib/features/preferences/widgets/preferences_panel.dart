@@ -98,6 +98,18 @@ class PreferencesPanel extends ConsumerWidget {
         onOptionsOpenChanged: menuOpen,
       ),
       NutriaSettingRow(
+        label: t.prefSimpleMath,
+        value: yesNo(prefs.simpleMath),
+        onTap: () => notifier.setSimpleMath(!prefs.simpleMath),
+        options: optionsMenu(
+          [true, false],
+          prefs.simpleMath,
+          yesNo,
+          notifier.setSimpleMath,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      NutriaSettingRow(
         label: t.prefAutoLinkSubtitles,
         value: yesNo(prefs.autoLinkSubtitles),
         onTap: () => notifier.setAutoLinkSubtitles(!prefs.autoLinkSubtitles),

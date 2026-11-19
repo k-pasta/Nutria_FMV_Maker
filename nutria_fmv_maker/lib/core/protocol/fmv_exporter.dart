@@ -3,9 +3,11 @@
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/logic_check.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
@@ -17,6 +19,10 @@ enum ExportIssueType {
 
   /// A choice has text but leads nowhere, so the Player won't offer it.
   unconnectedChoice,
+
+  /// A logic node has no variable, an unknown one, or a value or condition
+  /// that isn't a valid expression; the Player would skip what it does.
+  invalidLogic,
 }
 
 /// One [ExportIssueType] on a specific node (by its editor id).
@@ -43,6 +49,7 @@ FmvExport exportFmv(ProjectDocument document) {
     return edge == null ? null : ids[edge.to.nodeId];
   }
 
+  final names = {for (final v in document.variables) v.id: v.name};
   final nodes = <String, FmvNode>{};
   for (final nodeId in order) {
     final node = document.node(nodeId);
@@ -50,6 +57,39 @@ FmvExport exportFmv(ProjectDocument document) {
       // Comments are for the author; they have no connections anyway.
       case OriginNode() || CommentNode():
         continue;
+      case ChangeVariableNode():
+        final variable = names[node.variableId];
+        if (logicProblem(document, node) != null) {
+          issues.add((type: ExportIssueType.invalidLogic, nodeId: nodeId));
+        }
+        nodes[ids[nodeId]!] = FmvNode(
+          type: FmvNodeType.change,
+          variable: variable,
+          operation: node.operation,
+          value: node.operation.takesValue ? node.value : null,
+          target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
+        );
+      case CompareNode():
+        if (logicProblem(document, node) != null) {
+          issues.add((type: ExportIssueType.invalidLogic, nodeId: nodeId));
+        }
+        nodes[ids[nodeId]!] = FmvNode(
+          type: FmvNodeType.compare,
+          expression: node.expression,
+          conditions: [
+            if (node.expression == null)
+              for (final c in node.conditions)
+                if (names[c.variableId] case final name?)
+                  FmvCondition(
+                    variable: name,
+                    comparison: c.comparison,
+                    value: c.value,
+                  ),
+          ],
+          matchAny: node.matchAny,
+          whenTrue: targetOf(PortRef(nodeId: nodeId, port: kTruePortKey)),
+          whenFalse: targetOf(PortRef(nodeId: nodeId, port: kFalsePortKey)),
+        );
       case SimpleVideoNode():
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),
@@ -99,10 +139,32 @@ FmvExport exportFmv(ProjectDocument document) {
         defaultSelection: _defaultSelection(settings.defaultSelection),
       ),
       nodes: nodes,
+      variables: {
+        for (final v in document.variables) v.name: _variable(v),
+      },
     ),
     issues: issues,
   );
 }
+
+FmvVariable _variable(Variable v) => switch (v) {
+  BoolVariable(:final initial) => FmvVariable(
+    type: FmvVariableType.boolean,
+    initial: initial,
+  ),
+  IntVariable(:final initial, :final min, :final max) => FmvVariable(
+    type: FmvVariableType.integer,
+    initial: initial,
+    min: min,
+    max: max,
+  ),
+  DecimalVariable(:final initial, :final min, :final max) => FmvVariable(
+    type: FmvVariableType.decimal,
+    initial: initial,
+    min: min,
+    max: max,
+  ),
+};
 
 /// The path of the subtitles linked to [node]'s video, if any.
 String? _subtitlesPath(ProjectDocument document, Node node) {

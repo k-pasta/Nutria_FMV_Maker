@@ -460,6 +460,276 @@ abstract class AppLocalizations {
   /// **'Branching Video'**
   String get contextBranchingVideoNode;
 
+  /// No description provided for @contextChangeVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Variable'**
+  String get contextChangeVariable;
+
+  /// No description provided for @contextCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get contextCompare;
+
+  /// No description provided for @logicTitleSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set Variable'**
+  String get logicTitleSet;
+
+  /// No description provided for @logicTitleIncrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Increment'**
+  String get logicTitleIncrement;
+
+  /// No description provided for @logicTitleDecrement.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrement'**
+  String get logicTitleDecrement;
+
+  /// No description provided for @logicTitleToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle'**
+  String get logicTitleToggle;
+
+  /// No description provided for @logicTitleAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute'**
+  String get logicTitleAbsolute;
+
+  /// No description provided for @logicTitleChange.
+  ///
+  /// In en, this message translates to:
+  /// **'Change Variable'**
+  String get logicTitleChange;
+
+  /// No description provided for @logicTitleCompare.
+  ///
+  /// In en, this message translates to:
+  /// **'Compare'**
+  String get logicTitleCompare;
+
+  /// No description provided for @logicOpSet.
+  ///
+  /// In en, this message translates to:
+  /// **'Set'**
+  String get logicOpSet;
+
+  /// No description provided for @logicOpAdd.
+  ///
+  /// In en, this message translates to:
+  /// **'Add'**
+  String get logicOpAdd;
+
+  /// No description provided for @logicOpSubtract.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtract'**
+  String get logicOpSubtract;
+
+  /// No description provided for @logicOpMultiply.
+  ///
+  /// In en, this message translates to:
+  /// **'Multiply'**
+  String get logicOpMultiply;
+
+  /// No description provided for @logicOpDivide.
+  ///
+  /// In en, this message translates to:
+  /// **'Divide'**
+  String get logicOpDivide;
+
+  /// No description provided for @logicOpPower.
+  ///
+  /// In en, this message translates to:
+  /// **'Power'**
+  String get logicOpPower;
+
+  /// No description provided for @logicOpAbsolute.
+  ///
+  /// In en, this message translates to:
+  /// **'Absolute'**
+  String get logicOpAbsolute;
+
+  /// No description provided for @logicOpToggle.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle'**
+  String get logicOpToggle;
+
+  /// No description provided for @logicOpAnd.
+  ///
+  /// In en, this message translates to:
+  /// **'And'**
+  String get logicOpAnd;
+
+  /// No description provided for @logicOpOr.
+  ///
+  /// In en, this message translates to:
+  /// **'Or'**
+  String get logicOpOr;
+
+  /// No description provided for @logicOpXor.
+  ///
+  /// In en, this message translates to:
+  /// **'Either (Xor)'**
+  String get logicOpXor;
+
+  /// No description provided for @logicPickVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a Variable…'**
+  String get logicPickVariable;
+
+  /// No description provided for @logicMissingVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Deleted Variable'**
+  String get logicMissingVariable;
+
+  /// No description provided for @logicSearchVariables.
+  ///
+  /// In en, this message translates to:
+  /// **'Search…'**
+  String get logicSearchVariables;
+
+  /// No description provided for @logicNoVariables.
+  ///
+  /// In en, this message translates to:
+  /// **'No variables yet. Add some in the Variables section.'**
+  String get logicNoVariables;
+
+  /// No description provided for @logicNewValueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'New value…'**
+  String get logicNewValueHint;
+
+  /// No description provided for @logicByValueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'By value…'**
+  String get logicByValueHint;
+
+  /// No description provided for @logicValueHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Value…'**
+  String get logicValueHint;
+
+  /// No description provided for @logicExpressionHint.
+  ///
+  /// In en, this message translates to:
+  /// **'e.g. coins > 3 and has_key'**
+  String get logicExpressionHint;
+
+  /// No description provided for @logicAddCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a condition'**
+  String get logicAddCondition;
+
+  /// No description provided for @logicRemoveCondition.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this condition'**
+  String get logicRemoveCondition;
+
+  /// No description provided for @logicMatchAll.
+  ///
+  /// In en, this message translates to:
+  /// **'All Must Hold'**
+  String get logicMatchAll;
+
+  /// No description provided for @logicMatchAny.
+  ///
+  /// In en, this message translates to:
+  /// **'One Is Enough'**
+  String get logicMatchAny;
+
+  /// No description provided for @logicTrue.
+  ///
+  /// In en, this message translates to:
+  /// **'True'**
+  String get logicTrue;
+
+  /// No description provided for @logicFalse.
+  ///
+  /// In en, this message translates to:
+  /// **'False'**
+  String get logicFalse;
+
+  /// No description provided for @logicUseExpression.
+  ///
+  /// In en, this message translates to:
+  /// **'Use an Expression'**
+  String get logicUseExpression;
+
+  /// No description provided for @logicProblemNoVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'Pick a variable.'**
+  String get logicProblemNoVariable;
+
+  /// No description provided for @logicProblemUnknownVariable.
+  ///
+  /// In en, this message translates to:
+  /// **'This variable was deleted.'**
+  String get logicProblemUnknownVariable;
+
+  /// No description provided for @logicProblemWrongOperation.
+  ///
+  /// In en, this message translates to:
+  /// **'This doesn’t work on this kind of variable.'**
+  String get logicProblemWrongOperation;
+
+  /// No description provided for @logicProblemNoConditions.
+  ///
+  /// In en, this message translates to:
+  /// **'Add a condition.'**
+  String get logicProblemNoConditions;
+
+  /// No description provided for @logicProblemEmpty.
+  ///
+  /// In en, this message translates to:
+  /// **'Enter a value. Without one, nothing changes.'**
+  String get logicProblemEmpty;
+
+  /// No description provided for @logicProblemExpression.
+  ///
+  /// In en, this message translates to:
+  /// **'This value can’t be read, or is the wrong kind (number or true/false).'**
+  String get logicProblemExpression;
+
+  /// No description provided for @logicProblemUnknownName.
+  ///
+  /// In en, this message translates to:
+  /// **'There is no variable called {name}.'**
+  String logicProblemUnknownName(String name);
+
+  /// No description provided for @logicWarningRounded.
+  ///
+  /// In en, this message translates to:
+  /// **'The result may have decimals; it is rounded to a whole number.'**
+  String get logicWarningRounded;
+
+  /// No description provided for @prefSimpleMath.
+  ///
+  /// In en, this message translates to:
+  /// **'Simple Math'**
+  String get prefSimpleMath;
+
+  /// No description provided for @notifyExportLogicIssues.
+  ///
+  /// In en, this message translates to:
+  /// **'Some logic nodes have problems; the Player will skip what they do'**
+  String get notifyExportLogicIssues;
+
   /// No description provided for @contextCompareNode.
   ///
   /// In en, this message translates to:

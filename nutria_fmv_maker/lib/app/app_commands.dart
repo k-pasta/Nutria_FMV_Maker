@@ -6,6 +6,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_info.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
@@ -132,7 +133,9 @@ class AppCommands {
         if (result.outcome == FileOutcome.cancelled) return;
         _notify(result.issues.isEmpty
             ? _t.notifyExported(p.basename(result.path!))
-            : _t.notifyExportWarnings(result.issues.length));
+            : result.issues.any((i) => i.type == ExportIssueType.invalidLogic)
+                ? _t.notifyExportLogicIssues
+                : _t.notifyExportWarnings(result.issues.length));
       });
 
   Future<void> exitApp() async {

@@ -99,7 +99,9 @@ class NodeMetrics {
 
   /// The colored strip on top; taller when it shows a name. The origin
   /// always does ("Origin Node" when it has none of its own).
-  double stripHeight(Node node) => node.name == null && node is! OriginNode
+  /// Logic nodes always show one too (their title, after what they do).
+  double stripHeight(Node node) =>
+      node.name == null && node is! OriginNode && !node.isLogicNode
       ? swatchHeight
       : swatchHeight + textHeight;
 
@@ -136,9 +138,27 @@ class NodeLayout {
   static int choiceRowCount(BranchedVideoNode node) =>
       math.min(node.choices.length + 1, kMaxChoices);
 
+  /// Top of a logic node's first row.
+  double get _logicTop =>
+      kNodePadding + metrics.stripHeight(node) + metrics.panelPadding;
+
+  /// The middle of row [i] of a logic node.
+  double _logicRow(int i) =>
+      _logicTop + i * metrics.choiceStride + metrics.rowHeight / 2;
+
+  /// How many rows a compare node has above its True and False rows: one
+  /// expression, or two per condition and the add/match row.
+  static int compareTestRows(CompareNode node) =>
+      node.expression != null ? 1 : node.conditions.length * 2 + 1;
+
   /// The input knot on the left edge, or `null` if the node has no input.
-  Offset? get input =>
-      hasInputPort(node) ? Offset(kNodePadding, _thumbnailBottom) : null;
+  /// Logic nodes have it level with their first row.
+  Offset? get input => !hasInputPort(node)
+      ? null
+      : Offset(
+          kNodePadding,
+          node.isLogicNode ? _logicRow(0) : _thumbnailBottom,
+        );
 
   /// The knot of output [port] on the right edge, or `null` if [port] isn't
   /// one of the node's outputs.
@@ -153,6 +173,20 @@ class NodeLayout {
         port == kNextPortKey ? Offset(right, _thumbnailBottom) : null,
       // A question takes the first row; the choices follow it.
       CommentNode() => null,
+      // Level with the variable row, like the input.
+      ChangeVariableNode() =>
+        port == kNextPortKey ? Offset(right, _logicRow(0)) : null,
+      CompareNode() => switch (port) {
+        kTruePortKey => Offset(
+          right,
+          _logicRow(compareTestRows(node as CompareNode)),
+        ),
+        kFalsePortKey => Offset(
+          right,
+          _logicRow(compareTestRows(node as CompareNode) + 1),
+        ),
+        _ => null,
+      },
       BranchedVideoNode(:final choices, :final question) => switch (choices
           .indexWhere((c) => c.id == port)) {
         -1 => null,

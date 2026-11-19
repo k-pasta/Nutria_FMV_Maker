@@ -78,6 +78,10 @@ abstract class Preferences with _$Preferences {
 
     /// Link a video and a subtitle file of the same name when importing.
     @Default(true) bool autoLinkSubtitles,
+
+    /// Logic nodes take one number, true/false or variable as a value, and
+    /// offer no power, absolute, and/or/xor or expressions.
+    @Default(true) bool simpleMath,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -142,6 +146,8 @@ class PreferencesNotifier extends _$PreferencesNotifier {
 
   void setLibraryGrouping(LibraryGrouping grouping) =>
       _update(state.copyWith(libraryGrouping: grouping));
+
+  void setSimpleMath(bool on) => _update(state.copyWith(simpleMath: on));
 
   void setAutoLinkSubtitles(bool on) =>
       _update(state.copyWith(autoLinkSubtitles: on));

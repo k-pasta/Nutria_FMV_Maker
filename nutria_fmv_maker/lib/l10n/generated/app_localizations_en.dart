@@ -210,6 +210,149 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contextBranchingVideoNode => 'Branching Video';
 
   @override
+  String get contextChangeVariable => 'Change Variable';
+
+  @override
+  String get contextCompare => 'Compare';
+
+  @override
+  String get logicTitleSet => 'Set Variable';
+
+  @override
+  String get logicTitleIncrement => 'Increment';
+
+  @override
+  String get logicTitleDecrement => 'Decrement';
+
+  @override
+  String get logicTitleToggle => 'Toggle';
+
+  @override
+  String get logicTitleAbsolute => 'Absolute';
+
+  @override
+  String get logicTitleChange => 'Change Variable';
+
+  @override
+  String get logicTitleCompare => 'Compare';
+
+  @override
+  String get logicOpSet => 'Set';
+
+  @override
+  String get logicOpAdd => 'Add';
+
+  @override
+  String get logicOpSubtract => 'Subtract';
+
+  @override
+  String get logicOpMultiply => 'Multiply';
+
+  @override
+  String get logicOpDivide => 'Divide';
+
+  @override
+  String get logicOpPower => 'Power';
+
+  @override
+  String get logicOpAbsolute => 'Absolute';
+
+  @override
+  String get logicOpToggle => 'Toggle';
+
+  @override
+  String get logicOpAnd => 'And';
+
+  @override
+  String get logicOpOr => 'Or';
+
+  @override
+  String get logicOpXor => 'Either (Xor)';
+
+  @override
+  String get logicPickVariable => 'Pick a Variable…';
+
+  @override
+  String get logicMissingVariable => 'Deleted Variable';
+
+  @override
+  String get logicSearchVariables => 'Search…';
+
+  @override
+  String get logicNoVariables =>
+      'No variables yet. Add some in the Variables section.';
+
+  @override
+  String get logicNewValueHint => 'New value…';
+
+  @override
+  String get logicByValueHint => 'By value…';
+
+  @override
+  String get logicValueHint => 'Value…';
+
+  @override
+  String get logicExpressionHint => 'e.g. coins > 3 and has_key';
+
+  @override
+  String get logicAddCondition => 'Add a condition';
+
+  @override
+  String get logicRemoveCondition => 'Remove this condition';
+
+  @override
+  String get logicMatchAll => 'All Must Hold';
+
+  @override
+  String get logicMatchAny => 'One Is Enough';
+
+  @override
+  String get logicTrue => 'True';
+
+  @override
+  String get logicFalse => 'False';
+
+  @override
+  String get logicUseExpression => 'Use an Expression';
+
+  @override
+  String get logicProblemNoVariable => 'Pick a variable.';
+
+  @override
+  String get logicProblemUnknownVariable => 'This variable was deleted.';
+
+  @override
+  String get logicProblemWrongOperation =>
+      'This doesn’t work on this kind of variable.';
+
+  @override
+  String get logicProblemNoConditions => 'Add a condition.';
+
+  @override
+  String get logicProblemEmpty =>
+      'Enter a value. Without one, nothing changes.';
+
+  @override
+  String get logicProblemExpression =>
+      'This value can’t be read, or is the wrong kind (number or true/false).';
+
+  @override
+  String logicProblemUnknownName(String name) {
+    return 'There is no variable called $name.';
+  }
+
+  @override
+  String get logicWarningRounded =>
+      'The result may have decimals; it is rounded to a whole number.';
+
+  @override
+  String get prefSimpleMath => 'Simple Math';
+
+  @override
+  String get notifyExportLogicIssues =>
+      'Some logic nodes have problems; the Player will skip what they do';
+
+  @override
   String get contextCompareNode => 'Compare Value';
 
   @override

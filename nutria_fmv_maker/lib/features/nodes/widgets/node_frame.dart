@@ -18,6 +18,7 @@ import 'package:nutria_fmv_maker/features/nodes/providers/comment_provider.dart'
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/logic_node_views.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
@@ -388,10 +389,13 @@ class _SwatchStrip extends ConsumerWidget {
     );
     final rename = ref.read(renamingNodeProvider.notifier);
     // The origin always shows a name: its own, or "Origin Node".
+    final t = AppLocalizations.of(context);
     final name =
         node.name ??
         (node is OriginNode
-            ? AppLocalizations.of(context).nodeOriginDefaultName
+            ? t.nodeOriginDefaultName
+            : node.isLogicNode
+            ? logicNodeTitle(node, t)
             : null);
     final radius = Radius.circular(theme.dNodeBorderRadius);
     final Widget? label = renaming

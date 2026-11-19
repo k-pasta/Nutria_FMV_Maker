@@ -5,6 +5,10 @@ import 'package:nutria_fmv_maker/core/document/node.dart';
 /// Output port key of nodes that have exactly one "next" output.
 const String kNextPortKey = 'next';
 
+/// Output ports of a compare node.
+const String kTruePortKey = 'true';
+const String kFalsePortKey = 'false';
+
 /// Output port keys of [node], in display (top to bottom) and export order.
 ///
 /// A branched node's output ports are its choice ids, so a connection follows
@@ -13,13 +17,18 @@ List<String> outputPortsOf(Node node) => switch (node) {
   OriginNode() => const [kNextPortKey],
   SimpleVideoNode() => const [kNextPortKey],
   BranchedVideoNode(:final choices) => [for (final c in choices) c.id],
+  ChangeVariableNode() => const [kNextPortKey],
+  CompareNode() => const [kTruePortKey, kFalsePortKey],
   CommentNode() => const [],
 };
 
 /// Whether [node] can be the target of a flow connection.
 bool hasInputPort(Node node) => switch (node) {
   OriginNode() || CommentNode() => false,
-  SimpleVideoNode() || BranchedVideoNode() => true,
+  SimpleVideoNode() ||
+  BranchedVideoNode() ||
+  ChangeVariableNode() ||
+  CompareNode() => true,
 };
 
 /// Whether [port] is an existing output port of [node].

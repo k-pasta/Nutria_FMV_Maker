@@ -195,6 +195,16 @@ class _EmptyCanvasArea extends ConsumerWidget {
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
       itemsAt: (local) => [
         NutriaContextMenuItem(
+          icon: Icons.calculate,
+          label: t.contextChangeVariable,
+          onSelected: () => editor.addChangeNode(nodePositionAt(local)),
+        ),
+        NutriaContextMenuItem(
+          icon: Icons.alt_route,
+          label: t.contextCompare,
+          onSelected: () => editor.addCompareNode(nodePositionAt(local)),
+        ),
+        NutriaContextMenuItem(
           icon: Icons.sticky_note_2,
           label: t.contextComment,
           onSelected: () {

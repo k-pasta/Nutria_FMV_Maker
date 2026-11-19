@@ -1,0 +1,80 @@
+import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/core/document/variable.dart';
+import 'package:nutria_fmv_maker/core/graph/ports.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
+import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+
+import 'app_tester.dart';
+
+void main() {
+  testWidgets('the canvas menu adds a Change Variable node; its variable is '
+      'picked by searching', (tester) async {
+    final c = await pumpApp(tester);
+    c
+        .read(documentProvider.notifier)
+        .apply(
+          'variables',
+          (d) => d.copyWith(
+            variables: const [
+              Variable.integer(id: 'c', name: 'coins'),
+              Variable.boolean(id: 'k', name: 'has_key'),
+            ],
+          ),
+        );
+    await rightClickAt(tester, kCanvasPoint);
+    await tester.tap(find.text('Change Variable'));
+    await tester.pumpAndSettle();
+    expect(find.text('Set Variable'), findsOneWidget, reason: 'its title');
+
+    await tester.tap(find.text('Pick a Variable…'));
+    await tester.pumpAndSettle();
+    await tester.enterText(find.byType(TextField).last, 'key');
+    await tester.testTextInput.receiveAction(TextInputAction.done);
+    await tester.pumpAndSettle();
+    final node = c
+        .read(projectDocumentProvider)
+        .nodes
+        .values
+        .whereType<ChangeVariableNode>()
+        .single;
+    expect(node.variableId, 'k');
+    expect(node.value, 'true', reason: 'a true/false variable starts true');
+    expect(find.text('has_key'), findsOneWidget);
+  });
+
+  testWidgets('a compare node keeps its True and False knots level with '
+      'their rows', (tester) async {
+    final c = await pumpApp(tester);
+    final editor = c.read(graphEditorProvider);
+    final id = editor.addCompareNode(const Position(-100, -250));
+    editor.addCondition(id);
+    await tester.pumpAndSettle();
+
+    for (final (port, label) in [
+      (kTruePortKey, 'True'),
+      (kFalsePortKey, 'False'),
+    ]) {
+      final knot = find.byWidgetPredicate(
+        (w) => w is Knot && w.port == PortRef(nodeId: id, port: port),
+      );
+      expect(
+        tester.getCenter(knot).dy,
+        moreOrLessEquals(tester.getCenter(find.text(label)).dy, epsilon: 1),
+        reason: label,
+      );
+    }
+    // Two conditions: All/Any can be switched.
+    await tester.tap(find.text('All Must Hold'));
+    await tester.pumpAndSettle();
+    expect(
+      (c.read(projectDocumentProvider).nodes[id] as CompareNode).matchAny,
+      isTrue,
+    );
+  });
+}
