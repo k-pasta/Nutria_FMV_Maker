@@ -183,6 +183,11 @@ class _NodeFrameState extends ConsumerState<NodeFrame> {
       node,
       NodeMetrics.of(context),
       fileName: fileName,
+      showsQuestion:
+          node is BranchedVideoNode &&
+          ref.watch(
+            effectiveSettingsProvider(node.id).select((s) => s.showQuestion),
+          ),
     );
     final expansion = widget.expansion;
     // Also when a dragged comment would be attached to it.

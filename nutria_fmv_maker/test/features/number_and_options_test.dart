@@ -32,7 +32,7 @@ void main() {
     await tester.pumpAndSettle();
     Variable variable() => c.read(variablesProvider).single;
 
-    await rightClickAt(tester, tester.getCenter(find.text('Bool')));
+    await rightClickAt(tester, tester.getCenter(find.text('Int')));
     await tester.tap(find.text('Float'));
     await tester.pumpAndSettle();
     expect(variable(), isA<DecimalVariable>());

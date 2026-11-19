@@ -27,6 +27,7 @@ const kScreenTexts = {
   'on': 'On',
   'off': 'Off',
   'noSaves': 'No saved games',
+  'text': 'Text',
 };
 
 /// The element kinds that are buttons.
@@ -155,13 +156,15 @@ class ScreenView extends StatelessWidget {
     this.background,
     this.fontFamilyOf,
     this.decorate,
+    this.visibility = 1,
+    this.animate = true,
   });
 
   final FmvMenuScreen screen;
   final ScreenContent content;
 
-  /// Drawn behind the elements (the screen's image or video, or the video
-  /// the answers go over); `null` for nothing.
+  /// Drawn behind everything (the screen's image or video); `null` for
+  /// nothing.
   final Widget? background;
 
   /// The family a font file (a style's `font`) is loaded under, or `null`
@@ -171,14 +174,57 @@ class ScreenView extends StatelessWidget {
   /// See [ScreenElementDecorator].
   final ScreenElementDecorator? decorate;
 
+  /// How far the screen has come in, 0 (not at all) to 1: drives its
+  /// entrance (and, backwards, its fade-out) and the strength of its effect.
+  final double visibility;
+
+  /// Whether lasting animations (the pulse effect) run; the designer's
+  /// stage draws them still.
+  final bool animate;
+
   @override
   Widget build(BuildContext context) => LayoutBuilder(
     builder: (context, constraints) {
       final size = constraints.biggest;
+      final h = size.height;
+      final v = visibility.clamp(0.0, 1.0);
+      final layers = <Widget>[
+        // The effect on what's behind (the video, under answers).
+        switch (screen.effect) {
+          FmvScreenEffect.darken => Positioned.fill(
+            child: ColoredBox(color: Color.fromRGBO(0, 0, 0, 0.45 * v)),
+          ),
+          FmvScreenEffect.blur => Positioned.fill(
+            child: BackdropFilter(
+              filter: ui.ImageFilter.blur(
+                sigmaX: 0.012 * h * v,
+                sigmaY: 0.012 * h * v,
+              ),
+              child: const SizedBox.expand(),
+            ),
+          ),
+          FmvScreenEffect.vignette => Positioned.fill(
+            child: DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: RadialGradient(
+                  radius: 0.9,
+                  colors: [
+                    const Color(0x00000000),
+                    Color.fromRGBO(0, 0, 0, 0.75 * v),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          FmvScreenEffect.none ||
+          FmvScreenEffect.pulse => const SizedBox.shrink(),
+        },
+        if (background case final background?)
+          Positioned.fill(
+            child: Opacity(opacity: v, child: background),
+          ),
+      ];
       final children = <Widget>[];
-      if (background case final background?) {
-        children.add(Positioned.fill(child: background));
-      }
       // Answers that fill the screen go first, behind the question and the
       // rest, which stay readable (and clickable) on top of them.
       bool fills(FmvScreenElement e) =>
@@ -205,7 +251,7 @@ class ScreenView extends StatelessWidget {
           children.add(
             Positioned(
               left: element.x * size.width,
-              top: element.y * size.height,
+              top: element.y * h,
               child: FractionalTranslation(
                 translation: const Offset(-0.5, -0.5),
                 child: decorated(view),
@@ -214,11 +260,37 @@ class ScreenView extends StatelessWidget {
           );
         }
       }
+      Widget elements = Stack(children: children);
+      if (screen.effect == FmvScreenEffect.pulse && animate) {
+        elements = _Pulse(child: elements);
+      }
+      // The entrance: fading, and rising or growing, as the screen comes in.
+      elements = Opacity(
+        opacity: v,
+        child: switch (screen.entrance) {
+          FmvScreenEntrance.fade => elements,
+          FmvScreenEntrance.slideUp => Transform.translate(
+            offset: Offset(0, (1 - v) * 0.04 * h),
+            child: elements,
+          ),
+          FmvScreenEntrance.zoom => Transform.scale(
+            scale: 0.94 + 0.06 * v,
+            child: elements,
+          ),
+        },
+      );
       // A plain default text style: drawn outside a Material (a preview
       // window), text would otherwise get Flutter's "no style" underline.
       return DefaultTextStyle(
         style: const TextStyle(),
-        child: ClipRect(child: Stack(children: children)),
+        child: ClipRect(
+          child: Stack(
+            children: [
+              ...layers,
+              Positioned.fill(child: elements),
+            ],
+          ),
+        ),
       );
     },
   );
@@ -235,6 +307,7 @@ class ScreenView extends StatelessWidget {
       'subtitles' => content.subtitles != null,
       'fullScreen' => content.fullScreen != null,
       'saves' => true,
+      'text' => element.text?.trim().isNotEmpty ?? false,
       final kind => kScreenButtonKinds.contains(kind),
     };
   }
@@ -327,6 +400,12 @@ class _ElementView extends StatelessWidget {
               : const SizedBox.shrink();
         }
         return _timer(left);
+      case 'text':
+        final value = element.text;
+        if (value == null || value.trim().isEmpty) {
+          return placeholder(content.text('text'));
+        }
+        return box(text(value));
       case 'title' || 'description' || 'question':
         final value =
             element.text ??
@@ -586,6 +665,7 @@ class _FullScreenAnswersState extends State<_FullScreenAnswers> {
         y,
         regions.length,
         aspect: size.width / size.height,
+        rotation: widget.element.rotation,
       );
     }
     for (final (i, r) in regions.indexed) {
@@ -611,6 +691,7 @@ class _FullScreenAnswersState extends State<_FullScreenAnswers> {
       element.layout,
       answers.length,
       aspect: size.width / size.height,
+      rotation: element.rotation,
     );
     final lit = content.picked ?? _hovered;
     final onAnswer = content.onAnswer;
@@ -919,4 +1000,37 @@ class _Arrow extends StatelessWidget {
       child: GestureDetector(onTap: onTap, child: arrow),
     );
   }
+}
+
+/// Makes [child] breathe: a slow, slight growing and shrinking.
+class _Pulse extends StatefulWidget {
+  const _Pulse({required this.child});
+
+  final Widget child;
+
+  @override
+  State<_Pulse> createState() => _PulseState();
+}
+
+class _PulseState extends State<_Pulse> with SingleTickerProviderStateMixin {
+  late final AnimationController _controller = AnimationController(
+    vsync: this,
+    duration: const Duration(milliseconds: 2400),
+  )..repeat(reverse: true);
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => AnimatedBuilder(
+    animation: _controller,
+    builder: (context, child) => Transform.scale(
+      scale: 1 + 0.015 * Curves.easeInOut.transform(_controller.value),
+      child: child,
+    ),
+    child: widget.child,
+  );
 }

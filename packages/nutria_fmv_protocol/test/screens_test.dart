@@ -122,5 +122,51 @@ void main() {
       expect(fmvRadialIndexAt(0.1, 0.5, 2), 0, reason: 'left');
       expect(fmvRadialIndexAt(0.9, 0.5, 2), 1, reason: 'right');
     });
+
+    test('a turned pie: slices and clicks turn with it', () {
+      final turned = fmvChoiceRegions(
+        FmvChoiceLayout.radial,
+        2,
+        rotation: 90,
+      );
+      expect(turned.first.labelY, lessThan(0.5), reason: 'left is now top');
+      for (final count in [2, 3, 5]) {
+        final regions = fmvChoiceRegions(
+          FmvChoiceLayout.radial,
+          count,
+          rotation: 37,
+        );
+        for (final (i, r) in regions.indexed) {
+          expect(
+            fmvRadialIndexAt(r.labelX, r.labelY, count, rotation: 37),
+            i,
+          );
+        }
+      }
+    });
+
+    test('answer screens keep how they come and go', () {
+      const screen = FmvMenuScreen(
+        fadeInMs: 800,
+        fadeOutMs: 400,
+        entrance: FmvScreenEntrance.zoom,
+        effect: FmvScreenEffect.vignette,
+        elements: [
+          FmvScreenElement(
+            kind: 'choices',
+            x: 0.5,
+            y: 0.5,
+            width: 1,
+            layout: FmvChoiceLayout.radial,
+            rotation: 45,
+          ),
+        ],
+      );
+      final read = FmvMenuScreen.fromJson(screen.toJson());
+      expect(read.toJson(), screen.toJson());
+      expect(read.effect, FmvScreenEffect.vignette);
+      expect(read.elements.single.rotation, 45);
+      expect(const FmvMenuScreen().toJson().keys, ['elements']);
+    });
   });
 }

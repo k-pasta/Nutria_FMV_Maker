@@ -124,6 +124,11 @@ class FakePlayer implements PreviewPlayer {
   );
   @override
   final ValueNotifier<PlaybackStatus> status = ValueNotifier(kStoppedStatus);
+
+  /// What [frame] returns.
+  Uint8List? currentFrame;
+  @override
+  Future<Uint8List?> frame() async => currentFrame;
   @override
   void dispose() {}
 }

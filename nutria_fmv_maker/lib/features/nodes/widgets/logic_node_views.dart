@@ -36,9 +36,9 @@ String logicNodeTitle(Node node, AppLocalizations t) => switch (node) {
   _ => '',
 };
 
-/// The caution sign at the right of a logic node's strip, shown while the
-/// node has a problem or a warning; its tooltip says what it is (like the
-/// faulty field's).
+/// The sign at the right of a logic node's strip: a caution sign while the
+/// node has a problem, an exclamation mark in a circle for a warning; its
+/// tooltip says what it is (like the faulty field's).
 class LogicIssueMark extends ConsumerWidget {
   const LogicIssueMark({super.key, required this.node});
 
@@ -60,8 +60,10 @@ class LogicIssueMark extends ConsumerWidget {
     if (message == null) return const SizedBox.shrink();
     return NutriaTooltip(
       message: message,
+      // A problem (the node won't work) is a caution sign; a warning (it
+      // works, but e.g. rounds) an exclamation mark in a circle.
       child: Icon(
-        Icons.warning_amber_rounded,
+        problem != null ? Icons.warning_amber_rounded : Icons.error_outline,
         size: theme.dTextHeight * 1.2,
         color: theme.swatchTextStyle.color,
       ),

@@ -1,7 +1,6 @@
 // Named, undoable editing commands for the node graph and project.
 import 'package:flutter/painting.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
-import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -74,23 +73,20 @@ class GraphEditor {
   /// Ends the drag started with [beginValueDrag].
   void endValueDrag() => _document.commit();
 
-  /// Gives video node [id] music [audioId] (keeping its music settings).
-  void setMusic(String id, String audioId) =>
-      _document.apply('Set music', (d) => d.setMusic(id, audioId));
+  /// The settings video node [id] uses: its own, its color's, the
+  /// project's.
+  VideoSettings _settingsOf(String id) {
+    final node = _current.node(id);
+    return node.overridesOrNull!.applyTo(_current.defaultsFor(node.swatch));
+  }
 
-  /// Edits video node [id]'s music settings.
-  void editMusic(
-    String id,
-    MusicCue Function(MusicCue cue) edit, {
-    Object? mergeKey,
-  }) => _document.apply(
-    'Change music',
-    (d) => d.updateMusic(id, (cue) => cue == null ? null : edit(cue)),
-    mergeKey: mergeKey,
+  /// Gives video node [id] its own music [audioId] (overriding its
+  /// defaults' music, keeping how it ends, loops, …).
+  void setMusic(String id, String audioId) => _updateOverrides(
+    'Set music',
+    id,
+    (o) => o.copyWith(music: _settingsOf(id).music.copyWith(audioId: audioId)),
   );
-
-  void removeMusic(String id) =>
-      _document.apply('Remove music', (d) => d.updateMusic(id, (_) => null));
 
   /// Gives branched node [id] its own pause music ([audioId]; `''` for
   /// none), overriding its color's and the project's.
@@ -198,6 +194,29 @@ class GraphEditor {
   void setScreenElementLayout(String id, FmvChoiceLayout layout) => _document
       .apply('Change element', (d) => d.setScreenElementLayout(id, layout));
 
+  void setScreenElementRotation(
+    String id,
+    double degrees, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change element',
+    (d) => d.setScreenElementRotation(id, degrees),
+    mergeKey: mergeKey,
+  );
+
+  /// Edits how the screen being designed comes in and goes, and its effect.
+  void editScreenMotion(
+    ScreenDesign Function(ScreenDesign s) edit, {
+    Object? mergeKey,
+  }) {
+    final screen = _screen;
+    _document.apply(
+      'Change screen',
+      (d) => d.editScreenMotion(screen, edit),
+      mergeKey: mergeKey,
+    );
+  }
+
   void setScreenElementTimerMode(String id, FmvTimerMode mode) => _document
       .apply('Change element', (d) => d.setScreenElementTimerMode(id, mode));
 
@@ -235,8 +254,8 @@ class GraphEditor {
   );
 
   /// Adds a style copied from [fromId] (or the plain button style), named
-  /// [name], gives it to the selected element if there is one, and returns
-  /// its id.
+  /// [name], gives it to the selected element if there is one, deselects the
+  /// style picked from the list, and returns its id.
   String addScreenStyle(String name, {String fromId = 'button'}) {
     final id = _newId();
     final element = _ref.read(selectedScreenElementProvider);
@@ -244,9 +263,8 @@ class GraphEditor {
       final added = d.duplicateScreenStyle(fromId, id, name);
       return element == null ? added : added.setScreenElementStyle(element, id);
     });
-    if (element == null) {
-      _ref.read(selectedScreenStyleProvider.notifier).select(id);
-    }
+    // The style picked from the list (the copy's source) is let go.
+    _ref.read(selectedScreenStyleProvider.notifier).select(null);
     return id;
   }
 
@@ -559,9 +577,10 @@ class GraphEditor {
   }
 
   /// Turns the question of branched node [id] on or off.
-  void setQuestionEnabled(String id, bool enabled) => _document.apply(
-    'Toggle question',
-    (d) => d.setQuestionEnabled(id, enabled),
+  void setQuestionEnabled(String id, bool enabled) => _updateOverrides(
+    'Show question',
+    id,
+    (o) => o.copyWith(showQuestion: enabled),
   );
 
   /// Pass the same [mergeKey] for every keystroke of one typing session.
@@ -713,14 +732,14 @@ class GraphEditor {
 
   // -------------------------------------------------------------- variables
 
-  /// Adds a true/false variable named [baseName] plus a free number, and
+  /// Adds a whole-number variable named [baseName] plus a free number, and
   /// returns its id.
   String addVariable(String baseName) {
     final id = _newId();
     _document.apply(
       'Add variable',
       (d) => d.addVariable(
-        Variable.boolean(id: id, name: d.freeVariableName(baseName)),
+        Variable.integer(id: id, name: d.freeVariableName(baseName)),
       ),
     );
     return id;

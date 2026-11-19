@@ -45,6 +45,9 @@ abstract interface class PreviewPlayer {
 
   /// Updates while the video plays.
   ValueListenable<PlaybackStatus> get status;
+
+  /// The frame shown now, as PNG bytes, or `null` without a video.
+  Future<Uint8List?> frame();
   void dispose();
 }
 
@@ -107,6 +110,16 @@ class MediaKitPreviewPlayer implements PreviewPlayer {
 
   @override
   ValueListenable<PlaybackStatus> get status => _status;
+
+  @override
+  Future<Uint8List?> frame() async {
+    if (_status.value.duration == Duration.zero) return null;
+    try {
+      return await player.screenshot(format: 'image/png');
+    } on Object {
+      return null;
+    }
+  }
 
   @override
   Future<void> open(String path) => player.open(Media(path), play: false);

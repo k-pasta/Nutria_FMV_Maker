@@ -98,7 +98,7 @@ void main() {
 
   test('a question takes the first row; the choice knots move down a row', () {
     final plain = NodeLayout(branched, metrics);
-    final asking = NodeLayout(branched.copyWith(question: 'Which?'), metrics);
+    final asking = NodeLayout(branched, metrics, showsQuestion: true);
     final port = branched.choices.first.id;
     expect(
       asking.output(port)!.dy - plain.output(port)!.dy,

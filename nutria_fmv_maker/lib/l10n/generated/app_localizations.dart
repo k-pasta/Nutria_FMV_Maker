@@ -1582,6 +1582,120 @@ abstract class AppLocalizations {
   /// **'Numbers are percentages of the screen: widths of its width, other sizes of its height.'**
   String get screenPercentNote;
 
+  /// No description provided for @screenText.
+  ///
+  /// In en, this message translates to:
+  /// **'Text'**
+  String get screenText;
+
+  /// No description provided for @screenBackdrop.
+  ///
+  /// In en, this message translates to:
+  /// **'Behind'**
+  String get screenBackdrop;
+
+  /// No description provided for @screenBackdropNone.
+  ///
+  /// In en, this message translates to:
+  /// **'Nothing'**
+  String get screenBackdropNone;
+
+  /// No description provided for @screenBackdropFrame.
+  ///
+  /// In en, this message translates to:
+  /// **'Video player\'s frame'**
+  String get screenBackdropFrame;
+
+  /// No description provided for @screenOverlayNote.
+  ///
+  /// In en, this message translates to:
+  /// **'On a choice screen the background goes over the video: an image with see-through parts can frame it.'**
+  String get screenOverlayNote;
+
+  /// No description provided for @screenFadeIn.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade In (s)'**
+  String get screenFadeIn;
+
+  /// No description provided for @screenFadeInNote.
+  ///
+  /// In en, this message translates to:
+  /// **'When a video waits for an answer with no time to choose before its end, the fade starts this long before the end.'**
+  String get screenFadeInNote;
+
+  /// No description provided for @screenFadeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade Out (s)'**
+  String get screenFadeOut;
+
+  /// No description provided for @screenEntrance.
+  ///
+  /// In en, this message translates to:
+  /// **'Comes In'**
+  String get screenEntrance;
+
+  /// No description provided for @screenEntranceFade.
+  ///
+  /// In en, this message translates to:
+  /// **'Fading'**
+  String get screenEntranceFade;
+
+  /// No description provided for @screenEntranceSlideUp.
+  ///
+  /// In en, this message translates to:
+  /// **'Rising'**
+  String get screenEntranceSlideUp;
+
+  /// No description provided for @screenEntranceZoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Growing'**
+  String get screenEntranceZoom;
+
+  /// No description provided for @screenEffect.
+  ///
+  /// In en, this message translates to:
+  /// **'Effect'**
+  String get screenEffect;
+
+  /// No description provided for @screenEffectNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get screenEffectNone;
+
+  /// No description provided for @screenEffectDarken.
+  ///
+  /// In en, this message translates to:
+  /// **'Darken the video'**
+  String get screenEffectDarken;
+
+  /// No description provided for @screenEffectBlur.
+  ///
+  /// In en, this message translates to:
+  /// **'Blur the video'**
+  String get screenEffectBlur;
+
+  /// No description provided for @screenEffectVignette.
+  ///
+  /// In en, this message translates to:
+  /// **'Dark edges'**
+  String get screenEffectVignette;
+
+  /// No description provided for @screenEffectPulse.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers breathe'**
+  String get screenEffectPulse;
+
+  /// No description provided for @screenRotation.
+  ///
+  /// In en, this message translates to:
+  /// **'Rotation (°)'**
+  String get screenRotation;
+
   /// No description provided for @overrideChoiceScreen.
   ///
   /// In en, this message translates to:
@@ -2109,6 +2223,12 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Show Timer'**
   String get overrideShowTimer;
+
+  /// No description provided for @overrideShowQuestion.
+  ///
+  /// In en, this message translates to:
+  /// **'Show Question'**
+  String get overrideShowQuestion;
 
   /// No description provided for @overrideVideoFit.
   ///

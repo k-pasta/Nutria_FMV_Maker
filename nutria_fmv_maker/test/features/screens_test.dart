@@ -50,7 +50,6 @@ void main() {
     expect([for (final s in doc.screens) s.kind], [
       ScreenKind.menu,
       ScreenKind.choice,
-      ScreenKind.endChoice,
       ScreenKind.pause,
       // The classic menu has Settings and Load, so these come along.
       ScreenKind.settings,
@@ -63,13 +62,6 @@ void main() {
         reason: '${screen.kind}',
       );
     }
-    expect(
-      doc.screenOf(ScreenKind.endChoice).elements
-          .firstWhere((e) => e.kind == ScreenElementKind.choices)
-          .layout,
-      FmvChoiceLayout.columns,
-      reason: 'answers waiting at the end split the screen',
-    );
     expect(ProjectDocument.empty(), doc, reason: 'always the same');
   });
 
@@ -168,20 +160,11 @@ void main() {
         overrides: const VideoSettingsOverride(choiceScreenId: 'big'),
       ),
     );
-    var project = exportFmv(doc).project;
+    final project = exportFmv(doc).project;
     final node = project.nodes.values.firstWhere((n) => n.screen != null);
     expect(node.screen, 'big');
     expect(project.screens.keys, ['big']);
     expect(project.choiceScreenOf(node), same(project.screens['big']));
-
-    // Waiting at the end: the node's pause choice screen.
-    doc = doc.editDefaults(0, (s) => s.copyWith(pauseOnEnd: true));
-    project = exportFmv(doc).project;
-    expect(
-      project.nodes.values.where((n) => n.screen == 'endChoice'),
-      isNotEmpty,
-    );
-    expect(project.screens.keys, contains('endChoice'));
 
     // Deleting the screen sends its nodes back to the first one.
     expect(doc.canRemoveScreen('choice'), isFalse);
@@ -291,15 +274,15 @@ void main() {
     final c = await pumpApp(tester);
     c.read(editorViewProvider.notifier).show(EditorView.screens);
     await tester.pumpAndSettle();
-    await tester.tap(find.text('+ New Pause Choice Screen'));
+    await tester.tap(find.text('+ New Choice Screen'));
     await tester.pumpAndSettle();
     final screen = c.read(designedScreenProvider);
-    expect(screen.kind, ScreenKind.endChoice);
-    expect(screen.name, 'Pause Choice Screen 2');
+    expect(screen.kind, ScreenKind.choice);
+    expect(screen.name, 'Choice Screen 2');
 
-    await tester.tap(find.text('Pause Choice Screen 2'));
+    await tester.tap(find.text('Choice Screen 2'));
     await tester.pump(const Duration(milliseconds: 50));
-    await tester.tap(find.text('Pause Choice Screen 2'));
+    await tester.tap(find.text('Choice Screen 2'));
     await tester.pumpAndSettle();
     await tester.enterText(find.byType(EditableText).last, 'Crossroads');
     await tester.testTextInput.receiveAction(TextInputAction.done);

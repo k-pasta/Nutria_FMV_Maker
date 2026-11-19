@@ -117,10 +117,19 @@ class NodeMetrics {
 /// position, i.e. the top-left corner of its padded box: the visible node
 /// starts at ([kNodePadding], [kNodePadding]).
 class NodeLayout {
-  NodeLayout(this.node, this.metrics, {this.fileName});
+  NodeLayout(
+    this.node,
+    this.metrics, {
+    this.fileName,
+    this.showsQuestion = false,
+  });
 
   final Node node;
   final NodeMetrics metrics;
+
+  /// Whether a branched node shows its question (its "Show Question"
+  /// setting), which takes the first row.
+  final bool showsQuestion;
 
   /// The file name of the node's video, or `null` if it has none.
   final String? fileName;
@@ -203,14 +212,15 @@ class NodeLayout {
         ),
         _ => null,
       },
-      BranchedVideoNode(:final choices, :final question) => switch (choices
-          .indexWhere((c) => c.id == port)) {
+      BranchedVideoNode(:final choices) => switch (choices.indexWhere(
+        (c) => c.id == port,
+      )) {
         -1 => null,
         final i => Offset(
           right,
           _rowsTop +
               rowCenter +
-              (i + (question == null ? 0 : 1)) * metrics.choiceStride,
+              (i + (showsQuestion ? 1 : 0)) * metrics.choiceStride,
         ),
       },
     };

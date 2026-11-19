@@ -813,6 +813,65 @@ class AppLocalizationsFr extends AppLocalizations {
       'Les nombres sont des pourcentages de l’écran : les largeurs de sa largeur, les autres tailles de sa hauteur.';
 
   @override
+  String get screenText => 'Texte';
+
+  @override
+  String get screenBackdrop => 'Derrière';
+
+  @override
+  String get screenBackdropNone => 'Rien';
+
+  @override
+  String get screenBackdropFrame => 'Image du lecteur vidéo';
+
+  @override
+  String get screenOverlayNote =>
+      'Sur un écran de choix, l’arrière-plan passe devant la vidéo : une image avec des parties transparentes peut l’encadrer.';
+
+  @override
+  String get screenFadeIn => 'Fondu d’entrée (s)';
+
+  @override
+  String get screenFadeInNote =>
+      'Quand une vidéo attend une réponse sans temps de choix avant sa fin, le fondu commence aussi longtemps avant la fin.';
+
+  @override
+  String get screenFadeOut => 'Fondu de sortie (s)';
+
+  @override
+  String get screenEntrance => 'Entrée';
+
+  @override
+  String get screenEntranceFade => 'En fondu';
+
+  @override
+  String get screenEntranceSlideUp => 'En montant';
+
+  @override
+  String get screenEntranceZoom => 'En grandissant';
+
+  @override
+  String get screenEffect => 'Effet';
+
+  @override
+  String get screenEffectNone => 'Aucun';
+
+  @override
+  String get screenEffectDarken => 'Assombrir la vidéo';
+
+  @override
+  String get screenEffectBlur => 'Flouter la vidéo';
+
+  @override
+  String get screenEffectVignette => 'Bords sombres';
+
+  @override
+  String get screenEffectPulse => 'Les réponses respirent';
+
+  @override
+  String get screenRotation => 'Rotation (°)';
+
+  @override
   String get overrideChoiceScreen => 'Écran de choix';
 
   @override
@@ -1096,6 +1155,9 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get overrideShowTimer => 'Afficher la Minuterie';
+
+  @override
+  String get overrideShowQuestion => 'Afficher la question';
 
   @override
   String get overrideVideoFit => 'Ajustement Vidéo';

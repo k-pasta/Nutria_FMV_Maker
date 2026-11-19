@@ -3,6 +3,7 @@
 import 'dart:ui';
 
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/graph/connection_rules.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/connection_drag_provider.dart';
@@ -18,6 +19,9 @@ Offset? knotPosition(ProjectDocument doc, NodeMetrics metrics, PortRef port) {
     node,
     metrics,
     fileName: videoId == null ? null : doc.mediaById(videoId)?.fileName,
+    showsQuestion:
+        node is BranchedVideoNode &&
+        node.overrides.applyTo(doc.defaultsFor(node.swatch)).showQuestion,
   );
   final offset = port.port == PortRef.inputPortKey
       ? layout.input

@@ -34,6 +34,35 @@ enum FmvChoiceLayout {
   bool get fillsScreen => this == columns || this == rows || this == radial;
 }
 
+/// How an answer screen comes in.
+enum FmvScreenEntrance {
+  /// Fades in.
+  fade,
+
+  /// Fades in while rising a little.
+  slideUp,
+
+  /// Fades in while growing a little.
+  zoom,
+}
+
+/// What an answer screen does to the video behind it.
+enum FmvScreenEffect {
+  none,
+
+  /// Darkens it.
+  darken,
+
+  /// Blurs it.
+  blur,
+
+  /// Darkens its edges.
+  vignette,
+
+  /// Leaves it, and makes the answers breathe slowly.
+  pulse,
+}
+
 /// How the "timer" bar runs down.
 enum FmvTimerMode {
   /// From the right end to the left.
@@ -83,11 +112,13 @@ class FmvChoiceRegion {
 /// The parts of the screen [count] answers take in full-screen [layout],
 /// on a screen [aspect] (width / height) wide. Empty for the other
 /// layouts. Radial slices start at the bottom and go clockwise, so two
-/// answers are left and right, and three are left, top and right.
+/// answers are left and right, and three are left, top and right; a
+/// [rotation] (degrees, clockwise) turns the whole pie.
 List<FmvChoiceRegion> fmvChoiceRegions(
   FmvChoiceLayout layout,
   int count, {
   double aspect = 16 / 9,
+  double rotation = 0,
 }) {
   if (count <= 0) return const [];
   switch (layout) {
@@ -119,7 +150,12 @@ List<FmvChoiceRegion> fmvChoiceRegions(
       final sweep = 2 * math.pi / count;
       return [
         for (var i = 0; i < count; i++)
-          _slice(math.pi + i * sweep, sweep, count, aspect),
+          _slice(
+            math.pi + rotation * math.pi / 180 + i * sweep,
+            sweep,
+            count,
+            aspect,
+          ),
       ];
     case FmvChoiceLayout.vertical || FmvChoiceLayout.horizontal:
       return const [];
@@ -144,13 +180,19 @@ FmvChoiceRegion _slice(double start, double sweep, int count, double aspect) {
 }
 
 /// Which of [count] radial answers the point ([x], [y]) (fractions of a
-/// screen [aspect] wide) is in.
-int fmvRadialIndexAt(double x, double y, int count, {double aspect = 16 / 9}) {
+/// screen [aspect] wide) is in, for a pie turned by [rotation] degrees.
+int fmvRadialIndexAt(
+  double x,
+  double y,
+  int count, {
+  double aspect = 16 / 9,
+  double rotation = 0,
+}) {
   if (count <= 1) return 0;
   // Clockwise from straight up, in screen proportions.
   var angle = math.atan2((x - 0.5) * aspect, 0.5 - y);
   final sweep = 2 * math.pi / count;
-  angle = (angle - math.pi) % (2 * math.pi);
+  angle = (angle - math.pi - rotation * math.pi / 180) % (2 * math.pi);
   if (angle < 0) angle += 2 * math.pi;
   return (angle ~/ sweep).clamp(0, count - 1);
 }
@@ -245,7 +287,10 @@ class FmvScreenStyle {
 /// - "timer": a bar [thickness] high that runs down by [timerMode] while
 ///   the viewer chooses;
 /// - settings: "volume", "subtitles" (the language) and "fullScreen";
-/// - "saves": the saved games, to load (or save over).
+/// - "saves": the saved games, to load (or save over);
+/// - "text": the author's own [text], not clickable.
+///
+/// A radial "choices" element turns its pie by [rotation] degrees.
 ///
 /// [text] replaces the default text. Readers skip kinds they don't know.
 class FmvScreenElement {
@@ -259,6 +304,7 @@ class FmvScreenElement {
     this.layout = FmvChoiceLayout.vertical,
     this.timerMode = FmvTimerMode.toStart,
     this.thickness,
+    this.rotation = 0,
     this.style = const FmvScreenStyle(),
   });
 
@@ -281,6 +327,10 @@ class FmvScreenElement {
   /// did). (Added after the first screens.)
   final FmvTimerMode timerMode;
   final double? thickness;
+
+  /// "choices" as a pie: how far it's turned, in degrees (0 to 180). (Added
+  /// after the first screens.)
+  final double rotation;
   final FmvScreenStyle style;
 
   Map<String, Object?> toJson() => {
@@ -293,6 +343,7 @@ class FmvScreenElement {
         if (layout != FmvChoiceLayout.vertical) 'layout': layout.name,
         if (timerMode != FmvTimerMode.toStart) 'timerMode': timerMode.name,
         if (thickness != null) 'thickness': thickness,
+        if (rotation != 0) 'rotation': rotation,
         'style': style.toJson(),
       };
 
@@ -323,6 +374,7 @@ class FmvScreenElement {
       thickness: json['thickness'] is num
           ? (json['thickness'] as num).toDouble()
           : null,
+      rotation: number(json['rotation'], 0),
       style: FmvScreenStyle.fromJson(
         style is Map ? Map<String, Object?>.from(style) : const {},
       ),
@@ -331,25 +383,60 @@ class FmvScreenElement {
 }
 
 /// A designed screen: a background (image or video path) and elements.
-/// Used for the main menu, the answers (over the video, so usually without
-/// a background), the pause menu, settings and saved games.
+/// Used for the main menu, the answers, the pause menu, settings and saved
+/// games. On an answer screen the background is drawn over the video (an
+/// image with see-through parts frames it).
+///
+/// Answer screens also say how they come and go: [entrance] over [fadeInMs]
+/// (which, for a video that waits with no time to choose before its end,
+/// starts that long before the end), fading out over [fadeOutMs] after an
+/// answer is picked, and an [effect] on the video behind. (Added after the
+/// first screens.)
 class FmvMenuScreen {
-  const FmvMenuScreen({this.background, this.elements = const []});
+  const FmvMenuScreen({
+    this.background,
+    this.elements = const [],
+    this.fadeInMs = 0,
+    this.fadeOutMs = 0,
+    this.entrance = FmvScreenEntrance.fade,
+    this.effect = FmvScreenEffect.none,
+  });
 
   final String? background;
   final List<FmvScreenElement> elements;
+  final int fadeInMs;
+  final int fadeOutMs;
+  final FmvScreenEntrance entrance;
+  final FmvScreenEffect effect;
 
   bool get isEmpty => background == null && elements.isEmpty;
 
   Map<String, Object?> toJson() => {
         if (background != null) 'background': background,
         'elements': [for (final e in elements) e.toJson()],
+        if (fadeInMs > 0) 'fadeIn': fadeInMs,
+        if (fadeOutMs > 0) 'fadeOut': fadeOutMs,
+        if (entrance != FmvScreenEntrance.fade) 'entrance': entrance.name,
+        if (effect != FmvScreenEffect.none) 'effect': effect.name,
       };
 
   factory FmvMenuScreen.fromJson(Map<String, Object?> json) {
     final background = json['background'];
     final elements = json['elements'];
+    int ms(Object? v) => v is num && v > 0 ? v.round() : 0;
     return FmvMenuScreen(
+      fadeInMs: ms(json['fadeIn']),
+      fadeOutMs: ms(json['fadeOut']),
+      entrance: _enumOr(
+        FmvScreenEntrance.values,
+        json['entrance'],
+        FmvScreenEntrance.fade,
+      ),
+      effect: _enumOr(
+        FmvScreenEffect.values,
+        json['effect'],
+        FmvScreenEffect.none,
+      ),
       background: background is String ? background : null,
       elements: [
         if (elements is List)

@@ -346,7 +346,9 @@ mixin _$ScreenElement {
  double get gap;/// [ScreenElementKind.choices]: how the answers are laid out.
  FmvChoiceLayout get layout;/// [ScreenElementKind.timer]: how the bar runs down, and how thick it
 /// is (a fraction of the screen height).
- FmvTimerMode get timerMode; double get thickness;
+ FmvTimerMode get timerMode; double get thickness;/// [ScreenElementKind.choices] as a pie: how far it's turned, in
+/// degrees (0 to 180).
+ double get rotation;
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -360,20 +362,20 @@ $ScreenElementCopyWith<ScreenElement> get copyWith => _$ScreenElementCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenElement;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.gap, _this.gap) || other.gap == _this.gap)&&(identical(other.layout, _this.layout) || other.layout == _this.layout)&&(identical(other.timerMode, _this.timerMode) || other.timerMode == _this.timerMode)&&(identical(other.thickness, _this.thickness) || other.thickness == _this.thickness));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.gap, _this.gap) || other.gap == _this.gap)&&(identical(other.layout, _this.layout) || other.layout == _this.layout)&&(identical(other.timerMode, _this.timerMode) || other.timerMode == _this.timerMode)&&(identical(other.thickness, _this.thickness) || other.thickness == _this.thickness)&&(identical(other.rotation, _this.rotation) || other.rotation == _this.rotation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenElement;
-  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text,_this.gap,_this.layout,_this.timerMode,_this.thickness);
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text,_this.gap,_this.layout,_this.timerMode,_this.thickness,_this.rotation);
 }
 
 @override
 String toString() {
   final _this = this as ScreenElement;
-  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text}, gap: ${_this.gap}, layout: ${_this.layout}, timerMode: ${_this.timerMode}, thickness: ${_this.thickness})';
+  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text}, gap: ${_this.gap}, layout: ${_this.layout}, timerMode: ${_this.timerMode}, thickness: ${_this.thickness}, rotation: ${_this.rotation})';
 }
 
 
@@ -384,7 +386,7 @@ abstract mixin class $ScreenElementCopyWith<$Res>  {
   factory $ScreenElementCopyWith(ScreenElement value, $Res Function(ScreenElement) _then) = _$ScreenElementCopyWithImpl;
 @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness, double rotation
 });
 
 
@@ -401,7 +403,7 @@ class _$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,Object? rotation = null,}) {
   return _then(ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -414,6 +416,7 @@ as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nu
 as double,layout: null == layout ? _self.layout : layout // ignore: cast_nullable_to_non_nullable
 as FmvChoiceLayout,timerMode: null == timerMode ? _self.timerMode : timerMode // ignore: cast_nullable_to_non_nullable
 as FmvTimerMode,thickness: null == thickness ? _self.thickness : thickness // ignore: cast_nullable_to_non_nullable
+as double,rotation: null == rotation ? _self.rotation : rotation // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -499,10 +502,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness,  double rotation)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness,_that.rotation);case _:
   return orElse();
 
 }
@@ -520,10 +523,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness,  double rotation)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement():
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness,_that.rotation);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -540,10 +543,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness,  double rotation)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness,_that.rotation);case _:
   return null;
 
 }
@@ -555,7 +558,7 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 @JsonSerializable()
 
 class _ScreenElement implements ScreenElement {
-  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text, this.gap = 0.015, this.layout = FmvChoiceLayout.vertical, this.timerMode = FmvTimerMode.toStart, this.thickness = 0.012});
+  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text, this.gap = 0.015, this.layout = FmvChoiceLayout.vertical, this.timerMode = FmvTimerMode.toStart, this.thickness = 0.012, this.rotation = 0.0});
   factory _ScreenElement.fromJson(Map<String, dynamic> json) => _$ScreenElementFromJson(json);
 
 @override final  String id;
@@ -576,6 +579,9 @@ class _ScreenElement implements ScreenElement {
 /// is (a fraction of the screen height).
 @override@JsonKey() final  FmvTimerMode timerMode;
 @override@JsonKey() final  double thickness;
+/// [ScreenElementKind.choices] as a pie: how far it's turned, in
+/// degrees (0 to 180).
+@override@JsonKey() final  double rotation;
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
@@ -590,18 +596,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text)&&(identical(other.gap, gap) || other.gap == gap)&&(identical(other.layout, layout) || other.layout == layout)&&(identical(other.timerMode, timerMode) || other.timerMode == timerMode)&&(identical(other.thickness, thickness) || other.thickness == thickness));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text)&&(identical(other.gap, gap) || other.gap == gap)&&(identical(other.layout, layout) || other.layout == layout)&&(identical(other.timerMode, timerMode) || other.timerMode == timerMode)&&(identical(other.thickness, thickness) || other.thickness == thickness)&&(identical(other.rotation, rotation) || other.rotation == rotation));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text,gap,layout,timerMode,thickness);
+    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text,gap,layout,timerMode,thickness,rotation);
 }
 
 @override
 String toString() {
-    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text, gap: $gap, layout: $layout, timerMode: $timerMode, thickness: $thickness)';
+    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text, gap: $gap, layout: $layout, timerMode: $timerMode, thickness: $thickness, rotation: $rotation)';
 }
 
 
@@ -612,7 +618,7 @@ abstract mixin class _$ScreenElementCopyWith<$Res> implements $ScreenElementCopy
   factory _$ScreenElementCopyWith(_ScreenElement value, $Res Function(_ScreenElement) _then) = __$ScreenElementCopyWithImpl;
 @override @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness, double rotation
 });
 
 
@@ -629,7 +635,7 @@ class __$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,Object? rotation = null,}) {
   return _then(_ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -642,6 +648,7 @@ as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nu
 as double,layout: null == layout ? _self.layout : layout // ignore: cast_nullable_to_non_nullable
 as FmvChoiceLayout,timerMode: null == timerMode ? _self.timerMode : timerMode // ignore: cast_nullable_to_non_nullable
 as FmvTimerMode,thickness: null == thickness ? _self.thickness : thickness // ignore: cast_nullable_to_non_nullable
+as double,rotation: null == rotation ? _self.rotation : rotation // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -654,7 +661,11 @@ as double,
 mixin _$ScreenDesign {
 
  String get id; ScreenKind get kind;/// The author's name for it; `null` shows the kind's name.
- String? get name; String? get backgroundId; List<ScreenElement> get elements;
+ String? get name; String? get backgroundId; List<ScreenElement> get elements;/// Answer screens: how they come in ([entrance] over [fadeInMs]; for a
+/// video that waits with no time to choose, starting that long before
+/// its end), fade out after a pick ([fadeOutMs]), and what they do to
+/// the video behind ([effect]).
+ int get fadeInMs; int get fadeOutMs; FmvScreenEntrance get entrance; FmvScreenEffect get effect;
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -668,20 +679,20 @@ $ScreenDesignCopyWith<ScreenDesign> get copyWith => _$ScreenDesignCopyWithImpl<S
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenDesign;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenDesign&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenDesign&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements)&&(identical(other.fadeInMs, _this.fadeInMs) || other.fadeInMs == _this.fadeInMs)&&(identical(other.fadeOutMs, _this.fadeOutMs) || other.fadeOutMs == _this.fadeOutMs)&&(identical(other.entrance, _this.entrance) || other.entrance == _this.entrance)&&(identical(other.effect, _this.effect) || other.effect == _this.effect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenDesign;
-  return Object.hash(runtimeType,_this.id,_this.kind,_this.name,_this.backgroundId,const DeepCollectionEquality().hash(_this.elements));
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.name,_this.backgroundId,const DeepCollectionEquality().hash(_this.elements),_this.fadeInMs,_this.fadeOutMs,_this.entrance,_this.effect);
 }
 
 @override
 String toString() {
   final _this = this as ScreenDesign;
-  return 'ScreenDesign(id: ${_this.id}, kind: ${_this.kind}, name: ${_this.name}, backgroundId: ${_this.backgroundId}, elements: ${_this.elements})';
+  return 'ScreenDesign(id: ${_this.id}, kind: ${_this.kind}, name: ${_this.name}, backgroundId: ${_this.backgroundId}, elements: ${_this.elements}, fadeInMs: ${_this.fadeInMs}, fadeOutMs: ${_this.fadeOutMs}, entrance: ${_this.entrance}, effect: ${_this.effect})';
 }
 
 
@@ -692,7 +703,7 @@ abstract mixin class $ScreenDesignCopyWith<$Res>  {
   factory $ScreenDesignCopyWith(ScreenDesign value, $Res Function(ScreenDesign) _then) = _$ScreenDesignCopyWithImpl;
 @useResult
 $Res call({
- String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements
+ String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements, int fadeInMs, int fadeOutMs, FmvScreenEntrance entrance, FmvScreenEffect effect
 });
 
 
@@ -709,14 +720,18 @@ class _$ScreenDesignCopyWithImpl<$Res>
 
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,Object? fadeInMs = null,Object? fadeOutMs = null,Object? entrance = null,Object? effect = null,}) {
   return _then(ScreenDesign(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as ScreenKind,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self.elements : elements // ignore: cast_nullable_to_non_nullable
-as List<ScreenElement>,
+as List<ScreenElement>,fadeInMs: null == fadeInMs ? _self.fadeInMs : fadeInMs // ignore: cast_nullable_to_non_nullable
+as int,fadeOutMs: null == fadeOutMs ? _self.fadeOutMs : fadeOutMs // ignore: cast_nullable_to_non_nullable
+as int,entrance: null == entrance ? _self.entrance : entrance // ignore: cast_nullable_to_non_nullable
+as FmvScreenEntrance,effect: null == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as FmvScreenEffect,
   ));
 }
 
@@ -801,10 +816,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements,  int fadeInMs,  int fadeOutMs,  FmvScreenEntrance entrance,  FmvScreenEffect effect)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenDesign() when $default != null:
-return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements,_that.fadeInMs,_that.fadeOutMs,_that.entrance,_that.effect);case _:
   return orElse();
 
 }
@@ -822,10 +837,10 @@ return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements,  int fadeInMs,  int fadeOutMs,  FmvScreenEntrance entrance,  FmvScreenEffect effect)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenDesign():
-return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements,_that.fadeInMs,_that.fadeOutMs,_that.entrance,_that.effect);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -842,10 +857,10 @@ return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements,  int fadeInMs,  int fadeOutMs,  FmvScreenEntrance entrance,  FmvScreenEffect effect)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenDesign() when $default != null:
-return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements,_that.fadeInMs,_that.fadeOutMs,_that.entrance,_that.effect);case _:
   return null;
 
 }
@@ -857,7 +872,7 @@ return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements
 @JsonSerializable()
 
 class _ScreenDesign implements ScreenDesign {
-  const _ScreenDesign({required this.id, required this.kind, this.name, this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[]}): _elements = elements;
+  const _ScreenDesign({required this.id, required this.kind, this.name, this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[], this.fadeInMs = 400, this.fadeOutMs = 300, this.entrance = FmvScreenEntrance.fade, this.effect = FmvScreenEffect.none}): _elements = elements;
   factory _ScreenDesign.fromJson(Map<String, dynamic> json) => _$ScreenDesignFromJson(json);
 
 @override final  String id;
@@ -872,6 +887,14 @@ class _ScreenDesign implements ScreenDesign {
   return EqualUnmodifiableListView(_elements);
 }
 
+/// Answer screens: how they come in ([entrance] over [fadeInMs]; for a
+/// video that waits with no time to choose, starting that long before
+/// its end), fade out after a pick ([fadeOutMs]), and what they do to
+/// the video behind ([effect]).
+@override@JsonKey() final  int fadeInMs;
+@override@JsonKey() final  int fadeOutMs;
+@override@JsonKey() final  FmvScreenEntrance entrance;
+@override@JsonKey() final  FmvScreenEffect effect;
 
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
@@ -886,18 +909,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenDesign&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenDesign&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements)&&(identical(other.fadeInMs, fadeInMs) || other.fadeInMs == fadeInMs)&&(identical(other.fadeOutMs, fadeOutMs) || other.fadeOutMs == fadeOutMs)&&(identical(other.entrance, entrance) || other.entrance == entrance)&&(identical(other.effect, effect) || other.effect == effect));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,kind,name,backgroundId,const DeepCollectionEquality().hash(_elements));
+    return Object.hash(runtimeType,id,kind,name,backgroundId,const DeepCollectionEquality().hash(_elements),fadeInMs,fadeOutMs,entrance,effect);
 }
 
 @override
 String toString() {
-    return 'ScreenDesign(id: $id, kind: $kind, name: $name, backgroundId: $backgroundId, elements: $elements)';
+    return 'ScreenDesign(id: $id, kind: $kind, name: $name, backgroundId: $backgroundId, elements: $elements, fadeInMs: $fadeInMs, fadeOutMs: $fadeOutMs, entrance: $entrance, effect: $effect)';
 }
 
 
@@ -908,7 +931,7 @@ abstract mixin class _$ScreenDesignCopyWith<$Res> implements $ScreenDesignCopyWi
   factory _$ScreenDesignCopyWith(_ScreenDesign value, $Res Function(_ScreenDesign) _then) = __$ScreenDesignCopyWithImpl;
 @override @useResult
 $Res call({
- String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements
+ String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements, int fadeInMs, int fadeOutMs, FmvScreenEntrance entrance, FmvScreenEffect effect
 });
 
 
@@ -925,14 +948,18 @@ class __$ScreenDesignCopyWithImpl<$Res>
 
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,Object? fadeInMs = null,Object? fadeOutMs = null,Object? entrance = null,Object? effect = null,}) {
   return _then(_ScreenDesign(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
 as ScreenKind,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self._elements : elements // ignore: cast_nullable_to_non_nullable
-as List<ScreenElement>,
+as List<ScreenElement>,fadeInMs: null == fadeInMs ? _self.fadeInMs : fadeInMs // ignore: cast_nullable_to_non_nullable
+as int,fadeOutMs: null == fadeOutMs ? _self.fadeOutMs : fadeOutMs // ignore: cast_nullable_to_non_nullable
+as int,entrance: null == entrance ? _self.entrance : entrance // ignore: cast_nullable_to_non_nullable
+as FmvScreenEntrance,effect: null == effect ? _self.effect : effect // ignore: cast_nullable_to_non_nullable
+as FmvScreenEffect,
   ));
 }
 

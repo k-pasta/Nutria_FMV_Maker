@@ -57,12 +57,13 @@ void main() {
         const PortRef(nodeId: kOriginNodeId, port: kNextPortKey),
         PortRef.input('b'),
       )
-      .setMusic('b', 's')
-      .updateMusic('b', (c) => c!.copyWith(end: FmvMusicEnd.laterNodeChanges))
       .updateNode(
         'b',
         (n) => (n as BranchedVideoNode).copyWith(
-          overrides: const VideoSettingsOverride(pauseMusicId: 'p'),
+          overrides: const VideoSettingsOverride(
+            music: MusicCue(audioId: 's', end: FmvMusicEnd.laterNodeChanges),
+            pauseMusicId: 'p',
+          ),
         ),
       )
       .setMenuMusic('s')
@@ -128,9 +129,34 @@ void main() {
     expect(exportFmv(silent).project.nodes['001']!.pauseMusic, isNull);
   });
 
+  test('music is a setting too: from the project, or the node', () {
+    var d = doc.updateNode(
+      'b',
+      (n) => (n as BranchedVideoNode).copyWith(
+        overrides: const VideoSettingsOverride(),
+      ),
+    );
+    expect(exportFmv(d).project.nodes['001']!.music, isNull);
+    d = d.editDefaults(
+      0,
+      (s) => s.copyWith(music: const MusicCue(audioId: 'p', loop: true)),
+    );
+    final music = exportFmv(d).project.nodes['001']!.music!;
+    expect(music.track, r'C:\m\tick.wav');
+    expect(music.loop, isTrue);
+    // The node's own silence wins.
+    final silent = d.updateNode(
+      'b',
+      (n) => (n as BranchedVideoNode).copyWith(
+        overrides: const VideoSettingsOverride(music: kNoMusic),
+      ),
+    );
+    expect(exportFmv(silent).project.nodes['001']!.music, isNull);
+  });
+
   test('converting keeps the music; copying brings the audio along', () {
     final simple = doc.convertVideoNode('b', newId: sequentialIds('n'));
-    expect(simple.node('b').musicOrNull?.audioId, 's');
+    expect(simple.node('b').overridesOrNull?.music?.audioId, 's');
     final fragment = doc.copyFragment(['b']);
     expect(fragment.media.map((m) => m.id), containsAll(['v', 's', 'p']));
     final (pasted, ids) = ProjectDocument.empty().pasteFragment(
@@ -139,7 +165,10 @@ void main() {
       newId: sequentialIds('x'),
     );
     final copy = pasted.node(ids.single) as BranchedVideoNode;
-    expect(pasted.mediaById(copy.music!.audioId)!.path, r'C:\m\theme.mp3');
+    expect(
+      pasted.mediaById(copy.overrides.music!.audioId)!.path,
+      r'C:\m\theme.mp3',
+    );
     expect(
       pasted.mediaById(copy.overrides.pauseMusicId)!.path,
       r'C:\m\tick.wav',
@@ -183,7 +212,7 @@ void main() {
       (read(c).nodes[node] as BranchedVideoNode).overrides.pauseMusicId,
       isNotNull,
     );
-    expect(read(c).nodes[node]!.musicOrNull, isNull);
+    expect(read(c).nodes[node]!.overridesOrNull?.music, isNull);
   });
 
   testWidgets('menu music is picked from the imported audio', (tester) async {

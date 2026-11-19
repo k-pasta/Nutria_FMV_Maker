@@ -75,6 +75,20 @@ IconData _layoutIcon(FmvChoiceLayout layout) => switch (layout) {
   FmvChoiceLayout.radial => Icons.pie_chart,
 };
 
+String _entranceLabel(FmvScreenEntrance e, AppLocalizations t) => switch (e) {
+  FmvScreenEntrance.fade => t.screenEntranceFade,
+  FmvScreenEntrance.slideUp => t.screenEntranceSlideUp,
+  FmvScreenEntrance.zoom => t.screenEntranceZoom,
+};
+
+String _effectLabel(FmvScreenEffect e, AppLocalizations t) => switch (e) {
+  FmvScreenEffect.none => t.screenEffectNone,
+  FmvScreenEffect.darken => t.screenEffectDarken,
+  FmvScreenEffect.blur => t.screenEffectBlur,
+  FmvScreenEffect.vignette => t.screenEffectVignette,
+  FmvScreenEffect.pulse => t.screenEffectPulse,
+};
+
 String _timerModeLabel(FmvTimerMode mode, AppLocalizations t) => switch (mode) {
   FmvTimerMode.toStart => t.screenTimerToStart,
   FmvTimerMode.toMiddle => t.screenTimerToMiddle,
@@ -131,6 +145,65 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     );
   }
 
+  /// A row stepping through [values] (with all of them on right-click).
+  Widget _choose<T>(
+    String label,
+    List<T> values,
+    T current,
+    String Function(T) name,
+    ValueChanged<T> onPicked,
+  ) {
+    T step(int d) => values[(values.indexOf(current) + d) % values.length];
+    return NutriaSettingRow(
+      label: label,
+      value: name(current),
+      onPrevious: () => onPicked(step(-1)),
+      onNext: () => onPicked(step(1)),
+      options: [
+        for (final v in values)
+          NutriaContextMenuItem(
+            icon: v == current ? Icons.check : Icons.circle_outlined,
+            label: name(v),
+            onSelected: () => onPicked(v),
+          ),
+      ],
+      onOptionsOpenChanged: ref
+          .read(overlayProvider.notifier)
+          .setContextMenuOpen,
+    );
+  }
+
+  /// A duration in seconds: typed, stepped a tenth of a second, or
+  /// dragged.
+  Widget _seconds(
+    String label,
+    int ms,
+    void Function(int ms, {Object? mergeKey}) onChanged,
+  ) {
+    final editor = ref.read(graphEditorProvider);
+    int clamp(num v) => v.round().clamp(0, 10000);
+    return NutriaSettingRow(
+      label: label,
+      value: '',
+      field: NutriaNumberField(
+        text: (ms / 1000).toStringAsFixed(1),
+        decimals: true,
+        onStep: (d) => onChanged(clamp(ms + d * 100)),
+        onDragStart: editor.beginValueDrag,
+        onDragEnd: editor.endValueDrag,
+        onFocusChanged: (f) {
+          if (f) _textSession = Object();
+        },
+        onChanged: (text) {
+          final seconds = NutriaNumberField.parse(text);
+          if (seconds != null) {
+            onChanged(clamp(seconds * 1000), mergeKey: _textSession);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
@@ -181,6 +254,51 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
           ],
         ],
       ),
+      // How answers come and go over the video.
+      if (screen.kind == ScreenKind.choice) ...[
+        NutriaText(
+          text: t.screenOverlayNote,
+          state: NutriaTextState.inactive,
+          maxLines: 3,
+          sizeMultiplier: 0.85,
+        ),
+        _seconds(
+          t.screenFadeIn,
+          screen.fadeInMs,
+          (ms, {mergeKey}) => editor.editScreenMotion(
+            (s) => s.copyWith(fadeInMs: ms),
+            mergeKey: mergeKey,
+          ),
+        ),
+        NutriaText(
+          text: t.screenFadeInNote,
+          state: NutriaTextState.inactive,
+          maxLines: 3,
+          sizeMultiplier: 0.85,
+        ),
+        _seconds(
+          t.screenFadeOut,
+          screen.fadeOutMs,
+          (ms, {mergeKey}) => editor.editScreenMotion(
+            (s) => s.copyWith(fadeOutMs: ms),
+            mergeKey: mergeKey,
+          ),
+        ),
+        _choose(
+          t.screenEntrance,
+          FmvScreenEntrance.values,
+          screen.entrance,
+          (e) => _entranceLabel(e, t),
+          (e) => editor.editScreenMotion((s) => s.copyWith(entrance: e)),
+        ),
+        _choose(
+          t.screenEffect,
+          FmvScreenEffect.values,
+          screen.effect,
+          (e) => _effectLabel(e, t),
+          (e) => editor.editScreenMotion((s) => s.copyWith(effect: e)),
+        ),
+      ],
     ];
 
     /// The rows that change [style] (every element in it changes). For a
@@ -456,6 +574,33 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
             sizeMultiplier: 0.85,
           ),
         ],
+        if (isChoices && element.layout == FmvChoiceLayout.radial)
+          NutriaSettingRow(
+            label: t.screenRotation,
+            value: '',
+            field: NutriaNumberField(
+              text: '${element.rotation.round()}',
+              onStep: (d) => editor.setScreenElementRotation(
+                element.id,
+                element.rotation + d * 5,
+              ),
+              onDragStart: editor.beginValueDrag,
+              onDragEnd: editor.endValueDrag,
+              onFocusChanged: (f) {
+                if (f) _textSession = Object();
+              },
+              onChanged: (text) {
+                final degrees = NutriaNumberField.parse(text);
+                if (degrees != null) {
+                  editor.setScreenElementRotation(
+                    element.id,
+                    degrees,
+                    mergeKey: _textSession,
+                  );
+                }
+              },
+            ),
+          ),
         if (!(isChoices && element.layout == FmvChoiceLayout.columns))
           _fraction(
             t.screenWidth,

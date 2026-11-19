@@ -285,6 +285,60 @@ abstract class _$ChoiceScenarioNotifier extends $Notifier<ChoiceScenario> {
   }
 }
 
+@ProviderFor(DesignerBackdropNotifier)
+final designerBackdropProvider = DesignerBackdropNotifierProvider._();
+
+final class DesignerBackdropNotifierProvider
+    extends $NotifierProvider<DesignerBackdropNotifier, DesignerBackdropState> {
+  DesignerBackdropNotifierProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'designerBackdropProvider',
+        isAutoDispose: false,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$designerBackdropNotifierHash();
+
+  @$internal
+  @override
+  DesignerBackdropNotifier create() => DesignerBackdropNotifier();
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(DesignerBackdropState value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<DesignerBackdropState>(value),
+    );
+  }
+}
+
+String _$designerBackdropNotifierHash() =>
+    r'f245e1a1bb57716039f9313622b1b6530380104c';
+
+abstract class _$DesignerBackdropNotifier
+    extends $Notifier<DesignerBackdropState> {
+  DesignerBackdropState build();
+  @$mustCallSuper
+  @override
+  WhenComplete runBuild() {
+    final ref = this.ref as $Ref<DesignerBackdropState, DesignerBackdropState>;
+    final element =
+        ref.element
+            as $ClassProviderElement<
+              AnyNotifier<DesignerBackdropState, DesignerBackdropState>,
+              DesignerBackdropState,
+              Object?,
+              Object?
+            >;
+    return element.handleCreate(ref, build);
+  }
+}
+
 /// The selected element of the screen being designed, or `null`.
 
 @ProviderFor(SelectedScreenElement)

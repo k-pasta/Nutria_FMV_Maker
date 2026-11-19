@@ -1,4 +1,5 @@
 // Every app-level command (menus, shortcuts), with its user feedback.
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -270,11 +271,19 @@ class AppCommands {
   /// Shows the story graph or the screen designer (with its Design
   /// section).
   void showView(EditorView view) {
+    final from = _ref.read(editorViewProvider);
     _ref.read(editorViewProvider.notifier).show(view);
     if (view == EditorView.screens) {
       _ref
           .read(panelLayoutProvider.notifier)
           .showSection(LeftPanelSection.screen);
+      // The video player's last frame, to design answers over.
+      if (from != EditorView.screens) {
+        final backdrop = _ref.read(designerBackdropProvider.notifier);
+        unawaited(
+          _ref.read(previewPlayerProvider).frame().then(backdrop.takeFrame),
+        );
+      }
     }
   }
 

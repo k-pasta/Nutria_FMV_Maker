@@ -811,6 +811,65 @@ class AppLocalizationsEl extends AppLocalizations {
       'Οι αριθμοί είναι ποσοστά της οθόνης: τα πλάτη του πλάτους της, τα άλλα μεγέθη του ύψους της.';
 
   @override
+  String get screenText => 'Κείμενο';
+
+  @override
+  String get screenBackdrop => 'Από πίσω';
+
+  @override
+  String get screenBackdropNone => 'Τίποτα';
+
+  @override
+  String get screenBackdropFrame => 'Καρέ του προβολέα';
+
+  @override
+  String get screenOverlayNote =>
+      'Σε οθόνη επιλογής το φόντο μπαίνει πάνω από το βίντεο: μια εικόνα με διάφανα σημεία μπορεί να το πλαισιώσει.';
+
+  @override
+  String get screenFadeIn => 'Εμφάνιση (δ)';
+
+  @override
+  String get screenFadeInNote =>
+      'Όταν ένα βίντεο περιμένει απάντηση χωρίς χρόνο επιλογής πριν το τέλος, η εμφάνιση ξεκινά τόσο νωρίτερα από το τέλος.';
+
+  @override
+  String get screenFadeOut => 'Απόσβεση (δ)';
+
+  @override
+  String get screenEntrance => 'Είσοδος';
+
+  @override
+  String get screenEntranceFade => 'Σβήνοντας';
+
+  @override
+  String get screenEntranceSlideUp => 'Ανεβαίνοντας';
+
+  @override
+  String get screenEntranceZoom => 'Μεγαλώνοντας';
+
+  @override
+  String get screenEffect => 'Εφέ';
+
+  @override
+  String get screenEffectNone => 'Κανένα';
+
+  @override
+  String get screenEffectDarken => 'Σκούρεμα βίντεο';
+
+  @override
+  String get screenEffectBlur => 'Θόλωμα βίντεο';
+
+  @override
+  String get screenEffectVignette => 'Σκοτεινές άκρες';
+
+  @override
+  String get screenEffectPulse => 'Οι απαντήσεις «αναπνέουν»';
+
+  @override
+  String get screenRotation => 'Περιστροφή (°)';
+
+  @override
   String get overrideChoiceScreen => 'Οθόνη Επιλογής';
 
   @override
@@ -1093,6 +1152,9 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get overrideShowTimer => 'Εμφάνιση Χρόνου Επιλογής';
+
+  @override
+  String get overrideShowQuestion => 'Εμφάνιση Ερώτησης';
 
   @override
   String get overrideVideoFit => 'Προσαρμογή Βίντεο';

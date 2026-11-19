@@ -126,12 +126,11 @@ class _MenuPreview extends ConsumerWidget {
     return ScreenView(
       screen: fmvScreenOf(doc, menu),
       background: ScreenBackground.of(doc, menu),
-      content: designerContent(
-        doc,
-        menu,
-        (answers: 0, longText: false, question: false),
-        t,
-      ),
+      content: designerContent(doc, menu, (
+        answers: 0,
+        longText: false,
+        question: false,
+      ), t),
     );
   }
 }

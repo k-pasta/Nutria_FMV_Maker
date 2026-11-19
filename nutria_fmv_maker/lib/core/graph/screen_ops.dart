@@ -15,9 +15,9 @@ enum ScreenPreset {
   bottomChoices(ScreenKind.choice),
   rowChoices(ScreenKind.choice),
   sideChoices(ScreenKind.choice),
-  splitChoices(ScreenKind.endChoice),
-  pieChoices(ScreenKind.endChoice),
-  stackedChoices(ScreenKind.endChoice),
+  splitChoices(ScreenKind.choice),
+  pieChoices(ScreenKind.choice),
+  stackedChoices(ScreenKind.choice),
   classicPause(ScreenKind.pause),
   cornerPause(ScreenKind.pause),
   classicSettings(ScreenKind.settings),
@@ -31,7 +31,6 @@ enum ScreenPreset {
   static ScreenPreset defaultFor(ScreenKind kind) => switch (kind) {
     ScreenKind.menu => classicMenu,
     ScreenKind.choice => bottomChoices,
-    ScreenKind.endChoice => splitChoices,
     ScreenKind.pause => classicPause,
     ScreenKind.settings => classicSettings,
     ScreenKind.saves => classicSaves,
@@ -46,6 +45,7 @@ typedef _Place = ({
   double y,
   double width,
   FmvChoiceLayout layout,
+  String? styleId,
 });
 
 _Place _at(
@@ -54,7 +54,8 @@ _Place _at(
   double y,
   double width, [
   FmvChoiceLayout layout = FmvChoiceLayout.vertical,
-]) => (kind: kind, x: x, y: y, width: width, layout: layout);
+  String? styleId,
+]) => (kind: kind, x: x, y: y, width: width, layout: layout, styleId: styleId);
 
 /// A column of [kinds] at [x], from [top] down, [step] apart.
 List<_Place> _column(
@@ -143,7 +144,15 @@ List<_Place> _presetPlaces(ScreenPreset preset) => switch (preset) {
     _at(ScreenElementKind.choices, 0.5, 0.5, 1, FmvChoiceLayout.columns),
   ],
   ScreenPreset.pieChoices => [
-    _at(ScreenElementKind.question, 0.5, 0.5, 0.3),
+    // Where the slices meet: on a backing, so the lines don't cross it.
+    _at(
+      ScreenElementKind.question,
+      0.5,
+      0.5,
+      0.3,
+      FmvChoiceLayout.vertical,
+      'panel',
+    ),
     _at(ScreenElementKind.choices, 0.5, 0.5, 0.3, FmvChoiceLayout.radial),
   ],
   ScreenPreset.stackedChoices => [
@@ -189,6 +198,7 @@ List<ScreenElement> _elementsOf(ScreenPreset preset, String Function() newId) =>
           y: p.y,
           width: p.width,
           layout: p.layout,
+          styleId: p.styleId,
         ),
     ];
 
@@ -272,7 +282,6 @@ extension ScreenOps on ProjectDocument {
 
     ensure(ScreenKind.menu);
     ensure(ScreenKind.choice);
-    ensure(ScreenKind.endChoice);
     ensure(ScreenKind.pause);
     var doc = copyWith(screens: list);
     if (doc.hasSettingsScreen) {
@@ -367,6 +376,15 @@ extension ScreenOps on ProjectDocument {
     );
   }
 
+  /// Whether screen [screenId] can take an element of [kind]: one of each
+  /// kind (buttons, the title, …), any number of texts.
+  bool canAddScreenElement(String screenId, ScreenElementKind kind) {
+    final screen = screenById(screenId);
+    if (screen == null) return false;
+    return kind == ScreenElementKind.text ||
+        !screen.elements.any((e) => e.kind == kind);
+  }
+
   /// Whether element [id] can be removed: it isn't the only element of a
   /// kind its screen requires.
   bool canRemoveScreenElement(String id) {
@@ -383,6 +401,8 @@ extension ScreenOps on ProjectDocument {
   ScreenStyle styleOf(ScreenElement element) {
     final id = element.styleId ?? defaultStyleIdFor(element.kind);
     return styles.where((s) => s.id == id).firstOrNull ??
+        // A built-in style an older project doesn't have yet.
+        kDefaultScreenStyles.where((s) => s.id == id).firstOrNull ??
         styles
             .where((s) => s.id == defaultStyleIdFor(element.kind))
             .firstOrNull ??
@@ -403,7 +423,7 @@ extension ScreenOps on ProjectDocument {
     double? y,
   }) {
     final screen = screenById(screenId);
-    if (screen == null) return this;
+    if (screen == null || !canAddScreenElement(screenId, kind)) return this;
     final lowest = screen.elements.fold<double?>(
       null,
       (low, e) => low == null || e.y > low ? e.y : low,
@@ -442,6 +462,16 @@ extension ScreenOps on ProjectDocument {
 
   ProjectDocument setScreenElementThickness(String id, double thickness) =>
       _element(id, (e) => e.copyWith(thickness: thickness.clamp(0.002, 0.1)));
+
+  ProjectDocument setScreenElementRotation(String id, double degrees) =>
+      _element(id, (e) => e.copyWith(rotation: degrees.clamp(0, 180)));
+
+  /// Edits how answer screen [screenId] comes in, goes and what it does to
+  /// the video behind.
+  ProjectDocument editScreenMotion(
+    String screenId,
+    ScreenDesign Function(ScreenDesign s) edit,
+  ) => _editScreen(screenId, edit);
 
   ProjectDocument setScreenElementStyle(String id, String? styleId) =>
       _element(id, (e) => e.copyWith(styleId: styleId));
@@ -523,13 +553,9 @@ extension ScreenOps on ProjectDocument {
       choiceScreenId: s.choiceScreenId == id
           ? ScreenKind.choice.defaultId
           : s.choiceScreenId,
-      endChoiceScreenId: s.endChoiceScreenId == id
-          ? ScreenKind.endChoice.defaultId
-          : s.endChoiceScreenId,
     );
     VideoSettingsOverride resetOverride(VideoSettingsOverride o) => o.copyWith(
       choiceScreenId: o.choiceScreenId == id ? null : o.choiceScreenId,
-      endChoiceScreenId: o.endChoiceScreenId == id ? null : o.endChoiceScreenId,
     );
     return copyWith(
       screens: [

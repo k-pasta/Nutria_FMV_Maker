@@ -80,9 +80,6 @@ SimpleVideoNode _$SimpleVideoNodeFromJson(Map<String, dynamic> json) =>
           : VideoSettingsOverride.fromJson(
               json['overrides'] as Map<String, dynamic>,
             ),
-      music: json['music'] == null
-          ? null
-          : MusicCue.fromJson(json['music'] as Map<String, dynamic>),
       $type: json['type'] as String?,
     );
 
@@ -96,7 +93,6 @@ Map<String, dynamic> _$SimpleVideoNodeToJson(SimpleVideoNode instance) =>
       'isExpanded': instance.isExpanded,
       'videoId': instance.videoId,
       'overrides': instance.overrides.toJson(),
-      'music': instance.music?.toJson(),
       'type': instance.$type,
     };
 
@@ -119,10 +115,7 @@ BranchedVideoNode _$BranchedVideoNodeFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Choice.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Choice>[],
-      question: json['question'] as String?,
-      music: json['music'] == null
-          ? null
-          : MusicCue.fromJson(json['music'] as Map<String, dynamic>),
+      question: json['question'] as String? ?? '',
       $type: json['type'] as String?,
     );
 
@@ -138,7 +131,6 @@ Map<String, dynamic> _$BranchedVideoNodeToJson(BranchedVideoNode instance) =>
       'overrides': instance.overrides.toJson(),
       'choices': instance.choices.map((e) => e.toJson()).toList(),
       'question': instance.question,
-      'music': instance.music?.toJson(),
       'type': instance.$type,
     };
 

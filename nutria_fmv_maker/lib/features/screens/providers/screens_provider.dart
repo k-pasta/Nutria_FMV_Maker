@@ -1,6 +1,7 @@
 // Editor state of the Screens view: which view is shown, which screen and
 // element are selected, the preview scenario, and dragging elements with
 // snapping.
+import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
@@ -81,6 +82,45 @@ class ChoiceScenarioNotifier extends _$ChoiceScenarioNotifier {
     longText: state.longText,
     question: !state.question,
   );
+}
+
+/// What the designer shows behind answer screens, where the Player shows
+/// the video: nothing, the video player's frame (taken when the designer
+/// opens), or an imported video looping without sound.
+enum DesignerBackdrop { none, frame, video }
+
+/// The backdrop, the video it plays, and the frame taken. Not saved.
+typedef DesignerBackdropState = ({
+  DesignerBackdrop kind,
+  String? videoId,
+  Uint8List? frame,
+});
+
+@Riverpod(keepAlive: true)
+class DesignerBackdropNotifier extends _$DesignerBackdropNotifier {
+  @override
+  DesignerBackdropState build() =>
+      (kind: DesignerBackdrop.none, videoId: null, frame: null);
+
+  void show(DesignerBackdrop kind) =>
+      state = (kind: kind, videoId: state.videoId, frame: state.frame);
+
+  /// Plays imported video [id] behind the screen.
+  void showVideo(String id) =>
+      state = (kind: DesignerBackdrop.video, videoId: id, frame: state.frame);
+
+  /// The video player's frame, taken as the designer opens; shown at once
+  /// unless another backdrop was picked.
+  void takeFrame(Uint8List? frame) {
+    if (frame == null) return;
+    state = (
+      kind: state.kind == DesignerBackdrop.none
+          ? DesignerBackdrop.frame
+          : state.kind,
+      videoId: state.videoId,
+      frame: frame,
+    );
+  }
 }
 
 /// The selected element of the screen being designed, or `null`.

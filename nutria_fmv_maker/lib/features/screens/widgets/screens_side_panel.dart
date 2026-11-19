@@ -136,17 +136,14 @@ class _ScreensSidePanelState extends ConsumerState<ScreensSidePanel> {
       _Header(text: t.screenScreens),
       for (final kind in ScreenKind.values) ...[
         for (final s in doc.screensOf(kind)) screenEntry(s),
-        if (kind == ScreenKind.choice)
-          addButton(kind, t.screenNewChoiceScreen)
-        else if (kind == ScreenKind.endChoice)
-          addButton(kind, t.screenNewEndChoiceScreen),
+        if (kind == ScreenKind.choice) addButton(kind, t.screenNewChoiceScreen),
       ],
       _Header(text: t.screenStyles),
       for (final style in doc.styles)
         _ListEntry(
           label: style.name,
           detail: t.screenStyleUses(doc.usesOfStyle(style.id)),
-          selected: style.id == (selectedStyle ?? elementStyle),
+          selected: style.id == (elementStyle ?? selectedStyle),
           renaming: _renaming == ('style', style.id),
           renameHint: t.screenRenameHint,
           onRenamed: (name) => editor.renameScreenStyle(
@@ -155,9 +152,15 @@ class _ScreensSidePanelState extends ConsumerState<ScreensSidePanel> {
             mergeKey: _renameSession,
           ),
           onRenameDone: _stopRenaming,
+          // With an element selected, clicking a style gives it that style;
+          // otherwise it picks the style to edit.
           onTap: () {
-            ref.read(selectedScreenElementProvider.notifier).select(null);
-            ref.read(selectedScreenStyleProvider.notifier).select(style.id);
+            final element = ref.read(selectedScreenElementProvider);
+            if (element != null) {
+              editor.setScreenElementStyle(element, style.id);
+            } else {
+              ref.read(selectedScreenStyleProvider.notifier).select(style.id);
+            }
           },
           onDoubleTap: () => _rename('style', style.id),
           menu: [

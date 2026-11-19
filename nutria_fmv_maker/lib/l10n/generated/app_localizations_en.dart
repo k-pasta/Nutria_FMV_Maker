@@ -809,6 +809,65 @@ class AppLocalizationsEn extends AppLocalizations {
       'Numbers are percentages of the screen: widths of its width, other sizes of its height.';
 
   @override
+  String get screenText => 'Text';
+
+  @override
+  String get screenBackdrop => 'Behind';
+
+  @override
+  String get screenBackdropNone => 'Nothing';
+
+  @override
+  String get screenBackdropFrame => 'Video player\'s frame';
+
+  @override
+  String get screenOverlayNote =>
+      'On a choice screen the background goes over the video: an image with see-through parts can frame it.';
+
+  @override
+  String get screenFadeIn => 'Fade In (s)';
+
+  @override
+  String get screenFadeInNote =>
+      'When a video waits for an answer with no time to choose before its end, the fade starts this long before the end.';
+
+  @override
+  String get screenFadeOut => 'Fade Out (s)';
+
+  @override
+  String get screenEntrance => 'Comes In';
+
+  @override
+  String get screenEntranceFade => 'Fading';
+
+  @override
+  String get screenEntranceSlideUp => 'Rising';
+
+  @override
+  String get screenEntranceZoom => 'Growing';
+
+  @override
+  String get screenEffect => 'Effect';
+
+  @override
+  String get screenEffectNone => 'None';
+
+  @override
+  String get screenEffectDarken => 'Darken the video';
+
+  @override
+  String get screenEffectBlur => 'Blur the video';
+
+  @override
+  String get screenEffectVignette => 'Dark edges';
+
+  @override
+  String get screenEffectPulse => 'Answers breathe';
+
+  @override
+  String get screenRotation => 'Rotation (°)';
+
+  @override
   String get overrideChoiceScreen => 'Choice Screen';
 
   @override
@@ -1091,6 +1150,9 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get overrideShowTimer => 'Show Timer';
+
+  @override
+  String get overrideShowQuestion => 'Show Question';
 
   @override
   String get overrideVideoFit => 'Video Fit';

@@ -119,7 +119,7 @@ FmvExport exportFmv(
           subtitleTracks: _moreTracks(document, node),
           target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
           overrides: _overrides(document, node, kSimpleNodeSettings),
-          music: _music(document, node.music),
+          music: _music(document, _settingsOf(document, node).musicOrNull),
         );
       case BranchedVideoNode():
         final choices = <FmvChoice>[];
@@ -141,14 +141,15 @@ FmvExport exportFmv(
           video: _videoPath(document, node, issues),
           subtitles: _subtitlesPath(document, node),
           subtitleTracks: _moreTracks(document, node),
-          // An empty question (turned on, never written) isn't exported.
-          question: switch (node.question?.trim()) {
-            final q? when q.isNotEmpty => node.question,
-            _ => null,
-          },
+          // Only when its setting shows it, and not when it's empty.
+          question:
+              _settingsOf(document, node).showQuestion &&
+                  node.question.trim().isNotEmpty
+              ? node.question
+              : null,
           choices: choices.isEmpty ? null : choices,
           overrides: _overrides(document, node, kBranchedNodeSettings),
-          music: _music(document, node.music),
+          music: _music(document, _settingsOf(document, node).musicOrNull),
           pauseMusic: _pauseMusic(document, node),
           screen: useScreen(_choiceScreen(document, node)),
         );
@@ -200,25 +201,31 @@ FmvExport exportFmv(
   );
 }
 
+/// The settings of video node [node]: its own, else its color's, else the
+/// project's.
+VideoSettings _settingsOf(ProjectDocument document, Node node) =>
+    node.overridesOrNull!.applyTo(document.defaultsFor(node.swatch));
+
 /// The id of the answer screen branched node [node] shows: its setting
 /// (its own, its color's or the project's) for a video that waits at its end
 /// or for answers over the video, falling back to the first screen of that
 /// kind when the one named is gone.
 String _choiceScreen(ProjectDocument document, BranchedVideoNode node) {
   final settings = node.overrides.applyTo(document.defaultsFor(node.swatch));
-  return document
-      .resolveScreen(
-        settings.shownChoiceScreenId,
-        settings.pauseOnEnd ? ScreenKind.endChoice : ScreenKind.choice,
-      )
-      .id;
+  return document.resolveScreen(settings.choiceScreenId, ScreenKind.choice).id;
 }
 
 /// [screen] as the Player reads it, with every element's style written
 /// out (also how the designer draws it).
 FmvMenuScreen fmvScreenOf(ProjectDocument document, ScreenDesign screen) {
+  final answers = screen.kind == ScreenKind.choice;
   return FmvMenuScreen(
     background: document.mediaById(screen.backgroundId)?.path,
+    // How answer screens come and go; the other screens just appear.
+    fadeInMs: answers ? screen.fadeInMs : 0,
+    fadeOutMs: answers ? screen.fadeOutMs : 0,
+    entrance: answers ? screen.entrance : FmvScreenEntrance.fade,
+    effect: answers ? screen.effect : FmvScreenEffect.none,
     elements: [
       for (final e in screen.elements)
         if (document.styleOf(e) case final style)
@@ -240,6 +247,11 @@ FmvMenuScreen fmvScreenOf(ProjectDocument document, ScreenDesign screen) {
                 ? e.timerMode
                 : FmvTimerMode.toStart,
             thickness: e.kind == ScreenElementKind.timer ? e.thickness : null,
+            rotation:
+                e.kind == ScreenElementKind.choices &&
+                    e.layout == FmvChoiceLayout.radial
+                ? e.rotation
+                : 0,
             style: FmvScreenStyle(
               fontSize: style.fontSize,
               bold: style.bold,
@@ -341,7 +353,7 @@ FmvOverrides _overrides(
   final o = node.overridesOrNull!.layeredOver(
     document.settings,
     document.defaultsFor(node.swatch),
-    types.where((t) => !t.isMusic),
+    types.where(kFmvSettingTypes.contains),
   );
   return FmvOverrides(
     selectionTimeMs: o.selectionTimeMs,

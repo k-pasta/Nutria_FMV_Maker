@@ -188,7 +188,9 @@
             "fontFamily": "inter"
           }
         }
-      ]
+      ],
+      "fadeIn": 400,
+      "fadeOut": 300
     },
     "pause": {
       "elements": [

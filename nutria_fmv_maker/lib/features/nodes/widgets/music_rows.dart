@@ -30,25 +30,6 @@ String _musicEndLabel(FmvMusicEnd end, AppLocalizations t) => switch (end) {
   FmvMusicEnd.laterNodeChanges => t.musicEndLater,
 };
 
-/// A fade length field, in seconds: type it, or step it a quarter second
-/// with the arrows or by dragging.
-Widget _fadeField(
-  GraphEditor editor,
-  int ms, {
-  required ValueChanged<int> onStep,
-  required ValueChanged<int> onTyped,
-}) => NutriaNumberField(
-  text: (ms / 1000).toStringAsFixed(2),
-  decimals: true,
-  onStep: onStep,
-  onDragStart: editor.beginValueDrag,
-  onDragEnd: editor.endValueDrag,
-  onChanged: (text) {
-    final typed = fadeFromSeconds(NutriaNumberField.parse(text));
-    if (typed != null) onTyped(typed);
-  },
-);
-
 /// The next ([direction] 1) or previous of [values] after [current].
 T _step<T>(List<T> values, T current, int direction) {
   final i = values.indexOf(current);
@@ -115,16 +96,78 @@ Widget _trackRow(
   );
 }
 
-/// The music rows of a video node's settings: its music, picked from the
-/// imported audio, and (once picked) when it ends, loop, fade out and
-/// pausing; and for branched nodes the pause music, which like the other
-/// settings comes from the defaults unless the node overrides it.
+/// The music rows of a video node's settings: like every setting, its
+/// music and (for branched nodes) its pause music come from the defaults
+/// unless the node overrides them.
 List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
+  final editor = ref.read(graphEditorProvider);
+  final settings = ref.watch(effectiveSettingsProvider(node.id));
+  final overridden = node.overridesOrNull?.activeTypes.toSet() ?? const {};
+  void onChanged(
+    VideoSettingType type,
+    VideoSettings next, {
+    Object? mergeKey,
+  }) => editor.editOverrides(
+    node.id,
+    (o) => o.enable(type, next),
+    mergeKey: mergeKey,
+  );
+  void onReset(VideoSettingType type) => editor.disableOverride(node.id, type);
+  return [
+    ...videoMusicRows(
+      context,
+      ref,
+      settings: settings,
+      overridden: overridden,
+      onChanged: onChanged,
+      onReset: onReset,
+      fadeMergeKey: ('fade', node.id),
+    ),
+    if (node is BranchedVideoNode)
+      ...pauseMusicRows(
+        context,
+        ref,
+        settings: settings,
+        overridden: overridden,
+        onChanged: onChanged,
+        onReset: onReset,
+        fadeMergeKey: ('pause fade', node.id),
+      ),
+  ];
+}
+
+/// The music with a video: the track and, once there is one, when it ends,
+/// loop, fade out and pausing; all one setting ([VideoSettingType.music]),
+/// for a node's settings or a color's defaults. As in [pauseMusicRows], on
+/// a node [onReset] removes the override and an overridden music is
+/// accented; in the defaults the (x) removes the track.
+List<Widget> videoMusicRows(
+  BuildContext context,
+  WidgetRef ref, {
+  required VideoSettings settings,
+  required void Function(
+    VideoSettingType type,
+    VideoSettings next, {
+    Object? mergeKey,
+  })
+  onChanged,
+  required Object fadeMergeKey,
+  Set<VideoSettingType> overridden = const {},
+  void Function(VideoSettingType type)? onReset,
+}) {
   final t = AppLocalizations.of(context);
   final theme = context.appTheme;
   final editor = ref.read(graphEditorProvider);
   final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
+  const type = VideoSettingType.music;
+  final accented = overridden.contains(type);
   String yesNo(bool v) => v ? t.essentialsYes : t.essentialsNo;
+  void edit(MusicCue Function(MusicCue c) change, {Object? mergeKey}) =>
+      onChanged(
+        type,
+        settings.copyWith(music: change(settings.music)),
+        mergeKey: mergeKey,
+      );
 
   List<NutriaContextMenuItem> options<T>(
     List<T> values,
@@ -140,99 +183,94 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
       ),
   ];
 
-  final cue = node.musicOrNull;
+  final cue = settings.musicOrNull;
   final rows = <Widget>[
     _trackRow(
       context,
       ref,
       label: t.musicTrack,
       audioId: cue?.audioId,
-      onPicked: (audioId) => editor.setMusic(node.id, audioId),
-      onRemoved: () => editor.removeMusic(node.id),
+      isAccented: accented,
+      onPicked: (audioId) => edit((c) => c.copyWith(audioId: audioId)),
+      onNone: onReset == null || cue == null
+          ? null
+          : () => edit((c) => c.copyWith(audioId: '')),
+      onRemoved: onReset != null
+          ? (accented ? () => onReset(type) : null)
+          : (cue == null ? null : () => edit((c) => c.copyWith(audioId: ''))),
     ),
   ];
-  if (cue != null) {
-    void edit(MusicCue Function(MusicCue c) change, {Object? mergeKey}) =>
-        editor.editMusic(node.id, change, mergeKey: mergeKey);
-    if (cue.loop && cue.end == FmvMusicEnd.trackEnds) {
-      rows.add(
-        Padding(
-          padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
-          child: NutriaText(
-            text: t.musicLoopNeverEnds,
-            state: NutriaTextState.inactive,
-            maxLines: 3,
-          ),
+  if (cue == null) return rows;
+  final state = accented ? NutriaTextState.highlighted : null;
+  if (cue.loop && cue.end == FmvMusicEnd.trackEnds) {
+    rows.add(
+      Padding(
+        padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
+        child: NutriaText(
+          text: t.musicLoopNeverEnds,
+          state: NutriaTextState.inactive,
+          maxLines: 3,
         ),
-      );
-    }
-    rows.addAll([
-      NutriaSettingRow(
-        label: t.musicEndsWhen,
-        value: _musicEndLabel(cue.end, t),
-        onPrevious: () =>
-            edit((c) => c.copyWith(end: _step(FmvMusicEnd.values, c.end, -1))),
-        onNext: () =>
-            edit((c) => c.copyWith(end: _step(FmvMusicEnd.values, c.end, 1))),
-        options: options(
-          FmvMusicEnd.values,
-          cue.end,
-          (e) => _musicEndLabel(e, t),
-          (e) => edit((c) => c.copyWith(end: e)),
-        ),
-        onOptionsOpenChanged: menuOpen,
-      ),
-      NutriaSettingRow(
-        label: t.musicLoop,
-        value: yesNo(cue.loop),
-        onTap: () => edit((c) => c.copyWith(loop: !c.loop)),
-      ),
-      NutriaSettingRow(
-        label: t.musicFadeOut,
-        value: '',
-        field: _fadeField(
-          editor,
-          cue.fadeOutMs,
-          onStep: (d) =>
-              edit((c) => c.copyWith(fadeOutMs: stepFade(c.fadeOutMs, d))),
-          onTyped: (ms) => edit(
-            (c) => c.copyWith(fadeOutMs: ms),
-            mergeKey: ('fade', node.id),
-          ),
-        ),
-        options: options(
-          kMusicFadeSteps,
-          cue.fadeOutMs,
-          fadeLabel,
-          (ms) => edit((c) => c.copyWith(fadeOutMs: ms)),
-        ),
-        onOptionsOpenChanged: menuOpen,
-      ),
-      NutriaSettingRow(
-        label: t.musicPauseWithVideo,
-        value: yesNo(cue.pauseWithVideo),
-        onTap: () => edit((c) => c.copyWith(pauseWithVideo: !c.pauseWithVideo)),
-      ),
-    ]);
-  }
-  if (node is BranchedVideoNode) {
-    final overrides = node.overrides;
-    rows.addAll(
-      pauseMusicRows(
-        context,
-        ref,
-        settings: ref.watch(effectiveSettingsProvider(node.id)),
-        overridden: overrides.activeTypes.toSet(),
-        onChanged: (type, next, {mergeKey}) => editor.editOverrides(
-          node.id,
-          (o) => o.enable(type, next),
-          mergeKey: mergeKey,
-        ),
-        onReset: (type) => editor.disableOverride(node.id, type),
-        fadeMergeKey: ('pause fade', node.id),
       ),
     );
   }
+  rows.addAll([
+    NutriaSettingRow(
+      label: t.musicEndsWhen,
+      value: _musicEndLabel(cue.end, t),
+      isAccented: state != null,
+      onPrevious: () =>
+          edit((c) => c.copyWith(end: _step(FmvMusicEnd.values, c.end, -1))),
+      onNext: () =>
+          edit((c) => c.copyWith(end: _step(FmvMusicEnd.values, c.end, 1))),
+      options: options<FmvMusicEnd>(
+        FmvMusicEnd.values,
+        cue.end,
+        (e) => _musicEndLabel(e, t),
+        (e) => edit((c) => c.copyWith(end: e)),
+      ),
+      onOptionsOpenChanged: menuOpen,
+    ),
+    NutriaSettingRow(
+      label: t.musicLoop,
+      value: yesNo(cue.loop),
+      isAccented: state != null,
+      onTap: () => edit((c) => c.copyWith(loop: !c.loop)),
+    ),
+    NutriaSettingRow(
+      label: t.musicFadeOut,
+      value: '',
+      isAccented: state != null,
+      field: NutriaNumberField(
+        text: (cue.fadeOutMs / 1000).toStringAsFixed(2),
+        decimals: true,
+        isAccented: state != null,
+        onStep: (d) =>
+            edit((c) => c.copyWith(fadeOutMs: stepFade(c.fadeOutMs, d))),
+        onDragStart: editor.beginValueDrag,
+        onDragEnd: editor.endValueDrag,
+        onChanged: (text) {
+          final ms = fadeFromSeconds(NutriaNumberField.parse(text));
+          if (ms != null) {
+            edit((c) => c.copyWith(fadeOutMs: ms), mergeKey: fadeMergeKey);
+          }
+        },
+      ),
+      options: options<int>(
+        kMusicFadeSteps,
+        cue.fadeOutMs,
+        fadeLabel,
+        (ms) => edit((c) => c.copyWith(fadeOutMs: ms)),
+      ),
+      onOptionsOpenChanged: menuOpen,
+    ),
+    NutriaSettingRow(
+      label: t.musicPauseWithVideo,
+      value: yesNo(cue.pauseWithVideo),
+      isAccented: state != null,
+      onTap: () => edit((c) => c.copyWith(pauseWithVideo: !c.pauseWithVideo)),
+    ),
+  ]);
   return rows;
 }
 

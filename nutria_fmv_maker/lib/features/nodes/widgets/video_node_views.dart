@@ -15,8 +15,6 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
-import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
-import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
@@ -66,14 +64,18 @@ class SimpleVideoNodeBody extends ConsumerWidget {
 
 /// Thumbnail, file name and one text field per choice. Each choice has an
 /// output knot; the last row is empty, for typing a new choice.
-class BranchedVideoNodeBody extends StatelessWidget {
+class BranchedVideoNodeBody extends ConsumerWidget {
   const BranchedVideoNodeBody({super.key, required this.node});
 
   final BranchedVideoNode node;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
+    // A setting, like Show Timer: the node's own, or its defaults'.
+    final showQuestion = ref.watch(
+      effectiveSettingsProvider(node.id).select((s) => s.showQuestion),
+    );
     final rows = NodeLayout.choiceRowCount(node);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,14 +89,14 @@ class BranchedVideoNodeBody extends StatelessWidget {
               children: [
                 // The question has no output; NodeLayout gives it the
                 // first row, so the choice knots line up below it.
-                if (node.question case final question?) ...[
+                if (showQuestion) ...[
                   NodeRow(
                     children: [
                       Expanded(
                         child: _QuestionField(
                           key: const ValueKey('question'),
                           nodeId: node.id,
-                          text: question,
+                          text: node.question,
                         ),
                       ),
                     ],
@@ -227,26 +229,6 @@ class VideoNodeExpansion extends ConsumerWidget {
             padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
             child: NutriaText(text: t.nodeConvertToSimple),
           ),
-        ),
-        // A text above the choices, with no output of its own.
-        NutriaSettingRow(
-          label: t.nodeQuestion,
-          value: node.question != null ? t.essentialsYes : t.essentialsNo,
-          onTap: () =>
-              editor.setQuestionEnabled(node.id, node.question == null),
-          options: [
-            for (final enabled in [true, false])
-              NutriaContextMenuItem(
-                icon: enabled == (node.question != null)
-                    ? Icons.check
-                    : Icons.circle_outlined,
-                label: enabled ? t.essentialsYes : t.essentialsNo,
-                onSelected: () => editor.setQuestionEnabled(node.id, enabled),
-              ),
-          ],
-          onOptionsOpenChanged: ref
-              .read(overlayProvider.notifier)
-              .setContextMenuOpen,
         ),
       ],
       for (final type in types)

@@ -12,13 +12,10 @@ enum ScreenKind {
   /// Before the story: title, Start, Load, …
   menu,
 
-  /// Over the video while the viewer picks an answer. A project can have
-  /// several; each node uses one (a setting).
+  /// Over the video while the viewer picks an answer (or over its last
+  /// frame, when it waits). A project can have several; each node uses one
+  /// (a setting).
   choice,
-
-  /// Over the last frame of a video that waits for an answer ("pause on
-  /// end"). Several, like [choice].
-  endChoice,
 
   /// When the viewer pauses: Resume, Save, …
   pause,
@@ -32,7 +29,7 @@ enum ScreenKind {
   saves;
 
   /// Whether a project can have more than one screen of this kind.
-  bool get isMultiple => this == choice || this == endChoice;
+  bool get isMultiple => this == choice;
 
   /// The id of the screen of this kind every project has (or gets when its
   /// buttons appear).
@@ -62,6 +59,10 @@ enum ScreenElementKind {
   subtitles,
   fullScreen,
   saves,
+
+  /// The author's own text, not clickable. The only kind a screen can have
+  /// more than one of.
+  text,
 }
 
 /// The elements each kind of screen can have, in the order of its tray.
@@ -74,13 +75,14 @@ const kScreenElementKinds = {
     ScreenElementKind.settings,
     ScreenElementKind.credits,
     ScreenElementKind.quit,
+    ScreenElementKind.text,
   ],
   ScreenKind.choice: [
     ScreenElementKind.question,
     ScreenElementKind.choices,
     ScreenElementKind.timer,
+    ScreenElementKind.text,
   ],
-  ScreenKind.endChoice: [ScreenElementKind.question, ScreenElementKind.choices],
   ScreenKind.pause: [
     ScreenElementKind.title,
     ScreenElementKind.resume,
@@ -89,6 +91,7 @@ const kScreenElementKinds = {
     ScreenElementKind.settings,
     ScreenElementKind.mainMenu,
     ScreenElementKind.quit,
+    ScreenElementKind.text,
   ],
   ScreenKind.settings: [
     ScreenElementKind.title,
@@ -96,17 +99,20 @@ const kScreenElementKinds = {
     ScreenElementKind.subtitles,
     ScreenElementKind.fullScreen,
     ScreenElementKind.back,
+    ScreenElementKind.text,
   ],
   ScreenKind.saves: [
     ScreenElementKind.title,
     ScreenElementKind.saves,
     ScreenElementKind.back,
+    ScreenElementKind.text,
   ],
 };
 
 /// The elements a screen can't do without (a menu needs Start, an answer
 /// screen its answers, …). Every screen has one of each; they can't be
-/// removed, so the tray doesn't offer them.
+/// removed, so the tray doesn't offer them. (A screen has at most one of
+/// every kind but [ScreenElementKind.text] anyway.)
 const kRequiredScreenElements = {
   ScreenKind.menu: {ScreenElementKind.start},
   ScreenKind.choice: {
@@ -114,7 +120,6 @@ const kRequiredScreenElements = {
     ScreenElementKind.choices,
     ScreenElementKind.timer,
   },
-  ScreenKind.endChoice: {ScreenElementKind.question, ScreenElementKind.choices},
   ScreenKind.pause: {ScreenElementKind.resume},
   ScreenKind.settings: {
     ScreenElementKind.volume,
@@ -190,6 +195,17 @@ const kDefaultScreenStyles = [
     radius: 0.015,
     padding: 0.015,
   ),
+  // Text on a dark backing, for text over busy backgrounds (the question in
+  // the middle of a pie of answers).
+  ScreenStyle(
+    id: 'panel',
+    name: 'Panel',
+    fontSize: 0.035,
+    builtInFont: 'inter',
+    backgroundOpacity: 0.7,
+    radius: 0.015,
+    padding: 0.015,
+  ),
 ];
 
 /// The style an element of [kind] uses unless it has its own.
@@ -227,6 +243,10 @@ abstract class ScreenElement with _$ScreenElement {
     /// is (a fraction of the screen height).
     @Default(FmvTimerMode.toStart) FmvTimerMode timerMode,
     @Default(0.012) double thickness,
+
+    /// [ScreenElementKind.choices] as a pie: how far it's turned, in
+    /// degrees (0 to 180).
+    @Default(0.0) double rotation,
   }) = _ScreenElement;
 
   factory ScreenElement.fromJson(Map<String, dynamic> json) =>
@@ -234,8 +254,8 @@ abstract class ScreenElement with _$ScreenElement {
 }
 
 /// A designed screen of [kind]: a background (an imported image or video)
-/// and elements. Answer screens go over the video, so their background is
-/// usually left empty. [id] is the kind's name for the screens every
+/// and elements. On answer screens the background goes over the video (an
+/// image with see-through parts can frame it). [id] is the kind's name for the screens every
 /// project has (see [ScreenKind.defaultId]).
 @freezed
 abstract class ScreenDesign with _$ScreenDesign {
@@ -247,6 +267,15 @@ abstract class ScreenDesign with _$ScreenDesign {
     String? name,
     String? backgroundId,
     @Default(<ScreenElement>[]) List<ScreenElement> elements,
+
+    /// Answer screens: how they come in ([entrance] over [fadeInMs]; for a
+    /// video that waits with no time to choose, starting that long before
+    /// its end), fade out after a pick ([fadeOutMs]), and what they do to
+    /// the video behind ([effect]).
+    @Default(400) int fadeInMs,
+    @Default(300) int fadeOutMs,
+    @Default(FmvScreenEntrance.fade) FmvScreenEntrance entrance,
+    @Default(FmvScreenEffect.none) FmvScreenEffect effect,
   }) = _ScreenDesign;
 
   factory ScreenDesign.fromJson(Map<String, dynamic> json) =>

@@ -54,6 +54,7 @@ _ScreenElement _$ScreenElementFromJson(Map<String, dynamic> json) =>
           $enumDecodeNullable(_$FmvTimerModeEnumMap, json['timerMode']) ??
           FmvTimerMode.toStart,
       thickness: (json['thickness'] as num?)?.toDouble() ?? 0.012,
+      rotation: (json['rotation'] as num?)?.toDouble() ?? 0.0,
     );
 
 Map<String, dynamic> _$ScreenElementToJson(_ScreenElement instance) =>
@@ -69,6 +70,7 @@ Map<String, dynamic> _$ScreenElementToJson(_ScreenElement instance) =>
       'layout': _$FmvChoiceLayoutEnumMap[instance.layout]!,
       'timerMode': _$FmvTimerModeEnumMap[instance.timerMode]!,
       'thickness': instance.thickness,
+      'rotation': instance.rotation,
     };
 
 const _$ScreenElementKindEnumMap = {
@@ -90,6 +92,7 @@ const _$ScreenElementKindEnumMap = {
   ScreenElementKind.subtitles: 'subtitles',
   ScreenElementKind.fullScreen: 'fullScreen',
   ScreenElementKind.saves: 'saves',
+  ScreenElementKind.text: 'text',
 };
 
 const _$FmvChoiceLayoutEnumMap = {
@@ -117,6 +120,14 @@ _ScreenDesign _$ScreenDesignFromJson(Map<String, dynamic> json) =>
               ?.map((e) => ScreenElement.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <ScreenElement>[],
+      fadeInMs: (json['fadeInMs'] as num?)?.toInt() ?? 400,
+      fadeOutMs: (json['fadeOutMs'] as num?)?.toInt() ?? 300,
+      entrance:
+          $enumDecodeNullable(_$FmvScreenEntranceEnumMap, json['entrance']) ??
+          FmvScreenEntrance.fade,
+      effect:
+          $enumDecodeNullable(_$FmvScreenEffectEnumMap, json['effect']) ??
+          FmvScreenEffect.none,
     );
 
 Map<String, dynamic> _$ScreenDesignToJson(_ScreenDesign instance) =>
@@ -126,13 +137,30 @@ Map<String, dynamic> _$ScreenDesignToJson(_ScreenDesign instance) =>
       'name': instance.name,
       'backgroundId': instance.backgroundId,
       'elements': instance.elements.map((e) => e.toJson()).toList(),
+      'fadeInMs': instance.fadeInMs,
+      'fadeOutMs': instance.fadeOutMs,
+      'entrance': _$FmvScreenEntranceEnumMap[instance.entrance]!,
+      'effect': _$FmvScreenEffectEnumMap[instance.effect]!,
     };
 
 const _$ScreenKindEnumMap = {
   ScreenKind.menu: 'menu',
   ScreenKind.choice: 'choice',
-  ScreenKind.endChoice: 'endChoice',
   ScreenKind.pause: 'pause',
   ScreenKind.settings: 'settings',
   ScreenKind.saves: 'saves',
+};
+
+const _$FmvScreenEntranceEnumMap = {
+  FmvScreenEntrance.fade: 'fade',
+  FmvScreenEntrance.slideUp: 'slideUp',
+  FmvScreenEntrance.zoom: 'zoom',
+};
+
+const _$FmvScreenEffectEnumMap = {
+  FmvScreenEffect.none: 'none',
+  FmvScreenEffect.darken: 'darken',
+  FmvScreenEffect.blur: 'blur',
+  FmvScreenEffect.vignette: 'vignette',
+  FmvScreenEffect.pulse: 'pulse',
 };

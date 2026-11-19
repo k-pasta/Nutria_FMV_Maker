@@ -91,6 +91,7 @@ abstract final class NfmvCodec {
     if (version < 3) upgraded = _v2ToV3(upgraded);
     if (version < 4) upgraded = _v3ToV4(upgraded);
     if (version < 5) upgraded = _v4ToV5(upgraded);
+    if (version < 6) upgraded = _v5ToV6(upgraded);
 
     ProjectDocument document;
     try {
@@ -203,6 +204,75 @@ abstract final class NfmvCodec {
     ],
     'formatVersion': 5,
   };
+
+  /// Version 5 had separate screens for answers over a video that waits
+  /// (`endChoice`, with their own `endChoiceScreenId` setting), and kept a
+  /// node's music and question on the node. Version 6 has one kind of
+  /// answer screen, and makes music and showing the question settings.
+  static Map<String, dynamic> _v5ToV6(Map<String, dynamic> json) {
+    // Settings that waited at the end used the end screen: keep it.
+    Map<String, dynamic> settings(Object? value, {bool? waits}) {
+      if (value is! Map<String, dynamic>) return const {};
+      final end = value['endChoiceScreenId'];
+      return {
+        for (final MapEntry(:key, :value) in value.entries)
+          if (key != 'endChoiceScreenId') key: value,
+        if (end is String && (value['pauseOnEnd'] ?? waits) == true)
+          'choiceScreenId': end,
+      };
+    }
+
+    final project = settings(json['settings']);
+    final projectWaits = project['pauseOnEnd'] == true;
+    Object? node(Object? value) {
+      if (value is! Map<String, dynamic>) return value;
+      final type = value['type'];
+      if (type != 'simpleVideo' && type != 'branchedVideo') return value;
+      final overrides = settings(value['overrides'], waits: projectWaits);
+      final question = value['question'];
+      return <String, dynamic>{
+        for (final MapEntry(:key, :value) in value.entries)
+          if (key != 'music' && key != 'overrides' && key != 'question')
+            key: value,
+        if (type == 'branchedVideo') 'question': question ?? '',
+        'overrides': <String, dynamic>{
+          ...overrides,
+          if (value['music'] case final Map<String, dynamic> music)
+            'music': music,
+          if (type == 'branchedVideo' && question is String)
+            'showQuestion': true,
+        },
+      };
+    }
+
+    final nodes = json['nodes'];
+    final colors = json['colorDefaults'];
+    return {
+      ...json,
+      if (json['settings'] != null) 'settings': project,
+      if (colors is Map<String, dynamic>)
+        'colorDefaults': {
+          for (final MapEntry(:key, :value) in colors.entries)
+            key: settings(value),
+        },
+      if (nodes is Map<String, dynamic>)
+        'nodes': <String, dynamic>{
+          for (final MapEntry(:key, :value) in nodes.entries) key: node(value),
+        },
+      'screens': [
+        for (final screen in (json['screens'] as List?) ?? const [])
+          if (screen is Map<String, dynamic> && screen['kind'] == 'endChoice')
+            {
+              ...screen,
+              'kind': 'choice',
+              'name': screen['name'] ?? 'Pause Choice Screen',
+            }
+          else
+            screen,
+      ],
+      'formatVersion': 6,
+    };
+  }
 
   static String _resolvePath({
     required String absolute,

@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 
 /// Copied nodes, the connections among them and the videos they play. Can be
@@ -145,6 +146,19 @@ extension FragmentOps on ProjectDocument {
       ...fragment.nodes.where((n) => n is! CommentNode),
       ...fragment.nodes.whereType<CommentNode>(),
     ];
+    // A node's own music, pointing at the pasted copies of its audio.
+    VideoSettingsOverride remapMusic(VideoSettingsOverride o) => o.copyWith(
+      music: switch (o.music) {
+        final cue? => cue.copyWith(
+          audioId: videoIds[cue.audioId] ?? cue.audioId,
+        ),
+        null => null,
+      },
+      pauseMusicId: switch (o.pauseMusicId) {
+        final id? => videoIds[id] ?? id,
+        null => null,
+      },
+    );
     for (final node in ordered) {
       if (node is OriginNode) continue;
       final id = newId();
@@ -158,23 +172,13 @@ extension FragmentOps on ProjectDocument {
           id: id,
           position: position,
           videoId: videoIds[node.videoId],
-          music: node.music?.copyWith(
-            audioId: videoIds[node.music!.audioId] ?? node.music!.audioId,
-          ),
+          overrides: remapMusic(node.overrides),
         ),
         BranchedVideoNode() => node.copyWith(
           id: id,
           position: position,
           videoId: videoIds[node.videoId],
-          music: node.music?.copyWith(
-            audioId: videoIds[node.music!.audioId] ?? node.music!.audioId,
-          ),
-          overrides: switch (node.overrides.pauseMusicId) {
-            final id? when id.isNotEmpty => node.overrides.copyWith(
-              pauseMusicId: videoIds[id] ?? id,
-            ),
-            _ => node.overrides,
-          },
+          overrides: remapMusic(node.overrides),
           choices: [
             for (final choice in node.choices)
               choice.copyWith(

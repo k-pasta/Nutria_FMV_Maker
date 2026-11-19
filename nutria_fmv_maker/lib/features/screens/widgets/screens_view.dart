@@ -6,19 +6,24 @@ import 'dart:io';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
+import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
@@ -45,13 +50,13 @@ String screenElementLabel(ScreenElementKind kind, AppLocalizations t) =>
       ScreenElementKind.subtitles => t.screenSubtitles,
       ScreenElementKind.fullScreen => t.screenFullScreen,
       ScreenElementKind.saves => t.screenSaves,
+      ScreenElementKind.text => t.screenText,
     };
 
 /// The name of screen [kind].
 String screenKindLabel(ScreenKind kind, AppLocalizations t) => switch (kind) {
   ScreenKind.menu => t.screenKindMenu,
   ScreenKind.choice => t.screenKindChoice,
-  ScreenKind.endChoice => t.screenKindEndChoice,
   ScreenKind.pause => t.screenKindPause,
   ScreenKind.settings => t.screenKindSettings,
   ScreenKind.saves => t.screenKindSaves,
@@ -80,8 +85,7 @@ ScreenContent designerContent(
   ChoiceScenario scenario,
   AppLocalizations t,
 ) {
-  final answering =
-      screen.kind == ScreenKind.choice || screen.kind == ScreenKind.endChoice;
+  final answering = screen.kind == ScreenKind.choice;
   return ScreenContent(
     title: doc.info.title,
     description: doc.info.description,
@@ -132,8 +136,7 @@ class ScreensView extends ConsumerWidget {
     final doc = ref.watch(projectDocumentProvider);
     final editor = ref.read(graphEditorProvider);
     final required = kRequiredScreenElements[screen.kind]!;
-    final answering =
-        screen.kind == ScreenKind.choice || screen.kind == ScreenKind.endChoice;
+    final answering = screen.kind == ScreenKind.choice;
     return ColoredBox(
       color: theme.cBackground,
       child: Padding(
@@ -168,7 +171,10 @@ class ScreensView extends ConsumerWidget {
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
                           for (final kind in kScreenElementKinds[screen.kind]!)
-                            if (!required.contains(kind))
+                            // One of each (but texts); the required ones
+                            // are always there.
+                            if (!required.contains(kind) &&
+                                doc.canAddScreenElement(screen.id, kind))
                               _TrayButton(
                                 label: '+ ${screenElementLabel(kind, t)}',
                                 kind: kind,
@@ -188,15 +194,6 @@ class ScreensView extends ConsumerWidget {
                           ),
                         ],
                       ),
-                      if (screen.kind == ScreenKind.endChoice) ...[
-                        SizedBox(height: theme.dPanelPadding),
-                        NutriaText(
-                          text: t.screenKindEndChoiceHint,
-                          state: NutriaTextState.inactive,
-                          maxLines: 2,
-                          textAlign: TextAlign.center,
-                        ),
-                      ],
                       if (answering) ...[
                         SizedBox(height: theme.dPanelPadding),
                         const _ScenarioBar(),
@@ -356,9 +353,120 @@ class _ScenarioBar extends ConsumerWidget {
             onTap: notifier.toggleQuestion,
           ),
         ),
+        cell(const _BackdropPicker()),
       ],
     );
   }
+}
+
+/// Picks what the designer shows behind answer screens (see
+/// [DesignerBackdrop]): nothing, the video player's frame, or an imported
+/// video.
+class _BackdropPicker extends ConsumerWidget {
+  const _BackdropPicker();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final t = AppLocalizations.of(context);
+    final backdrop = ref.watch(designerBackdropProvider);
+    final notifier = ref.read(designerBackdropProvider.notifier);
+    final videos = [
+      for (final m in ref.watch(mediaAssetsProvider))
+        if (m.isVideo) m,
+    ];
+    final label = switch (backdrop.kind) {
+      DesignerBackdrop.none => t.screenBackdropNone,
+      DesignerBackdrop.frame => t.screenBackdropFrame,
+      DesignerBackdrop.video =>
+        videos.where((v) => v.id == backdrop.videoId).firstOrNull?.fileName ??
+            t.screenBackdropNone,
+    };
+    return NutriaSettingRow(
+      label: t.screenBackdrop,
+      value: '',
+      field: NutriaSearchMenu(
+        label: label,
+        options: [
+          t.screenBackdropNone,
+          if (backdrop.frame != null) t.screenBackdropFrame,
+          for (final v in videos) v.fileName,
+        ],
+        searchHint: t.logicSearchVariables,
+        onSelected: (i) {
+          final frame = backdrop.frame != null ? 1 : 0;
+          if (i == 0) {
+            notifier.show(DesignerBackdrop.none);
+          } else if (i <= frame) {
+            notifier.show(DesignerBackdrop.frame);
+          } else {
+            notifier.showVideo(videos[i - 1 - frame].id);
+          }
+        },
+        onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
+      ),
+    );
+  }
+}
+
+/// The designer's backdrop behind an answer screen, filling the stage.
+class _Backdrop extends ConsumerWidget {
+  const _Backdrop();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final backdrop = ref.watch(designerBackdropProvider);
+    switch (backdrop.kind) {
+      case DesignerBackdrop.frame:
+        final frame = backdrop.frame;
+        if (frame == null) return const SizedBox.shrink();
+        return Image.memory(frame, fit: BoxFit.cover, gaplessPlayback: true);
+      case DesignerBackdrop.video:
+        final path = ref.watch(
+          mediaAssetProvider(backdrop.videoId ?? '').select((a) => a?.path),
+        );
+        if (path == null) return const SizedBox.shrink();
+        return _LoopingVideo(key: ValueKey(path), path: path);
+      case DesignerBackdrop.none:
+        return const SizedBox.shrink();
+    }
+  }
+}
+
+/// A video playing on a loop without sound.
+class _LoopingVideo extends StatefulWidget {
+  const _LoopingVideo({super.key, required this.path});
+
+  final String path;
+
+  @override
+  State<_LoopingVideo> createState() => _LoopingVideoState();
+}
+
+class _LoopingVideoState extends State<_LoopingVideo> {
+  final Player _player = Player();
+  late final VideoController _controller = VideoController(_player);
+
+  @override
+  void initState() {
+    super.initState();
+    _player
+      ..setVolume(0)
+      ..setPlaylistMode(PlaylistMode.single)
+      ..open(Media(widget.path));
+  }
+
+  @override
+  void dispose() {
+    _player.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) => Video(
+    controller: _controller,
+    controls: NoVideoControls,
+    fit: BoxFit.cover,
+  );
 }
 
 /// The screen: the background, the elements and, while dragging, the
@@ -417,6 +525,8 @@ class _Stage extends ConsumerWidget {
               child: ClipRect(
                 child: Stack(
                   children: [
+                    if (screen.kind == ScreenKind.choice)
+                      const Positioned.fill(child: _Backdrop()),
                     if (screen.backgroundId == null)
                       // At the top, where elements rarely are.
                       Align(
@@ -424,8 +534,7 @@ class _Stage extends ConsumerWidget {
                         child: Padding(
                           padding: EdgeInsets.all(theme.dPanelPadding),
                           child: Text(
-                            screen.kind == ScreenKind.choice ||
-                                    screen.kind == ScreenKind.endChoice
+                            screen.kind == ScreenKind.choice
                                 ? t.screenVideoBehind
                                 : t.screenDropBackground,
                             style: TextStyle(
@@ -441,6 +550,8 @@ class _Stage extends ConsumerWidget {
                         background: ScreenBackground.of(doc, screen),
                         content: designerContent(doc, screen, scenario, t),
                         fontFamilyOf: (path) => fonts[path],
+                        // Still while designing; the preview plays it.
+                        animate: false,
                         decorate: (i, element, child) {
                           final e = screen.elements[i];
                           final fills =

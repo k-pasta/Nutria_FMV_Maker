@@ -44,8 +44,11 @@ Set<String> usedMediaIds(ProjectDocument document) {
     final node = document.node(nodeId);
     ids.addAll(node.mediaIds);
     ids.addAll(document.subtitlesOf(node.videoIdOrNull).values);
-    if (node case BranchedVideoNode(:final overrides, :final swatch)) {
-      ids.add(overrides.applyTo(document.defaultsFor(swatch)).pauseMusicId);
+    // Music from the defaults counts too.
+    if (node.overridesOrNull case final overrides?) {
+      final settings = overrides.applyTo(document.defaultsFor(node.swatch));
+      ids.add(settings.music.audioId);
+      if (node is BranchedVideoNode) ids.add(settings.pauseMusicId);
     }
   }
   for (final screen in document.screens) {

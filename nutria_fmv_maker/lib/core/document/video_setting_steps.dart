@@ -6,15 +6,17 @@ import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 const kSelectionTimeStepMs = 1000;
 
 /// Which settings a node of each kind can override (all of them for
-/// branched nodes, pause music included). Simple video nodes have no
-/// choices, so only the picture settings apply.
+/// branched nodes). Simple video nodes have no choices, so only the picture
+/// and the music apply.
 const kBranchedNodeSettings = VideoSettingType.values;
-const kSimpleNodeSettings = [VideoSettingType.videoFit];
+const kSimpleNodeSettings = [VideoSettingType.videoFit, VideoSettingType.music];
 
 /// Whether [type] is changed with one toggle button (on/off) rather than
 /// previous/next buttons.
 bool isToggleSetting(VideoSettingType type) =>
-    type == VideoSettingType.pauseOnEnd || type == VideoSettingType.showTimer;
+    type == VideoSettingType.pauseOnEnd ||
+    type == VideoSettingType.showTimer ||
+    type == VideoSettingType.showQuestion;
 
 T _cycle<T>(List<T> values, T current, int direction) =>
     values[(values.indexOf(current) + direction) % values.length];
@@ -34,6 +36,12 @@ extension VideoSettingSteps on VideoSettings {
       copyWith(showTimer: true),
       copyWith(showTimer: false),
     ],
+    VideoSettingType.showQuestion => [
+      copyWith(showQuestion: true),
+      copyWith(showQuestion: false),
+    ],
+    // Music has its own rows (music_rows.dart).
+    VideoSettingType.music => const [],
     VideoSettingType.videoFit => [
       for (final fit in VideoFit.values) copyWith(videoFit: fit),
     ],
@@ -47,8 +55,7 @@ extension VideoSettingSteps on VideoSettings {
       for (final ms in kMusicFadeSteps) copyWith(pauseMusicFadeOutMs: ms),
     ],
     // Screens are picked from the project's (screen_setting_rows.dart).
-    VideoSettingType.choiceScreen ||
-    VideoSettingType.endChoiceScreen => const [],
+    VideoSettingType.choiceScreen => const [],
   };
 
   /// Whether [other] has the same value of [type] as these settings.
@@ -56,6 +63,8 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.selectionTime => selectionTimeMs == other.selectionTimeMs,
     VideoSettingType.pauseOnEnd => pauseOnEnd == other.pauseOnEnd,
     VideoSettingType.showTimer => showTimer == other.showTimer,
+    VideoSettingType.showQuestion => showQuestion == other.showQuestion,
+    VideoSettingType.music => music == other.music,
     VideoSettingType.videoFit => videoFit == other.videoFit,
     VideoSettingType.defaultSelection =>
       defaultSelection == other.defaultSelection,
@@ -63,8 +72,6 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.pauseMusicFadeOut =>
       pauseMusicFadeOutMs == other.pauseMusicFadeOutMs,
     VideoSettingType.choiceScreen => choiceScreenId == other.choiceScreenId,
-    VideoSettingType.endChoiceScreen =>
-      endChoiceScreenId == other.endChoiceScreenId,
   };
 
   /// Steps [type] forward ([direction] 1) or back (-1). Toggles flip either
@@ -76,6 +83,8 @@ extension VideoSettingSteps on VideoSettings {
     ),
     VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: !pauseOnEnd),
     VideoSettingType.showTimer => copyWith(showTimer: !showTimer),
+    VideoSettingType.showQuestion => copyWith(showQuestion: !showQuestion),
+    VideoSettingType.music => this,
     VideoSettingType.videoFit => copyWith(
       videoFit: _cycle(VideoFit.values, videoFit, direction),
     ),
@@ -90,6 +99,6 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.pauseMusicFadeOut => copyWith(
       pauseMusicFadeOutMs: stepFade(pauseMusicFadeOutMs, direction),
     ),
-    VideoSettingType.choiceScreen || VideoSettingType.endChoiceScreen => this,
+    VideoSettingType.choiceScreen => this,
   };
 }

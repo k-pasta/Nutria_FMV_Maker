@@ -1,5 +1,6 @@
 // Playback settings for video nodes: project-wide defaults and per-node overrides.
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 
 part 'video_settings.freezed.dart';
 part 'video_settings.g.dart';
@@ -10,16 +11,21 @@ enum VideoFit { fit, fill, fillWidth, fillHeight, stretch }
 /// Which choice the Player picks when the viewer doesn't choose in time.
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
 
-/// Every setting a video node can override. The playback ones' names are the
-/// keys used in exported `.fmv` files, so renaming one is a protocol change;
-/// the pause music ones ([isMusic]) are exported as each node's
-/// `pauseMusic` instead.
+/// Every setting a video node can override. The ones in [kFmvSettingTypes]
+/// are the keys used in exported `.fmv` files (renaming one is a protocol
+/// change); the others are resolved per node when exporting.
 enum VideoSettingType {
   selectionTime,
   pauseOnEnd,
   showTimer,
+
+  /// Whether a branched node shows its question above the answers.
+  showQuestion,
   videoFit,
   defaultSelection,
+
+  /// The music that goes with the video (track, when it ends, …).
+  music,
 
   /// The music that loops while the viewer chooses at the end of a video.
   pauseMusic,
@@ -27,28 +33,38 @@ enum VideoSettingType {
   /// How long that music fades out once an answer is picked.
   pauseMusicFadeOut,
 
-  /// The answer screen shown over the video.
-  choiceScreen,
+  /// The answer screen the node uses.
+  choiceScreen;
 
-  /// The answer screen shown over the last frame when the video waits
-  /// ("pause on end").
-  endChoiceScreen;
-
-  /// Pause music settings, which have their own rows (a track picker).
-  bool get isMusic => this == pauseMusic || this == pauseMusicFadeOut;
+  /// Music settings, which have their own rows (a track picker).
+  bool get isMusic =>
+      this == music || this == pauseMusic || this == pauseMusicFadeOut;
 
   /// Screen settings, which have their own rows (a list of the screens).
-  bool get isScreen => this == choiceScreen || this == endChoiceScreen;
+  bool get isScreen => this == choiceScreen;
 }
 
-/// The settings shown as ordinary setting rows (everything but music).
+/// The settings shown as ordinary setting rows (not music or screens).
 const kPlaybackSettingTypes = [
+  VideoSettingType.selectionTime,
+  VideoSettingType.pauseOnEnd,
+  VideoSettingType.showTimer,
+  VideoSettingType.showQuestion,
+  VideoSettingType.videoFit,
+  VideoSettingType.defaultSelection,
+];
+
+/// The settings the `.fmv` format has as playback settings ("overrides").
+const kFmvSettingTypes = [
   VideoSettingType.selectionTime,
   VideoSettingType.pauseOnEnd,
   VideoSettingType.showTimer,
   VideoSettingType.videoFit,
   VideoSettingType.defaultSelection,
 ];
+
+/// No music: the [MusicCue] of settings without any.
+const kNoMusic = MusicCue(audioId: '');
 
 /// The full set of playback settings. Used as the project defaults, and as the
 /// result of merging a node's [VideoSettingsOverride] onto those defaults.
@@ -65,20 +81,29 @@ abstract class VideoSettings with _$VideoSettings {
 
     /// Whether the Player shows the remaining-time bar.
     @Default(true) bool showTimer,
+
+    /// Whether branched nodes show their question above the answers.
+    @Default(false) bool showQuestion,
     @Default(VideoFit.fit) VideoFit videoFit,
     @Default(DefaultSelectionMethod.first)
     DefaultSelectionMethod defaultSelection,
+
+    /// The music with the video; [kNoMusic] (an empty track) for none, so a
+    /// node can override its defaults' music with silence.
+    @Default(kNoMusic) MusicCue music,
 
     /// Imported audio that loops while the viewer chooses; `''` for none
     /// (so a node can override it to "no music").
     @Default('') String pauseMusicId,
     @Default(1000) int pauseMusicFadeOutMs,
 
-    /// The ids of the answer screens used over the video and at its end.
-    /// A screen that's gone falls back to the first of its kind.
+    /// The id of the answer screen. A screen that's gone falls back to the
+    /// first one.
     @Default('choice') String choiceScreenId,
-    @Default('endChoice') String endChoiceScreenId,
   }) = _VideoSettings;
+
+  /// [music], or `null` when there is none.
+  MusicCue? get musicOrNull => music.audioId.isEmpty ? null : music;
 
   /// [pauseMusicId], or `null` when there is no pause music.
   String? get pauseMusicOrNull => pauseMusicId.isEmpty ? null : pauseMusicId;
@@ -91,18 +116,14 @@ abstract class VideoSettings with _$VideoSettings {
     VideoSettingType.selectionTime => selectionTimeMs,
     VideoSettingType.pauseOnEnd => pauseOnEnd,
     VideoSettingType.showTimer => showTimer,
+    VideoSettingType.showQuestion => showQuestion,
     VideoSettingType.videoFit => videoFit,
     VideoSettingType.defaultSelection => defaultSelection,
+    VideoSettingType.music => music,
     VideoSettingType.pauseMusic => pauseMusicId,
     VideoSettingType.pauseMusicFadeOut => pauseMusicFadeOutMs,
     VideoSettingType.choiceScreen => choiceScreenId,
-    VideoSettingType.endChoiceScreen => endChoiceScreenId,
   };
-
-  /// The id of the answer screen shown at all: the end screen when the
-  /// video waits, else the one over the video.
-  String get shownChoiceScreenId =>
-      pauseOnEnd ? endChoiceScreenId : choiceScreenId;
 }
 
 /// A node's deviations from the project [VideoSettings]. A `null` field means
@@ -115,12 +136,13 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     int? selectionTimeMs,
     bool? pauseOnEnd,
     bool? showTimer,
+    bool? showQuestion,
     VideoFit? videoFit,
     DefaultSelectionMethod? defaultSelection,
+    MusicCue? music,
     String? pauseMusicId,
     int? pauseMusicFadeOutMs,
     String? choiceScreenId,
-    String? endChoiceScreenId,
   }) = _VideoSettingsOverride;
 
   factory VideoSettingsOverride.fromJson(Map<String, dynamic> json) =>
@@ -131,12 +153,13 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     if (selectionTimeMs != null) VideoSettingType.selectionTime,
     if (pauseOnEnd != null) VideoSettingType.pauseOnEnd,
     if (showTimer != null) VideoSettingType.showTimer,
+    if (showQuestion != null) VideoSettingType.showQuestion,
     if (videoFit != null) VideoSettingType.videoFit,
     if (defaultSelection != null) VideoSettingType.defaultSelection,
+    if (music != null) VideoSettingType.music,
     if (pauseMusicId != null) VideoSettingType.pauseMusic,
     if (pauseMusicFadeOutMs != null) VideoSettingType.pauseMusicFadeOut,
     if (choiceScreenId != null) VideoSettingType.choiceScreen,
-    if (endChoiceScreenId != null) VideoSettingType.endChoiceScreen,
   ];
 
   bool get isEmpty => activeTypes.isEmpty;
@@ -146,40 +169,40 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     selectionTimeMs: selectionTimeMs ?? base.selectionTimeMs,
     pauseOnEnd: pauseOnEnd ?? base.pauseOnEnd,
     showTimer: showTimer ?? base.showTimer,
+    showQuestion: showQuestion ?? base.showQuestion,
     videoFit: videoFit ?? base.videoFit,
     defaultSelection: defaultSelection ?? base.defaultSelection,
+    music: music ?? base.music,
     pauseMusicId: pauseMusicId ?? base.pauseMusicId,
     pauseMusicFadeOutMs: pauseMusicFadeOutMs ?? base.pauseMusicFadeOutMs,
     choiceScreenId: choiceScreenId ?? base.choiceScreenId,
-    endChoiceScreenId: endChoiceScreenId ?? base.endChoiceScreenId,
   );
 
   /// Starts overriding [type], copying its current value from [base] so the
   /// effective behavior doesn't change until the user edits it.
-  VideoSettingsOverride enable(VideoSettingType type, VideoSettings base) =>
-      switch (type) {
-        VideoSettingType.selectionTime => copyWith(
-          selectionTimeMs: base.selectionTimeMs,
-        ),
-        VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: base.pauseOnEnd),
-        VideoSettingType.showTimer => copyWith(showTimer: base.showTimer),
-        VideoSettingType.videoFit => copyWith(videoFit: base.videoFit),
-        VideoSettingType.defaultSelection => copyWith(
-          defaultSelection: base.defaultSelection,
-        ),
-        VideoSettingType.pauseMusic => copyWith(
-          pauseMusicId: base.pauseMusicId,
-        ),
-        VideoSettingType.pauseMusicFadeOut => copyWith(
-          pauseMusicFadeOutMs: base.pauseMusicFadeOutMs,
-        ),
-        VideoSettingType.choiceScreen => copyWith(
-          choiceScreenId: base.choiceScreenId,
-        ),
-        VideoSettingType.endChoiceScreen => copyWith(
-          endChoiceScreenId: base.endChoiceScreenId,
-        ),
-      };
+  VideoSettingsOverride enable(
+    VideoSettingType type,
+    VideoSettings base,
+  ) => switch (type) {
+    VideoSettingType.selectionTime => copyWith(
+      selectionTimeMs: base.selectionTimeMs,
+    ),
+    VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: base.pauseOnEnd),
+    VideoSettingType.showTimer => copyWith(showTimer: base.showTimer),
+    VideoSettingType.showQuestion => copyWith(showQuestion: base.showQuestion),
+    VideoSettingType.videoFit => copyWith(videoFit: base.videoFit),
+    VideoSettingType.defaultSelection => copyWith(
+      defaultSelection: base.defaultSelection,
+    ),
+    VideoSettingType.music => copyWith(music: base.music),
+    VideoSettingType.pauseMusic => copyWith(pauseMusicId: base.pauseMusicId),
+    VideoSettingType.pauseMusicFadeOut => copyWith(
+      pauseMusicFadeOutMs: base.pauseMusicFadeOutMs,
+    ),
+    VideoSettingType.choiceScreen => copyWith(
+      choiceScreenId: base.choiceScreenId,
+    ),
+  };
 
   /// This override, plus every setting of [types] it leaves alone in which
   /// [layer] differs from [base]. Used to export a node whose color has its
@@ -204,11 +227,12 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     VideoSettingType.selectionTime => copyWith(selectionTimeMs: null),
     VideoSettingType.pauseOnEnd => copyWith(pauseOnEnd: null),
     VideoSettingType.showTimer => copyWith(showTimer: null),
+    VideoSettingType.showQuestion => copyWith(showQuestion: null),
     VideoSettingType.videoFit => copyWith(videoFit: null),
     VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
+    VideoSettingType.music => copyWith(music: null),
     VideoSettingType.pauseMusic => copyWith(pauseMusicId: null),
     VideoSettingType.pauseMusicFadeOut => copyWith(pauseMusicFadeOutMs: null),
     VideoSettingType.choiceScreen => copyWith(choiceScreenId: null),
-    VideoSettingType.endChoiceScreen => copyWith(endChoiceScreenId: null),
   };
 }

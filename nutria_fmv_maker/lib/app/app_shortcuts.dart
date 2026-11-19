@@ -91,7 +91,7 @@ const kShortcutZoomOut = [
   SingleActivator(LogicalKeyboardKey.numpadSubtract),
 ];
 
-/// Arrow keys pan the canvas. Text fields consume them while typing.
+/// Arrow keys pan the canvas, except while typing in a text field.
 const kPanKeys = [
   (
     key: SingleActivator(LogicalKeyboardKey.arrowLeft),
@@ -132,14 +132,25 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
   kShortcutFrameSelected: commands.frameSelected,
   kShortcutFrameAll: commands.frameAll,
   kShortcutPlayPause: commands.playPause,
-  kShortcutSeekBack: () => commands.seekBy(-kSeekStep),
-  kShortcutSeekForward: () => commands.seekBy(kSeekStep),
-  kShortcutVolumeUp: () => commands.changeVolume(kVolumeStep),
-  kShortcutVolumeDown: () => commands.changeVolume(-kVolumeStep),
+  kShortcutSeekBack: _notTyping(() => commands.seekBy(-kSeekStep)),
+  kShortcutSeekForward: _notTyping(() => commands.seekBy(kSeekStep)),
+  kShortcutVolumeUp: _notTyping(() => commands.changeVolume(kVolumeStep)),
+  kShortcutVolumeDown: _notTyping(() => commands.changeVolume(-kVolumeStep)),
   for (final key in kShortcutZoomIn)
     key: () => commands.zoomCanvas(zoomIn: true),
   for (final key in kShortcutZoomOut)
     key: () => commands.zoomCanvas(zoomIn: false),
   for (final (:key, :direction) in kPanKeys)
-    key: () => commands.panCanvas(direction),
+    key: _notTyping(() => commands.panCanvas(direction)),
+};
+
+/// Whether the keyboard focus is in a text field.
+bool isTyping() =>
+    FocusManager.instance.primaryFocus?.context?.widget is EditableText;
+
+/// [action], except while typing: arrow keys a text field leaves unused
+/// (Up in a one-line field, Left at its start) must not move the canvas or
+/// the video.
+VoidCallback _notTyping(VoidCallback action) => () {
+  if (!isTyping()) action();
 };

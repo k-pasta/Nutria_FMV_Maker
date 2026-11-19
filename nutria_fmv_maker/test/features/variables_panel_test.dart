@@ -25,42 +25,33 @@ void main() {
     await tester.pumpAndSettle();
     expect(
       variables().single,
-      isA<BoolVariable>().having((v) => v.name, 'name', 'variable_1'),
+      isA<IntVariable>().having((v) => v.name, 'name', 'variable_1'),
+      reason: 'new variables are whole numbers',
     );
-
-    await tester.tap(find.text('False'));
-    await tester.pumpAndSettle();
-    expect((variables().single as BoolVariable).initial, isTrue);
 
     final name = find.ancestor(
       of: find.text('variable_1'),
       matching: find.byType(TextField),
     );
     await tester.enterText(name.first, 'score');
-    // The type stepper's right half: Bool → Int → Float.
-    for (var i = 0; i < 2; i++) {
-      final stepper = tester.getRect(
-        find
-            .ancestor(
-              of: find.text(i == 0 ? 'Bool' : 'Int'),
-              matching: find.byType(NutriaButton),
-            )
-            .first,
-      );
-      await tester.tapAt(stepper.centerRight - const Offset(6, 0));
-      await tester.pumpAndSettle();
-    }
+    // The type stepper's right half: Int → Float.
+    final stepper = tester.getRect(
+      find
+          .ancestor(of: find.text('Int'), matching: find.byType(NutriaButton))
+          .first,
+    );
+    await tester.tapAt(stepper.centerRight - const Offset(6, 0));
+    await tester.pumpAndSettle();
     expect(
       variables().single,
       const Variable.decimal(
         id: 'x',
         name: 'score',
-        initial: 1,
       ).copyWith(id: variables().single.id),
     );
 
     final value = find.ancestor(
-      of: find.text('1.0'),
+      of: find.text('0.0'),
       matching: find.byType(TextField),
     );
     await tester.enterText(value.first, '2,5');
@@ -76,8 +67,8 @@ void main() {
     await tester.pumpAndSettle();
     c.read(documentProvider.notifier).undo();
     await tester.pumpAndSettle();
-    expect((variables().single as DecimalVariable).initial, 1);
-    expect(find.text('1.0'), findsOneWidget, reason: 'the field follows undo');
+    expect((variables().single as DecimalVariable).initial, 0);
+    expect(find.text('0.0'), findsOneWidget, reason: 'the field follows undo');
   });
 
   testWidgets('a repeated name is flagged', (tester) async {

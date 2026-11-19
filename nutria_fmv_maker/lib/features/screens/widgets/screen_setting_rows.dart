@@ -12,10 +12,9 @@ import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 
-/// The answer screen over the video and, when the video waits at its end
-/// ("pause on end"), the one over its last frame. [settings] are the values
-/// shown; like the other settings, on a node [onReset] removes an override
-/// and the settings in [overridden] are accented.
+/// The answer screen a node uses. [settings] are the values shown; like the
+/// other settings, on a node [onReset] removes an override and the settings
+/// in [overridden] are accented.
 List<Widget> screenSettingRows(
   BuildContext context,
   WidgetRef ref, {
@@ -71,13 +70,5 @@ List<Widget> screenSettingRows(
       settings.choiceScreenId,
       (id) => settings.copyWith(choiceScreenId: id),
     ),
-    if (settings.pauseOnEnd)
-      row(
-        VideoSettingType.endChoiceScreen,
-        ScreenKind.endChoice,
-        t.overrideEndChoiceScreen,
-        settings.endChoiceScreenId,
-        (id) => settings.copyWith(endChoiceScreenId: id),
-      ),
   ];
 }
