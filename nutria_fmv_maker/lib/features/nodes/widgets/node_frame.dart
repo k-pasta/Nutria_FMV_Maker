@@ -468,7 +468,14 @@ class _SwatchStrip extends ConsumerWidget {
           color: theme.swatch(node.swatch),
           borderRadius: BorderRadius.only(topLeft: radius, topRight: radius),
         ),
-        child: label,
+        child: node.isLogicNode
+            ? Row(
+                children: [
+                  Expanded(child: label ?? const SizedBox.shrink()),
+                  LogicIssueMark(node: node),
+                ],
+              )
+            : label,
       ),
     );
   }

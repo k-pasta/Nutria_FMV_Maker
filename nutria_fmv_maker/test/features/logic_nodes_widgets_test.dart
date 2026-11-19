@@ -1,11 +1,12 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:material_ui/material_ui.dart' show Icon, TextField;
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/logic_node_views.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
@@ -31,6 +32,12 @@ void main() {
     await tester.tap(find.text('Change Variable'));
     await tester.pumpAndSettle();
     expect(find.text('Set Variable'), findsOneWidget, reason: 'its title');
+    final caution = find.byType(LogicIssueMark);
+    expect(
+      find.descendant(of: caution, matching: find.byType(Icon)),
+      findsOneWidget,
+      reason: 'no variable yet: a caution sign on the strip',
+    );
 
     await tester.tap(find.text('Pick a Variable…'));
     await tester.pumpAndSettle();
@@ -46,6 +53,10 @@ void main() {
     expect(node.variableId, 'k');
     expect(node.value, 'true', reason: 'a true/false variable starts true');
     expect(find.text('has_key'), findsOneWidget);
+    expect(
+      find.descendant(of: caution, matching: find.byType(Icon)),
+      findsNothing,
+    );
   });
 
   testWidgets('a compare node keeps its True and False knots level with '

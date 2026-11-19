@@ -36,6 +36,39 @@ String logicNodeTitle(Node node, AppLocalizations t) => switch (node) {
   _ => '',
 };
 
+/// The caution sign at the right of a logic node's strip, shown while the
+/// node has a problem or a warning; its tooltip says what it is (like the
+/// faulty field's).
+class LogicIssueMark extends ConsumerWidget {
+  const LogicIssueMark({super.key, required this.node});
+
+  final Node node;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.appTheme;
+    final t = AppLocalizations.of(context);
+    final doc = ref.watch(projectDocumentProvider);
+    final simple = ref.watch(preferencesProvider.select((p) => p.simpleMath));
+    final problem = logicProblem(doc, node, simple: simple);
+    final message = problem != null
+        ? logicProblemText(problem, t)
+        : switch (logicWarning(doc, node)) {
+            LogicWarning.rounded => t.logicWarningRounded,
+            null => null,
+          };
+    if (message == null) return const SizedBox.shrink();
+    return NutriaTooltip(
+      message: message,
+      child: Icon(
+        Icons.warning_amber_rounded,
+        size: theme.dTextHeight * 1.2,
+        color: theme.swatchTextStyle.color,
+      ),
+    );
+  }
+}
+
 /// What an operation is called on its stepper, with its symbol.
 String operationLabel(FmvChangeOperation op, AppLocalizations t) =>
     switch (op) {
