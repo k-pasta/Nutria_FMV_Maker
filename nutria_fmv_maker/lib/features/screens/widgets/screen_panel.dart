@@ -33,7 +33,11 @@ const kScreenPalette = [
   0xFFA47BFF,
 ];
 
-String _percent(double v) => '${(v * 100).round()}%';
+/// [v] as a percentage, with one decimal when it has one (4.5%).
+String _percent(double v) {
+  final tenths = (v * 1000).round();
+  return tenths % 10 == 0 ? '${tenths ~/ 10}%' : '${tenths / 10}%';
+}
 
 /// The Screen section.
 class ScreenPanel extends ConsumerStatefulWidget {

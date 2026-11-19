@@ -66,13 +66,17 @@ lib/
   - `nodes` (`Map<String, Node>`) and `edges` (connections are `Edge(from: PortRef, to: PortRef)`, not stored on nodes)
   - `media` (`MediaAsset`, `core/document/media.dart`): imported videos, audio, images, subtitles and fonts, by absolute path. The kind comes from the extension. A video can link a subtitle file (`subtitleId`); linked subtitles aren't listed on their own.
   - `info` (title and description), `settings` (`VideoSettings`, the defaults of the first color), `colorDefaults` (other colors' defaults), `variables`
-- `Node` is a sealed freezed union: `OriginNode` (exactly one, can't be deleted or copied), `SimpleVideoNode` and `BranchedVideoNode`.
+- `Node` is a sealed freezed union:
+  - `OriginNode` (exactly one, can't be deleted or copied; holds the menu music), `SimpleVideoNode` and `BranchedVideoNode` (with an optional `MusicCue`; branched nodes also have pause music).
+  - `ChangeVariableNode` and `CompareNode` (logic nodes; outputs `next`, or `true`/`false`). Their problems come from `core/graph/logic_check.dart`, which uses the protocol's expression parser.
+  - `CommentNode` (never exported). With `attachedTo` it is drawn above that node by `CommentFrame` and takes its width; its own position is then unused.
   - A branched node has `choices`; each choice's `id` is also its output port key.
   - Per-node `VideoSettingsOverride` overrides the project settings.
 - All edits are pure functions in `core/graph/`:
   - `graph_ops.dart`: nodes, edges, choices, media, color defaults
   - `fragment.dart`: copy/paste
   - `variable_ops.dart`: variables
+  - `screen_ops.dart`: the main menu design (`menuScreen`) and its shared `styles`
 - `documentProvider` (`DocumentNotifier`) is the **only** way to change the document: `apply(label, (doc) => newDoc, {mergeKey})`, or `beginTransaction`, several `apply` calls, then `commit` for a whole gesture.
   - History is snapshot-based (`core/history/document_timeline.dart`).
   - Text fields pass a per-focus `mergeKey`, so one typing session is one undo step.
@@ -93,7 +97,8 @@ lib/
   - Check changes with the perf test above; a drag frame should stay well under 16ms build and raster.
 - **Geometry** (`features/nodes/node_layout.dart`): `NodeMetrics` and `NodeLayout` compute knot positions from fixed row heights and a cached measurement of the wrapped file name. Widgets and the pure `noodlesFor` (connection lines) both use them, so knots and lines always agree.
 - Laid-out node sizes are recorded in `NodeBounds` (no rebuilds) for box selection and framing.
-- **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`); add a body widget.
+- **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`, `graph_ops.dart`); add a body widget.
+- **Screens view:** `editorViewProvider` swaps the canvas for `ScreensView` (Ctrl+1 / Ctrl+2). Element positions and sizes are fractions of the screen.
 
 ### File formats
 - **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus media paths relative to the project file.
@@ -103,9 +108,10 @@ lib/
   - `core/protocol/fmv_exporter.dart` only maps a `ProjectDocument` to an `FmvProject`: nodes reachable from the origin, with sequential ids from `001` (playback starts at the first node), and only connected choices.
   - Any change to the package is a protocol change for both apps; `test/core/golden/` pins the Maker's output.
   - Keep the package Dart 3.5-compatible.
-  - Newer optional node keys (`question`, `subtitles`) are written only when set; older Players ignore them. Color defaults are folded into each node's `overrides`.
+  - Newer optional keys (`question`, `subtitles`, `music`, `pauseMusic`, `menuMusic`, "Screens", "Variables") are written only when set; older Players ignore them. Color defaults are folded into each node's `overrides`.
+  - Logic nodes (`"type": "change"`/`"compare"`) need a Player that knows them; `FmvVariableState` is the shared runtime, and `parseInlineMarkdown` the shared bold/italic reader.
   - The package also has the SubRip parser (`parseSrt`), so both apps read subtitles alike.
-  - Variables are not exported yet.
+  - Variables are exported by name.
 
 ### UI, theme, shortcuts
 - **Theme:** `AppTheme` (`ui/theme/app_theme.dart`) is a `ThemeExtension` holding every color (`c…`) and size (`d…`); widgets read it with `context.appTheme`. Presets are in `app_theme_presets.dart` (dark is the default, light, and "custom", the seed of a future accessible theme).
