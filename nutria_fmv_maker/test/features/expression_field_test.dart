@@ -60,5 +60,15 @@ void main() {
     final node =
         c.read(projectDocumentProvider).nodes[id] as ChangeVariableNode;
     expect(node.value, 'coins');
+
+    // With nothing left to complete, Tab moves on.
+    expect(editable.focusNode.hasFocus, isTrue);
+    await tester.sendKeyEvent(LogicalKeyboardKey.tab);
+    await tester.pumpAndSettle();
+    expect(editable.focusNode.hasFocus, isFalse);
+    expect(
+      (c.read(projectDocumentProvider).nodes[id] as ChangeVariableNode).value,
+      'coins',
+    );
   });
 }

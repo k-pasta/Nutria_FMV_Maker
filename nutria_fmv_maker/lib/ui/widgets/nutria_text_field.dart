@@ -348,13 +348,16 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     ];
   }
 
-  /// Tab in an expression: completes the variable name being typed.
+  /// Tab in an expression: completes the variable name being typed, or,
+  /// with nothing to complete, moves to the next field like Tab elsewhere.
   void _complete() {
     final controller = _controller as ExpressionTextEditingController;
     final before = controller.text;
-    if (controller.complete() && controller.text != before) {
-      widget.onChanged?.call(controller.text);
+    if (!controller.complete()) {
+      _focus.nextFocus();
+      return;
     }
+    if (controller.text != before) widget.onChanged?.call(controller.text);
   }
 
   /// Makes the selection bold or italic, or plain again (see
