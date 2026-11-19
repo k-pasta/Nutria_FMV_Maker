@@ -169,6 +169,42 @@ Nothing changes where the answer kept the current behaviour.
   goes past the bottom; the preview shows it, but anchoring the list's
   bottom edge would avoid it.
 
+### Step 5: the Player, rebuilt
+The prototype (about 2,000 lines on `provider`, with the playback logic
+inside widget builders) couldn't take logic nodes, music, languages and
+designed screens without being rewritten, so it was. Your version is on
+the Player's `legacy` branch.
+- **Separate repository, shared format:** the Player takes the protocol
+  package from the Maker's GitHub repository (it's public), pinned by its
+  lock file. After a protocol change is pushed, `flutter pub upgrade
+  nutria_fmv_protocol` in the Player picks it up.
+- **What it does now:**
+  - The story's main menu, choice screen and pause menu as designed, or
+    defaults matching the Maker's classic layouts.
+  - Logic nodes and variables; the default answer when time runs out;
+    "pause on end" (a click or Enter goes on).
+  - Music, menu music and pause music (with fades); subtitles in the
+    viewer's language.
+  - One saved game per story (Save in the pause menu, Load in the menus);
+    volume and subtitles in Settings; Credits.
+  - A `.fmv` given on the command line opens directly.
+- **Checked in a real build** with a story exported by the Maker's own
+  exporter: the designed menu, the answers with the question and the
+  timer, the pause menu, Save and Load.
+- **Fixed on the way:** media_kit reported a video's end twice, which
+  skipped the next video; the engine now passes it on once.
+- **Not checked for real:** music (no audio files on this computer; the
+  rules are covered by tests), and fonts from a story.
+- **Decisions (ask if you want them different):**
+  - **Picking early:** picking an answer doesn't cut the video short; the
+    next video starts when it ends, as before.
+  - **Saving:** a save restarts the video it was made in, with the
+    variables as they were when that video started.
+  - **Window:** the Player keeps the system title bar; it's a viewer, and
+    full screen is one key away (F, F11, double-click).
+  - **Text:** its own texts are in English only for now (no translations
+    yet).
+
 ### Cleanup plan (your request, 2026-11-19)
 **FFmpeg:** the Maker hasn't used it since the refactor started (commit
 `ffe6c9b`); nothing downloaded an FFmpeg for it on this computer. Its three
