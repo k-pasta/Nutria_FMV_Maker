@@ -4,38 +4,60 @@ Decisions made while working on my own, newest round first. Each entry says
 what was decided and why. **"Ask"** marks questions I would have asked you;
 change any of them and I'll adapt.
 
-## Open questions at a glance
-Each is explained in its section below. The Maker works without answers;
-these only change details.
+## Your answers to the 18 open questions (2026-11-19)
+Nothing changes where the answer kept the current behaviour.
 
-### Player and protocol
-1. **May I update the Player?** It isn't under git, so I haven't touched
-   it. It needs to switch to the shared package and to play logic nodes,
-   variables, music, subtitles, bold/italic text, questions and the
-   designed menu. Until then, files with logic nodes won't play in the
-   current Player.
+1. **Player:** yes. `git init` it and commit it as it is first.
+2. **Variable names:** any Unicode letter (Greek, accented…), not just
+   ASCII. The protocol's expression parser must accept them too.
+3. **Min/max:** keep dropping them when switching int ↔ float.
+4. **F2:** keeps working while typing.
+5. **Lone Alt:** works fine; nothing to do.
+6. **Color groups:** stay independent copies.
+7. **Notification history:** this session only.
+8. **Missing files:** check again when the window regains focus.
+9. **Subtitles:** one per video *per language*. New: a project
+   information editor (see "To do" below) where languages are chosen. When
+   the project has more than one language, linking a subtitle asks which
+   language it is for, with a context menu.
+10. **Markdown markers:** always visible, dimmed.
+11. **Comments:** a click on a selected comment starts typing.
+12. **Comments:** deleted with their node.
+13. **Problems:** like Blender. A caution symbol on the right of the node
+    strip, with a tooltip on the strip and on the faulty field.
+14. **Tab:** moves to the next field when there is nothing to complete.
+15. **Number fields:** three ways to change them: drag the middle
+    (left = down, right = up), click to type, and the arrow buttons. A drag
+    that starts on a field's middle changes the value; a drag anywhere else
+    on a node moves the node. **Bug:** dragging a node by its expansion
+    doesn't move it.
+16. **Music:** add a searchable picker of imported audio.
+17. **Screens:** click a tray button to add an element in the middle, or
+    drag it onto the stage.
+18. **Screens:** a full colour picker, and creating, renaming and deleting
+    styles. A new layout for the designer (see "To do" below).
 
-### Earlier phases
-2. Allow non-ASCII letters in variable names?
-3. Keep a variable's min/max when switching between whole and decimal?
-4. Should F2 be ignored while typing in a field?
-5. Does a lone Alt press focus the window menu on your machine?
-6. Should color groups follow the first group's values until changed?
-7. Keep the notification history across restarts?
-8. Check for missing files again when the window regains focus?
-9. Several subtitle files (languages) per video?
-10. Hide bold/italic markers except near the cursor?
-11. Should a single click on a selected comment start typing?
-12. When a node is deleted, should its comment stay behind?
-
-### Logic, music and screens
-13. Problems are shown as tooltips, not as an error row above the node.
-    Is that OK?
-14. Should Tab move to the next field when there's nothing to complete?
-15. Music fade out: steps, or a typed number?
-16. A picker for music, besides dropping audio on a node?
-17. Screens: add elements with buttons and then drag them. Is that OK?
-18. Screens: a full colour picker, and creating and renaming styles?
+### To do from these answers
+- **Project information editor**, in a renamed Defaults/Project section:
+  - Read-only: the file name, the estimated export size (every media file
+    used in the graph), and the shortest and longest path durations.
+  - Editable: the title, the description, and languages (a searchable
+    dropdown).
+- **Designer layout:**
+  - Leave it out of the left panel dropdown. A floating button at the top
+    right of the main area, just left of the right panel, switches views.
+    It shows the other view's icon (`polyline` for the graph, `palette`
+    for the designer).
+  - The right panel, where the video player is: a list of things to edit
+    (the main menu, the choice screen, the pause screen, and styles with a
+    +), and below it the presets. A preset warns before replacing work.
+  - Choice screens preview different scenarios: 2–10 answers, short or
+    long text, with or without a question.
+  - New preference, off by default: **"Allow no-brainers"** lets a branched
+    node have a single choice.
+  - While designing, the left panel shows only the sections that matter;
+    variables and defaults are hidden.
+  - Preferences are grouped under headers.
 
 ## Fifth round (from the big feature list)
 

@@ -1,6 +1,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
@@ -122,5 +123,23 @@ void main() {
       r'D:\other\tune.mp3',
     );
     await tester.pump(const Duration(seconds: 5)); // the notice fades
+  });
+
+  testWidgets('files are checked again when the window regains focus', (
+    tester,
+  ) async {
+    final disk = FakeMediaFiles();
+    final c = await pumpApp(tester, mediaFiles: disk);
+    c.read(documentProvider.notifier).apply('Import', (_) => _project());
+    await tester.pumpAndSettle();
+    final sub = c.listen(missingMediaProvider, (_, _) {});
+    expect(sub.read(), isEmpty);
+
+    disk.missing.add(_here);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.inactive);
+    tester.binding.handleAppLifecycleStateChanged(AppLifecycleState.resumed);
+    await tester.pump();
+    expect(c.read(missingMediaProvider), {'a'});
+    sub.close();
   });
 }

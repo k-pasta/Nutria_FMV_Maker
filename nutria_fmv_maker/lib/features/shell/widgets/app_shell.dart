@@ -20,6 +20,7 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
+import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
@@ -41,9 +42,15 @@ class _AppShellState extends ConsumerState<AppShell> {
   /// menu, a dialog) has it, so the shortcuts above it receive key presses.
   final _shellFocus = FocusNode(debugLabel: 'AppShell');
 
-  /// Re-reads the clipboard when the window comes back to the front: the
-  /// user may have copied something in another app.
-  late final _lifecycle = AppLifecycleListener(onResume: _refreshClipboard);
+  /// Re-reads the clipboard and checks the media files again when the
+  /// window comes back to the front: the user may have copied something, or
+  /// moved or restored files, in another app.
+  late final _lifecycle = AppLifecycleListener(onResume: _onResume);
+
+  void _onResume() {
+    _refreshClipboard();
+    ref.invalidate(missingMediaProvider);
+  }
 
   void _refreshClipboard() =>
       ref.read(clipboardHasNodesProvider.notifier).refresh();
