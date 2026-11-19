@@ -177,6 +177,7 @@
   "editProjectSettings": "Paramètres du Projet",
   "editRedo": "Rétablir",
   "editCopy": "Copier",
+  "editCut": "Couper",
   "editPaste": "Coller",
   "editDuplicate": "Dupliquer",
   "editSelectAll": "Tout sélectionner",

@@ -579,6 +579,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editCopy => 'Αντιγραφή';
 
   @override
+  String get editCut => 'Αποκοπή';
+
+  @override
   String get editPaste => 'Επικόλληση';
 
   @override

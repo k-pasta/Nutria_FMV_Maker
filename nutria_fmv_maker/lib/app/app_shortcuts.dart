@@ -29,6 +29,7 @@ const kShortcutDisconnect = SingleActivator(
 );
 const kShortcutRename = SingleActivator(LogicalKeyboardKey.f2);
 const kShortcutCopy = SingleActivator(LogicalKeyboardKey.keyC, control: true);
+const kShortcutCut = SingleActivator(LogicalKeyboardKey.keyX, control: true);
 const kShortcutPaste = SingleActivator(LogicalKeyboardKey.keyV, control: true);
 const kShortcutDuplicate = SingleActivator(
   LogicalKeyboardKey.keyD,
@@ -121,6 +122,7 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
   kShortcutGraphView: () => commands.showView(EditorView.graph),
   kShortcutScreensView: () => commands.showView(EditorView.screens),
   kShortcutCopy: commands.copy,
+  kShortcutCut: commands.cut,
   kShortcutPaste: commands.paste,
   kShortcutDuplicate: commands.duplicate,
   kShortcutSelectAll: commands.selectAll,

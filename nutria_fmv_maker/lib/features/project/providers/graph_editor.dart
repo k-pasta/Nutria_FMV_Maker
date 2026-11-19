@@ -369,6 +369,20 @@ class GraphEditor {
     }
   }
 
+  /// Copies the selected nodes (see [copySelection]) and deletes them, once
+  /// they are on the clipboard. The origin is neither copied nor deleted.
+  Future<void> cutSelection() async {
+    final ids = _ref.read(selectionProvider).selected;
+    final fragment = _current.copyFragment(ids);
+    if (fragment.isEmpty) return;
+    if (!await _ref.read(clipboardServiceProvider).write(fragment.encode())) {
+      return;
+    }
+    _ref.read(clipboardHasNodesProvider.notifier).copied();
+    _document.apply('Cut nodes', (d) => d.removeNodes(ids));
+    _ref.read(selectionProvider.notifier).clear();
+  }
+
   /// Pastes copied nodes centered on [at] (node coordinates) and selects
   /// them. Clipboard text that isn't copied nodes is ignored.
   Future<void> paste(Offset at) async {

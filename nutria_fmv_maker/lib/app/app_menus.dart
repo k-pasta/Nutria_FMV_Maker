@@ -84,6 +84,12 @@ List<NutriaMenu> buildAppMenus({
         onPressed: canRedo ? commands.redo : null,
       ),
       NutriaMenuEntry(
+        label: t.editCut,
+        icon: Icons.content_cut,
+        shortcut: kShortcutCut,
+        onPressed: canCopy ? commands.cut : null,
+      ),
+      NutriaMenuEntry(
         label: t.editCopy,
         icon: Icons.content_copy,
         shortcut: kShortcutCopy,

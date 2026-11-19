@@ -108,6 +108,11 @@ List<NutriaContextMenuItem> _nodeMenu(
     // which may hold nothing copyable (only the origin).
     if (ref.read(canCopySelectionProvider)) ...[
       NutriaContextMenuItem(
+        icon: Icons.content_cut,
+        label: t.editCut,
+        onSelected: editor.cutSelection,
+      ),
+      NutriaContextMenuItem(
         icon: Icons.content_copy,
         label: t.editCopy,
         onSelected: editor.copySelection,

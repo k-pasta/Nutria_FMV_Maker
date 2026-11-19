@@ -1168,6 +1168,12 @@ abstract class AppLocalizations {
   /// **'Copy'**
   String get editCopy;
 
+  /// No description provided for @editCut.
+  ///
+  /// In en, this message translates to:
+  /// **'Cut'**
+  String get editCut;
+
   /// No description provided for @editPaste.
   ///
   /// In en, this message translates to:

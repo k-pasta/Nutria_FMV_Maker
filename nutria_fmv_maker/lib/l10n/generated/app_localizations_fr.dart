@@ -581,6 +581,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editCopy => 'Copier';
 
   @override
+  String get editCut => 'Couper';
+
+  @override
   String get editPaste => 'Coller';
 
   @override

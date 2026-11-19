@@ -68,6 +68,32 @@ void main() {
     expect(videoNodes(), hasLength(2), reason: 'duplicate is one undo step');
   });
 
+  testWidgets('Ctrl+X cuts nodes: copied, then deleted in one undo step', (
+    tester,
+  ) async {
+    final clipboard = MemoryClipboard();
+    final c = await pumpApp(
+      tester,
+      overrides: [clipboardServiceProvider.overrideWithValue(clipboard)],
+    );
+    final id = c.read(graphEditorProvider).addVideoNode(Position.zero);
+    c.read(graphEditorProvider).selectAll();
+    await tester.pumpAndSettle();
+
+    await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
+    await tester.sendKeyEvent(LogicalKeyboardKey.keyX);
+    await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
+    await tester.pumpAndSettle();
+    final doc = c.read(projectDocumentProvider);
+    expect(clipboard.text, contains(id));
+    expect(doc.nodes.containsKey(id), isFalse);
+    expect(doc.nodes, hasLength(1), reason: 'the origin stays');
+    expect(c.read(selectionProvider).selected, isEmpty);
+
+    c.read(documentProvider.notifier).undo();
+    expect(c.read(projectDocumentProvider).nodes.containsKey(id), isTrue);
+  });
+
   testWidgets('Ctrl+A selects every node', (tester) async {
     final c = await pumpApp(tester);
     c.read(graphEditorProvider).addVideoNode(Position.zero);

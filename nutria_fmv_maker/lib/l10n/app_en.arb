@@ -257,6 +257,7 @@
   "editProjectSettings": "Project Settings",
   "editRedo": "Redo",
   "editCopy": "Copy",
+  "editCut": "Cut",
   "editPaste": "Paste",
   "editDuplicate": "Duplicate",
   "editSelectAll": "Select All",

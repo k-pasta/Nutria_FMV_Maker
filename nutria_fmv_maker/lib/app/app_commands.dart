@@ -245,6 +245,7 @@ class AppCommands {
   }
 
   Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
+  Future<void> cut() => _ref.read(graphEditorProvider).cutSelection();
   void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();
   void selectAll() => _ref.read(graphEditorProvider).selectAll();
   void collapseAll() => _ref.read(graphEditorProvider).collapseAll();
