@@ -104,4 +104,31 @@ void main() {
       expect(state.test(), isFalse);
     });
   });
+
+  test('music: with a video, while choosing and in the menu', () {
+    const project = FmvProject(
+      info: FmvProjectInfo(menuMusic: FmvLoopMusic(track: 'menu.mp3')),
+      nodes: {
+        '001': FmvNode(
+          video: 'a.mp4',
+          music: FmvMusic(
+            track: 'theme.mp3',
+            end: FmvMusicEnd.laterNodeChanges,
+            loop: true,
+            fadeOutMs: 2000,
+          ),
+          pauseMusic: FmvLoopMusic(track: 'tick.mp3', fadeOutMs: 500),
+        ),
+      },
+    );
+    final read = FmvProject.decode(project.encode());
+    expect(read.encode(), project.encode());
+    expect(read.info.menuMusic!.track, 'menu.mp3');
+    final node = read.nodes['001']!;
+    expect(node.music!.end, FmvMusicEnd.laterNodeChanges);
+    expect(node.music!.fadeOutMs, 2000);
+    expect(node.pauseMusic!.fadeOutMs, 500);
+    expect(const FmvNode(video: 'b.mp4').toJson().containsKey('music'),
+        isFalse);
+  });
 }

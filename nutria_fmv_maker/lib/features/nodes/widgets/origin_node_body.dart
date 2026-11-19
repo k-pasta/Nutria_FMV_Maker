@@ -3,6 +3,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/music_rows.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
@@ -105,6 +106,7 @@ class _OriginNodeBodyState extends ConsumerState<OriginNodeBody> {
             ),
           ),
         ),
+        const MenuMusicRow(),
       ],
     );
   }

@@ -317,6 +317,55 @@ class AppLocalizationsEl extends AppLocalizations {
   String get logicUseExpression => 'Χρήση Έκφρασης';
 
   @override
+  String get musicTrack => 'Μουσική';
+
+  @override
+  String get musicEndsWhen => 'Τελειώνει Όταν';
+
+  @override
+  String get musicEndTrack => 'Τελειώσει το Κομμάτι';
+
+  @override
+  String get musicEndChoices => 'Εμφανιστούν οι Επιλογές';
+
+  @override
+  String get musicEndVideo => 'Τελειώσει το Βίντεο';
+
+  @override
+  String get musicEndLater => 'Ξεκινήσει Άλλη Μουσική';
+
+  @override
+  String get musicLoop => 'Επανάληψη';
+
+  @override
+  String get musicFadeOut => 'Σβήσιμο';
+
+  @override
+  String get musicPauseWithVideo => 'Παύση με το Βίντεο';
+
+  @override
+  String get musicPause => 'Μουσική Παύσης';
+
+  @override
+  String get musicPauseFadeOut => 'Σβήσιμο Μουσικής Παύσης';
+
+  @override
+  String get musicMenu => 'Μουσική Μενού';
+
+  @override
+  String get musicRemove => 'Αφαίρεση μουσικής';
+
+  @override
+  String get musicLoopNeverEnds =>
+      'Ένα κομμάτι σε επανάληψη δεν τελειώνει μόνο του: παίζει μέχρι να ξεκινήσει άλλη μουσική.';
+
+  @override
+  String get musicDropAsMusic => 'Μουσική με το Βίντεο';
+
+  @override
+  String get musicDropAsPause => 'Μουσική Παύσης (στις Επιλογές)';
+
+  @override
   String get logicProblemNoVariable => 'Επιλέξτε μεταβλητή.';
 
   @override

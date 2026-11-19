@@ -1,5 +1,6 @@
 // The node types of the story graph (saved data only, no editor state).
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
@@ -72,6 +73,9 @@ sealed class Node with _$Node {
     String? name,
     @Default(1) int swatch,
     @Default(false) bool isExpanded,
+
+    /// Imported audio that loops in the main menu, if any.
+    String? menuMusicId,
   }) = OriginNode;
 
   /// Plays a video, then continues to a single next node.
@@ -85,6 +89,7 @@ sealed class Node with _$Node {
     @Default(false) bool isExpanded,
     String? videoId,
     @Default(VideoSettingsOverride()) VideoSettingsOverride overrides,
+    MusicCue? music,
   }) = SimpleVideoNode;
 
   /// Plays a video, then lets the viewer pick one of [choices].
@@ -103,6 +108,11 @@ sealed class Node with _$Node {
     /// A question shown above the choices, with no output of its own;
     /// `null` when the node has none (the "Question" setting is off).
     String? question,
+    MusicCue? music,
+
+    /// Imported audio that loops while the viewer chooses, if any.
+    String? pauseMusicId,
+    @Default(1000) int pauseMusicFadeOutMs,
   }) = BranchedVideoNode;
 
   /// A note for the author: text only, never exported. It stands on the
@@ -169,6 +179,21 @@ sealed class Node with _$Node {
     BranchedVideoNode(:final overrides) => overrides,
     _ => null,
   };
+
+  /// The music that goes with this video node, or `null`.
+  MusicCue? get musicOrNull => switch (this) {
+    SimpleVideoNode(:final music) => music,
+    BranchedVideoNode(:final music) => music,
+    _ => null,
+  };
+
+  /// Every imported file this node uses (video and music).
+  Iterable<String> get mediaIds => [
+    ?videoIdOrNull,
+    ?musicOrNull?.audioId,
+    if (this case BranchedVideoNode(:final pauseMusicId?)) pauseMusicId,
+    if (this case OriginNode(:final menuMusicId?)) menuMusicId,
+  ];
 
   /// Whether this node changes or tests variables.
   bool get isLogicNode => this is ChangeVariableNode || this is CompareNode;

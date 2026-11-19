@@ -1,6 +1,7 @@
 // Pure edit operations on a ProjectDocument. Every edit in the app goes through here.
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -103,6 +104,45 @@ extension GraphOps on ProjectDocument {
   );
 
   /// Sets the color swatch index shown on a node.
+  // ------------------------------------------------------------------ music
+
+  /// Gives video node [id] music [audioId], keeping its other music
+  /// settings if it had music.
+  ProjectDocument setMusic(String id, String audioId) => updateMusic(
+    id,
+    (cue) => cue?.copyWith(audioId: audioId) ?? MusicCue(audioId: audioId),
+  );
+
+  /// Edits video node [id]'s music; returning `null` removes it.
+  ProjectDocument updateMusic(
+    String id,
+    MusicCue? Function(MusicCue? cue) edit,
+  ) => updateNode(
+    id,
+    (n) => switch (n) {
+      SimpleVideoNode() => n.copyWith(music: edit(n.music)),
+      BranchedVideoNode() => n.copyWith(music: edit(n.music)),
+      _ => n,
+    },
+  );
+
+  /// Sets (or with `null` removes) branched node [id]'s pause music.
+  ProjectDocument setPauseMusic(String id, String? audioId) => updateNode(
+    id,
+    (n) => n is BranchedVideoNode ? n.copyWith(pauseMusicId: audioId) : n,
+  );
+
+  ProjectDocument setPauseMusicFadeOut(String id, int ms) => updateNode(
+    id,
+    (n) => n is BranchedVideoNode ? n.copyWith(pauseMusicFadeOutMs: ms) : n,
+  );
+
+  /// Sets (or with `null` removes) the main menu music.
+  ProjectDocument setMenuMusic(String? audioId) => updateNode(
+    origin.id,
+    (n) => n is OriginNode ? n.copyWith(menuMusicId: audioId) : n,
+  );
+
   // ------------------------------------------------------------------ logic
 
   /// Edits change node [id] (no-op for other nodes).
@@ -139,10 +179,8 @@ extension GraphOps on ProjectDocument {
       .where((c) => c.attachedTo == hostId)
       .firstOrNull;
 
-  ProjectDocument setCommentText(String id, String text) => updateNode(
-    id,
-    (n) => n is CommentNode ? n.copyWith(text: text) : n,
-  );
+  ProjectDocument setCommentText(String id, String text) =>
+      updateNode(id, (n) => n is CommentNode ? n.copyWith(text: text) : n);
 
   /// Attaches comment [id] on top of node [hostId]. Does nothing unless
   /// [hostId] is another node that isn't a comment and has no comment yet.
@@ -302,6 +340,7 @@ extension GraphOps on ProjectDocument {
           swatch: current.swatch,
           videoId: current.videoId,
           overrides: current.overrides,
+          music: current.music,
           choices: [
             firstChoice,
             for (var i = 1; i < kMinChoices; i++) Choice(id: newId()),
@@ -329,6 +368,7 @@ extension GraphOps on ProjectDocument {
           swatch: current.swatch,
           videoId: current.videoId,
           overrides: current.overrides,
+          music: current.music,
         );
         return putNode(converted).copyWith(
           edges: [

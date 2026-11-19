@@ -319,6 +319,55 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logicUseExpression => 'Utiliser une expression';
 
   @override
+  String get musicTrack => 'Musique';
+
+  @override
+  String get musicEndsWhen => 'Se termine';
+
+  @override
+  String get musicEndTrack => 'Fin du morceau';
+
+  @override
+  String get musicEndChoices => 'Choix affichés';
+
+  @override
+  String get musicEndVideo => 'Fin de la vidéo';
+
+  @override
+  String get musicEndLater => 'Autre musique';
+
+  @override
+  String get musicLoop => 'En boucle';
+
+  @override
+  String get musicFadeOut => 'Fondu';
+
+  @override
+  String get musicPauseWithVideo => 'Pause avec la vidéo';
+
+  @override
+  String get musicPause => 'Musique de pause';
+
+  @override
+  String get musicPauseFadeOut => 'Fondu de la pause';
+
+  @override
+  String get musicMenu => 'Musique du menu';
+
+  @override
+  String get musicRemove => 'Retirer cette musique';
+
+  @override
+  String get musicLoopNeverEnds =>
+      'Un morceau en boucle ne s’arrête pas seul : il joue jusqu’à une autre musique.';
+
+  @override
+  String get musicDropAsMusic => 'Musique avec la vidéo';
+
+  @override
+  String get musicDropAsPause => 'Musique de pause (pendant le choix)';
+
+  @override
   String get logicProblemNoVariable => 'Choisissez une variable.';
 
   @override

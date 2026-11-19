@@ -4,6 +4,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/music_rows.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_parts.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
@@ -265,6 +266,7 @@ class VideoNodeExpansion extends ConsumerWidget {
               .read(overlayProvider.notifier)
               .setContextMenuOpen,
         ),
+      ...musicRows(context, ref, node),
       SwatchPicker(
         selected: node.swatch,
         withDefaults: ref.watch(colorDefaultsProvider).keys.toSet(),

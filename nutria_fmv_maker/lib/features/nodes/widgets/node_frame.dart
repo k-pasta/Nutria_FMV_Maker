@@ -277,20 +277,54 @@ class _NodeBodyState extends ConsumerState<_NodeBody> {
     // Library videos dropped on a video node replace its video.
     // Subtitle files dropped on one are linked to its video.
     return DragTarget<MediaAsset>(
+      // Audio becomes menu music on the origin and a video's music; on a
+      // branched node a menu asks whether it's pause music instead.
       onWillAcceptWithDetails: (details) => switch (details.data.kind) {
         MediaKind.video => node.isVideoNode,
         MediaKind.subtitle => node.videoIdOrNull != null,
+        MediaKind.audio => node is OriginNode || node.isVideoNode,
         _ => false,
       },
-      onAcceptWithDetails: (details) => details.data.isVideo
-          ? _gestures.dropVideo(node.id, details.data.id)
-          : AppCommands(
-              context,
-              ref,
-            ).linkSubtitle(node.videoIdOrNull!, details.data.id),
+      onAcceptWithDetails: (details) => _drop(node, details),
       builder: (context, candidates, _) =>
           _body(context, candidates.isNotEmpty),
     );
+  }
+
+  void _drop(Node node, DragTargetDetails<MediaAsset> details) {
+    final asset = details.data;
+    final editor = ref.read(graphEditorProvider);
+    switch (asset.kind) {
+      case MediaKind.video:
+        _gestures.dropVideo(node.id, asset.id);
+      case MediaKind.subtitle:
+        AppCommands(context, ref).linkSubtitle(node.videoIdOrNull!, asset.id);
+      case MediaKind.audio when node is OriginNode:
+        editor.setMenuMusic(asset.id);
+      case MediaKind.audio when node is BranchedVideoNode:
+        final t = AppLocalizations.of(context);
+        showNutriaMenu(
+          context,
+          details.offset,
+          [
+            NutriaContextMenuItem(
+              icon: Icons.music_note,
+              label: t.musicDropAsMusic,
+              onSelected: () => editor.setMusic(node.id, asset.id),
+            ),
+            NutriaContextMenuItem(
+              icon: Icons.hourglass_bottom,
+              label: t.musicDropAsPause,
+              onSelected: () => editor.setPauseMusic(node.id, asset.id),
+            ),
+          ],
+          onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
+        );
+      case MediaKind.audio:
+        editor.setMusic(node.id, asset.id);
+      case MediaKind.image || MediaKind.font:
+        break;
+    }
   }
 
   /// Whether this drag pulls a noodle (Alt) rather than moving the node.

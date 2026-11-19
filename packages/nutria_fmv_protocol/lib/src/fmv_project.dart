@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:nutria_fmv_protocol/src/enums.dart';
 import 'package:nutria_fmv_protocol/src/logic.dart';
+import 'package:nutria_fmv_protocol/src/music.dart';
 
 /// Thrown by [FmvProject.decode] for text that isn't a .fmv project.
 class FmvFormatException implements Exception {
@@ -109,19 +110,24 @@ class FmvProject {
 
 /// Title and description of the project.
 class FmvProjectInfo {
-  const FmvProjectInfo({this.title, this.description});
+  const FmvProjectInfo({this.title, this.description, this.menuMusic});
 
   final String? title;
   final String? description;
 
+  /// Music looping in the main menu. (Added after version 1.0.)
+  final FmvLoopMusic? menuMusic;
+
   Map<String, Object?> toJson() => {
         if (title != null) 'title': title,
         if (description != null) 'description': description,
+        if (menuMusic != null) 'menuMusic': menuMusic!.toJson(),
       };
 
   factory FmvProjectInfo.fromJson(Map<String, Object?> json) => FmvProjectInfo(
         title: _string(json['title']),
         description: _string(json['description']),
+        menuMusic: FmvLoopMusic.fromJson(_map(json['menuMusic'])),
       );
 }
 
@@ -255,6 +261,8 @@ class FmvNode {
     this.target,
     this.choices,
     this.overrides = const FmvOverrides(),
+    this.music,
+    this.pauseMusic,
     this.variable,
     this.operation,
     this.value,
@@ -266,6 +274,13 @@ class FmvNode {
   });
 
   final FmvNodeType type;
+
+  /// Video nodes: music that goes with the video. (Added after 1.0.)
+  final FmvMusic? music;
+
+  /// Video nodes with choices: music looping while the viewer chooses.
+  /// (Added after 1.0.)
+  final FmvLoopMusic? pauseMusic;
 
   /// Change nodes: the variable changed.
   final String? variable;
@@ -339,6 +354,8 @@ class FmvNode {
         if (choices != null)
           'choices': [for (final choice in choices!) choice.toJson()],
         if (!overrides.isEmpty) 'overrides': overrides.toJson(),
+        if (music != null) 'music': music!.toJson(),
+        if (pauseMusic != null) 'pauseMusic': pauseMusic!.toJson(),
       };
 
   factory FmvNode.fromJson(Map<String, Object?> json) {
@@ -381,6 +398,8 @@ class FmvNode {
           ? [for (final choice in choices) FmvChoice.fromJson(_map(choice))]
           : null,
       overrides: FmvOverrides.fromJson(_map(json['overrides'])),
+      music: FmvMusic.fromJson(_map(json['music'])),
+      pauseMusic: FmvLoopMusic.fromJson(_map(json['pauseMusic'])),
     );
   }
 }

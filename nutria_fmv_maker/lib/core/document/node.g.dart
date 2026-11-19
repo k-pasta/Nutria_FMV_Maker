@@ -48,6 +48,7 @@ OriginNode _$OriginNodeFromJson(Map<String, dynamic> json) => OriginNode(
   name: json['name'] as String?,
   swatch: (json['swatch'] as num?)?.toInt() ?? 1,
   isExpanded: json['isExpanded'] as bool? ?? false,
+  menuMusicId: json['menuMusicId'] as String?,
   $type: json['type'] as String?,
 );
 
@@ -59,6 +60,7 @@ Map<String, dynamic> _$OriginNodeToJson(OriginNode instance) =>
       'name': instance.name,
       'swatch': instance.swatch,
       'isExpanded': instance.isExpanded,
+      'menuMusicId': instance.menuMusicId,
       'type': instance.$type,
     };
 
@@ -76,6 +78,9 @@ SimpleVideoNode _$SimpleVideoNodeFromJson(Map<String, dynamic> json) =>
           : VideoSettingsOverride.fromJson(
               json['overrides'] as Map<String, dynamic>,
             ),
+      music: json['music'] == null
+          ? null
+          : MusicCue.fromJson(json['music'] as Map<String, dynamic>),
       $type: json['type'] as String?,
     );
 
@@ -89,6 +94,7 @@ Map<String, dynamic> _$SimpleVideoNodeToJson(SimpleVideoNode instance) =>
       'isExpanded': instance.isExpanded,
       'videoId': instance.videoId,
       'overrides': instance.overrides.toJson(),
+      'music': instance.music?.toJson(),
       'type': instance.$type,
     };
 
@@ -112,6 +118,12 @@ BranchedVideoNode _$BranchedVideoNodeFromJson(Map<String, dynamic> json) =>
               .toList() ??
           const <Choice>[],
       question: json['question'] as String?,
+      music: json['music'] == null
+          ? null
+          : MusicCue.fromJson(json['music'] as Map<String, dynamic>),
+      pauseMusicId: json['pauseMusicId'] as String?,
+      pauseMusicFadeOutMs:
+          (json['pauseMusicFadeOutMs'] as num?)?.toInt() ?? 1000,
       $type: json['type'] as String?,
     );
 
@@ -127,6 +139,9 @@ Map<String, dynamic> _$BranchedVideoNodeToJson(BranchedVideoNode instance) =>
       'overrides': instance.overrides.toJson(),
       'choices': instance.choices.map((e) => e.toJson()).toList(),
       'question': instance.question,
+      'music': instance.music?.toJson(),
+      'pauseMusicId': instance.pauseMusicId,
+      'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
       'type': instance.$type,
     };
 

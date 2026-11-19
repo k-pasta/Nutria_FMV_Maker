@@ -378,3 +378,34 @@ what the Maker checks.
   the whole window, and some ended up under a panel. Framing, the
   starting view and "paste at the view's centre" now use the part
   between the open panels. This bug was there before this session.
+
+## Phase 6: music
+- **Dropping audio from Imported Media:**
+  - On the origin node: menu music. A "Menu Music" row with × appears
+    under the title and description.
+  - On a simple video node: the music that goes with its video.
+  - On a branched node: a small menu asks "Music With the Video" or
+    "Pause Music (While Choosing)", as you described.
+- **Music with a video** has these rows in the node's settings:
+  - The track, with × to remove it. Clicking the name plays it in the
+    preview, and the same goes for the other music rows.
+  - **Ends When:** Track Ends, Choices Appear, Video Ends, or **Other Music
+    Starts**. The last one is the "continues until a later node changes
+    it" option I proposed, so music can span several clips.
+  - **Loop:** Yes/No. With Loop and "Track Ends" together, a quiet note
+    above the rows says a looping track never ends by itself.
+  - **Fade Out:** steps of 0, 0.25, 0.5, 1, 2, 3 or 5 s, and the same on
+    right-click. **Ask:** do you want a typed number field instead?
+  - **Pause With Video:** pauses while the video waits at its end.
+- **Pause music** (branched nodes): the track, and "Pause Music Fade Out".
+  It always loops while the viewer chooses, as you said.
+- **Menu music** always loops. It has no fade setting yet; the Player
+  gets 1 s.
+- **Music can only be set by dropping.** **Ask:** should there also be a
+  picker in the settings?
+- **Converting a node keeps its music.** Turning a branched node into a
+  simple one drops its pause music, since simple nodes have none.
+- **Copying nodes** brings their audio along, like their videos.
+- **Protocol:** optional `"music"` and `"pauseMusic"` on nodes, and
+  `"menuMusic"` in ProjectInfo. Older Players ignore them. The Player
+  still has to play them, which is part of the Player update.

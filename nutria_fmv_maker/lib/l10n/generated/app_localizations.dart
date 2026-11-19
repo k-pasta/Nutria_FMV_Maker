@@ -670,6 +670,102 @@ abstract class AppLocalizations {
   /// **'Use an Expression'**
   String get logicUseExpression;
 
+  /// No description provided for @musicTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Music'**
+  String get musicTrack;
+
+  /// No description provided for @musicEndsWhen.
+  ///
+  /// In en, this message translates to:
+  /// **'Ends When'**
+  String get musicEndsWhen;
+
+  /// No description provided for @musicEndTrack.
+  ///
+  /// In en, this message translates to:
+  /// **'Track Ends'**
+  String get musicEndTrack;
+
+  /// No description provided for @musicEndChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Choices Appear'**
+  String get musicEndChoices;
+
+  /// No description provided for @musicEndVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Video Ends'**
+  String get musicEndVideo;
+
+  /// No description provided for @musicEndLater.
+  ///
+  /// In en, this message translates to:
+  /// **'Other Music Starts'**
+  String get musicEndLater;
+
+  /// No description provided for @musicLoop.
+  ///
+  /// In en, this message translates to:
+  /// **'Loop'**
+  String get musicLoop;
+
+  /// No description provided for @musicFadeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Fade Out'**
+  String get musicFadeOut;
+
+  /// No description provided for @musicPauseWithVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause With Video'**
+  String get musicPauseWithVideo;
+
+  /// No description provided for @musicPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Music'**
+  String get musicPause;
+
+  /// No description provided for @musicPauseFadeOut.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Music Fade Out'**
+  String get musicPauseFadeOut;
+
+  /// No description provided for @musicMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Menu Music'**
+  String get musicMenu;
+
+  /// No description provided for @musicRemove.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this music'**
+  String get musicRemove;
+
+  /// No description provided for @musicLoopNeverEnds.
+  ///
+  /// In en, this message translates to:
+  /// **'A looping track never ends by itself: it plays until other music starts.'**
+  String get musicLoopNeverEnds;
+
+  /// No description provided for @musicDropAsMusic.
+  ///
+  /// In en, this message translates to:
+  /// **'Music With the Video'**
+  String get musicDropAsMusic;
+
+  /// No description provided for @musicDropAsPause.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Music (While Choosing)'**
+  String get musicDropAsPause;
+
   /// No description provided for @logicProblemNoVariable.
   ///
   /// In en, this message translates to:

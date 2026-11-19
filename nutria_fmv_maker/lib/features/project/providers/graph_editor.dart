@@ -1,6 +1,7 @@
 // Named, undoable editing commands for the node graph and project.
 import 'package:flutter/painting.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -62,6 +63,33 @@ class GraphEditor {
     _document.apply('Add node', (d) => d.putNode(node));
     return id;
   }
+
+  /// Gives video node [id] music [audioId] (keeping its music settings).
+  void setMusic(String id, String audioId) =>
+      _document.apply('Set music', (d) => d.setMusic(id, audioId));
+
+  /// Edits video node [id]'s music settings.
+  void editMusic(String id, MusicCue Function(MusicCue cue) edit) =>
+      _document.apply(
+        'Change music',
+        (d) => d.updateMusic(id, (cue) => cue == null ? null : edit(cue)),
+      );
+
+  void removeMusic(String id) =>
+      _document.apply('Remove music', (d) => d.updateMusic(id, (_) => null));
+
+  /// Sets (or with `null` removes) branched node [id]'s pause music.
+  void setPauseMusic(String id, String? audioId) =>
+      _document.apply('Set pause music', (d) => d.setPauseMusic(id, audioId));
+
+  void setPauseMusicFadeOut(String id, int ms) => _document.apply(
+    'Change pause music',
+    (d) => d.setPauseMusicFadeOut(id, ms),
+  );
+
+  /// Sets (or with `null` removes) the main menu music.
+  void setMenuMusic(String? audioId) =>
+      _document.apply('Set menu music', (d) => d.setMenuMusic(audioId));
 
   /// Adds a Change Variable node at [position] and returns its id.
   String addChangeNode(Position position) {

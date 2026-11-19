@@ -1,6 +1,7 @@
 // Turns a project into the .fmv that Nutria FMV Player plays. The file format
 // itself (and reading it) lives in the shared nutria_fmv_protocol package.
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
@@ -96,6 +97,7 @@ FmvExport exportFmv(ProjectDocument document) {
           subtitles: _subtitlesPath(document, node),
           target: targetOf(PortRef(nodeId: nodeId, port: kNextPortKey)),
           overrides: _overrides(document, node, kSimpleNodeSettings),
+          music: _music(document, node.music),
         );
       case BranchedVideoNode():
         final choices = <FmvChoice>[];
@@ -120,6 +122,14 @@ FmvExport exportFmv(ProjectDocument document) {
           },
           choices: choices.isEmpty ? null : choices,
           overrides: _overrides(document, node, kBranchedNodeSettings),
+          music: _music(document, node.music),
+          pauseMusic: switch (document.mediaById(node.pauseMusicId)) {
+            final audio? => FmvLoopMusic(
+              track: audio.path,
+              fadeOutMs: node.pauseMusicFadeOutMs,
+            ),
+            null => null,
+          },
         );
     }
   }
@@ -130,6 +140,10 @@ FmvExport exportFmv(ProjectDocument document) {
       info: FmvProjectInfo(
         title: document.info.title,
         description: document.info.description,
+        menuMusic: switch (document.mediaById(document.origin.menuMusicId)) {
+          final audio? => FmvLoopMusic(track: audio.path),
+          null => null,
+        },
       ),
       settings: FmvSettings(
         selectionTimeMs: settings.selectionTimeMs,
@@ -165,6 +179,20 @@ FmvVariable _variable(Variable v) => switch (v) {
     max: max,
   ),
 };
+
+/// [cue] as the Player reads it; `null` without one or if its audio is
+/// gone.
+FmvMusic? _music(ProjectDocument document, MusicCue? cue) {
+  final audio = document.mediaById(cue?.audioId);
+  if (cue == null || audio == null) return null;
+  return FmvMusic(
+    track: audio.path,
+    end: cue.end,
+    loop: cue.loop,
+    fadeOutMs: cue.fadeOutMs,
+    pauseWithVideo: cue.pauseWithVideo,
+  );
+}
 
 /// The path of the subtitles linked to [node]'s video, if any.
 String? _subtitlesPath(ProjectDocument document, Node node) {

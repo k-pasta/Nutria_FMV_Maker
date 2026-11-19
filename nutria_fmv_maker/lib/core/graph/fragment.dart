@@ -103,7 +103,7 @@ extension FragmentOps on ProjectDocument {
         if (node is CommentNode && chosen.containsKey(node.attachedTo))
           node.id: node,
     };
-    final videoIds = {for (final node in picked.values) ?node.videoIdOrNull};
+    final videoIds = {for (final node in picked.values) ...node.mediaIds};
     return NodeFragment(
       nodes: picked.values.toList(),
       edges: [
@@ -158,11 +158,18 @@ extension FragmentOps on ProjectDocument {
           id: id,
           position: position,
           videoId: videoIds[node.videoId],
+          music: node.music?.copyWith(
+            audioId: videoIds[node.music!.audioId] ?? node.music!.audioId,
+          ),
         ),
         BranchedVideoNode() => node.copyWith(
           id: id,
           position: position,
           videoId: videoIds[node.videoId],
+          music: node.music?.copyWith(
+            audioId: videoIds[node.music!.audioId] ?? node.music!.audioId,
+          ),
+          pauseMusicId: videoIds[node.pauseMusicId],
           choices: [
             for (final choice in node.choices)
               choice.copyWith(

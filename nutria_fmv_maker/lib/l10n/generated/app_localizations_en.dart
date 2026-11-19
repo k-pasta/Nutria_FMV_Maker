@@ -316,6 +316,55 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logicUseExpression => 'Use an Expression';
 
   @override
+  String get musicTrack => 'Music';
+
+  @override
+  String get musicEndsWhen => 'Ends When';
+
+  @override
+  String get musicEndTrack => 'Track Ends';
+
+  @override
+  String get musicEndChoices => 'Choices Appear';
+
+  @override
+  String get musicEndVideo => 'Video Ends';
+
+  @override
+  String get musicEndLater => 'Other Music Starts';
+
+  @override
+  String get musicLoop => 'Loop';
+
+  @override
+  String get musicFadeOut => 'Fade Out';
+
+  @override
+  String get musicPauseWithVideo => 'Pause With Video';
+
+  @override
+  String get musicPause => 'Pause Music';
+
+  @override
+  String get musicPauseFadeOut => 'Pause Music Fade Out';
+
+  @override
+  String get musicMenu => 'Menu Music';
+
+  @override
+  String get musicRemove => 'Remove this music';
+
+  @override
+  String get musicLoopNeverEnds =>
+      'A looping track never ends by itself: it plays until other music starts.';
+
+  @override
+  String get musicDropAsMusic => 'Music With the Video';
+
+  @override
+  String get musicDropAsPause => 'Pause Music (While Choosing)';
+
+  @override
   String get logicProblemNoVariable => 'Pick a variable.';
 
   @override
