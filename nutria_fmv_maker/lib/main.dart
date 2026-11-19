@@ -5,6 +5,7 @@ import 'package:media_kit/media_kit.dart';
 import 'package:nutria_fmv_maker/app/app.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/services/window_service.dart';
+import 'package:nutria_fmv_screens/nutria_fmv_screens.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 Future<void> main() async {
@@ -13,6 +14,8 @@ Future<void> main() async {
   MediaKit.ensureInitialized();
   // On Windows the app draws its own title bar, in the menu bar.
   await NativeWindowControls.instance.init();
+  // The licences of the fonts screens can use, for Help > About.
+  registerScreenFontLicences();
   // Loaded up front so preferences can be read synchronously.
   final preferences = await SharedPreferences.getInstance();
 

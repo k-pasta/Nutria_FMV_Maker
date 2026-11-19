@@ -1,24 +1,28 @@
-// The screen designer: a 16:9 stage with the selected screen's background
-// and elements, and a tray of the elements it can have.
+// The screen designer: a 16:9 stage with the selected screen drawn as the
+// Player draws it (nutria_fmv_screens), a tray of the elements it can have,
+// the preview's scenario, and a full-screen preview.
 import 'dart:io';
 
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
-import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
+import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
-import 'package:nutria_fmv_maker/ui/text/markdown_text.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
+import 'package:nutria_fmv_screens/nutria_fmv_screens.dart';
 
 /// What element [kind] says unless it has its own text.
 String screenElementLabel(ScreenElementKind kind, AppLocalizations t) =>
@@ -36,14 +40,84 @@ String screenElementLabel(ScreenElementKind kind, AppLocalizations t) =>
       ScreenElementKind.resume => t.screenResume,
       ScreenElementKind.save => t.screenSave,
       ScreenElementKind.mainMenu => t.screenMainMenu,
+      ScreenElementKind.back => t.screenBack,
+      ScreenElementKind.volume => t.screenVolume,
+      ScreenElementKind.subtitles => t.screenSubtitles,
+      ScreenElementKind.fullScreen => t.screenFullScreen,
+      ScreenElementKind.saves => t.screenSaves,
     };
 
 /// The name of screen [kind].
 String screenKindLabel(ScreenKind kind, AppLocalizations t) => switch (kind) {
   ScreenKind.menu => t.screenKindMenu,
   ScreenKind.choice => t.screenKindChoice,
+  ScreenKind.endChoice => t.screenKindEndChoice,
   ScreenKind.pause => t.screenKindPause,
+  ScreenKind.settings => t.screenKindSettings,
+  ScreenKind.saves => t.screenKindSaves,
 };
+
+/// The name of [screen]: the author's, or its kind's.
+String screenLabel(ScreenDesign screen, AppLocalizations t) =>
+    screen.name ?? screenKindLabel(screen.kind, t);
+
+/// The texts the Player shows on its own (button names, "On", …), in the
+/// editor's language, for drawing screens in the designer.
+Map<String, String> screenTexts(AppLocalizations t) => {
+  for (final kind in ScreenElementKind.values)
+    kind.name: screenElementLabel(kind, t),
+  'on': t.screenOn,
+  'off': t.screenOff,
+  'noSaves': t.screenNoSaves,
+};
+
+/// What the designer shows on [screen]: the project's title and
+/// description, and sample answers, question, saves and settings by
+/// [scenario], with elements that have nothing to show still drawn.
+ScreenContent designerContent(
+  ProjectDocument doc,
+  ScreenDesign screen,
+  ChoiceScenario scenario,
+  AppLocalizations t,
+) {
+  final answering =
+      screen.kind == ScreenKind.choice || screen.kind == ScreenKind.endChoice;
+  return ScreenContent(
+    title: doc.info.title,
+    description: doc.info.description,
+    question: answering && scenario.question ? t.screenSampleQuestion : null,
+    answers: [
+      if (answering)
+        for (var i = 1; i <= scenario.answers; i++)
+          scenario.longText
+              ? t.screenSampleLongAnswer(i)
+              : t.screenSampleAnswer(i),
+    ],
+    timeLeft: 0.6,
+    volume: 70,
+    subtitles: switch (doc.info.languages.firstOrNull) {
+      final code? => fmvLanguageLabel(code),
+      null => t.screenOff,
+    },
+    fullScreen: true,
+    saves: [t.screenSampleSave],
+    texts: screenTexts(t),
+    showEmpty: true,
+  );
+}
+
+/// The family each imported font of [doc]'s styles is loaded under (while
+/// one is still loading, it's missing and the text uses the built-in font).
+Map<String, String> loadedFonts(WidgetRef ref, ProjectDocument doc) {
+  final fonts = <String, String>{};
+  for (final style in doc.styles) {
+    final path = doc.mediaById(style.fontId)?.path;
+    if (path == null) continue;
+    final family = ref.watch(mediaFontFamilyProvider(path)).value;
+    if (family != null) fonts[path] = family;
+  }
+  return fonts;
+}
 
 /// The Screens view, in the part of the window between the side panels.
 class ScreensView extends ConsumerWidget {
@@ -54,8 +128,12 @@ class ScreensView extends ConsumerWidget {
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
     final panels = ref.watch(panelLayoutProvider);
-    final screen = ref.watch(selectedScreenProvider);
+    final screen = ref.watch(designedScreenProvider);
+    final doc = ref.watch(projectDocumentProvider);
     final editor = ref.read(graphEditorProvider);
+    final required = kRequiredScreenElements[screen.kind]!;
+    final answering =
+        screen.kind == ScreenKind.choice || screen.kind == ScreenKind.endChoice;
     return ColoredBox(
       color: theme.cBackground,
       child: Padding(
@@ -80,22 +158,46 @@ class ScreensView extends ConsumerWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      // The tray: one button per kind of element. Click to add one;
-                      // drag one onto the screen to place it.
+                      // One button per kind of element the screen may have
+                      // (the ones it must have are always there). Click to
+                      // add one; drag one onto the screen to place it.
                       Wrap(
                         spacing: theme.dPanelPadding,
                         runSpacing: theme.dPanelPadding,
                         alignment: WrapAlignment.center,
+                        crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
-                          for (final kind in kScreenElementKinds[screen]!)
-                            _TrayButton(
-                              label: '+ ${screenElementLabel(kind, t)}',
-                              kind: kind,
-                              onTap: () => editor.addScreenElement(kind),
+                          for (final kind in kScreenElementKinds[screen.kind]!)
+                            if (!required.contains(kind))
+                              _TrayButton(
+                                label: '+ ${screenElementLabel(kind, t)}',
+                                kind: kind,
+                                onTap: () => editor.addScreenElement(kind),
+                              ),
+                          NutriaButton.icon(
+                            icon: Icons.fullscreen,
+                            tooltip: t.screenFullScreenPreview,
+                            onTap: () => showScreenPreview(
+                              context,
+                              doc: doc,
+                              screen: screen,
+                              scenario: ref.read(choiceScenarioProvider),
+                              fonts: loadedFonts(ref, doc),
+                              t: t,
                             ),
+                          ),
                         ],
                       ),
-                      if (screen == ScreenKind.choice) ...[
+                      if (screen.kind == ScreenKind.endChoice) ...[
+                        SizedBox(height: theme.dPanelPadding),
+                        NutriaText(
+                          text: t.screenKindEndChoiceHint,
+                          state: NutriaTextState.inactive,
+                          maxLines: 2,
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
+                      if (answering) ...[
                         SizedBox(height: theme.dPanelPadding),
                         const _ScenarioBar(),
                       ],
@@ -116,6 +218,62 @@ class ScreensView extends ConsumerWidget {
     );
   }
 }
+
+/// Shows [screen] filling the window, as the viewer sees it (answers light
+/// up under the mouse). Escape or a click outside the answers closes it.
+Future<void> showScreenPreview(
+  BuildContext context, {
+  required ProjectDocument doc,
+  required ScreenDesign screen,
+  required ChoiceScenario scenario,
+  required Map<String, String> fonts,
+  required AppLocalizations t,
+}) => Navigator.of(context).push(
+  PageRouteBuilder<void>(
+    opaque: true,
+    pageBuilder: (context, _, _) {
+      final content = designerContent(doc, screen, scenario, t);
+      void close() => Navigator.of(context).pop();
+      return CallbackShortcuts(
+        bindings: {const SingleActivator(LogicalKeyboardKey.escape): close},
+        child: Focus(
+          autofocus: true,
+          child: ColoredBox(
+            color: const Color(0xFF000000),
+            child: Center(
+              child: AspectRatio(
+                aspectRatio: 16 / 9,
+                child: GestureDetector(
+                  onTap: close,
+                  child: ScreenView(
+                    screen: fmvScreenOf(doc, screen),
+                    background: ScreenBackground.of(doc, screen),
+                    fontFamilyOf: (path) => fonts[path],
+                    content: ScreenContent(
+                      title: content.title,
+                      description: content.description,
+                      question: content.question,
+                      answers: content.answers,
+                      timeLeft: content.timeLeft,
+                      volume: content.volume,
+                      subtitles: content.subtitles,
+                      fullScreen: content.fullScreen,
+                      saves: content.saves,
+                      texts: content.texts,
+                      // Clickable, so they light up as in the Player.
+                      onAnswer: (_) {},
+                      onButton: (_) {},
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    },
+  ),
+);
 
 /// A tray button: a click adds the element, a drag places it.
 class _TrayButton extends StatelessWidget {
@@ -153,7 +311,7 @@ class _TrayButton extends StatelessWidget {
   }
 }
 
-/// How the choice screen is previewed: number of answers, long answers,
+/// How the answer screens are previewed: number of answers, long answers,
 /// with or without a question. Only changes the preview.
 class _ScenarioBar extends ConsumerWidget {
   const _ScenarioBar();
@@ -214,13 +372,15 @@ class _Stage extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = context.appTheme;
     final t = AppLocalizations.of(context);
-    final kind = ref.watch(selectedScreenProvider);
-    final screen = ref.watch(
-      projectDocumentProvider.select((d) => d.screenOf(kind)),
-    );
-    final background = ref.watch(mediaAssetProvider(screen.backgroundId ?? ''));
+    final screen = ref.watch(designedScreenProvider);
+    final doc = ref.watch(projectDocumentProvider);
+    final scenario = ref.watch(choiceScenarioProvider);
+    final fonts = loadedFonts(ref, doc);
+    final selected = ref.watch(selectedScreenElementProvider);
     final guides = ref.watch(screenDragProvider);
     final editor = ref.read(graphEditorProvider);
+    final drag = ref.read(screenDragProvider.notifier);
+    final select = ref.read(selectedScreenElementProvider.notifier).select;
     return LayoutBuilder(
       builder: (context, constraints) {
         final size = constraints.biggest;
@@ -245,8 +405,7 @@ class _Stage extends ConsumerWidget {
             }
           },
           builder: (context, candidates, _) => GestureDetector(
-            onTap: () =>
-                ref.read(selectedScreenElementProvider.notifier).select(null),
+            onTap: () => select(null),
             child: Container(
               decoration: BoxDecoration(
                 color: theme.cScreenStage,
@@ -258,32 +417,71 @@ class _Stage extends ConsumerWidget {
               child: ClipRect(
                 child: Stack(
                   children: [
+                    if (screen.backgroundId == null)
+                      // At the top, where elements rarely are.
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: EdgeInsets.all(theme.dPanelPadding),
+                          child: Text(
+                            screen.kind == ScreenKind.choice ||
+                                    screen.kind == ScreenKind.endChoice
+                                ? t.screenVideoBehind
+                                : t.screenDropBackground,
+                            style: TextStyle(
+                              color: theme.cScreenStageText,
+                              fontSize: theme.dTextHeight,
+                            ),
+                          ),
+                        ),
+                      ),
                     Positioned.fill(
-                      child: background != null
-                          ? _Background(asset: background)
-                          // At the top, where elements rarely are.
-                          : Align(
-                              alignment: Alignment.topCenter,
-                              child: Padding(
-                                padding: EdgeInsets.all(theme.dPanelPadding),
-                                child: Text(
-                                  kind == ScreenKind.choice
-                                      ? t.screenVideoBehind
-                                      : t.screenDropBackground,
-                                  style: TextStyle(
-                                    color: theme.cScreenStageText,
-                                    fontSize: theme.dTextHeight,
-                                  ),
+                      child: ScreenView(
+                        screen: fmvScreenOf(doc, screen),
+                        background: ScreenBackground.of(doc, screen),
+                        content: designerContent(doc, screen, scenario, t),
+                        fontFamilyOf: (path) => fonts[path],
+                        decorate: (i, element, child) {
+                          final e = screen.elements[i];
+                          final fills =
+                              e.kind == ScreenElementKind.choices &&
+                              e.layout.fillsScreen;
+                          return MouseRegion(
+                            cursor: fills
+                                ? SystemMouseCursors.click
+                                : SystemMouseCursors.move,
+                            child: GestureDetector(
+                              behavior: HitTestBehavior.opaque,
+                              onTap: () => select(e.id),
+                              // Answers that fill the screen have no place to
+                              // move to.
+                              onPanStart: fills
+                                  ? null
+                                  : (_) => drag.begin(e.id),
+                              onPanUpdate: fills
+                                  ? null
+                                  : (d) => drag.update(
+                                      d.delta.dx / size.width,
+                                      d.delta.dy / size.height,
+                                    ),
+                              onPanEnd: fills ? null : (_) => drag.end(),
+                              onPanCancel: fills ? null : drag.end,
+                              child: Container(
+                                foregroundDecoration: BoxDecoration(
+                                  border: selected == e.id
+                                      ? Border.all(
+                                          color: theme.cAccent,
+                                          width: 1.5,
+                                        )
+                                      : null,
                                 ),
+                                child: child,
                               ),
                             ),
-                    ),
-                    for (final element in screen.elements)
-                      _ElementView(
-                        key: ValueKey(element.id),
-                        element: element,
-                        stage: size,
+                          );
+                        },
                       ),
+                    ),
                     if (guides?.x case final x?)
                       Positioned(
                         left: x * size.width,
@@ -309,10 +507,18 @@ class _Stage extends ConsumerWidget {
   }
 }
 
-class _Background extends ConsumerWidget {
-  const _Background({required this.asset});
+/// A screen's background: an image, or a video's thumbnail.
+class ScreenBackground extends ConsumerWidget {
+  const ScreenBackground({super.key, required this.asset});
 
   final MediaAsset asset;
+
+  /// The background of [screen], or `null` without one.
+  static Widget? of(ProjectDocument doc, ScreenDesign screen) =>
+      switch (doc.mediaById(screen.backgroundId)) {
+        final asset? => ScreenBackground(asset: asset),
+        null => null,
+      };
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -327,139 +533,5 @@ class _Background extends ConsumerWidget {
     return bytes == null
         ? const SizedBox.shrink()
         : Image.memory(bytes, fit: BoxFit.cover, gaplessPlayback: true);
-  }
-}
-
-/// One element, drawn in its style at the size it has on a [stage]-sized
-/// screen. Dragging moves it; clicking selects it.
-class _ElementView extends ConsumerWidget {
-  const _ElementView({super.key, required this.element, required this.stage});
-
-  final ScreenElement element;
-  final Size stage;
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final theme = context.appTheme;
-    final t = AppLocalizations.of(context);
-    final doc = ref.watch(projectDocumentProvider);
-    final scenario = ref.watch(choiceScenarioProvider);
-    final style = doc.styleOf(element);
-    final selected = ref.watch(
-      selectedScreenElementProvider.select((id) => id == element.id),
-    );
-    final font = style.fontId == null
-        ? null
-        : doc.mediaById(style.fontId)?.path;
-    final family = font == null
-        ? null
-        : ref.watch(mediaFontFamilyProvider(font)).value;
-    final h = stage.height;
-    final textStyle = TextStyle(
-      fontSize: style.fontSize * h,
-      fontWeight: style.bold ? FontWeight.bold : FontWeight.normal,
-      fontFamily: family,
-      color: Color(style.textColor),
-      height: 1.2,
-    );
-    final radius = BorderRadius.circular(style.radius * h);
-
-    /// One box in the element's style (an answer, a button, the text).
-    Widget box(Widget child, {double? height}) => Container(
-      width: element.width * stage.width,
-      height: height,
-      padding: EdgeInsets.all(style.padding * h),
-      decoration: BoxDecoration(
-        color: Color(
-          style.backgroundColor,
-        ).withValues(alpha: style.backgroundOpacity),
-        borderRadius: radius,
-      ),
-      child: child,
-    );
-    Widget text(String value) =>
-        Text.rich(markdownSpan(value, textStyle), textAlign: TextAlign.center);
-
-    final Widget content = switch (element.kind) {
-      ScreenElementKind.choices => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          for (var i = 1; i <= scenario.answers; i++) ...[
-            if (i > 1) SizedBox(height: element.gap * h),
-            box(
-              text(
-                scenario.longText
-                    ? t.screenSampleLongAnswer(i)
-                    : t.screenSampleAnswer(i),
-              ),
-            ),
-          ],
-        ],
-      ),
-      // A bar, partly run down, in the text color over the background.
-      ScreenElementKind.timer => box(
-        Align(
-          alignment: Alignment.centerLeft,
-          child: FractionallySizedBox(
-            widthFactor: 0.6,
-            child: Container(
-              height: style.fontSize * h * 0.4,
-              decoration: BoxDecoration(
-                color: Color(style.textColor),
-                borderRadius: radius,
-              ),
-            ),
-          ),
-        ),
-      ),
-      ScreenElementKind.question => Opacity(
-        // Hidden in the preview when the scenario has no question, but
-        // still there to select and move.
-        opacity: scenario.question ? 1 : 0.25,
-        child: box(text(element.text ?? t.screenSampleQuestion)),
-      ),
-      _ => box(
-        text(
-          element.text ??
-              switch (element.kind) {
-                ScreenElementKind.title => doc.info.title,
-                ScreenElementKind.description => doc.info.description,
-                _ => null,
-              } ??
-              screenElementLabel(element.kind, t),
-        ),
-      ),
-    };
-
-    final drag = ref.read(screenDragProvider.notifier);
-    return Positioned(
-      left: element.x * stage.width,
-      top: element.y * h,
-      child: FractionalTranslation(
-        translation: const Offset(-0.5, -0.5),
-        child: MouseRegion(
-          cursor: SystemMouseCursors.move,
-          child: GestureDetector(
-            onTap: () => ref
-                .read(selectedScreenElementProvider.notifier)
-                .select(element.id),
-            onPanStart: (_) => drag.begin(element.id),
-            onPanUpdate: (d) =>
-                drag.update(d.delta.dx / stage.width, d.delta.dy / h),
-            onPanEnd: (_) => drag.end(),
-            onPanCancel: drag.end,
-            child: Container(
-              foregroundDecoration: BoxDecoration(
-                border: selected
-                    ? Border.all(color: theme.cAccent, width: 1.5)
-                    : null,
-                borderRadius: radius,
-              ),
-              child: content,
-            ),
-          ),
-        ),
-      ),
-    );
   }
 }

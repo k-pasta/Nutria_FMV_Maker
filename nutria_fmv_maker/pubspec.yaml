@@ -32,6 +32,8 @@ dependencies:
   # The .fmv format, shared with Nutria FMV Player.
   nutria_fmv_protocol:
     path: ../packages/nutria_fmv_protocol
+  nutria_fmv_screens:
+    path: ../packages/nutria_fmv_screens
   window_manager: ^0.5.1
 
 dev_dependencies:

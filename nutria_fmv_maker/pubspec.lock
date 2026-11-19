@@ -659,6 +659,13 @@ packages:
       relative: true
     source: path
     version: "1.0.0"
+  nutria_fmv_screens:
+    dependency: "direct main"
+    description:
+      path: "../packages/nutria_fmv_screens"
+      relative: true
+    source: path
+    version: "1.0.0"
   objective_c:
     dependency: transitive
     description:

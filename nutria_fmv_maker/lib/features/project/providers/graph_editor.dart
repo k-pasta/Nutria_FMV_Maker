@@ -112,10 +112,12 @@ class GraphEditor {
 
   // ---------------------------------------------------------------- screens
 
-  ScreenKind get _screen => _ref.read(selectedScreenProvider);
+  /// The id of the screen being designed.
+  String get _screen => _ref.read(designedScreenProvider).id;
 
   /// Adds an element of [kind] to the screen being designed, at ([x], [y])
-  /// if given (fractions of the screen), and selects it.
+  /// if given (fractions of the screen), and selects it. A Settings, Load
+  /// or Save button brings its screen along.
   void addScreenElement(ScreenElementKind kind, {double? x, double? y}) {
     final id = _newId();
     final screen = _screen;
@@ -126,7 +128,9 @@ class GraphEditor {
     _ref.read(selectedScreenElementProvider.notifier).select(id);
   }
 
+  /// Removes element [id], unless its screen can't do without it.
   void removeScreenElement(String id) {
+    if (!_current.canRemoveScreenElement(id)) return;
     _document.apply('Remove element', (d) => d.removeScreenElement(id));
     _ref.read(selectedScreenElementProvider.notifier).select(null);
   }
@@ -140,26 +144,72 @@ class GraphEditor {
     );
   }
 
-  /// The main menu's background.
-  void setMenuBackground(String? mediaId) =>
-      _document.apply('Set background', (d) => d.setMenuBackground(mediaId));
-
-  /// Replaces the elements of [preset]'s screen with its layout.
+  /// Replaces the elements of the screen being designed with [preset]'s
+  /// layout.
   void applyScreenPreset(ScreenPreset preset) {
-    _document.apply('Layout', (d) => d.applyScreenPreset(preset, _newId));
+    final screen = _screen;
+    _document.apply(
+      'Layout',
+      (d) => d.applyScreenPreset(screen, preset, _newId),
+    );
     _ref.read(selectedScreenElementProvider.notifier).select(null);
   }
 
-  /// Replaces the menu's elements with the classic layout.
-  void applyClassicMenu() => applyScreenPreset(ScreenPreset.classicMenu);
+  /// Adds an answer screen of [kind] named [name], and designs it.
+  String addScreen(ScreenKind kind, String name) {
+    final id = _newId();
+    _document.apply('New screen', (d) => d.addScreen(kind, id, name, _newId));
+    _ref.read(selectedScreenProvider.notifier).select(id);
+    return id;
+  }
 
-  void setScreenElementWidth(String id, double width) => _document.apply(
+  void renameScreen(String id, String name, {Object? mergeKey}) =>
+      _document.apply(
+        'Rename screen',
+        (d) => d.renameScreen(id, name),
+        mergeKey: mergeKey,
+      );
+
+  /// Deletes answer screen [id]; what used it uses the first of its kind.
+  void removeScreen(String id) {
+    if (!_current.canRemoveScreen(id)) return;
+    _document.apply('Delete screen', (d) => d.removeScreen(id));
+    if (_ref.read(selectedScreenProvider) == id) {
+      _ref
+          .read(selectedScreenProvider.notifier)
+          .select(ScreenKind.menu.defaultId);
+    }
+  }
+
+  void setScreenElementWidth(String id, double width, {Object? mergeKey}) =>
+      _document.apply(
+        'Change element',
+        (d) => d.setScreenElementWidth(id, width),
+        mergeKey: mergeKey,
+      );
+
+  void setScreenElementGap(String id, double gap, {Object? mergeKey}) =>
+      _document.apply(
+        'Change element',
+        (d) => d.setScreenElementGap(id, gap),
+        mergeKey: mergeKey,
+      );
+
+  void setScreenElementLayout(String id, FmvChoiceLayout layout) => _document
+      .apply('Change element', (d) => d.setScreenElementLayout(id, layout));
+
+  void setScreenElementTimerMode(String id, FmvTimerMode mode) => _document
+      .apply('Change element', (d) => d.setScreenElementTimerMode(id, mode));
+
+  void setScreenElementThickness(
+    String id,
+    double thickness, {
+    Object? mergeKey,
+  }) => _document.apply(
     'Change element',
-    (d) => d.setScreenElementWidth(id, width),
+    (d) => d.setScreenElementThickness(id, thickness),
+    mergeKey: mergeKey,
   );
-
-  void setScreenElementGap(String id, double gap) =>
-      _document.apply('Change element', (d) => d.setScreenElementGap(id, gap));
 
   void setScreenElementStyle(String id, String? styleId) => _document.apply(
     'Change element',
@@ -174,8 +224,15 @@ class GraphEditor {
       );
 
   /// Edits screen style [id] (every element using it changes).
-  void editScreenStyle(String id, ScreenStyle Function(ScreenStyle s) edit) =>
-      _document.apply('Change style', (d) => d.editScreenStyle(id, edit));
+  void editScreenStyle(
+    String id,
+    ScreenStyle Function(ScreenStyle s) edit, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change style',
+    (d) => d.editScreenStyle(id, edit),
+    mergeKey: mergeKey,
+  );
 
   /// Adds a style copied from [fromId] (or the plain button style), named
   /// [name], gives it to the selected element if there is one, and returns

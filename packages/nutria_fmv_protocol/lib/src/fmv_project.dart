@@ -48,6 +48,9 @@ class FmvProject {
     this.menuScreen = const FmvMenuScreen(),
     this.choiceScreen = const FmvMenuScreen(),
     this.pauseScreen = const FmvMenuScreen(),
+    this.settingsScreen = const FmvMenuScreen(),
+    this.savesScreen = const FmvMenuScreen(),
+    this.screens = const {},
   });
 
   final FmvProjectInfo info;
@@ -67,6 +70,21 @@ class FmvProject {
   final FmvMenuScreen choiceScreen;
   final FmvMenuScreen pauseScreen;
 
+  /// The settings screen ("Screens" → "settings") and the saved games
+  /// ("Screens" → "saves"). Empty: the Player's own. (Added after the
+  /// first screens.)
+  final FmvMenuScreen settingsScreen;
+  final FmvMenuScreen savesScreen;
+
+  /// More answer screens, by id ("Screens" → "more"), for nodes whose
+  /// `screen` names one; the others use [choiceScreen]. (Added after the
+  /// first screens.)
+  final Map<String, FmvMenuScreen> screens;
+
+  /// The answer screen of [node]: the one it names, else [choiceScreen].
+  FmvMenuScreen choiceScreenOf(FmvNode node) =>
+      screens[node.screen] ?? choiceScreen;
+
   /// The id of the node playback starts at, or `null` for an empty project.
   String? get startNodeId => nodes.isEmpty ? null : nodes.keys.first;
 
@@ -78,11 +96,21 @@ class FmvProject {
         },
         if (!menuScreen.isEmpty ||
             !choiceScreen.isEmpty ||
-            !pauseScreen.isEmpty)
+            !pauseScreen.isEmpty ||
+            !settingsScreen.isEmpty ||
+            !savesScreen.isEmpty ||
+            screens.isNotEmpty)
           'Screens': {
             if (!menuScreen.isEmpty) 'menu': menuScreen.toJson(),
             if (!choiceScreen.isEmpty) 'choice': choiceScreen.toJson(),
             if (!pauseScreen.isEmpty) 'pause': pauseScreen.toJson(),
+            if (!settingsScreen.isEmpty) 'settings': settingsScreen.toJson(),
+            if (!savesScreen.isEmpty) 'saves': savesScreen.toJson(),
+            if (screens.isNotEmpty)
+              'more': {
+                for (final entry in screens.entries)
+                  entry.key: entry.value.toJson(),
+              },
           },
         if (variables.isNotEmpty)
           'Variables': {
@@ -108,6 +136,13 @@ class FmvProject {
       choiceScreen:
           FmvMenuScreen.fromJson(_map(_map(json['Screens'])['choice'])),
       pauseScreen: FmvMenuScreen.fromJson(_map(_map(json['Screens'])['pause'])),
+      settingsScreen:
+          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['settings'])),
+      savesScreen: FmvMenuScreen.fromJson(_map(_map(json['Screens'])['saves'])),
+      screens: {
+        for (final entry in _map(_map(json['Screens'])['more']).entries)
+          entry.key: FmvMenuScreen.fromJson(_map(entry.value)),
+      },
       variables: {
         for (final entry in _map(json['Variables']).entries)
           if (FmvVariable.fromJson(_map(entry.value)) case final variable?)
@@ -313,6 +348,7 @@ class FmvNode {
     this.overrides = const FmvOverrides(),
     this.music,
     this.pauseMusic,
+    this.screen,
     this.variable,
     this.operation,
     this.value,
@@ -331,6 +367,11 @@ class FmvNode {
   /// Video nodes with choices: music looping while the viewer chooses.
   /// (Added after 1.0.)
   final FmvLoopMusic? pauseMusic;
+
+  /// Video nodes with choices: the id of the answer screen in
+  /// [FmvProject.screens] they use; `null` for the project's choice screen.
+  /// (Added after the first screens.)
+  final String? screen;
 
   /// Change nodes: the variable changed.
   final String? variable;
@@ -412,6 +453,7 @@ class FmvNode {
         if (!overrides.isEmpty) 'overrides': overrides.toJson(),
         if (music != null) 'music': music!.toJson(),
         if (pauseMusic != null) 'pauseMusic': pauseMusic!.toJson(),
+        if (screen != null) 'screen': screen,
       };
 
   factory FmvNode.fromJson(Map<String, Object?> json) {
@@ -456,6 +498,7 @@ class FmvNode {
               entry.key as String: entry.value as String,
       },
       question: _string(json['question']),
+      screen: _string(json['screen']),
       target: _string(json['target']),
       choices: choices is List
           ? [for (final choice in choices) FmvChoice.fromJson(_map(choice))]

@@ -194,7 +194,9 @@ class NutriaMenuBar extends StatelessWidget {
     if (entry.children.isNotEmpty) {
       return SubmenuButton(
         style: styles.item,
-        menuChildren: [for (final c in entry.children) _entry(c, theme, styles)],
+        menuChildren: [
+          for (final c in entry.children) _entry(c, theme, styles),
+        ],
         child: label,
       );
     }

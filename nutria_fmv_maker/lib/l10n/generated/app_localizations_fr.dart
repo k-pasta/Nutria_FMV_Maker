@@ -500,7 +500,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get screenKindChoice => 'Écran des choix';
 
   @override
-  String get screenKindPause => 'Écran de pause';
+  String get screenKindPause => 'Menu pause';
 
   @override
   String get screenScreens => 'Écrans';
@@ -667,6 +667,152 @@ class AppLocalizationsFr extends AppLocalizations {
   @override
   String get screenSelectHint =>
       'Cliquez sur un élément pour le modifier. Faites glisser les éléments pour les déplacer ; ils s’alignent au centre et entre eux.';
+
+  @override
+  String get screenKindEndChoice => 'Écran de choix en pause';
+
+  @override
+  String get screenKindSettings => 'Écran des paramètres';
+
+  @override
+  String get screenKindSaves => 'Écran des sauvegardes';
+
+  @override
+  String get screenKindEndChoiceHint =>
+      'Affiché sur la dernière image quand une vidéo attend une réponse (Pause à la fin).';
+
+  @override
+  String get screenBack => 'Retour';
+
+  @override
+  String get screenVolume => 'Volume';
+
+  @override
+  String get screenSubtitles => 'Sous-titres';
+
+  @override
+  String get screenFullScreen => 'Plein écran';
+
+  @override
+  String get screenSaves => 'Parties sauvegardées';
+
+  @override
+  String get screenOn => 'Oui';
+
+  @override
+  String get screenOff => 'Non';
+
+  @override
+  String get screenNoSaves => 'Aucune sauvegarde';
+
+  @override
+  String get screenSampleSave => 'Sauvegarde, aujourd’hui 21:14';
+
+  @override
+  String get screenPresetRowChoices => 'Réponses en ligne';
+
+  @override
+  String get screenPresetSplitChoices => 'Écran partagé';
+
+  @override
+  String get screenPresetPieChoices => 'Camembert';
+
+  @override
+  String get screenPresetStackedChoices => 'Bandes empilées';
+
+  @override
+  String get screenPresetClassicSettings => 'Paramètres classiques';
+
+  @override
+  String get screenPresetClassicSaves => 'Sauvegardes classiques';
+
+  @override
+  String get screenNewChoiceScreen => 'Nouvel écran de choix';
+
+  @override
+  String get screenNewEndChoiceScreen => 'Nouvel écran de choix en pause';
+
+  @override
+  String screenNewScreenName(String kind, int number) {
+    return '$kind $number';
+  }
+
+  @override
+  String get screenRename => 'Renommer';
+
+  @override
+  String get screenDeleteScreen => 'Supprimer l’écran';
+
+  @override
+  String get screenNotUsed => 'inutilisé';
+
+  @override
+  String get screenNameHint => 'Nom de l’écran';
+
+  @override
+  String get screenRequiredElement =>
+      'Cet écran en a besoin : il ne peut pas être retiré.';
+
+  @override
+  String get screenLayout => 'Disposition';
+
+  @override
+  String get screenLayoutVertical => 'Les unes sous les autres';
+
+  @override
+  String get screenLayoutHorizontal => 'Côte à côte';
+
+  @override
+  String get screenLayoutColumns => 'Plein écran, en colonnes';
+
+  @override
+  String get screenLayoutRows => 'Plein écran, en bandes';
+
+  @override
+  String get screenLayoutRadial => 'Plein écran, en camembert';
+
+  @override
+  String get screenTimerMode => 'Se vide';
+
+  @override
+  String get screenTimerToStart => 'Vers la gauche';
+
+  @override
+  String get screenTimerToMiddle => 'Vers le milieu';
+
+  @override
+  String get screenTimerFromMiddle => 'Depuis le milieu';
+
+  @override
+  String get screenThickness => 'Épaisseur';
+
+  @override
+  String get screenBarColor => 'Couleur de la barre';
+
+  @override
+  String get screenTrackColor => 'Couleur du fond de la barre';
+
+  @override
+  String get screenBlur => 'Flou';
+
+  @override
+  String get screenFont => 'Police';
+
+  @override
+  String get screenBuiltInFonts => 'Polices fournies avec Nutria FMV';
+
+  @override
+  String get screenImportedFonts => 'Polices importées';
+
+  @override
+  String get screenFullScreenPreview =>
+      'Aperçu plein écran (Échap pour fermer)';
+
+  @override
+  String get overrideChoiceScreen => 'Écran de choix';
+
+  @override
+  String get overrideEndChoiceScreen => 'Écran de choix en pause';
 
   @override
   String get logicProblemNoVariable => 'Choisissez une variable.';
@@ -919,9 +1065,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get originProjectTitle => 'Titre du projet';
-
-  @override
-  String get originTitlePlaceHolder => 'Exemple de menu principal';
 
   @override
   String get overrideDefaultSelection => 'Choix par Défaut';

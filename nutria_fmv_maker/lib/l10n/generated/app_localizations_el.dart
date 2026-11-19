@@ -498,7 +498,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get screenKindChoice => 'Οθόνη Επιλογών';
 
   @override
-  String get screenKindPause => 'Οθόνη Παύσης';
+  String get screenKindPause => 'Μενού Παύσης';
 
   @override
   String get screenScreens => 'Οθόνες';
@@ -665,6 +665,152 @@ class AppLocalizationsEl extends AppLocalizations {
   @override
   String get screenSelectHint =>
       'Κάντε κλικ σε ένα στοιχείο για να το αλλάξετε. Σύρετε τα στοιχεία για να τα μετακινήσετε· κουμπώνουν στο κέντρο και μεταξύ τους.';
+
+  @override
+  String get screenKindEndChoice => 'Οθόνη Επιλογής σε Παύση';
+
+  @override
+  String get screenKindSettings => 'Οθόνη Ρυθμίσεων';
+
+  @override
+  String get screenKindSaves => 'Οθόνη Αποθηκεύσεων';
+
+  @override
+  String get screenKindEndChoiceHint =>
+      'Εμφανίζεται πάνω στο τελευταίο καρέ όταν ένα βίντεο περιμένει απάντηση (Παύση στο Τέλος).';
+
+  @override
+  String get screenBack => 'Πίσω';
+
+  @override
+  String get screenVolume => 'Ένταση';
+
+  @override
+  String get screenSubtitles => 'Υπότιτλοι';
+
+  @override
+  String get screenFullScreen => 'Πλήρης Οθόνη';
+
+  @override
+  String get screenSaves => 'Αποθηκευμένα Παιχνίδια';
+
+  @override
+  String get screenOn => 'Ναι';
+
+  @override
+  String get screenOff => 'Όχι';
+
+  @override
+  String get screenNoSaves => 'Δεν υπάρχουν αποθηκεύσεις';
+
+  @override
+  String get screenSampleSave => 'Αποθήκευση, σήμερα 21:14';
+
+  @override
+  String get screenPresetRowChoices => 'Απαντήσεις σε Σειρά';
+
+  @override
+  String get screenPresetSplitChoices => 'Χωρισμένη Οθόνη';
+
+  @override
+  String get screenPresetPieChoices => 'Πίτα';
+
+  @override
+  String get screenPresetStackedChoices => 'Λωρίδες';
+
+  @override
+  String get screenPresetClassicSettings => 'Κλασικές Ρυθμίσεις';
+
+  @override
+  String get screenPresetClassicSaves => 'Κλασικές Αποθηκεύσεις';
+
+  @override
+  String get screenNewChoiceScreen => 'Νέα Οθόνη Επιλογής';
+
+  @override
+  String get screenNewEndChoiceScreen => 'Νέα Οθόνη Επιλογής σε Παύση';
+
+  @override
+  String screenNewScreenName(String kind, int number) {
+    return '$kind $number';
+  }
+
+  @override
+  String get screenRename => 'Μετονομασία';
+
+  @override
+  String get screenDeleteScreen => 'Διαγραφή Οθόνης';
+
+  @override
+  String get screenNotUsed => 'δεν χρησιμοποιείται';
+
+  @override
+  String get screenNameHint => 'Όνομα οθόνης';
+
+  @override
+  String get screenRequiredElement =>
+      'Η οθόνη το χρειάζεται, οπότε δεν αφαιρείται.';
+
+  @override
+  String get screenLayout => 'Διάταξη';
+
+  @override
+  String get screenLayoutVertical => 'Η μία κάτω από την άλλη';
+
+  @override
+  String get screenLayoutHorizontal => 'Δίπλα-δίπλα';
+
+  @override
+  String get screenLayoutColumns => 'Πλήρης οθόνη, σε στήλες';
+
+  @override
+  String get screenLayoutRows => 'Πλήρης οθόνη, σε λωρίδες';
+
+  @override
+  String get screenLayoutRadial => 'Πλήρης οθόνη, σαν πίτα';
+
+  @override
+  String get screenTimerMode => 'Αδειάζει';
+
+  @override
+  String get screenTimerToStart => 'Προς τα αριστερά';
+
+  @override
+  String get screenTimerToMiddle => 'Προς τη μέση';
+
+  @override
+  String get screenTimerFromMiddle => 'Από τη μέση';
+
+  @override
+  String get screenThickness => 'Πάχος';
+
+  @override
+  String get screenBarColor => 'Χρώμα μπάρας';
+
+  @override
+  String get screenTrackColor => 'Χρώμα φόντου μπάρας';
+
+  @override
+  String get screenBlur => 'Θόλωμα';
+
+  @override
+  String get screenFont => 'Γραμματοσειρά';
+
+  @override
+  String get screenBuiltInFonts => 'Γραμματοσειρές του Nutria FMV';
+
+  @override
+  String get screenImportedFonts => 'Εισαγόμενες γραμματοσειρές';
+
+  @override
+  String get screenFullScreenPreview =>
+      'Προεπισκόπηση σε Πλήρη Οθόνη (Esc για κλείσιμο)';
+
+  @override
+  String get overrideChoiceScreen => 'Οθόνη Επιλογής';
+
+  @override
+  String get overrideEndChoiceScreen => 'Οθόνη Επιλογής σε Παύση';
 
   @override
   String get logicProblemNoVariable => 'Επιλέξτε μεταβλητή.';
@@ -916,9 +1062,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get originProjectTitle => 'Τίτλος Πρότζεκτ';
-
-  @override
-  String get originTitlePlaceHolder => 'Παράδειγμα Κεντρικού Μενού';
 
   @override
   String get overrideDefaultSelection => 'Αυτόματη Επιλογή';

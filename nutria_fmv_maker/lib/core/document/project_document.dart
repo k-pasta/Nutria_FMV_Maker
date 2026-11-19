@@ -7,13 +7,14 @@ import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
+import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 
 part 'project_document.freezed.dart';
 part 'project_document.g.dart';
 
 /// Version of the `.nfmv` format written by this code. Bump it when the
 /// format changes and add an upgrade step in `nfmv_codec.dart`.
-const int kNfmvFormatVersion = 4;
+const int kNfmvFormatVersion = 5;
 
 /// Id of the origin node in a new project.
 const String kOriginNodeId = 'origin';
@@ -70,12 +71,10 @@ abstract class ProjectDocument with _$ProjectDocument {
     /// Named values for the story. Missing in older files, hence empty.
     @Default(<Variable>[]) List<Variable> variables,
 
-    /// The main menu's design. Missing in older files, hence empty.
-    @Default(ScreenDesign()) ScreenDesign menuScreen,
-
-    /// How the answers are shown over the video, and the pause menu.
-    @Default(ScreenDesign()) ScreenDesign choiceScreen,
-    @Default(ScreenDesign()) ScreenDesign pauseScreen,
+    /// The designed screens: one main menu, pause menu, settings and saves
+    /// screen, and any number of answer screens (see `screen_ops.dart`,
+    /// which fills in the ones a project must have).
+    @Default(<ScreenDesign>[]) List<ScreenDesign> screens,
 
     /// Styles of screen elements. Older files get the defaults.
     @Default(kDefaultScreenStyles) List<ScreenStyle> styles,
@@ -84,7 +83,8 @@ abstract class ProjectDocument with _$ProjectDocument {
   factory ProjectDocument.fromJson(Map<String, dynamic> json) =>
       _$ProjectDocumentFromJson(json);
 
-  /// A new project containing only the origin node.
+  /// A new project containing only the origin node, and the screens with
+  /// their default layouts.
   factory ProjectDocument.empty() => const ProjectDocument(
     nodes: {
       kOriginNodeId: Node.origin(
@@ -93,7 +93,7 @@ abstract class ProjectDocument with _$ProjectDocument {
         position: Position(150, 250),
       ),
     },
-  );
+  ).withRequiredScreens();
 
   /// The defaults a node of color [swatch] starts from.
   VideoSettings defaultsFor(int swatch) => colorDefaults[swatch] ?? settings;

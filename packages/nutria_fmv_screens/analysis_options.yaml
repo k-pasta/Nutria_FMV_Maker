@@ -1,0 +1,13 @@
+analyzer:
+  exclude:
+    - build/**
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    - always_use_package_imports
+    - avoid_print
+    - directives_ordering
+    - prefer_const_constructors
+    - prefer_final_locals
+    - unawaited_futures

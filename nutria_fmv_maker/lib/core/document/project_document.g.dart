@@ -59,15 +59,11 @@ _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Variable.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Variable>[],
-      menuScreen: json['menuScreen'] == null
-          ? const ScreenDesign()
-          : ScreenDesign.fromJson(json['menuScreen'] as Map<String, dynamic>),
-      choiceScreen: json['choiceScreen'] == null
-          ? const ScreenDesign()
-          : ScreenDesign.fromJson(json['choiceScreen'] as Map<String, dynamic>),
-      pauseScreen: json['pauseScreen'] == null
-          ? const ScreenDesign()
-          : ScreenDesign.fromJson(json['pauseScreen'] as Map<String, dynamic>),
+      screens:
+          (json['screens'] as List<dynamic>?)
+              ?.map((e) => ScreenDesign.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          const <ScreenDesign>[],
       styles:
           (json['styles'] as List<dynamic>?)
               ?.map((e) => ScreenStyle.fromJson(e as Map<String, dynamic>))
@@ -87,8 +83,6 @@ Map<String, dynamic> _$ProjectDocumentToJson(_ProjectDocument instance) =>
       'edges': instance.edges.map((e) => e.toJson()).toList(),
       'media': instance.media.map((e) => e.toJson()).toList(),
       'variables': instance.variables.map((e) => e.toJson()).toList(),
-      'menuScreen': instance.menuScreen.toJson(),
-      'choiceScreen': instance.choiceScreen.toJson(),
-      'pauseScreen': instance.pauseScreen.toJson(),
+      'screens': instance.screens.map((e) => e.toJson()).toList(),
       'styles': instance.styles.map((e) => e.toJson()).toList(),
     };

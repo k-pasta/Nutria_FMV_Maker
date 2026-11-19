@@ -497,7 +497,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get screenKindChoice => 'Choice Screen';
 
   @override
-  String get screenKindPause => 'Pause Screen';
+  String get screenKindPause => 'Pause Menu';
 
   @override
   String get screenScreens => 'Screens';
@@ -664,6 +664,151 @@ class AppLocalizationsEn extends AppLocalizations {
   @override
   String get screenSelectHint =>
       'Click an element on the screen to change it. Drag elements to move them; they snap to the middle and to each other.';
+
+  @override
+  String get screenKindEndChoice => 'Pause Choice Screen';
+
+  @override
+  String get screenKindSettings => 'Settings Screen';
+
+  @override
+  String get screenKindSaves => 'Saved Games Screen';
+
+  @override
+  String get screenKindEndChoiceHint =>
+      'Shown over the last frame when a video waits for an answer (Pause on End).';
+
+  @override
+  String get screenBack => 'Back';
+
+  @override
+  String get screenVolume => 'Volume';
+
+  @override
+  String get screenSubtitles => 'Subtitles';
+
+  @override
+  String get screenFullScreen => 'Full Screen';
+
+  @override
+  String get screenSaves => 'Saved Games';
+
+  @override
+  String get screenOn => 'On';
+
+  @override
+  String get screenOff => 'Off';
+
+  @override
+  String get screenNoSaves => 'No saved games';
+
+  @override
+  String get screenSampleSave => 'Saved game, today 21:14';
+
+  @override
+  String get screenPresetRowChoices => 'Answers in a Row';
+
+  @override
+  String get screenPresetSplitChoices => 'Split Screen';
+
+  @override
+  String get screenPresetPieChoices => 'Pie';
+
+  @override
+  String get screenPresetStackedChoices => 'Stacked Bands';
+
+  @override
+  String get screenPresetClassicSettings => 'Classic Settings';
+
+  @override
+  String get screenPresetClassicSaves => 'Classic Saved Games';
+
+  @override
+  String get screenNewChoiceScreen => 'New Choice Screen';
+
+  @override
+  String get screenNewEndChoiceScreen => 'New Pause Choice Screen';
+
+  @override
+  String screenNewScreenName(String kind, int number) {
+    return '$kind $number';
+  }
+
+  @override
+  String get screenRename => 'Rename';
+
+  @override
+  String get screenDeleteScreen => 'Delete Screen';
+
+  @override
+  String get screenNotUsed => 'not used';
+
+  @override
+  String get screenNameHint => 'Screen name';
+
+  @override
+  String get screenRequiredElement =>
+      'This screen needs it, so it can\'t be removed.';
+
+  @override
+  String get screenLayout => 'Layout';
+
+  @override
+  String get screenLayoutVertical => 'One under another';
+
+  @override
+  String get screenLayoutHorizontal => 'Side by side';
+
+  @override
+  String get screenLayoutColumns => 'Full screen, in columns';
+
+  @override
+  String get screenLayoutRows => 'Full screen, in bands';
+
+  @override
+  String get screenLayoutRadial => 'Full screen, as a pie';
+
+  @override
+  String get screenTimerMode => 'Runs Down';
+
+  @override
+  String get screenTimerToStart => 'To the left';
+
+  @override
+  String get screenTimerToMiddle => 'To the middle';
+
+  @override
+  String get screenTimerFromMiddle => 'From the middle';
+
+  @override
+  String get screenThickness => 'Thickness';
+
+  @override
+  String get screenBarColor => 'Bar colour';
+
+  @override
+  String get screenTrackColor => 'Track colour';
+
+  @override
+  String get screenBlur => 'Blur';
+
+  @override
+  String get screenFont => 'Font';
+
+  @override
+  String get screenBuiltInFonts => 'Fonts that come with Nutria FMV';
+
+  @override
+  String get screenImportedFonts => 'Imported fonts';
+
+  @override
+  String get screenFullScreenPreview => 'Full-Screen Preview (Esc closes it)';
+
+  @override
+  String get overrideChoiceScreen => 'Choice Screen';
+
+  @override
+  String get overrideEndChoiceScreen => 'Pause Choice Screen';
 
   @override
   String get logicProblemNoVariable => 'Pick a variable.';
@@ -915,9 +1060,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get originProjectTitle => 'Project Title';
-
-  @override
-  String get originTitlePlaceHolder => 'Main Menu Placeholder';
 
   @override
   String get overrideDefaultSelection => 'Default Selection';

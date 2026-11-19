@@ -46,6 +46,9 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.pauseMusicFadeOut => [
       for (final ms in kMusicFadeSteps) copyWith(pauseMusicFadeOutMs: ms),
     ],
+    // Screens are picked from the project's (screen_setting_rows.dart).
+    VideoSettingType.choiceScreen ||
+    VideoSettingType.endChoiceScreen => const [],
   };
 
   /// Whether [other] has the same value of [type] as these settings.
@@ -59,6 +62,9 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.pauseMusic => pauseMusicId == other.pauseMusicId,
     VideoSettingType.pauseMusicFadeOut =>
       pauseMusicFadeOutMs == other.pauseMusicFadeOutMs,
+    VideoSettingType.choiceScreen => choiceScreenId == other.choiceScreenId,
+    VideoSettingType.endChoiceScreen =>
+      endChoiceScreenId == other.endChoiceScreenId,
   };
 
   /// Steps [type] forward ([direction] 1) or back (-1). Toggles flip either
@@ -84,5 +90,6 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.pauseMusicFadeOut => copyWith(
       pauseMusicFadeOutMs: stepFade(pauseMusicFadeOutMs, direction),
     ),
+    VideoSettingType.choiceScreen || VideoSettingType.endChoiceScreen => this,
   };
 }

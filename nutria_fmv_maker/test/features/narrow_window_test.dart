@@ -50,8 +50,14 @@ void main() {
         container.read(editorViewProvider.notifier).show(EditorView.screens);
         container
             .read(selectedScreenProvider.notifier)
-            .select(ScreenKind.choice);
-        editor.addScreenElement(ScreenElementKind.choices);
+            .select(ScreenKind.choice.defaultId);
+        final choices = container
+            .read(designedScreenProvider)
+            .elements
+            .firstWhere((e) => e.kind == ScreenElementKind.choices);
+        container
+            .read(selectedScreenElementProvider.notifier)
+            .select(choices.id);
       }
       await tester.pumpAndSettle();
 

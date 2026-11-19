@@ -17,12 +17,16 @@ T _$identity<T>(T value) => value;
 mixin _$ScreenStyle {
 
  String get id; String get name;/// Text height, as a fraction of the screen height.
- double get fontSize; bool get bold;/// An imported font file, or `null` for the Player's own font.
- String? get fontId;/// ARGB.
+ double get fontSize; bool get bold;/// An imported font file; else [builtInFont].
+ String? get fontId;/// One of the fonts both apps ship (a key of `kFmvBuiltInFonts`), or
+/// `null` for the Player's own.
+ String? get builtInFont;/// ARGB.
  int get textColor; int get backgroundColor;/// 0 (no background) to 1.
  double get backgroundOpacity;/// Corner radius, as a fraction of the screen height.
  double get radius;/// Space around the text, as a fraction of the screen height.
- double get padding;
+ double get padding;/// Blur of what's behind the background, as a fraction of the screen
+/// height (0 for none).
+ double get blur;
 /// Create a copy of ScreenStyle
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -36,20 +40,20 @@ $ScreenStyleCopyWith<ScreenStyle> get copyWith => _$ScreenStyleCopyWithImpl<Scre
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenStyle;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenStyle&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.fontSize, _this.fontSize) || other.fontSize == _this.fontSize)&&(identical(other.bold, _this.bold) || other.bold == _this.bold)&&(identical(other.fontId, _this.fontId) || other.fontId == _this.fontId)&&(identical(other.textColor, _this.textColor) || other.textColor == _this.textColor)&&(identical(other.backgroundColor, _this.backgroundColor) || other.backgroundColor == _this.backgroundColor)&&(identical(other.backgroundOpacity, _this.backgroundOpacity) || other.backgroundOpacity == _this.backgroundOpacity)&&(identical(other.radius, _this.radius) || other.radius == _this.radius)&&(identical(other.padding, _this.padding) || other.padding == _this.padding));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenStyle&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.fontSize, _this.fontSize) || other.fontSize == _this.fontSize)&&(identical(other.bold, _this.bold) || other.bold == _this.bold)&&(identical(other.fontId, _this.fontId) || other.fontId == _this.fontId)&&(identical(other.builtInFont, _this.builtInFont) || other.builtInFont == _this.builtInFont)&&(identical(other.textColor, _this.textColor) || other.textColor == _this.textColor)&&(identical(other.backgroundColor, _this.backgroundColor) || other.backgroundColor == _this.backgroundColor)&&(identical(other.backgroundOpacity, _this.backgroundOpacity) || other.backgroundOpacity == _this.backgroundOpacity)&&(identical(other.radius, _this.radius) || other.radius == _this.radius)&&(identical(other.padding, _this.padding) || other.padding == _this.padding)&&(identical(other.blur, _this.blur) || other.blur == _this.blur));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenStyle;
-  return Object.hash(runtimeType,_this.id,_this.name,_this.fontSize,_this.bold,_this.fontId,_this.textColor,_this.backgroundColor,_this.backgroundOpacity,_this.radius,_this.padding);
+  return Object.hash(runtimeType,_this.id,_this.name,_this.fontSize,_this.bold,_this.fontId,_this.builtInFont,_this.textColor,_this.backgroundColor,_this.backgroundOpacity,_this.radius,_this.padding,_this.blur);
 }
 
 @override
 String toString() {
   final _this = this as ScreenStyle;
-  return 'ScreenStyle(id: ${_this.id}, name: ${_this.name}, fontSize: ${_this.fontSize}, bold: ${_this.bold}, fontId: ${_this.fontId}, textColor: ${_this.textColor}, backgroundColor: ${_this.backgroundColor}, backgroundOpacity: ${_this.backgroundOpacity}, radius: ${_this.radius}, padding: ${_this.padding})';
+  return 'ScreenStyle(id: ${_this.id}, name: ${_this.name}, fontSize: ${_this.fontSize}, bold: ${_this.bold}, fontId: ${_this.fontId}, builtInFont: ${_this.builtInFont}, textColor: ${_this.textColor}, backgroundColor: ${_this.backgroundColor}, backgroundOpacity: ${_this.backgroundOpacity}, radius: ${_this.radius}, padding: ${_this.padding}, blur: ${_this.blur})';
 }
 
 
@@ -60,7 +64,7 @@ abstract mixin class $ScreenStyleCopyWith<$Res>  {
   factory $ScreenStyleCopyWith(ScreenStyle value, $Res Function(ScreenStyle) _then) = _$ScreenStyleCopyWithImpl;
 @useResult
 $Res call({
- String id, String name, double fontSize, bool bold, String? fontId, int textColor, int backgroundColor, double backgroundOpacity, double radius, double padding
+ String id, String name, double fontSize, bool bold, String? fontId, String? builtInFont, int textColor, int backgroundColor, double backgroundOpacity, double radius, double padding, double blur
 });
 
 
@@ -77,18 +81,20 @@ class _$ScreenStyleCopyWithImpl<$Res>
 
 /// Create a copy of ScreenStyle
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? fontSize = null,Object? bold = null,Object? fontId = freezed,Object? textColor = null,Object? backgroundColor = null,Object? backgroundOpacity = null,Object? radius = null,Object? padding = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? name = null,Object? fontSize = null,Object? bold = null,Object? fontId = freezed,Object? builtInFont = freezed,Object? textColor = null,Object? backgroundColor = null,Object? backgroundOpacity = null,Object? radius = null,Object? padding = null,Object? blur = null,}) {
   return _then(ScreenStyle(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
 as double,bold: null == bold ? _self.bold : bold // ignore: cast_nullable_to_non_nullable
 as bool,fontId: freezed == fontId ? _self.fontId : fontId // ignore: cast_nullable_to_non_nullable
+as String?,builtInFont: freezed == builtInFont ? _self.builtInFont : builtInFont // ignore: cast_nullable_to_non_nullable
 as String?,textColor: null == textColor ? _self.textColor : textColor // ignore: cast_nullable_to_non_nullable
 as int,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
 as int,backgroundOpacity: null == backgroundOpacity ? _self.backgroundOpacity : backgroundOpacity // ignore: cast_nullable_to_non_nullable
 as double,radius: null == radius ? _self.radius : radius // ignore: cast_nullable_to_non_nullable
 as double,padding: null == padding ? _self.padding : padding // ignore: cast_nullable_to_non_nullable
+as double,blur: null == blur ? _self.blur : blur // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -174,10 +180,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  String? builtInFont,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding,  double blur)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenStyle() when $default != null:
-return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding);case _:
+return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.builtInFont,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding,_that.blur);case _:
   return orElse();
 
 }
@@ -195,10 +201,10 @@ return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  String? builtInFont,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding,  double blur)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenStyle():
-return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding);case _:
+return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.builtInFont,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding,_that.blur);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -215,10 +221,10 @@ return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String name,  double fontSize,  bool bold,  String? fontId,  String? builtInFont,  int textColor,  int backgroundColor,  double backgroundOpacity,  double radius,  double padding,  double blur)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenStyle() when $default != null:
-return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding);case _:
+return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that.builtInFont,_that.textColor,_that.backgroundColor,_that.backgroundOpacity,_that.radius,_that.padding,_that.blur);case _:
   return null;
 
 }
@@ -230,7 +236,7 @@ return $default(_that.id,_that.name,_that.fontSize,_that.bold,_that.fontId,_that
 @JsonSerializable()
 
 class _ScreenStyle implements ScreenStyle {
-  const _ScreenStyle({required this.id, required this.name, this.fontSize = 0.05, this.bold = false, this.fontId, this.textColor = 0xFFFFFFFF, this.backgroundColor = 0xFF000000, this.backgroundOpacity = 0.0, this.radius = 0.0, this.padding = 0.01});
+  const _ScreenStyle({required this.id, required this.name, this.fontSize = 0.05, this.bold = false, this.fontId, this.builtInFont, this.textColor = 0xFFFFFFFF, this.backgroundColor = 0xFF000000, this.backgroundOpacity = 0.0, this.radius = 0.0, this.padding = 0.01, this.blur = 0.0});
   factory _ScreenStyle.fromJson(Map<String, dynamic> json) => _$ScreenStyleFromJson(json);
 
 @override final  String id;
@@ -238,8 +244,11 @@ class _ScreenStyle implements ScreenStyle {
 /// Text height, as a fraction of the screen height.
 @override@JsonKey() final  double fontSize;
 @override@JsonKey() final  bool bold;
-/// An imported font file, or `null` for the Player's own font.
+/// An imported font file; else [builtInFont].
 @override final  String? fontId;
+/// One of the fonts both apps ship (a key of `kFmvBuiltInFonts`), or
+/// `null` for the Player's own.
+@override final  String? builtInFont;
 /// ARGB.
 @override@JsonKey() final  int textColor;
 @override@JsonKey() final  int backgroundColor;
@@ -249,6 +258,9 @@ class _ScreenStyle implements ScreenStyle {
 @override@JsonKey() final  double radius;
 /// Space around the text, as a fraction of the screen height.
 @override@JsonKey() final  double padding;
+/// Blur of what's behind the background, as a fraction of the screen
+/// height (0 for none).
+@override@JsonKey() final  double blur;
 
 /// Create a copy of ScreenStyle
 /// with the given fields replaced by the non-null parameter values.
@@ -263,18 +275,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenStyle&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.bold, bold) || other.bold == bold)&&(identical(other.fontId, fontId) || other.fontId == fontId)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.radius, radius) || other.radius == radius)&&(identical(other.padding, padding) || other.padding == padding));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenStyle&&(identical(other.id, id) || other.id == id)&&(identical(other.name, name) || other.name == name)&&(identical(other.fontSize, fontSize) || other.fontSize == fontSize)&&(identical(other.bold, bold) || other.bold == bold)&&(identical(other.fontId, fontId) || other.fontId == fontId)&&(identical(other.builtInFont, builtInFont) || other.builtInFont == builtInFont)&&(identical(other.textColor, textColor) || other.textColor == textColor)&&(identical(other.backgroundColor, backgroundColor) || other.backgroundColor == backgroundColor)&&(identical(other.backgroundOpacity, backgroundOpacity) || other.backgroundOpacity == backgroundOpacity)&&(identical(other.radius, radius) || other.radius == radius)&&(identical(other.padding, padding) || other.padding == padding)&&(identical(other.blur, blur) || other.blur == blur));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,name,fontSize,bold,fontId,textColor,backgroundColor,backgroundOpacity,radius,padding);
+    return Object.hash(runtimeType,id,name,fontSize,bold,fontId,builtInFont,textColor,backgroundColor,backgroundOpacity,radius,padding,blur);
 }
 
 @override
 String toString() {
-    return 'ScreenStyle(id: $id, name: $name, fontSize: $fontSize, bold: $bold, fontId: $fontId, textColor: $textColor, backgroundColor: $backgroundColor, backgroundOpacity: $backgroundOpacity, radius: $radius, padding: $padding)';
+    return 'ScreenStyle(id: $id, name: $name, fontSize: $fontSize, bold: $bold, fontId: $fontId, builtInFont: $builtInFont, textColor: $textColor, backgroundColor: $backgroundColor, backgroundOpacity: $backgroundOpacity, radius: $radius, padding: $padding, blur: $blur)';
 }
 
 
@@ -285,7 +297,7 @@ abstract mixin class _$ScreenStyleCopyWith<$Res> implements $ScreenStyleCopyWith
   factory _$ScreenStyleCopyWith(_ScreenStyle value, $Res Function(_ScreenStyle) _then) = __$ScreenStyleCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String name, double fontSize, bool bold, String? fontId, int textColor, int backgroundColor, double backgroundOpacity, double radius, double padding
+ String id, String name, double fontSize, bool bold, String? fontId, String? builtInFont, int textColor, int backgroundColor, double backgroundOpacity, double radius, double padding, double blur
 });
 
 
@@ -302,18 +314,20 @@ class __$ScreenStyleCopyWithImpl<$Res>
 
 /// Create a copy of ScreenStyle
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? fontSize = null,Object? bold = null,Object? fontId = freezed,Object? textColor = null,Object? backgroundColor = null,Object? backgroundOpacity = null,Object? radius = null,Object? padding = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? name = null,Object? fontSize = null,Object? bold = null,Object? fontId = freezed,Object? builtInFont = freezed,Object? textColor = null,Object? backgroundColor = null,Object? backgroundOpacity = null,Object? radius = null,Object? padding = null,Object? blur = null,}) {
   return _then(_ScreenStyle(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,fontSize: null == fontSize ? _self.fontSize : fontSize // ignore: cast_nullable_to_non_nullable
 as double,bold: null == bold ? _self.bold : bold // ignore: cast_nullable_to_non_nullable
 as bool,fontId: freezed == fontId ? _self.fontId : fontId // ignore: cast_nullable_to_non_nullable
+as String?,builtInFont: freezed == builtInFont ? _self.builtInFont : builtInFont // ignore: cast_nullable_to_non_nullable
 as String?,textColor: null == textColor ? _self.textColor : textColor // ignore: cast_nullable_to_non_nullable
 as int,backgroundColor: null == backgroundColor ? _self.backgroundColor : backgroundColor // ignore: cast_nullable_to_non_nullable
 as int,backgroundOpacity: null == backgroundOpacity ? _self.backgroundOpacity : backgroundOpacity // ignore: cast_nullable_to_non_nullable
 as double,radius: null == radius ? _self.radius : radius // ignore: cast_nullable_to_non_nullable
 as double,padding: null == padding ? _self.padding : padding // ignore: cast_nullable_to_non_nullable
+as double,blur: null == blur ? _self.blur : blur // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -327,9 +341,12 @@ mixin _$ScreenElement {
 
  String get id; ScreenElementKind get kind; double get x; double get y; double get width;/// The style, or `null` for the default of its kind.
  String? get styleId;/// Text instead of the default (the project title, "Start", …).
- String? get text;/// [ScreenElementKind.choices]: the space between answers, as a
-/// fraction of the screen height.
- double get gap;
+ String? get text;/// [ScreenElementKind.choices] and [ScreenElementKind.saves]: the space
+/// between entries, as a fraction of the screen height.
+ double get gap;/// [ScreenElementKind.choices]: how the answers are laid out.
+ FmvChoiceLayout get layout;/// [ScreenElementKind.timer]: how the bar runs down, and how thick it
+/// is (a fraction of the screen height).
+ FmvTimerMode get timerMode; double get thickness;
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -343,20 +360,20 @@ $ScreenElementCopyWith<ScreenElement> get copyWith => _$ScreenElementCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenElement;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.gap, _this.gap) || other.gap == _this.gap));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenElement&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.x, _this.x) || other.x == _this.x)&&(identical(other.y, _this.y) || other.y == _this.y)&&(identical(other.width, _this.width) || other.width == _this.width)&&(identical(other.styleId, _this.styleId) || other.styleId == _this.styleId)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.gap, _this.gap) || other.gap == _this.gap)&&(identical(other.layout, _this.layout) || other.layout == _this.layout)&&(identical(other.timerMode, _this.timerMode) || other.timerMode == _this.timerMode)&&(identical(other.thickness, _this.thickness) || other.thickness == _this.thickness));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenElement;
-  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text,_this.gap);
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.x,_this.y,_this.width,_this.styleId,_this.text,_this.gap,_this.layout,_this.timerMode,_this.thickness);
 }
 
 @override
 String toString() {
   final _this = this as ScreenElement;
-  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text}, gap: ${_this.gap})';
+  return 'ScreenElement(id: ${_this.id}, kind: ${_this.kind}, x: ${_this.x}, y: ${_this.y}, width: ${_this.width}, styleId: ${_this.styleId}, text: ${_this.text}, gap: ${_this.gap}, layout: ${_this.layout}, timerMode: ${_this.timerMode}, thickness: ${_this.thickness})';
 }
 
 
@@ -367,7 +384,7 @@ abstract mixin class $ScreenElementCopyWith<$Res>  {
   factory $ScreenElementCopyWith(ScreenElement value, $Res Function(ScreenElement) _then) = _$ScreenElementCopyWithImpl;
 @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness
 });
 
 
@@ -384,7 +401,7 @@ class _$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,}) {
   return _then(ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -394,6 +411,9 @@ as double,width: null == width ? _self.width : width // ignore: cast_nullable_to
 as double,styleId: freezed == styleId ? _self.styleId : styleId // ignore: cast_nullable_to_non_nullable
 as String?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nullable
+as double,layout: null == layout ? _self.layout : layout // ignore: cast_nullable_to_non_nullable
+as FmvChoiceLayout,timerMode: null == timerMode ? _self.timerMode : timerMode // ignore: cast_nullable_to_non_nullable
+as FmvTimerMode,thickness: null == thickness ? _self.thickness : thickness // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -479,10 +499,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
   return orElse();
 
 }
@@ -500,10 +520,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement():
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -520,10 +540,10 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenElementKind kind,  double x,  double y,  double width,  String? styleId,  String? text,  double gap,  FmvChoiceLayout layout,  FmvTimerMode timerMode,  double thickness)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenElement() when $default != null:
-return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap);case _:
+return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_that.text,_that.gap,_that.layout,_that.timerMode,_that.thickness);case _:
   return null;
 
 }
@@ -535,7 +555,7 @@ return $default(_that.id,_that.kind,_that.x,_that.y,_that.width,_that.styleId,_t
 @JsonSerializable()
 
 class _ScreenElement implements ScreenElement {
-  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text, this.gap = 0.015});
+  const _ScreenElement({required this.id, required this.kind, this.x = 0.5, this.y = 0.5, this.width = 0.3, this.styleId, this.text, this.gap = 0.015, this.layout = FmvChoiceLayout.vertical, this.timerMode = FmvTimerMode.toStart, this.thickness = 0.012});
   factory _ScreenElement.fromJson(Map<String, dynamic> json) => _$ScreenElementFromJson(json);
 
 @override final  String id;
@@ -547,9 +567,15 @@ class _ScreenElement implements ScreenElement {
 @override final  String? styleId;
 /// Text instead of the default (the project title, "Start", …).
 @override final  String? text;
-/// [ScreenElementKind.choices]: the space between answers, as a
-/// fraction of the screen height.
+/// [ScreenElementKind.choices] and [ScreenElementKind.saves]: the space
+/// between entries, as a fraction of the screen height.
 @override@JsonKey() final  double gap;
+/// [ScreenElementKind.choices]: how the answers are laid out.
+@override@JsonKey() final  FmvChoiceLayout layout;
+/// [ScreenElementKind.timer]: how the bar runs down, and how thick it
+/// is (a fraction of the screen height).
+@override@JsonKey() final  FmvTimerMode timerMode;
+@override@JsonKey() final  double thickness;
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
@@ -564,18 +590,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text)&&(identical(other.gap, gap) || other.gap == gap));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenElement&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.x, x) || other.x == x)&&(identical(other.y, y) || other.y == y)&&(identical(other.width, width) || other.width == width)&&(identical(other.styleId, styleId) || other.styleId == styleId)&&(identical(other.text, text) || other.text == text)&&(identical(other.gap, gap) || other.gap == gap)&&(identical(other.layout, layout) || other.layout == layout)&&(identical(other.timerMode, timerMode) || other.timerMode == timerMode)&&(identical(other.thickness, thickness) || other.thickness == thickness));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text,gap);
+    return Object.hash(runtimeType,id,kind,x,y,width,styleId,text,gap,layout,timerMode,thickness);
 }
 
 @override
 String toString() {
-    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text, gap: $gap)';
+    return 'ScreenElement(id: $id, kind: $kind, x: $x, y: $y, width: $width, styleId: $styleId, text: $text, gap: $gap, layout: $layout, timerMode: $timerMode, thickness: $thickness)';
 }
 
 
@@ -586,7 +612,7 @@ abstract mixin class _$ScreenElementCopyWith<$Res> implements $ScreenElementCopy
   factory _$ScreenElementCopyWith(_ScreenElement value, $Res Function(_ScreenElement) _then) = __$ScreenElementCopyWithImpl;
 @override @useResult
 $Res call({
- String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap
+ String id, ScreenElementKind kind, double x, double y, double width, String? styleId, String? text, double gap, FmvChoiceLayout layout, FmvTimerMode timerMode, double thickness
 });
 
 
@@ -603,7 +629,7 @@ class __$ScreenElementCopyWithImpl<$Res>
 
 /// Create a copy of ScreenElement
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? x = null,Object? y = null,Object? width = null,Object? styleId = freezed,Object? text = freezed,Object? gap = null,Object? layout = null,Object? timerMode = null,Object? thickness = null,}) {
   return _then(_ScreenElement(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
@@ -613,6 +639,9 @@ as double,width: null == width ? _self.width : width // ignore: cast_nullable_to
 as double,styleId: freezed == styleId ? _self.styleId : styleId // ignore: cast_nullable_to_non_nullable
 as String?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
 as String?,gap: null == gap ? _self.gap : gap // ignore: cast_nullable_to_non_nullable
+as double,layout: null == layout ? _self.layout : layout // ignore: cast_nullable_to_non_nullable
+as FmvChoiceLayout,timerMode: null == timerMode ? _self.timerMode : timerMode // ignore: cast_nullable_to_non_nullable
+as FmvTimerMode,thickness: null == thickness ? _self.thickness : thickness // ignore: cast_nullable_to_non_nullable
 as double,
   ));
 }
@@ -624,7 +653,8 @@ as double,
 /// @nodoc
 mixin _$ScreenDesign {
 
- String? get backgroundId; List<ScreenElement> get elements;
+ String get id; ScreenKind get kind;/// The author's name for it; `null` shows the kind's name.
+ String? get name; String? get backgroundId; List<ScreenElement> get elements;
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -638,20 +668,20 @@ $ScreenDesignCopyWith<ScreenDesign> get copyWith => _$ScreenDesignCopyWithImpl<S
 @override
 bool operator ==(Object other) {
   final _this = this as ScreenDesign;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenDesign&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ScreenDesign&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.kind, _this.kind) || other.kind == _this.kind)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.backgroundId, _this.backgroundId) || other.backgroundId == _this.backgroundId)&&const DeepCollectionEquality().equals(other.elements, _this.elements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ScreenDesign;
-  return Object.hash(runtimeType,_this.backgroundId,const DeepCollectionEquality().hash(_this.elements));
+  return Object.hash(runtimeType,_this.id,_this.kind,_this.name,_this.backgroundId,const DeepCollectionEquality().hash(_this.elements));
 }
 
 @override
 String toString() {
   final _this = this as ScreenDesign;
-  return 'ScreenDesign(backgroundId: ${_this.backgroundId}, elements: ${_this.elements})';
+  return 'ScreenDesign(id: ${_this.id}, kind: ${_this.kind}, name: ${_this.name}, backgroundId: ${_this.backgroundId}, elements: ${_this.elements})';
 }
 
 
@@ -662,7 +692,7 @@ abstract mixin class $ScreenDesignCopyWith<$Res>  {
   factory $ScreenDesignCopyWith(ScreenDesign value, $Res Function(ScreenDesign) _then) = _$ScreenDesignCopyWithImpl;
 @useResult
 $Res call({
- String? backgroundId, List<ScreenElement> elements
+ String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements
 });
 
 
@@ -679,9 +709,12 @@ class _$ScreenDesignCopyWithImpl<$Res>
 
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? backgroundId = freezed,Object? elements = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,}) {
   return _then(ScreenDesign(
-backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as ScreenKind,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self.elements : elements // ignore: cast_nullable_to_non_nullable
 as List<ScreenElement>,
   ));
@@ -768,10 +801,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? backgroundId,  List<ScreenElement> elements)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ScreenDesign() when $default != null:
-return $default(_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
   return orElse();
 
 }
@@ -789,10 +822,10 @@ return $default(_that.backgroundId,_that.elements);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? backgroundId,  List<ScreenElement> elements)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)  $default,) {final _that = this;
 switch (_that) {
 case _ScreenDesign():
-return $default(_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -809,10 +842,10 @@ return $default(_that.backgroundId,_that.elements);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? backgroundId,  List<ScreenElement> elements)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  ScreenKind kind,  String? name,  String? backgroundId,  List<ScreenElement> elements)?  $default,) {final _that = this;
 switch (_that) {
 case _ScreenDesign() when $default != null:
-return $default(_that.backgroundId,_that.elements);case _:
+return $default(_that.id,_that.kind,_that.name,_that.backgroundId,_that.elements);case _:
   return null;
 
 }
@@ -824,9 +857,13 @@ return $default(_that.backgroundId,_that.elements);case _:
 @JsonSerializable()
 
 class _ScreenDesign implements ScreenDesign {
-  const _ScreenDesign({this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[]}): _elements = elements;
+  const _ScreenDesign({required this.id, required this.kind, this.name, this.backgroundId,  List<ScreenElement> elements = const <ScreenElement>[]}): _elements = elements;
   factory _ScreenDesign.fromJson(Map<String, dynamic> json) => _$ScreenDesignFromJson(json);
 
+@override final  String id;
+@override final  ScreenKind kind;
+/// The author's name for it; `null` shows the kind's name.
+@override final  String? name;
 @override final  String? backgroundId;
  final  List<ScreenElement> _elements;
 @override@JsonKey() List<ScreenElement> get elements {
@@ -849,18 +886,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenDesign&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ScreenDesign&&(identical(other.id, id) || other.id == id)&&(identical(other.kind, kind) || other.kind == kind)&&(identical(other.name, name) || other.name == name)&&(identical(other.backgroundId, backgroundId) || other.backgroundId == backgroundId)&&const DeepCollectionEquality().equals(other.elements, _elements));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,backgroundId,const DeepCollectionEquality().hash(_elements));
+    return Object.hash(runtimeType,id,kind,name,backgroundId,const DeepCollectionEquality().hash(_elements));
 }
 
 @override
 String toString() {
-    return 'ScreenDesign(backgroundId: $backgroundId, elements: $elements)';
+    return 'ScreenDesign(id: $id, kind: $kind, name: $name, backgroundId: $backgroundId, elements: $elements)';
 }
 
 
@@ -871,7 +908,7 @@ abstract mixin class _$ScreenDesignCopyWith<$Res> implements $ScreenDesignCopyWi
   factory _$ScreenDesignCopyWith(_ScreenDesign value, $Res Function(_ScreenDesign) _then) = __$ScreenDesignCopyWithImpl;
 @override @useResult
 $Res call({
- String? backgroundId, List<ScreenElement> elements
+ String id, ScreenKind kind, String? name, String? backgroundId, List<ScreenElement> elements
 });
 
 
@@ -888,9 +925,12 @@ class __$ScreenDesignCopyWithImpl<$Res>
 
 /// Create a copy of ScreenDesign
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? backgroundId = freezed,Object? elements = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? kind = null,Object? name = freezed,Object? backgroundId = freezed,Object? elements = null,}) {
   return _then(_ScreenDesign(
-backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,kind: null == kind ? _self.kind : kind // ignore: cast_nullable_to_non_nullable
+as ScreenKind,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+as String?,backgroundId: freezed == backgroundId ? _self.backgroundId : backgroundId // ignore: cast_nullable_to_non_nullable
 as String?,elements: null == elements ? _self._elements : elements // ignore: cast_nullable_to_non_nullable
 as List<ScreenElement>,
   ));

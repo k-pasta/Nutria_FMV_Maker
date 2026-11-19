@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:path/path.dart' as p;
 
 /// Thrown when a `.nfmv` file can't be turned into a [ProjectDocument].
@@ -89,8 +90,9 @@ abstract final class NfmvCodec {
     if (version < 2) upgraded = _v1ToV2(upgraded);
     if (version < 3) upgraded = _v2ToV3(upgraded);
     if (version < 4) upgraded = _v3ToV4(upgraded);
+    if (version < 5) upgraded = _v4ToV5(upgraded);
 
-    final ProjectDocument document;
+    ProjectDocument document;
     try {
       document = ProjectDocument.fromJson(upgraded);
     } catch (_) {
@@ -100,6 +102,8 @@ abstract final class NfmvCodec {
     if (document.nodes.values.whereType<OriginNode>().length != 1) {
       throw NfmvFormatException(NfmvReason.invalidData, foundVersion: version);
     }
+    // And the screens every project has, with their required elements.
+    document = document.withRequiredScreens();
 
     if (projectDir == null || fileExists == null) return document;
     final rawVideos = (upgraded['media'] as List?) ?? const [];
@@ -160,8 +164,7 @@ abstract final class NfmvCodec {
       final overrides = node['overrides'];
       return <String, dynamic>{
         for (final MapEntry(:key, :value) in node.entries)
-          if (key != 'pauseMusicId' && key != 'pauseMusicFadeOutMs')
-            key: value,
+          if (key != 'pauseMusicId' && key != 'pauseMusicFadeOutMs') key: value,
         'overrides': <String, dynamic>{
           if (overrides is Map<String, dynamic>) ...overrides,
           'pauseMusicId': node['pauseMusicId'],
@@ -173,12 +176,33 @@ abstract final class NfmvCodec {
     return {
       ...json,
       'nodes': <String, dynamic>{
-        for (final MapEntry(:key, :value) in nodes.entries)
-          key: upgrade(value),
+        for (final MapEntry(:key, :value) in nodes.entries) key: upgrade(value),
       },
       'formatVersion': 4,
     };
   }
+
+  /// Version 4 had three screens (`menuScreen`, `choiceScreen`,
+  /// `pauseScreen`); version 5 has a list of them, with ids, kinds and
+  /// names. A screen never designed is left out: it gets its default
+  /// layout instead of staying empty.
+  static Map<String, dynamic> _v4ToV5(Map<String, dynamic> json) => {
+    for (final MapEntry(:key, :value) in json.entries)
+      if (key != 'menuScreen' && key != 'choiceScreen' && key != 'pauseScreen')
+        key: value,
+    'screens': [
+      for (final (key, kind) in const [
+        ('menuScreen', 'menu'),
+        ('choiceScreen', 'choice'),
+        ('pauseScreen', 'pause'),
+      ])
+        if (json[key] case final Map<String, dynamic> screen
+            when ((screen['elements'] as List?)?.isNotEmpty ?? false) ||
+                screen['backgroundId'] != null)
+          <String, dynamic>{...screen, 'id': kind, 'kind': kind},
+    ],
+    'formatVersion': 5,
+  };
 
   static String _resolvePath({
     required String absolute,

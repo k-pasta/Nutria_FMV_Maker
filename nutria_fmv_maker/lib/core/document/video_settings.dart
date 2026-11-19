@@ -25,10 +25,20 @@ enum VideoSettingType {
   pauseMusic,
 
   /// How long that music fades out once an answer is picked.
-  pauseMusicFadeOut;
+  pauseMusicFadeOut,
+
+  /// The answer screen shown over the video.
+  choiceScreen,
+
+  /// The answer screen shown over the last frame when the video waits
+  /// ("pause on end").
+  endChoiceScreen;
 
   /// Pause music settings, which have their own rows (a track picker).
   bool get isMusic => this == pauseMusic || this == pauseMusicFadeOut;
+
+  /// Screen settings, which have their own rows (a list of the screens).
+  bool get isScreen => this == choiceScreen || this == endChoiceScreen;
 }
 
 /// The settings shown as ordinary setting rows (everything but music).
@@ -63,6 +73,11 @@ abstract class VideoSettings with _$VideoSettings {
     /// (so a node can override it to "no music").
     @Default('') String pauseMusicId,
     @Default(1000) int pauseMusicFadeOutMs,
+
+    /// The ids of the answer screens used over the video and at its end.
+    /// A screen that's gone falls back to the first of its kind.
+    @Default('choice') String choiceScreenId,
+    @Default('endChoice') String endChoiceScreenId,
   }) = _VideoSettings;
 
   /// [pauseMusicId], or `null` when there is no pause music.
@@ -80,7 +95,14 @@ abstract class VideoSettings with _$VideoSettings {
     VideoSettingType.defaultSelection => defaultSelection,
     VideoSettingType.pauseMusic => pauseMusicId,
     VideoSettingType.pauseMusicFadeOut => pauseMusicFadeOutMs,
+    VideoSettingType.choiceScreen => choiceScreenId,
+    VideoSettingType.endChoiceScreen => endChoiceScreenId,
   };
+
+  /// The id of the answer screen shown at all: the end screen when the
+  /// video waits, else the one over the video.
+  String get shownChoiceScreenId =>
+      pauseOnEnd ? endChoiceScreenId : choiceScreenId;
 }
 
 /// A node's deviations from the project [VideoSettings]. A `null` field means
@@ -97,6 +119,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     DefaultSelectionMethod? defaultSelection,
     String? pauseMusicId,
     int? pauseMusicFadeOutMs,
+    String? choiceScreenId,
+    String? endChoiceScreenId,
   }) = _VideoSettingsOverride;
 
   factory VideoSettingsOverride.fromJson(Map<String, dynamic> json) =>
@@ -111,6 +135,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     if (defaultSelection != null) VideoSettingType.defaultSelection,
     if (pauseMusicId != null) VideoSettingType.pauseMusic,
     if (pauseMusicFadeOutMs != null) VideoSettingType.pauseMusicFadeOut,
+    if (choiceScreenId != null) VideoSettingType.choiceScreen,
+    if (endChoiceScreenId != null) VideoSettingType.endChoiceScreen,
   ];
 
   bool get isEmpty => activeTypes.isEmpty;
@@ -124,6 +150,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     defaultSelection: defaultSelection ?? base.defaultSelection,
     pauseMusicId: pauseMusicId ?? base.pauseMusicId,
     pauseMusicFadeOutMs: pauseMusicFadeOutMs ?? base.pauseMusicFadeOutMs,
+    choiceScreenId: choiceScreenId ?? base.choiceScreenId,
+    endChoiceScreenId: endChoiceScreenId ?? base.endChoiceScreenId,
   );
 
   /// Starts overriding [type], copying its current value from [base] so the
@@ -144,6 +172,12 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
         ),
         VideoSettingType.pauseMusicFadeOut => copyWith(
           pauseMusicFadeOutMs: base.pauseMusicFadeOutMs,
+        ),
+        VideoSettingType.choiceScreen => copyWith(
+          choiceScreenId: base.choiceScreenId,
+        ),
+        VideoSettingType.endChoiceScreen => copyWith(
+          endChoiceScreenId: base.endChoiceScreenId,
         ),
       };
 
@@ -174,5 +208,7 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
     VideoSettingType.pauseMusic => copyWith(pauseMusicId: null),
     VideoSettingType.pauseMusicFadeOut => copyWith(pauseMusicFadeOutMs: null),
+    VideoSettingType.choiceScreen => copyWith(choiceScreenId: null),
+    VideoSettingType.endChoiceScreen => copyWith(endChoiceScreenId: null),
   };
 }

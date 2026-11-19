@@ -13,6 +13,8 @@ The Flutter project lives in `nutria_fmv_maker/`, not at the repo root. Run ever
 
 The `.fmv` format itself is the pure-Dart package `packages/nutria_fmv_protocol/` (no dependencies, SDK `^3.5` so the Player can use it), which the Maker depends on by path.
 
+How designed screens are drawn is the Flutter package `packages/nutria_fmv_screens/` (`ScreenView` with a `ScreenContent`, answer layouts, timers, blur), shared with the Player so the designer shows exactly what viewers see. It also ships the five built-in fonts (SIL OFL, with their licences; `builtInFontStyle`, `registerScreenFontLicences`). The Player gets both packages from GitHub (`git:` with `path:`).
+
 ## Commands
 
 ```sh
@@ -24,8 +26,9 @@ flutter test                       # unit + widget tests
 flutter test test/features/node_widgets_test.dart --plain-name "<test name>"
 dart run build_runner build --delete-conflicting-outputs   # after changing @riverpod / @freezed / JSON models
 
-# The shared .fmv package
+# The shared packages
 cd ../packages/nutria_fmv_protocol && dart test
+cd ../packages/nutria_fmv_screens && flutter test
 
 # Frame timings on a generated 300-node project, profile mode, both themes:
 flutter drive --profile -d windows --driver=test_driver/perf_driver.dart --target=integration_test/drag_performance_test.dart
@@ -100,7 +103,9 @@ lib/
 - Laid-out node sizes are recorded in `NodeBounds` (no rebuilds) for box selection and framing.
 - **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`, `graph_ops.dart`); add a body widget.
 - **Screen designer:** `editorViewProvider` swaps the canvas for `ScreensView` (Ctrl+1 / Ctrl+2, or the floating button at the top right) and the right panel for `ScreensSidePanel` (screens, styles, layouts). The left panel then offers only Design, Imported Media and Preferences.
-  - Three screens (`ScreenKind`: menu, choice, pause), each a `ScreenDesign` in `ProjectDocument`, with the element kinds of `kScreenElementKinds`. Element ids are unique across screens, so element ops (`screen_ops.dart`) find the screen themselves.
+  - `ProjectDocument.screens` is a list of `ScreenDesign`s (id, `ScreenKind`, name). One main menu, pause menu, settings and saves screen; any number of answer screens (`choice`, and `endChoice` for videos that wait at their end), picked per node by the `choiceScreen`/`endChoiceScreen` settings.
+  - `withRequiredScreens()` keeps what a project must have: the screens (settings and saves once a menu has their buttons) and each screen's `kRequiredScreenElements`, which can't be removed. New projects and loaded files get it.
+  - The stage draws with the shared `ScreenView` (`fmvScreenOf` converts a design, `designerContent` gives sample content); `decorate` adds selection and dragging. Element ids are unique across screens, so element ops (`screen_ops.dart`) find the screen themselves.
   - Element positions and sizes are fractions of the screen; style sizes are fractions of its height.
   - `selectedScreenProvider`, `selectedScreenStyleProvider` and `choiceScenarioProvider` (the preview's answer count, long answers, question) are editor-only.
 

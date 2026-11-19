@@ -16,12 +16,14 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_color_picker.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 /// Colors offered for text and backgrounds (ARGB).
 const kScreenPalette = [
@@ -36,11 +38,48 @@ const kScreenPalette = [
   0xFFA47BFF,
 ];
 
-/// [v] as a percentage, with one decimal when it has one (4.5%).
+/// The hues of the colour wheel on the "any colour" square. Fixed colours,
+/// not theme colours: they show what the button does.
+const _wheel = [
+  Color(0xFFFF0000),
+  Color(0xFFFFFF00),
+  Color(0xFF00FF00),
+  Color(0xFF00FFFF),
+  Color(0xFF0000FF),
+  Color(0xFFFF00FF),
+  Color(0xFFFF0000),
+];
+
+/// [v] (a fraction) as a percentage number, with one decimal when it has
+/// one ("4.5").
 String _percent(double v) {
   final tenths = (v * 1000).round();
-  return tenths % 10 == 0 ? '${tenths ~/ 10}%' : '${tenths / 10}%';
+  return tenths % 10 == 0 ? '${tenths ~/ 10}' : '${tenths / 10}';
 }
+
+/// The name of answer layout [layout], and its icon.
+String choiceLayoutLabel(FmvChoiceLayout layout, AppLocalizations t) =>
+    switch (layout) {
+      FmvChoiceLayout.vertical => t.screenLayoutVertical,
+      FmvChoiceLayout.horizontal => t.screenLayoutHorizontal,
+      FmvChoiceLayout.columns => t.screenLayoutColumns,
+      FmvChoiceLayout.rows => t.screenLayoutRows,
+      FmvChoiceLayout.radial => t.screenLayoutRadial,
+    };
+
+IconData _layoutIcon(FmvChoiceLayout layout) => switch (layout) {
+  FmvChoiceLayout.vertical => Icons.view_agenda,
+  FmvChoiceLayout.horizontal => Icons.view_week,
+  FmvChoiceLayout.columns => Icons.vertical_split,
+  FmvChoiceLayout.rows => Icons.horizontal_split,
+  FmvChoiceLayout.radial => Icons.pie_chart,
+};
+
+String _timerModeLabel(FmvTimerMode mode, AppLocalizations t) => switch (mode) {
+  FmvTimerMode.toStart => t.screenTimerToStart,
+  FmvTimerMode.toMiddle => t.screenTimerToMiddle,
+  FmvTimerMode.fromMiddle => t.screenTimerFromMiddle,
+};
 
 /// The Screen section.
 class ScreenPanel extends ConsumerStatefulWidget {
@@ -56,6 +95,41 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
   /// Which color has its full picker open: `'text'`, `'back'` or `null`.
   String? _openPicker;
 
+  /// A number setting shown as a percentage of the screen ([value] is a
+  /// fraction): typed, stepped by [step] with the arrows, or dragged (one
+  /// undo step per drag), kept within [min] and [max].
+  Widget _fraction(
+    String label,
+    double value, {
+    required double step,
+    required double min,
+    required double max,
+    required void Function(double v, {Object? mergeKey}) onChanged,
+  }) {
+    final editor = ref.read(graphEditorProvider);
+    double clamp(double v) => v.clamp(min, max).toDouble();
+    return NutriaSettingRow(
+      label: '$label (%)',
+      value: '',
+      field: NutriaNumberField(
+        text: _percent(value),
+        decimals: true,
+        onStep: (d) => onChanged(clamp(value + d * step)),
+        onDragStart: editor.beginValueDrag,
+        onDragEnd: editor.endValueDrag,
+        onFocusChanged: (f) {
+          if (f) _textSession = Object();
+        },
+        onChanged: (text) {
+          final typed = NutriaNumberField.parse(text);
+          if (typed != null) {
+            onChanged(clamp(typed / 100), mergeKey: _textSession);
+          }
+        },
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
@@ -63,8 +137,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     final editor = ref.read(graphEditorProvider);
     final doc = ref.watch(projectDocumentProvider);
     final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
-    final screenKind = ref.watch(selectedScreenProvider);
-    final screen = doc.screenOf(screenKind);
+    final screen = ref.watch(designedScreenProvider);
     final selectedId = ref.watch(selectedScreenElementProvider);
     final element = selectedId == null ? null : doc.screenElement(selectedId);
     final pickedStyle = switch (ref.watch(selectedScreenStyleProvider)) {
@@ -81,10 +154,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     ];
     final gap = SizedBox(height: theme.dPanelPadding);
     final rows = <Widget>[
-      NutriaText(
-        text: screenKindLabel(screenKind, t),
-        textStyle: NutriaTextStyle.bold,
-      ),
+      NutriaText(text: screenLabel(screen, t), textStyle: NutriaTextStyle.bold),
       NutriaText(text: t.screenBackground, state: NutriaTextState.inactive),
       Row(
         children: [
@@ -112,10 +182,16 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
       ),
     ];
 
-    /// The rows that change [style] (every element in it changes).
-    List<Widget> styleRows(ScreenStyle style) {
+    /// The rows that change [style] (every element in it changes). For a
+    /// timer ([forTimer]), text settings are left out and the colours are
+    /// the bar's.
+    List<Widget> styleRows(ScreenStyle style, {bool forTimer = false}) {
       void editStyle(ScreenStyle Function(ScreenStyle s) edit) =>
           editor.editScreenStyle(style.id, edit);
+      void editMerged(
+        ScreenStyle Function(ScreenStyle s) edit, {
+        Object? mergeKey,
+      }) => editor.editScreenStyle(style.id, edit, mergeKey: mergeKey);
       List<Widget> swatches(int current, ValueChanged<int> onPicked) => [
         for (final color in kScreenPalette)
           GestureDetector(
@@ -162,17 +238,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
                         color: own ? Color(current) : null,
                         gradient: own
                             ? null
-                            : const SweepGradient(
-                                colors: [
-                                  Color(0xFFFF0000),
-                                  Color(0xFFFFFF00),
-                                  Color(0xFF00FF00),
-                                  Color(0xFF00FFFF),
-                                  Color(0xFF0000FF),
-                                  Color(0xFFFF00FF),
-                                  Color(0xFFFF0000),
-                                ],
-                              ),
+                            : const SweepGradient(colors: _wheel),
                         borderRadius: BorderRadius.circular(
                           theme.dButtonBorderRadius,
                         ),
@@ -199,6 +265,13 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
         );
       }
 
+      // The fonts: the Player's, those both apps ship, then imported ones.
+      final builtIn = kFmvBuiltInFonts.keys.toList();
+      final fontLabel =
+          doc.mediaById(style.fontId)?.fileName ??
+          kFmvBuiltInFonts[style.builtInFont] ??
+          t.screenDefaultFont;
+
       return [
         NutriaText(
           text: t.screenStyleNote(style.name),
@@ -206,38 +279,60 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
           maxLines: 3,
           sizeMultiplier: 0.85,
         ),
-        NutriaSettingRow(
-          label: t.screenTextSize,
-          value: _percent(style.fontSize),
-          onPrevious: () => editStyle(
-            (s) => s.copyWith(fontSize: (s.fontSize - 0.005).clamp(0.01, 0.3)),
+        if (!forTimer) ...[
+          _fraction(
+            t.screenTextSize,
+            style.fontSize,
+            step: 0.005,
+            min: 0.01,
+            max: 0.3,
+            onChanged: (v, {mergeKey}) =>
+                editMerged((s) => s.copyWith(fontSize: v), mergeKey: mergeKey),
           ),
-          onNext: () => editStyle(
-            (s) => s.copyWith(fontSize: (s.fontSize + 0.005).clamp(0.01, 0.3)),
+          NutriaSettingRow(
+            label: t.screenBold,
+            value: style.bold ? t.essentialsYes : t.essentialsNo,
+            onTap: () => editStyle((s) => s.copyWith(bold: !s.bold)),
           ),
-        ),
-        NutriaSettingRow(
-          label: t.screenBold,
-          value: style.bold ? t.essentialsYes : t.essentialsNo,
-          onTap: () => editStyle((s) => s.copyWith(bold: !s.bold)),
-        ),
-        NutriaSearchMenu(
-          label: doc.mediaById(style.fontId)?.fileName ?? t.screenDefaultFont,
-          isPlaceholder: style.fontId == null,
-          options: [t.screenDefaultFont, for (final f in fonts) f.fileName],
-          searchHint: t.logicSearchVariables,
-          onSelected: (i) => editStyle(
-            (s) => s.copyWith(fontId: i == 0 ? null : fonts[i - 1].id),
+          NutriaSettingRow(
+            label: t.screenFont,
+            value: '',
+            field: NutriaSearchMenu(
+              label: fontLabel,
+              isPlaceholder: style.fontId == null && style.builtInFont == null,
+              options: [
+                t.screenDefaultFont,
+                for (final name in builtIn) kFmvBuiltInFonts[name]!,
+                for (final f in fonts) f.fileName,
+              ],
+              searchHint: t.logicSearchVariables,
+              onSelected: (i) => editStyle(
+                (s) => switch (i) {
+                  0 => s.copyWith(fontId: null, builtInFont: null),
+                  _ when i <= builtIn.length => s.copyWith(
+                    fontId: null,
+                    builtInFont: builtIn[i - 1],
+                  ),
+                  _ => s.copyWith(fontId: fonts[i - 1 - builtIn.length].id),
+                },
+              ),
+              onOpenChanged: menuOpen,
+            ),
           ),
-          onOpenChanged: menuOpen,
+        ],
+        NutriaText(
+          text: forTimer ? t.screenBarColor : t.screenTextColor,
+          state: NutriaTextState.inactive,
         ),
-        NutriaText(text: t.screenTextColor, state: NutriaTextState.inactive),
         palette(
           'text',
           style.textColor,
           (c) => editStyle((s) => s.copyWith(textColor: c)),
         ),
-        NutriaText(text: t.screenBackColor, state: NutriaTextState.inactive),
+        NutriaText(
+          text: forTimer ? t.screenTrackColor : t.screenBackColor,
+          state: NutriaTextState.inactive,
+        ),
         palette(
           'back',
           style.backgroundColor,
@@ -250,39 +345,43 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
             ),
           ),
         ),
-        NutriaSettingRow(
-          label: t.screenBackOpacity,
-          value: _percent(style.backgroundOpacity),
-          onPrevious: () => editStyle(
-            (s) => s.copyWith(
-              backgroundOpacity: (s.backgroundOpacity - 0.1).clamp(0, 1),
-            ),
-          ),
-          onNext: () => editStyle(
-            (s) => s.copyWith(
-              backgroundOpacity: (s.backgroundOpacity + 0.1).clamp(0, 1),
-            ),
+        _fraction(
+          t.screenBackOpacity,
+          style.backgroundOpacity,
+          step: 0.05,
+          min: 0,
+          max: 1,
+          onChanged: (v, {mergeKey}) => editMerged(
+            (s) => s.copyWith(backgroundOpacity: v),
+            mergeKey: mergeKey,
           ),
         ),
-        NutriaSettingRow(
-          label: t.screenRoundness,
-          value: _percent(style.radius),
-          onPrevious: () => editStyle(
-            (s) => s.copyWith(radius: (s.radius - 0.005).clamp(0, 0.2)),
-          ),
-          onNext: () => editStyle(
-            (s) => s.copyWith(radius: (s.radius + 0.005).clamp(0, 0.2)),
-          ),
+        _fraction(
+          t.screenRoundness,
+          style.radius,
+          step: 0.005,
+          min: 0,
+          max: 0.2,
+          onChanged: (v, {mergeKey}) =>
+              editMerged((s) => s.copyWith(radius: v), mergeKey: mergeKey),
         ),
-        NutriaSettingRow(
-          label: t.screenPadding,
-          value: _percent(style.padding),
-          onPrevious: () => editStyle(
-            (s) => s.copyWith(padding: (s.padding - 0.005).clamp(0, 0.1)),
-          ),
-          onNext: () => editStyle(
-            (s) => s.copyWith(padding: (s.padding + 0.005).clamp(0, 0.1)),
-          ),
+        _fraction(
+          t.screenPadding,
+          style.padding,
+          step: 0.005,
+          min: 0,
+          max: 0.1,
+          onChanged: (v, {mergeKey}) =>
+              editMerged((s) => s.copyWith(padding: v), mergeKey: mergeKey),
+        ),
+        _fraction(
+          t.screenBlur,
+          style.blur,
+          step: 0.002,
+          min: 0,
+          max: 0.05,
+          onChanged: (v, {mergeKey}) =>
+              editMerged((s) => s.copyWith(blur: v), mergeKey: mergeKey),
         ),
       ];
     }
@@ -292,6 +391,9 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
       final styleIds = [for (final s in doc.styles) s.id];
       String styleName(String id) =>
           doc.styles.where((s) => s.id == id).firstOrNull?.name ?? id;
+      final removable = doc.canRemoveScreenElement(element.id);
+      final isChoices = element.kind == ScreenElementKind.choices;
+      final isTimer = element.kind == ScreenElementKind.timer;
       rows.addAll([
         SizedBox(height: theme.dSectionPadding),
         Row(
@@ -302,15 +404,18 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
                 textStyle: NutriaTextStyle.bold,
               ),
             ),
-            NutriaButton.icon(
-              icon: Icons.delete,
-              tooltip: t.screenRemoveElement,
-              onTap: () => editor.removeScreenElement(element.id),
+            NutriaTooltip(
+              message: removable ? null : t.screenRequiredElement,
+              child: NutriaButton.icon(
+                icon: Icons.delete,
+                isActive: removable,
+                tooltip: t.screenRemoveElement,
+                onTap: () => editor.removeScreenElement(element.id),
+              ),
             ),
           ],
         ),
-        if (element.kind != ScreenElementKind.choices &&
-            element.kind != ScreenElementKind.timer)
+        if (!isChoices && !isTimer && element.kind != ScreenElementKind.saves)
           NutriaTextField(
             key: ValueKey('text-${element.id}'),
             text: element.text ?? '',
@@ -325,23 +430,92 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
               mergeKey: _textSession,
             ),
           ),
-        NutriaSettingRow(
-          label: t.screenWidth,
-          value: _percent(element.width),
-          onPrevious: () =>
-              editor.setScreenElementWidth(element.id, element.width - 0.05),
-          onNext: () =>
-              editor.setScreenElementWidth(element.id, element.width + 0.05),
-        ),
-        if (element.kind == ScreenElementKind.choices)
-          NutriaSettingRow(
-            label: t.screenGap,
-            value: _percent(element.gap),
-            onPrevious: () =>
-                editor.setScreenElementGap(element.id, element.gap - 0.005),
-            onNext: () =>
-                editor.setScreenElementGap(element.id, element.gap + 0.005),
+        if (isChoices) ...[
+          NutriaText(text: t.screenLayout, state: NutriaTextState.inactive),
+          // The layouts as a row of icons: quicker to compare than a list.
+          Row(
+            children: [
+              for (final (i, layout) in FmvChoiceLayout.values.indexed) ...[
+                if (i > 0) SizedBox(width: theme.dPanelPadding / 2),
+                Expanded(
+                  child: NutriaButton.icon(
+                    icon: _layoutIcon(layout),
+                    tooltip: choiceLayoutLabel(layout, t),
+                    isAccented: element.layout == layout,
+                    onTap: () =>
+                        editor.setScreenElementLayout(element.id, layout),
+                  ),
+                ),
+              ],
+            ],
           ),
+          NutriaText(
+            text: choiceLayoutLabel(element.layout, t),
+            state: NutriaTextState.inactive,
+            sizeMultiplier: 0.85,
+          ),
+        ],
+        if (!(isChoices && element.layout == FmvChoiceLayout.columns))
+          _fraction(
+            t.screenWidth,
+            element.width,
+            step: 0.05,
+            min: 0.05,
+            max: 1,
+            onChanged: (v, {mergeKey}) =>
+                editor.setScreenElementWidth(element.id, v, mergeKey: mergeKey),
+          ),
+        if ((isChoices && !element.layout.fillsScreen) ||
+            element.kind == ScreenElementKind.saves)
+          _fraction(
+            t.screenGap,
+            element.gap,
+            step: 0.005,
+            min: 0,
+            max: 0.2,
+            onChanged: (v, {mergeKey}) =>
+                editor.setScreenElementGap(element.id, v, mergeKey: mergeKey),
+          ),
+        if (isTimer) ...[
+          NutriaSettingRow(
+            label: t.screenTimerMode,
+            value: _timerModeLabel(element.timerMode, t),
+            onPrevious: () => editor.setScreenElementTimerMode(
+              element.id,
+              FmvTimerMode.values[(element.timerMode.index - 1) %
+                  FmvTimerMode.values.length],
+            ),
+            onNext: () => editor.setScreenElementTimerMode(
+              element.id,
+              FmvTimerMode.values[(element.timerMode.index + 1) %
+                  FmvTimerMode.values.length],
+            ),
+            options: [
+              for (final mode in FmvTimerMode.values)
+                NutriaContextMenuItem(
+                  icon: mode == element.timerMode
+                      ? Icons.check
+                      : Icons.circle_outlined,
+                  label: _timerModeLabel(mode, t),
+                  onSelected: () =>
+                      editor.setScreenElementTimerMode(element.id, mode),
+                ),
+            ],
+            onOptionsOpenChanged: menuOpen,
+          ),
+          _fraction(
+            t.screenThickness,
+            element.thickness,
+            step: 0.002,
+            min: 0.002,
+            max: 0.1,
+            onChanged: (v, {mergeKey}) => editor.setScreenElementThickness(
+              element.id,
+              v,
+              mergeKey: mergeKey,
+            ),
+          ),
+        ],
         NutriaSettingRow(
           label: t.screenStyle,
           value: style.name,
@@ -363,7 +537,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
           ],
           onOptionsOpenChanged: menuOpen,
         ),
-        ...styleRows(style),
+        ...styleRows(style, forTimer: isTimer),
       ]);
     } else if (pickedStyle != null) {
       final builtIn = ScreenOps.isBuiltInStyle(pickedStyle.id);

@@ -62,15 +62,15 @@ abstract class _$EditorViewNotifier extends $Notifier<EditorView> {
   }
 }
 
-/// The screen being designed.
+/// The id of the screen being designed (the main menu at first).
 
 @ProviderFor(SelectedScreen)
 final selectedScreenProvider = SelectedScreenProvider._();
 
-/// The screen being designed.
+/// The id of the screen being designed (the main menu at first).
 final class SelectedScreenProvider
-    extends $NotifierProvider<SelectedScreen, ScreenKind> {
-  /// The screen being designed.
+    extends $NotifierProvider<SelectedScreen, String> {
+  /// The id of the screen being designed (the main menu at first).
   SelectedScreenProvider._()
     : super(
         from: null,
@@ -90,35 +90,84 @@ final class SelectedScreenProvider
   SelectedScreen create() => SelectedScreen();
 
   /// {@macro riverpod.override_with_value}
-  Override overrideWithValue(ScreenKind value) {
+  Override overrideWithValue(String value) {
     return $ProviderOverride(
       origin: this,
-      providerOverride: $SyncValueProvider<ScreenKind>(value),
+      providerOverride: $SyncValueProvider<String>(value),
     );
   }
 }
 
-String _$selectedScreenHash() => r'7e0991adf852c5a0cc39489f8c8d770ff408c8d6';
+String _$selectedScreenHash() => r'735e73ad6d3a1c575de295fcf272978becd3943d';
 
-/// The screen being designed.
+/// The id of the screen being designed (the main menu at first).
 
-abstract class _$SelectedScreen extends $Notifier<ScreenKind> {
-  ScreenKind build();
+abstract class _$SelectedScreen extends $Notifier<String> {
+  String build();
   @$mustCallSuper
   @override
   WhenComplete runBuild() {
-    final ref = this.ref as $Ref<ScreenKind, ScreenKind>;
+    final ref = this.ref as $Ref<String, String>;
     final element =
         ref.element
             as $ClassProviderElement<
-              AnyNotifier<ScreenKind, ScreenKind>,
-              ScreenKind,
+              AnyNotifier<String, String>,
+              String,
               Object?,
               Object?
             >;
     return element.handleCreate(ref, build);
   }
 }
+
+/// The screen being designed: the selected one, or the main menu if it's
+/// gone (deleted, or undone away).
+
+@ProviderFor(designedScreen)
+final designedScreenProvider = DesignedScreenProvider._();
+
+/// The screen being designed: the selected one, or the main menu if it's
+/// gone (deleted, or undone away).
+
+final class DesignedScreenProvider
+    extends $FunctionalProvider<ScreenDesign, ScreenDesign, ScreenDesign>
+    with $Provider<ScreenDesign> {
+  /// The screen being designed: the selected one, or the main menu if it's
+  /// gone (deleted, or undone away).
+  DesignedScreenProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'designedScreenProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$designedScreenHash();
+
+  @$internal
+  @override
+  $ProviderElement<ScreenDesign> $createElement($ProviderPointer pointer) =>
+      $ProviderElement(pointer);
+
+  @override
+  ScreenDesign create(Ref ref) {
+    return designedScreen(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(ScreenDesign value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<ScreenDesign>(value),
+    );
+  }
+}
+
+String _$designedScreenHash() => r'77a84c062fab65ba3bdbb4b481c56f9930e6c58f';
 
 /// The style being edited when no element is selected (picked from the
 /// style list), or `null`.
@@ -335,7 +384,7 @@ final class ScreenDragNotifierProvider
 }
 
 String _$screenDragNotifierHash() =>
-    r'f524db68f6ef9f154c54b83fb878ed9c6929987d';
+    r'a760370d60f15d88a773df7e69fe1c54fa8266ae';
 
 /// Dragging an element on the stage: one undo step per drag, snapping to
 /// the middle and to other elements.

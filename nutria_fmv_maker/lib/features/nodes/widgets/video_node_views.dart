@@ -3,12 +3,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
+import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/music_rows.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_parts.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/video_setting_row.dart';
+import 'package:nutria_fmv_maker/features/screens/widgets/screen_setting_rows.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -248,26 +250,36 @@ class VideoNodeExpansion extends ConsumerWidget {
         ),
       ],
       for (final type in types)
-        if (!type.isMusic)
+        if (kPlaybackSettingTypes.contains(type))
           VideoSettingRow(
-          onDragStart: editor.beginValueDrag,
-          onDragEnd: editor.endValueDrag,
-          type: type,
+            onDragStart: editor.beginValueDrag,
+            onDragEnd: editor.endValueDrag,
+            type: type,
+            settings: settings,
+            isOverridden: overridden.contains(type),
+            onStep: (direction) => editor.editOverrides(
+              node.id,
+              (o) => o.enable(type, settings.step(type, direction)),
+            ),
+            onChanged: (next, {mergeKey}) => editor.editOverrides(
+              node.id,
+              (o) => o.enable(type, next),
+              mergeKey: mergeKey,
+            ),
+            onReset: () => editor.disableOverride(node.id, type),
+            onMenuOpenChanged: ref
+                .read(overlayProvider.notifier)
+                .setContextMenuOpen,
+          ),
+      if (node is BranchedVideoNode)
+        ...screenSettingRows(
+          context,
+          ref,
           settings: settings,
-          isOverridden: overridden.contains(type),
-          onStep: (direction) => editor.editOverrides(
-            node.id,
-            (o) => o.enable(type, settings.step(type, direction)),
-          ),
-          onChanged: (next, {mergeKey}) => editor.editOverrides(
-            node.id,
-            (o) => o.enable(type, next),
-            mergeKey: mergeKey,
-          ),
-          onReset: () => editor.disableOverride(node.id, type),
-          onMenuOpenChanged: ref
-              .read(overlayProvider.notifier)
-              .setContextMenuOpen,
+          overridden: overridden.toSet(),
+          onChanged: (type, next) =>
+              editor.editOverrides(node.id, (o) => o.enable(type, next)),
+          onReset: (type) => editor.disableOverride(node.id, type),
         ),
       ...musicRows(context, ref, node),
       SwatchPicker(

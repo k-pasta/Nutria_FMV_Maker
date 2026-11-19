@@ -18,6 +18,8 @@ String videoSettingName(AppLocalizations t, VideoSettingType type) =>
       VideoSettingType.defaultSelection => t.overrideDefaultSelection,
       VideoSettingType.pauseMusic => t.musicPause,
       VideoSettingType.pauseMusicFadeOut => t.musicPauseFadeOut,
+      VideoSettingType.choiceScreen => t.overrideChoiceScreen,
+      VideoSettingType.endChoiceScreen => t.overrideEndChoiceScreen,
     };
 
 /// The localized value of setting [type] in [settings].
@@ -51,6 +53,8 @@ String videoSettingValue(
   VideoSettingType.pauseMusic => settings.pauseMusicId,
   VideoSettingType.pauseMusicFadeOut =>
     '${(settings.pauseMusicFadeOutMs / 1000).toStringAsFixed(2)} s',
+  VideoSettingType.choiceScreen => settings.choiceScreenId,
+  VideoSettingType.endChoiceScreen => settings.endChoiceScreenId,
 };
 
 /// Selection time as shown in its field: seconds with two decimals.

@@ -63,6 +63,16 @@ FmvExport exportFmv(
 
   final names = {for (final v in document.variables) v.id: v.name};
   final nodes = <String, FmvNode>{};
+  // Answer screens other than the first, used by the exported nodes.
+  final usedScreens = <String>{};
+  // A node's answer screen: `null` for the project's choice screen (which
+  // older Players know), else its id, written with the other screens.
+  String? useScreen(String id) {
+    if (id == ScreenKind.choice.defaultId) return null;
+    usedScreens.add(id);
+    return id;
+  }
+
   for (final nodeId in order) {
     final node = document.node(nodeId);
     switch (node) {
@@ -140,6 +150,7 @@ FmvExport exportFmv(
           overrides: _overrides(document, node, kBranchedNodeSettings),
           music: _music(document, node.music),
           pauseMusic: _pauseMusic(document, node),
+          screen: useScreen(_choiceScreen(document, node)),
         );
     }
   }
@@ -171,17 +182,41 @@ FmvExport exportFmv(
       ),
       nodes: nodes,
       variables: {for (final v in document.variables) v.name: _variable(v)},
-      menuScreen: _screen(document, ScreenKind.menu),
-      choiceScreen: _screen(document, ScreenKind.choice),
-      pauseScreen: _screen(document, ScreenKind.pause),
+      menuScreen: fmvScreenOf(document, document.screenOf(ScreenKind.menu)),
+      choiceScreen: fmvScreenOf(document, document.screenOf(ScreenKind.choice)),
+      pauseScreen: fmvScreenOf(document, document.screenOf(ScreenKind.pause)),
+      settingsScreen: document.hasSettingsScreen
+          ? fmvScreenOf(document, document.screenOf(ScreenKind.settings))
+          : const FmvMenuScreen(),
+      savesScreen: document.hasSavesScreen
+          ? fmvScreenOf(document, document.screenOf(ScreenKind.saves))
+          : const FmvMenuScreen(),
+      screens: {
+        for (final id in usedScreens)
+          id: fmvScreenOf(document, document.screenById(id)!),
+      },
     ),
     issues: issues,
   );
 }
 
-/// The design of [kind], with every element's style written out.
-FmvMenuScreen _screen(ProjectDocument document, ScreenKind kind) {
-  final screen = document.screenOf(kind);
+/// The id of the answer screen branched node [node] shows: its setting
+/// (its own, its color's or the project's) for a video that waits at its end
+/// or for answers over the video, falling back to the first screen of that
+/// kind when the one named is gone.
+String _choiceScreen(ProjectDocument document, BranchedVideoNode node) {
+  final settings = node.overrides.applyTo(document.defaultsFor(node.swatch));
+  return document
+      .resolveScreen(
+        settings.shownChoiceScreenId,
+        settings.pauseOnEnd ? ScreenKind.endChoice : ScreenKind.choice,
+      )
+      .id;
+}
+
+/// [screen] as the Player reads it, with every element's style written
+/// out (also how the designer draws it).
+FmvMenuScreen fmvScreenOf(ProjectDocument document, ScreenDesign screen) {
   return FmvMenuScreen(
     background: document.mediaById(screen.backgroundId)?.path,
     elements: [
@@ -193,11 +228,24 @@ FmvMenuScreen _screen(ProjectDocument document, ScreenKind kind) {
             y: e.y,
             width: e.width,
             text: e.text,
-            gap: e.kind == ScreenElementKind.choices ? e.gap : null,
+            gap:
+                e.kind == ScreenElementKind.choices ||
+                    e.kind == ScreenElementKind.saves
+                ? e.gap
+                : null,
+            layout: e.kind == ScreenElementKind.choices
+                ? e.layout
+                : FmvChoiceLayout.vertical,
+            timerMode: e.kind == ScreenElementKind.timer
+                ? e.timerMode
+                : FmvTimerMode.toStart,
+            thickness: e.kind == ScreenElementKind.timer ? e.thickness : null,
             style: FmvScreenStyle(
               fontSize: style.fontSize,
               bold: style.bold,
               font: document.mediaById(style.fontId)?.path,
+              fontFamily: style.builtInFont,
+              blur: style.blur,
               textColor: style.textColor,
               backgroundColor: style.backgroundColor,
               backgroundOpacity: style.backgroundOpacity,

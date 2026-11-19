@@ -6,6 +6,7 @@ import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'screens_provider.g.dart';
@@ -21,17 +22,26 @@ class EditorViewNotifier extends _$EditorViewNotifier {
   void show(EditorView view) => state = view;
 }
 
-/// The screen being designed.
+/// The id of the screen being designed (the main menu at first).
 @Riverpod(keepAlive: true)
 class SelectedScreen extends _$SelectedScreen {
   @override
-  ScreenKind build() => ScreenKind.menu;
+  String build() => ScreenKind.menu.defaultId;
 
-  void select(ScreenKind screen) {
-    if (screen == state) return;
-    state = screen;
+  void select(String id) {
+    if (id == state) return;
+    state = id;
     ref.read(selectedScreenElementProvider.notifier).select(null);
   }
+}
+
+/// The screen being designed: the selected one, or the main menu if it's
+/// gone (deleted, or undone away).
+@riverpod
+ScreenDesign designedScreen(Ref ref) {
+  final id = ref.watch(selectedScreenProvider);
+  final doc = ref.watch(projectDocumentProvider);
+  return doc.screenById(id) ?? doc.screenOf(ScreenKind.menu);
 }
 
 /// The style being edited when no element is selected (picked from the
@@ -44,7 +54,7 @@ class SelectedScreenStyle extends _$SelectedScreenStyle {
   void select(String? id) => state = id;
 }
 
-/// What the choice screen preview shows: how many answers, whether they are
+/// What the answer screens' preview shows: how many answers, whether they are
 /// long, and whether there is a question. Not saved.
 typedef ChoiceScenario = ({int answers, bool longText, bool question});
 
@@ -123,7 +133,7 @@ class ScreenDragNotifier extends _$ScreenDragNotifier {
     _y += dy;
     final doc = ref.read(documentProvider).document;
     final others = [
-      for (final e in doc.screenOf(doc.screenKindOf(id)!).elements)
+      for (final e in doc.screenWithElement(id)!.elements)
         if (e.id != id) e,
     ];
     final snapped = snapScreenPoint(_x, _y, others: others);

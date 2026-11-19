@@ -5,7 +5,6 @@ import 'dart:collection';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
-import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
@@ -49,8 +48,7 @@ Set<String> usedMediaIds(ProjectDocument document) {
       ids.add(overrides.applyTo(document.defaultsFor(swatch)).pauseMusicId);
     }
   }
-  for (final kind in ScreenKind.values) {
-    final screen = document.screenOf(kind);
+  for (final screen in document.screens) {
     if (screen.backgroundId case final id?) ids.add(id);
     for (final element in screen.elements) {
       if (document.styleOf(element).fontId case final id?) ids.add(id);

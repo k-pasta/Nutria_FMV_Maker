@@ -22,6 +22,8 @@ _VideoSettings _$VideoSettingsFromJson(
       DefaultSelectionMethod.first,
   pauseMusicId: json['pauseMusicId'] as String? ?? '',
   pauseMusicFadeOutMs: (json['pauseMusicFadeOutMs'] as num?)?.toInt() ?? 1000,
+  choiceScreenId: json['choiceScreenId'] as String? ?? 'choice',
+  endChoiceScreenId: json['endChoiceScreenId'] as String? ?? 'endChoice',
 );
 
 Map<String, dynamic> _$VideoSettingsToJson(_VideoSettings instance) =>
@@ -34,6 +36,8 @@ Map<String, dynamic> _$VideoSettingsToJson(_VideoSettings instance) =>
           _$DefaultSelectionMethodEnumMap[instance.defaultSelection]!,
       'pauseMusicId': instance.pauseMusicId,
       'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
+      'choiceScreenId': instance.choiceScreenId,
+      'endChoiceScreenId': instance.endChoiceScreenId,
     };
 
 const _$VideoFitEnumMap = {
@@ -65,6 +69,8 @@ _VideoSettingsOverride _$VideoSettingsOverrideFromJson(
   ),
   pauseMusicId: json['pauseMusicId'] as String?,
   pauseMusicFadeOutMs: (json['pauseMusicFadeOutMs'] as num?)?.toInt(),
+  choiceScreenId: json['choiceScreenId'] as String?,
+  endChoiceScreenId: json['endChoiceScreenId'] as String?,
 );
 
 Map<String, dynamic> _$VideoSettingsOverrideToJson(
@@ -78,4 +84,6 @@ Map<String, dynamic> _$VideoSettingsOverrideToJson(
       _$DefaultSelectionMethodEnumMap[instance.defaultSelection],
   'pauseMusicId': instance.pauseMusicId,
   'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
+  'choiceScreenId': instance.choiceScreenId,
+  'endChoiceScreenId': instance.endChoiceScreenId,
 };

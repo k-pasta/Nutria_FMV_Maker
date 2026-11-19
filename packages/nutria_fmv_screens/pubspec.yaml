@@ -1,0 +1,51 @@
+name: nutria_fmv_screens
+description: >-
+  Draws the screens of a Nutria FMV story (menus, answers, settings, saved
+  games) the same way in Nutria FMV Maker's designer and in Nutria FMV
+  Player, with the fonts both apps ship.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ^3.10.0
+  flutter: ">=3.38.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  nutria_fmv_protocol:
+    path: ../nutria_fmv_protocol
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  assets:
+    - fonts/inter-OFL.txt
+    - fonts/manrope-OFL.txt
+    - fonts/ebgaramond-OFL.txt
+    - fonts/comfortaa-OFL.txt
+    - fonts/jetbrainsmono-OFL.txt
+  # Variable fonts (weight axis); bold is drawn with the 'wght' variation.
+  fonts:
+    - family: Inter
+      fonts:
+        - asset: fonts/Inter.ttf
+        - asset: fonts/Inter-Italic.ttf
+          style: italic
+    - family: Manrope
+      fonts:
+        - asset: fonts/Manrope.ttf
+    - family: EB Garamond
+      fonts:
+        - asset: fonts/EBGaramond.ttf
+        - asset: fonts/EBGaramond-Italic.ttf
+          style: italic
+    - family: Comfortaa
+      fonts:
+        - asset: fonts/Comfortaa.ttf
+    - family: JetBrains Mono
+      fonts:
+        - asset: fonts/JetBrainsMono.ttf

@@ -1015,7 +1015,7 @@ abstract class AppLocalizations {
   /// No description provided for @screenKindPause.
   ///
   /// In en, this message translates to:
-  /// **'Pause Screen'**
+  /// **'Pause Menu'**
   String get screenKindPause;
 
   /// No description provided for @screenScreens.
@@ -1305,6 +1305,288 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Click an element on the screen to change it. Drag elements to move them; they snap to the middle and to each other.'**
   String get screenSelectHint;
+
+  /// No description provided for @screenKindEndChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Choice Screen'**
+  String get screenKindEndChoice;
+
+  /// No description provided for @screenKindSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings Screen'**
+  String get screenKindSettings;
+
+  /// No description provided for @screenKindSaves.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Games Screen'**
+  String get screenKindSaves;
+
+  /// No description provided for @screenKindEndChoiceHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Shown over the last frame when a video waits for an answer (Pause on End).'**
+  String get screenKindEndChoiceHint;
+
+  /// No description provided for @screenBack.
+  ///
+  /// In en, this message translates to:
+  /// **'Back'**
+  String get screenBack;
+
+  /// No description provided for @screenVolume.
+  ///
+  /// In en, this message translates to:
+  /// **'Volume'**
+  String get screenVolume;
+
+  /// No description provided for @screenSubtitles.
+  ///
+  /// In en, this message translates to:
+  /// **'Subtitles'**
+  String get screenSubtitles;
+
+  /// No description provided for @screenFullScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Full Screen'**
+  String get screenFullScreen;
+
+  /// No description provided for @screenSaves.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved Games'**
+  String get screenSaves;
+
+  /// No description provided for @screenOn.
+  ///
+  /// In en, this message translates to:
+  /// **'On'**
+  String get screenOn;
+
+  /// No description provided for @screenOff.
+  ///
+  /// In en, this message translates to:
+  /// **'Off'**
+  String get screenOff;
+
+  /// No description provided for @screenNoSaves.
+  ///
+  /// In en, this message translates to:
+  /// **'No saved games'**
+  String get screenNoSaves;
+
+  /// No description provided for @screenSampleSave.
+  ///
+  /// In en, this message translates to:
+  /// **'Saved game, today 21:14'**
+  String get screenSampleSave;
+
+  /// No description provided for @screenPresetRowChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Answers in a Row'**
+  String get screenPresetRowChoices;
+
+  /// No description provided for @screenPresetSplitChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Split Screen'**
+  String get screenPresetSplitChoices;
+
+  /// No description provided for @screenPresetPieChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Pie'**
+  String get screenPresetPieChoices;
+
+  /// No description provided for @screenPresetStackedChoices.
+  ///
+  /// In en, this message translates to:
+  /// **'Stacked Bands'**
+  String get screenPresetStackedChoices;
+
+  /// No description provided for @screenPresetClassicSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Settings'**
+  String get screenPresetClassicSettings;
+
+  /// No description provided for @screenPresetClassicSaves.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Saved Games'**
+  String get screenPresetClassicSaves;
+
+  /// No description provided for @screenNewChoiceScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'New Choice Screen'**
+  String get screenNewChoiceScreen;
+
+  /// No description provided for @screenNewEndChoiceScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'New Pause Choice Screen'**
+  String get screenNewEndChoiceScreen;
+
+  /// No description provided for @screenNewScreenName.
+  ///
+  /// In en, this message translates to:
+  /// **'{kind} {number}'**
+  String screenNewScreenName(String kind, int number);
+
+  /// No description provided for @screenRename.
+  ///
+  /// In en, this message translates to:
+  /// **'Rename'**
+  String get screenRename;
+
+  /// No description provided for @screenDeleteScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete Screen'**
+  String get screenDeleteScreen;
+
+  /// No description provided for @screenNotUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'not used'**
+  String get screenNotUsed;
+
+  /// No description provided for @screenNameHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Screen name'**
+  String get screenNameHint;
+
+  /// No description provided for @screenRequiredElement.
+  ///
+  /// In en, this message translates to:
+  /// **'This screen needs it, so it can\'t be removed.'**
+  String get screenRequiredElement;
+
+  /// No description provided for @screenLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Layout'**
+  String get screenLayout;
+
+  /// No description provided for @screenLayoutVertical.
+  ///
+  /// In en, this message translates to:
+  /// **'One under another'**
+  String get screenLayoutVertical;
+
+  /// No description provided for @screenLayoutHorizontal.
+  ///
+  /// In en, this message translates to:
+  /// **'Side by side'**
+  String get screenLayoutHorizontal;
+
+  /// No description provided for @screenLayoutColumns.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen, in columns'**
+  String get screenLayoutColumns;
+
+  /// No description provided for @screenLayoutRows.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen, in bands'**
+  String get screenLayoutRows;
+
+  /// No description provided for @screenLayoutRadial.
+  ///
+  /// In en, this message translates to:
+  /// **'Full screen, as a pie'**
+  String get screenLayoutRadial;
+
+  /// No description provided for @screenTimerMode.
+  ///
+  /// In en, this message translates to:
+  /// **'Runs Down'**
+  String get screenTimerMode;
+
+  /// No description provided for @screenTimerToStart.
+  ///
+  /// In en, this message translates to:
+  /// **'To the left'**
+  String get screenTimerToStart;
+
+  /// No description provided for @screenTimerToMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **'To the middle'**
+  String get screenTimerToMiddle;
+
+  /// No description provided for @screenTimerFromMiddle.
+  ///
+  /// In en, this message translates to:
+  /// **'From the middle'**
+  String get screenTimerFromMiddle;
+
+  /// No description provided for @screenThickness.
+  ///
+  /// In en, this message translates to:
+  /// **'Thickness'**
+  String get screenThickness;
+
+  /// No description provided for @screenBarColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Bar colour'**
+  String get screenBarColor;
+
+  /// No description provided for @screenTrackColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Track colour'**
+  String get screenTrackColor;
+
+  /// No description provided for @screenBlur.
+  ///
+  /// In en, this message translates to:
+  /// **'Blur'**
+  String get screenBlur;
+
+  /// No description provided for @screenFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Font'**
+  String get screenFont;
+
+  /// No description provided for @screenBuiltInFonts.
+  ///
+  /// In en, this message translates to:
+  /// **'Fonts that come with Nutria FMV'**
+  String get screenBuiltInFonts;
+
+  /// No description provided for @screenImportedFonts.
+  ///
+  /// In en, this message translates to:
+  /// **'Imported fonts'**
+  String get screenImportedFonts;
+
+  /// No description provided for @screenFullScreenPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Full-Screen Preview (Esc closes it)'**
+  String get screenFullScreenPreview;
+
+  /// No description provided for @overrideChoiceScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Choice Screen'**
+  String get overrideChoiceScreen;
+
+  /// No description provided for @overrideEndChoiceScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Choice Screen'**
+  String get overrideEndChoiceScreen;
 
   /// No description provided for @logicProblemNoVariable.
   ///
@@ -1767,12 +2049,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Project Title'**
   String get originProjectTitle;
-
-  /// No description provided for @originTitlePlaceHolder.
-  ///
-  /// In en, this message translates to:
-  /// **'Main Menu Placeholder'**
-  String get originTitlePlaceHolder;
 
   /// No description provided for @overrideDefaultSelection.
   ///

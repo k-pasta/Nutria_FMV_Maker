@@ -9,6 +9,7 @@ import 'package:nutria_fmv_maker/features/nodes/widgets/music_rows.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/video_setting_row.dart';
+import 'package:nutria_fmv_maker/features/screens/widgets/screen_setting_rows.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -174,6 +175,12 @@ class _DefaultsRows extends ConsumerWidget {
                 .setContextMenuOpen,
           ),
         ],
+        for (final row in screenSettingRows(
+          context,
+          ref,
+          settings: settings,
+          onChanged: (_, next) => editor.editDefaults(swatch, (_) => next),
+        )) ...[SizedBox(height: theme.dPanelPadding), row],
         for (final row in pauseMusicRows(
           context,
           ref,

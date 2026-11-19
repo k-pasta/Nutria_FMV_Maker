@@ -412,9 +412,7 @@ extension GraphOps on ProjectDocument {
     } else {
       choices[index] = choices[index].copyWith(text: text);
     }
-    return putNode(
-      current.copyWith(choices: choices),
-    )._trimChoices(nodeId);
+    return putNode(current.copyWith(choices: choices))._trimChoices(nodeId);
   }
 
   ProjectDocument _trimChoices(String nodeId) {

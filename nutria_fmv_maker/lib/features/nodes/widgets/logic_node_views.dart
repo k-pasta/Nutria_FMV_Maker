@@ -86,26 +86,23 @@ String? operationSymbol(FmvChangeOperation op) => switch (op) {
 };
 
 /// The name of an operation.
-String operationName(FmvChangeOperation op, AppLocalizations t) =>
-    switch (op) {
-      FmvChangeOperation.set => t.logicOpSet,
-      FmvChangeOperation.add => t.logicOpAdd,
-      FmvChangeOperation.subtract => t.logicOpSubtract,
-      FmvChangeOperation.multiply => t.logicOpMultiply,
-      FmvChangeOperation.divide => t.logicOpDivide,
-      FmvChangeOperation.power => t.logicOpPower,
-      FmvChangeOperation.absolute => t.logicOpAbsolute,
-      FmvChangeOperation.toggle => t.logicOpToggle,
-      FmvChangeOperation.and => t.logicOpAnd,
-      FmvChangeOperation.or => t.logicOpOr,
-      FmvChangeOperation.xor => t.logicOpXor,
-    };
+String operationName(FmvChangeOperation op, AppLocalizations t) => switch (op) {
+  FmvChangeOperation.set => t.logicOpSet,
+  FmvChangeOperation.add => t.logicOpAdd,
+  FmvChangeOperation.subtract => t.logicOpSubtract,
+  FmvChangeOperation.multiply => t.logicOpMultiply,
+  FmvChangeOperation.divide => t.logicOpDivide,
+  FmvChangeOperation.power => t.logicOpPower,
+  FmvChangeOperation.absolute => t.logicOpAbsolute,
+  FmvChangeOperation.toggle => t.logicOpToggle,
+  FmvChangeOperation.and => t.logicOpAnd,
+  FmvChangeOperation.or => t.logicOpOr,
+  FmvChangeOperation.xor => t.logicOpXor,
+};
 
 /// An operation as one line of text (symbol and name), for menus.
-String operationLabel(FmvChangeOperation op, AppLocalizations t) => [
-  ?operationSymbol(op),
-  operationName(op, t),
-].join(' ');
+String operationLabel(FmvChangeOperation op, AppLocalizations t) =>
+    [?operationSymbol(op), operationName(op, t)].join(' ');
 
 /// A comparison as the sign people write: ≥ rather than `>=`.
 String comparisonSymbol(FmvComparison comparison) =>
