@@ -56,16 +56,20 @@ class MemoryProjectFiles extends ProjectFileService {
       files[path] = document;
 
   @override
-  Future<String?> saveProjectAs(ProjectDocument document,
-      {String suggestedName = 'project'}) async {
+  Future<String?> saveProjectAs(
+    ProjectDocument document, {
+    String suggestedName = 'project',
+  }) async {
     final path = nextSavePath;
     if (path != null) files[path] = document;
     return path;
   }
 
   @override
-  Future<String?> saveExportAs(FmvExport export,
-      {String suggestedName = 'project'}) async {
+  Future<String?> saveExportAs(
+    FmvExport export, {
+    String suggestedName = 'project',
+  }) async {
     lastExport = export;
     return nextSavePath;
   }
@@ -81,9 +85,10 @@ class _NoDialogs implements FileDialogs {
   @override
   Future<String?> pickFolder() async => null;
   @override
-  Future<String?> saveFile(
-          {required String fileName, required Uint8List bytes}) async =>
-      null;
+  Future<String?> saveFile({
+    required String fileName,
+    required Uint8List bytes,
+  }) async => null;
 }
 
 /// Records what the preview was asked to play.
@@ -97,28 +102,27 @@ class FakePlayer implements PreviewPlayer {
   Future<void> stop() async => stops++;
   @override
   Future<void> playOrPause() async => status.value = (
-        position: status.value.position,
-        duration: status.value.duration,
-        playing: !status.value.playing,
-        volume: status.value.volume,
-      );
+    position: status.value.position,
+    duration: status.value.duration,
+    playing: !status.value.playing,
+    volume: status.value.volume,
+  );
   @override
   Future<void> seek(Duration position) async => status.value = (
-        position: position,
-        duration: status.value.duration,
-        playing: status.value.playing,
-        volume: status.value.volume,
-      );
+    position: position,
+    duration: status.value.duration,
+    playing: status.value.playing,
+    volume: status.value.volume,
+  );
   @override
   Future<void> setVolume(double volume) async => status.value = (
-        position: status.value.position,
-        duration: status.value.duration,
-        playing: status.value.playing,
-        volume: volume,
-      );
+    position: status.value.position,
+    duration: status.value.duration,
+    playing: status.value.playing,
+    volume: volume,
+  );
   @override
-  final ValueNotifier<PlaybackStatus> status =
-      ValueNotifier(kStoppedStatus);
+  final ValueNotifier<PlaybackStatus> status = ValueNotifier(kStoppedStatus);
   @override
   void dispose() {}
 }
@@ -156,19 +160,20 @@ class Harness {
   /// A container whose document is [storyFixture] (loaded, so not dirty).
   static Future<Harness> create({Preferences? preferences}) async {
     SharedPreferences.setMockInitialValues({
-      if (preferences != null)
-        'preferences': jsonEncode(preferences.toJson()),
+      if (preferences != null) 'preferences': jsonEncode(preferences.toJson()),
     });
     final prefs = await SharedPreferences.getInstance();
     final files = MemoryProjectFiles();
     final player = FakePlayer();
-    final container = ProviderContainer.test(overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-      projectFileServiceProvider.overrideWithValue(files),
-      previewPlayerProvider.overrideWithValue(player),
-      idGeneratorProvider.overrideWithValue(sequentialIds('new')),
-      mediaFilesProvider.overrideWithValue(FakeMediaFiles()),
-    ]);
+    final container = ProviderContainer.test(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        projectFileServiceProvider.overrideWithValue(files),
+        previewPlayerProvider.overrideWithValue(player),
+        idGeneratorProvider.overrideWithValue(sequentialIds('new')),
+        mediaFilesProvider.overrideWithValue(FakeMediaFiles()),
+      ],
+    );
     files.files['story.nfmv'] = storyFixture();
     await container.read(documentProvider.notifier).openPath('story.nfmv');
     return Harness._(container, files, player);

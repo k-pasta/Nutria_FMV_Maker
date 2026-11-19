@@ -20,12 +20,15 @@ void main() {
     addTearDown(tester.view.reset);
     SharedPreferences.setMockInitialValues({});
     final prefs = await SharedPreferences.getInstance();
-    container = ProviderContainer.test(overrides: [
-      sharedPreferencesProvider.overrideWithValue(prefs),
-      previewPlayerProvider.overrideWithValue(FakePlayer()),
-    ]);
-    await tester.pumpWidget(UncontrolledProviderScope(
-        container: container, child: const NutriaApp()));
+    container = ProviderContainer.test(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+        previewPlayerProvider.overrideWithValue(FakePlayer()),
+      ],
+    );
+    await tester.pumpWidget(
+      UncontrolledProviderScope(container: container, child: const NutriaApp()),
+    );
     await tester.pumpAndSettle();
   }
 

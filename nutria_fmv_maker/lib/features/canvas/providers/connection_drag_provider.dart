@@ -79,7 +79,10 @@ class ConnectionDragNotifier extends _$ConnectionDragNotifier {
     final anchor = state.anchor;
     if (anchor == null) return;
     final target = resolveConnection(
-        ref.read(documentProvider).document, anchor, state.hover);
+      ref.read(documentProvider).document,
+      anchor,
+      state.hover,
+    );
     if (target != null) {
       _document.apply('Connect', (d) => d.connect(target.from, target.to));
     }
@@ -96,7 +99,10 @@ PotentialConnection? potentialConnection(Ref ref) {
   final anchor = interaction.anchor;
   if (anchor == null) return null;
   return resolveConnection(
-      ref.watch(projectDocumentProvider), anchor, interaction.hover);
+    ref.watch(projectDocumentProvider),
+    anchor,
+    interaction.hover,
+  );
 }
 
 /// Whether [port] is the anchor or the target of the drag in progress, so its

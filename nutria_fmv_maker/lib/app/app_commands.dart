@@ -55,12 +55,12 @@ class AppCommands {
   }
 
   Future<void> open() => _guard(() async {
-        if (!await _confirmDiscard()) return;
-        if (await _document.open() == FileOutcome.done &&
-            _ref.read(missingMediaProvider).isNotEmpty) {
-          _ref.read(overlayProvider.notifier).showModal(AppModal.missingFiles);
-        }
-      });
+    if (!await _confirmDiscard()) return;
+    if (await _document.open() == FileOutcome.done &&
+        _ref.read(missingMediaProvider).isNotEmpty) {
+      _ref.read(overlayProvider.notifier).showModal(AppModal.missingFiles);
+    }
+  });
 
   /// Points the missing files at same-named files in a folder the user
   /// picks (not its subfolders).
@@ -72,8 +72,9 @@ class AppCommands {
     }
     final folder = await _ref.read(projectFileServiceProvider).pickFolder();
     if (folder == null) return;
-    final found =
-        _ref.read(graphEditorProvider).relinkFromFolder(missing, folder);
+    final found = _ref
+        .read(graphEditorProvider)
+        .relinkFromFolder(missing, folder);
     _notify(_t.notifyLocatedFiles(found, missing.length));
   }
 
@@ -111,8 +112,9 @@ class AppCommands {
   Future<void> _relink(String id, {required bool noticeIfRenamed}) async {
     final asset = _ref.read(projectDocumentProvider).mediaById(id);
     if (asset == null) return;
-    final path =
-        await _ref.read(projectFileServiceProvider).pickFileOf(asset.kind);
+    final path = await _ref
+        .read(projectFileServiceProvider)
+        .pickFileOf(asset.kind);
     if (path == null) return;
     _ref.read(graphEditorProvider).relinkMedia(id, path);
     final name = fileNameOf(path);
@@ -122,22 +124,24 @@ class AppCommands {
   }
 
   Future<void> save() => _guard(() async {
-        if (await _document.save() == FileOutcome.done) _notifySaved();
-      });
+    if (await _document.save() == FileOutcome.done) _notifySaved();
+  });
 
   Future<void> saveAs() => _guard(() async {
-        if (await _document.saveAs() == FileOutcome.done) _notifySaved();
-      });
+    if (await _document.saveAs() == FileOutcome.done) _notifySaved();
+  });
 
   Future<void> export() => _guard(() async {
-        final result = await _document.export();
-        if (result.outcome == FileOutcome.cancelled) return;
-        _notify(result.issues.isEmpty
-            ? _t.notifyExported(p.basename(result.path!))
-            : result.issues.any((i) => i.type == ExportIssueType.invalidLogic)
-                ? _t.notifyExportLogicIssues
-                : _t.notifyExportWarnings(result.issues.length));
-      });
+    final result = await _document.export();
+    if (result.outcome == FileOutcome.cancelled) return;
+    _notify(
+      result.issues.isEmpty
+          ? _t.notifyExported(p.basename(result.path!))
+          : result.issues.any((i) => i.type == ExportIssueType.invalidLogic)
+          ? _t.notifyExportLogicIssues
+          : _t.notifyExportWarnings(result.issues.length),
+    );
+  });
 
   Future<void> exitApp() async {
     if (await _confirmDiscard()) exit(0);
@@ -170,10 +174,16 @@ class AppCommands {
       _context,
       message: _t.dialogUnsavedChanges,
       choices: [
-        (value: _UnsavedChoice.cancel, label: _t.essentialsCancel,
-            isAccented: false),
-        (value: _UnsavedChoice.discard, label: _t.dialogDontSave,
-            isAccented: false),
+        (
+          value: _UnsavedChoice.cancel,
+          label: _t.essentialsCancel,
+          isAccented: false,
+        ),
+        (
+          value: _UnsavedChoice.discard,
+          label: _t.dialogDontSave,
+          isAccented: false,
+        ),
         (value: _UnsavedChoice.save, label: _t.dialogSave, isAccented: true),
       ],
     );
@@ -228,9 +238,12 @@ class AppCommands {
   void showView(EditorView view) {
     _ref.read(editorViewProvider.notifier).show(view);
     if (view == EditorView.screens) {
-      _ref.read(panelLayoutProvider.notifier).showSection(LeftPanelSection.screen);
+      _ref
+          .read(panelLayoutProvider.notifier)
+          .showSection(LeftPanelSection.screen);
     }
   }
+
   Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
   void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();
   void selectAll() => _ref.read(graphEditorProvider).selectAll();
@@ -278,16 +291,23 @@ class AppCommands {
       _ref.read(canvasViewProvider).zoomCentered(zoomIn: zoomIn);
 
   /// Glides the view so every node is on screen.
-  void frameAll() => frameNodes(_ref.read(canvasViewProvider),
-      _ref.read(documentProvider).document, _ref.read(nodeBoundsProvider),
-      animate: true);
+  void frameAll() => frameNodes(
+    _ref.read(canvasViewProvider),
+    _ref.read(documentProvider).document,
+    _ref.read(nodeBoundsProvider),
+    animate: true,
+  );
 
   /// Glides the view to the selected nodes (all nodes if none is selected).
   void frameSelected() {
     final selected = _ref.read(selectionProvider).selected;
-    frameNodes(_ref.read(canvasViewProvider),
-        _ref.read(documentProvider).document, _ref.read(nodeBoundsProvider),
-        ids: selected.isEmpty ? null : selected, animate: true);
+    frameNodes(
+      _ref.read(canvasViewProvider),
+      _ref.read(documentProvider).document,
+      _ref.read(nodeBoundsProvider),
+      ids: selected.isEmpty ? null : selected,
+      animate: true,
+    );
   }
 
   void togglePanel(PanelSide side) => _ref

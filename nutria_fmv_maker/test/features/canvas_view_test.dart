@@ -13,8 +13,9 @@ Offset viewportPoint(WidgetTester tester, Offset global) =>
     global - tester.getTopLeft(find.byType(CanvasView));
 
 void main() {
-  testWidgets('the view starts on the origin node, centered at 100%',
-      (tester) async {
+  testWidgets('the view starts on the origin node, centered at 100%', (
+    tester,
+  ) async {
     final container = await pumpApp(tester, startView: true);
     final view = container.read(canvasViewProvider);
     final origin = container.read(projectDocumentProvider).origin;
@@ -27,8 +28,9 @@ void main() {
   testWidgets('the mouse wheel zooms around the pointer', (tester) async {
     final container = await pumpApp(tester);
     final view = container.read(canvasViewProvider);
-    final underPointer =
-        view.toCanvasPosition(viewportPoint(tester, kCanvasPoint));
+    final underPointer = view.toCanvasPosition(
+      viewportPoint(tester, kCanvasPoint),
+    );
 
     await scrollAt(tester, kCanvasPoint, up: true);
     expect(view.scale, greaterThan(1));
@@ -52,8 +54,9 @@ void main() {
     expect(view.toCanvasPosition(Offset.zero).dx, greaterThan(before.dx));
   });
 
-  testWidgets('right-clicking the canvas adds a node where clicked',
-      (tester) async {
+  testWidgets('right-clicking the canvas adds a node where clicked', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     final before = container.read(projectDocumentProvider).nodes.length;
 

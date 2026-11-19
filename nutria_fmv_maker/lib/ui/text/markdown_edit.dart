@@ -13,12 +13,7 @@ typedef TextEdit = ({String text, int start, int end});
 ///   markers next to spaces don't style anything.
 /// - A selection right inside markers of that style, or one that includes
 ///   them, loses them.
-TextEdit toggleMarkdown(
-  String text,
-  int start,
-  int end, {
-  required bool bold,
-}) {
+TextEdit toggleMarkdown(String text, int start, int end, {required bool bold}) {
   final marker = bold ? '**' : '*';
   final n = marker.length;
   if (start > end) (start, end) = (end, start);
@@ -67,9 +62,7 @@ TextEdit toggleMarkdown(
   }
   final insideStart = starsAfter(start);
   final insideEnd = starsBefore(end);
-  if (end - start > 2 * n &&
-      hasStyle(insideStart) &&
-      hasStyle(insideEnd)) {
+  if (end - start > 2 * n && hasStyle(insideStart) && hasStyle(insideEnd)) {
     final unwrapped = text
         .replaceRange(end - n, end, '')
         .replaceRange(start, start + n, '');

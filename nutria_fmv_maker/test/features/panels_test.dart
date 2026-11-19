@@ -24,21 +24,29 @@ const videos = [r'C:\videos\intro.mp4', r'C:\videos\ending.mp4'];
 /// The app with [videos] offered by the "pick videos" dialog.
 Future<ProviderContainer> pumpWithVideos(WidgetTester tester) {
   final files = MemoryProjectFiles()..nextVideos = videos;
-  return pumpApp(tester,
-      overrides: [projectFileServiceProvider.overrideWithValue(files)]);
+  return pumpApp(
+    tester,
+    overrides: [projectFileServiceProvider.overrideWithValue(files)],
+  );
 }
 
 Future<void> importFiles(WidgetTester tester) async {
-  await tester.tap(find.descendant(
-      of: find.byType(VideoLibraryPanel), matching: find.byIcon(Icons.add)));
+  await tester.tap(
+    find.descendant(
+      of: find.byType(VideoLibraryPanel),
+      matching: find.byIcon(Icons.add),
+    ),
+  );
   await tester.pumpAndSettle();
 }
 
 /// Drags library entry [fileName] to [to] with the mouse.
 Future<void> dragEntry(WidgetTester tester, String fileName, Offset to) async {
   final from = tester.getCenter(find.text(fileName));
-  final gesture =
-      await tester.startGesture(from, kind: PointerDeviceKind.mouse);
+  final gesture = await tester.startGesture(
+    from,
+    kind: PointerDeviceKind.mouse,
+  );
   for (var i = 1; i <= 10; i++) {
     await gesture.moveTo(Offset.lerp(from, to, i / 10)!);
     await tester.pump();
@@ -65,8 +73,9 @@ void main() {
     expect(container.read(videoAssetProvider(previewed))!.path, videos[1]);
   });
 
-  testWidgets('dropping a library video on the canvas creates a node',
-      (tester) async {
+  testWidgets('dropping a library video on the canvas creates a node', (
+    tester,
+  ) async {
     final container = await pumpWithVideos(tester);
     await importFiles(tester);
     final before = container.read(projectDocumentProvider).nodes.length;
@@ -79,28 +88,37 @@ void main() {
     expect(container.read(videoAssetProvider(videoId))!.path, videos[0]);
   });
 
-  testWidgets('dropping a library video on a node sets its video',
-      (tester) async {
+  testWidgets('dropping a library video on a node sets its video', (
+    tester,
+  ) async {
     final container = await pumpWithVideos(tester);
     await importFiles(tester);
     final id = container
         .read(graphEditorProvider)
-        .addVideoNode(const Position(-100, -300),
-            type: DefaultNodeType.simpleVideo);
+        .addVideoNode(
+          const Position(-100, -300),
+          type: DefaultNodeType.simpleVideo,
+        );
     await tester.pumpAndSettle();
 
     await dragEntry(
-        tester, 'ending.mp4', tester.getCenter(find.text(kNoVideo)));
+      tester,
+      'ending.mp4',
+      tester.getCenter(find.text(kNoVideo)),
+    );
 
     final node = container.read(projectDocumentProvider).nodes[id]!;
-    expect(container.read(videoAssetProvider(node.videoIdOrNull!))!.path,
-        videos[1]);
+    expect(
+      container.read(videoAssetProvider(node.videoIdOrNull!))!.path,
+      videos[1],
+    );
     // On the node, the file name replaces "No Video".
     expect(find.text(kNoVideo), findsNothing);
   });
 
-  testWidgets('project settings change and undo from the panel',
-      (tester) async {
+  testWidgets('project settings change and undo from the panel', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     container
         .read(panelLayoutProvider.notifier)
@@ -119,8 +137,7 @@ void main() {
     expect(container.read(projectSettingsProvider), const VideoSettings());
   });
 
-  testWidgets('preferences change from the panel and are kept',
-      (tester) async {
+  testWidgets('preferences change from the panel and are kept', (tester) async {
     final container = await pumpApp(tester);
     container
         .read(panelLayoutProvider.notifier)
@@ -129,8 +146,10 @@ void main() {
 
     await tester.tap(find.text('Branching Video')); // default node type
     await tester.pumpAndSettle();
-    expect(container.read(preferencesProvider).defaultNodeType,
-        DefaultNodeType.simpleVideo);
+    expect(
+      container.read(preferencesProvider).defaultNodeType,
+      DefaultNodeType.simpleVideo,
+    );
     expect(find.text('Simple Video'), findsOneWidget);
   });
 
@@ -138,20 +157,26 @@ void main() {
     final container = await pumpWithVideos(tester);
     final editor = container.read(graphEditorProvider);
     final ids = editor.importFiles(videos);
-    editor.addVideoNode(Position.zero,
-        videoId: ids.first, type: DefaultNodeType.branchedVideo);
+    editor.addVideoNode(
+      Position.zero,
+      videoId: ids.first,
+      type: DefaultNodeType.branchedVideo,
+    );
     await tester.pumpAndSettle();
     expect(
-        find.descendant(
-            of: find.byType(NodeFrame),
-            matching: find.text(NodeMetrics.wrappable('intro.mp4'))),
-        findsOneWidget);
+      find.descendant(
+        of: find.byType(NodeFrame),
+        matching: find.text(NodeMetrics.wrappable('intro.mp4')),
+      ),
+      findsOneWidget,
+    );
     expect(
-        container
-            .read(projectDocumentProvider)
-            .nodes
-            .values
-            .whereType<BranchedVideoNode>(),
-        hasLength(1));
+      container
+          .read(projectDocumentProvider)
+          .nodes
+          .values
+          .whereType<BranchedVideoNode>(),
+      hasLength(1),
+    );
   });
 }

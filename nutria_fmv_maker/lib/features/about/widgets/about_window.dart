@@ -24,8 +24,10 @@ class AboutWindow extends StatelessWidget {
           'assets/icons/nutria_logo.svg',
           width: 150,
           height: 150,
-          colorFilter:
-              ColorFilter.mode(theme.cAccentButtonPressed, BlendMode.srcIn),
+          colorFilter: ColorFilter.mode(
+            theme.cAccentButtonPressed,
+            BlendMode.srcIn,
+          ),
         ),
         const NutriaText(
           text: '$kAppName v$kAppVersion$kAppVersionSuffix',
@@ -33,17 +35,25 @@ class AboutWindow extends StatelessWidget {
         ),
         SizedBox(height: theme.dPanelPadding),
         NutriaText(
-            text: t.infoProjectDescription,
-            maxLines: 100,
-            textAlign: TextAlign.justify),
+          text: t.infoProjectDescription,
+          maxLines: 100,
+          textAlign: TextAlign.justify,
+        ),
         SizedBox(height: theme.dPanelPadding),
-        Row(children: [
-          Expanded(child: _LinkButton(uri: kGitHubUrl, label: t.helpGithub)),
-          SizedBox(width: theme.dSectionPadding),
-          Expanded(
+        Row(
+          children: [
+            Expanded(
+              child: _LinkButton(uri: kGitHubUrl, label: t.helpGithub),
+            ),
+            SizedBox(width: theme.dSectionPadding),
+            Expanded(
               child: _LinkButton(
-                  uri: kDocumentationUrl, label: t.helpDocumentation)),
-        ]),
+                uri: kDocumentationUrl,
+                label: t.helpDocumentation,
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -64,13 +74,16 @@ class _LinkButton extends StatelessWidget {
         onTap: () => followLink?.call(),
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: theme.dTextfieldPadding),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            Padding(
-              padding: EdgeInsets.only(right: theme.dPanelPadding),
-              child: Icon(Icons.link, color: theme.cTextInactive),
-            ),
-            Flexible(child: NutriaText(text: label)),
-          ]),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: EdgeInsets.only(right: theme.dPanelPadding),
+                child: Icon(Icons.link, color: theme.cTextInactive),
+              ),
+              Flexible(child: NutriaText(text: label)),
+            ],
+          ),
         ),
       ),
     );

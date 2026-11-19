@@ -54,30 +54,46 @@ class MediaKitPreviewPlayer implements PreviewPlayer {
     controller = VideoController(player);
     final stream = player.stream;
     _subscriptions = [
-      stream.position.listen((v) => _update((s) => (
+      stream.position.listen(
+        (v) => _update(
+          (s) => (
             position: v,
             duration: s.duration,
             playing: s.playing,
             volume: s.volume,
-          ))),
-      stream.duration.listen((v) => _update((s) => (
+          ),
+        ),
+      ),
+      stream.duration.listen(
+        (v) => _update(
+          (s) => (
             position: s.position,
             duration: v,
             playing: s.playing,
             volume: s.volume,
-          ))),
-      stream.playing.listen((v) => _update((s) => (
+          ),
+        ),
+      ),
+      stream.playing.listen(
+        (v) => _update(
+          (s) => (
             position: s.position,
             duration: s.duration,
             playing: v,
             volume: s.volume,
-          ))),
-      stream.volume.listen((v) => _update((s) => (
+          ),
+        ),
+      ),
+      stream.volume.listen(
+        (v) => _update(
+          (s) => (
             position: s.position,
             duration: s.duration,
             playing: s.playing,
             volume: v,
-          ))),
+          ),
+        ),
+      ),
     ];
   }
 
@@ -104,9 +120,11 @@ class MediaKitPreviewPlayer implements PreviewPlayer {
   @override
   Future<void> seek(Duration position) {
     final end = player.state.duration;
-    return player.seek(position < Duration.zero
-        ? Duration.zero
-        : (position > end ? end : position));
+    return player.seek(
+      position < Duration.zero
+          ? Duration.zero
+          : (position > end ? end : position),
+    );
   }
 
   @override

@@ -30,18 +30,22 @@ void main() {
     expect(h.container.read(historyStatusProvider).undoLabel, 'Connect');
   });
 
-  test('picking up a connected output and dropping it on nothing disconnects',
-      () {
-    drag().beginFromOutput(fromB, Offset.zero);
-    expect(h.container.read(connectionDragProvider).anchor,
+  test(
+    'picking up a connected output and dropping it on nothing disconnects',
+    () {
+      drag().beginFromOutput(fromB, Offset.zero);
+      expect(
+        h.container.read(connectionDragProvider).anchor,
         const DragAnchor.input('C'),
-        reason: 'the noodle stays attached to its old target');
-    drag().end();
-    expect(h.document.edgeFrom(fromB), isNull);
+        reason: 'the noodle stays attached to its old target',
+      );
+      drag().end();
+      expect(h.document.edgeFrom(fromB), isNull);
 
-    h.container.read(documentProvider.notifier).undo();
-    expect(h.document.edgeFrom(fromB)?.to, PortRef.input('C'));
-  });
+      h.container.read(documentProvider.notifier).undo();
+      expect(h.document.edgeFrom(fromB)?.to, PortRef.input('C'));
+    },
+  );
 
   test('a picked-up noodle can be attached to another output', () {
     // B → C is picked up; the noodle stays on C's input and is dropped on D's
@@ -58,7 +62,9 @@ void main() {
     drag().beginFromInput('D', Offset.zero);
     drag().hover(const HoverTarget.node('A'));
     drag().end();
-    expect(h.document.edgeFrom(const PortRef(nodeId: 'A', port: 'maybe'))?.to,
-        PortRef.input('D'));
+    expect(
+      h.document.edgeFrom(const PortRef(nodeId: 'A', port: 'maybe'))?.to,
+      PortRef.input('D'),
+    );
   });
 }

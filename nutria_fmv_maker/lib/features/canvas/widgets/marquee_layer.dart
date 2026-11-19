@@ -35,11 +35,12 @@ class _BoxPainter extends CustomPainter {
       ..drawRect(rect, Paint()..color = color.withValues(alpha: 0.12))
       // Width 0: one physical pixel at any zoom.
       ..drawRect(
-          rect,
-          Paint()
-            ..color = color
-            ..style = PaintingStyle.stroke
-            ..strokeWidth = 0);
+        rect,
+        Paint()
+          ..color = color
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 0,
+      );
   }
 
   @override

@@ -57,6 +57,7 @@ abstract class ProjectDocument with _$ProjectDocument {
     /// Nodes by id. Insertion order is kept but carries no meaning.
     @Default(<String, Node>{}) Map<String, Node> nodes,
     @Default(<Edge>[]) List<Edge> edges,
+
     /// Imported files, in import order (which is also "date added").
     @Default(<MediaAsset>[]) List<MediaAsset> media,
 

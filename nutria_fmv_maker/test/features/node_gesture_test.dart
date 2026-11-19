@@ -91,8 +91,11 @@ void main() {
       gestures().updateResize(-50);
       gestures().end();
       expect(h.document.node('B').width, kDefaultNodeWidth);
-      expect(h.container.read(historyStatusProvider).canUndo, isFalse,
-          reason: 'ended where it started');
+      expect(
+        h.container.read(historyStatusProvider).canUndo,
+        isFalse,
+        reason: 'ended where it started',
+      );
     });
   });
 }

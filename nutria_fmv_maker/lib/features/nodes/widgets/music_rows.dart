@@ -1,6 +1,7 @@
 // The music settings of video nodes and the main menu music row.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -10,6 +11,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
@@ -36,18 +38,60 @@ T _step<T>(List<T> values, T current, int direction) {
 String _name(WidgetRef ref, String id) =>
     ref.watch(videoAssetProvider(id).select((a) => a?.fileName)) ?? '?';
 
-/// The music rows of a video node's settings: its music (if any) with when
-/// it ends, loop, fade out and pausing; and for branched nodes the pause
-/// music. Empty when the node has neither.
+/// A music setting row: a searchable list of the imported audio files,
+/// with (x) to remove the track and, on right-click, playing it in the
+/// preview.
+Widget _trackRow(
+  BuildContext context,
+  WidgetRef ref, {
+  required String label,
+  required String? audioId,
+  required ValueChanged<String> onPicked,
+  required VoidCallback onRemoved,
+}) {
+  final t = AppLocalizations.of(context);
+  final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
+  final audio = [
+    for (final m in ref.watch(mediaAssetsProvider))
+      if (m.kind == MediaKind.audio) m,
+  ];
+  return NutriaSettingRow(
+    label: label,
+    value: '',
+    onReset: audioId == null ? null : onRemoved,
+    resetTooltip: t.musicRemove,
+    field: NutriaSearchMenu(
+      label: audioId == null ? t.musicNone : _name(ref, audioId),
+      isPlaceholder: audioId == null,
+      options: [for (final m in audio) m.fileName],
+      searchHint: t.logicSearchVariables,
+      emptyText: t.musicNoAudio,
+      onSelected: (i) => onPicked(audio[i].id),
+      onOpenChanged: menuOpen,
+    ),
+    options: audioId == null
+        ? null
+        : [
+            NutriaContextMenuItem(
+              icon: Icons.play_arrow,
+              label: t.musicPlayPreview,
+              onSelected: () =>
+                  ref.read(videoPreviewProvider.notifier).showMedia(audioId),
+            ),
+          ],
+    onOptionsOpenChanged: menuOpen,
+  );
+}
+
+/// The music rows of a video node's settings: its music, picked from the
+/// imported audio, and (once picked) when it ends, loop, fade out and
+/// pausing; and for branched nodes the pause music.
 List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
   final t = AppLocalizations.of(context);
   final theme = context.appTheme;
   final editor = ref.read(graphEditorProvider);
   final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
   String yesNo(bool v) => v ? t.essentialsYes : t.essentialsNo;
-  // Clicking a track's name plays it in the preview.
-  void preview(String id) =>
-      ref.read(videoPreviewProvider.notifier).showMedia(id);
 
   List<NutriaContextMenuItem> options<T>(
     List<T> values,
@@ -63,8 +107,17 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
       ),
   ];
 
-  final rows = <Widget>[];
   final cue = node.musicOrNull;
+  final rows = <Widget>[
+    _trackRow(
+      context,
+      ref,
+      label: t.musicTrack,
+      audioId: cue?.audioId,
+      onPicked: (audioId) => editor.setMusic(node.id, audioId),
+      onRemoved: () => editor.removeMusic(node.id),
+    ),
+  ];
   if (cue != null) {
     void edit(MusicCue Function(MusicCue c) change) =>
         editor.editMusic(node.id, change);
@@ -81,13 +134,6 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
       );
     }
     rows.addAll([
-      NutriaSettingRow(
-        label: t.musicTrack,
-        value: _name(ref, cue.audioId),
-        onTap: () => preview(cue.audioId),
-        onReset: () => editor.removeMusic(node.id),
-        resetTooltip: t.musicRemove,
-      ),
       NutriaSettingRow(
         label: t.musicEndsWhen,
         value: _musicEndLabel(cue.end, t),
@@ -132,15 +178,20 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
       ),
     ]);
   }
-  if (node case BranchedVideoNode(:final pauseMusicId?)) {
-    rows.addAll([
-      NutriaSettingRow(
+  if (node is BranchedVideoNode) {
+    rows.add(
+      _trackRow(
+        context,
+        ref,
         label: t.musicPause,
-        value: _name(ref, pauseMusicId),
-        onTap: () => preview(pauseMusicId),
-        onReset: () => editor.setPauseMusic(node.id, null),
-        resetTooltip: t.musicRemove,
+        audioId: node.pauseMusicId,
+        onPicked: (audioId) => editor.setPauseMusic(node.id, audioId),
+        onRemoved: () => editor.setPauseMusic(node.id, null),
       ),
+    );
+  }
+  if (node case BranchedVideoNode(pauseMusicId: _?)) {
+    rows.addAll([
       NutriaSettingRow(
         label: t.musicPauseFadeOut,
         value: fadeLabel(node.pauseMusicFadeOutMs),
@@ -165,18 +216,17 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
   return rows;
 }
 
-/// The main menu music on the origin node, with (x) to remove it. Nothing
-/// when there is none.
+/// The main menu music on the origin node, picked from the imported audio.
 class MenuMusicRow extends ConsumerWidget {
   const MenuMusicRow({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final t = AppLocalizations.of(context);
+    final editor = ref.read(graphEditorProvider);
     final id = ref.watch(
       projectDocumentProvider.select((d) => d.origin.menuMusicId),
     );
-    if (id == null) return const SizedBox.shrink();
     return Padding(
       padding: EdgeInsets.fromLTRB(
         context.appTheme.dPanelPadding,
@@ -184,13 +234,13 @@ class MenuMusicRow extends ConsumerWidget {
         context.appTheme.dPanelPadding,
         context.appTheme.dPanelPadding,
       ),
-      child: NutriaSettingRow(
+      child: _trackRow(
+        context,
+        ref,
         label: t.musicMenu,
-        value: _name(ref, id),
-        // Clicking the name plays it in the preview.
-        onTap: () => ref.read(videoPreviewProvider.notifier).showMedia(id),
-        onReset: () => ref.read(graphEditorProvider).setMenuMusic(null),
-        resetTooltip: t.musicRemove,
+        audioId: id,
+        onPicked: editor.setMenuMusic,
+        onRemoved: () => editor.setMenuMusic(null),
       ),
     );
   }

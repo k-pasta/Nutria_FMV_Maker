@@ -92,7 +92,8 @@ abstract class Preferences with _$Preferences {
 /// loaded before the app starts, so reading preferences is synchronous.
 @Riverpod(keepAlive: true)
 SharedPreferences sharedPreferences(Ref ref) => throw UnimplementedError(
-    'sharedPreferencesProvider must be overridden in main()');
+  'sharedPreferencesProvider must be overridden in main()',
+);
 
 /// Reads and persists [Preferences].
 @Riverpod(keepAlive: true)
@@ -137,9 +138,12 @@ class PreferencesNotifier extends _$PreferencesNotifier {
       _update(state.copyWith(libraryView: view));
 
   /// The next more compact ([direction] 1) or larger (-1) library view.
-  void stepLibraryView(int direction) => setLibraryView(LibraryView.values[
-      (state.libraryView.index + direction)
-          .clamp(0, LibraryView.values.length - 1)]);
+  void stepLibraryView(int direction) => setLibraryView(
+    LibraryView.values[(state.libraryView.index + direction).clamp(
+      0,
+      LibraryView.values.length - 1,
+    )],
+  );
 
   void setLibrarySort(LibrarySort sort) =>
       _update(state.copyWith(librarySort: sort));
@@ -163,8 +167,10 @@ class PreferencesNotifier extends _$PreferencesNotifier {
   void _update(Preferences next) {
     if (next == state) return;
     state = next;
-    unawaited(ref
-        .read(sharedPreferencesProvider)
-        .setString(_storageKey, jsonEncode(next.toJson())));
+    unawaited(
+      ref
+          .read(sharedPreferencesProvider)
+          .setString(_storageKey, jsonEncode(next.toJson())),
+    );
   }
 }

@@ -21,8 +21,11 @@ class NoodleLayer extends ConsumerWidget {
     final style = ref.watch(preferencesProvider.select((p) => p.noodleStyle));
     // Only the dragged noodle matters here, not what the pointer hovers:
     // hovering changes nothing that is drawn.
-    final drag = ref.watch(connectionDragProvider.select(
-        (s) => s.anchor == null ? null : (s.anchor!, s.pointer)));
+    final drag = ref.watch(
+      connectionDragProvider.select(
+        (s) => s.anchor == null ? null : (s.anchor!, s.pointer),
+      ),
+    );
     final noodles = noodlesFor(
       ref.watch(projectDocumentProvider),
       NodeMetrics.of(context),
@@ -34,14 +37,16 @@ class NoodleLayer extends ConsumerWidget {
     return Positioned.fill(
       child: IgnorePointer(
         // Repaints on its own, without the nodes above it.
-        child: RepaintBoundary(child: CustomPaint(
-          painter: NoodlePainter(
-            noodles: noodles,
-            swatches: theme.cSwatches,
-            curved: style == NoodleStyle.curved,
-            origin: kCanvasCenter,
+        child: RepaintBoundary(
+          child: CustomPaint(
+            painter: NoodlePainter(
+              noodles: noodles,
+              swatches: theme.cSwatches,
+              curved: style == NoodleStyle.curved,
+              origin: kCanvasCenter,
+            ),
           ),
-        )),
+        ),
       ),
     );
   }

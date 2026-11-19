@@ -29,8 +29,7 @@ class SelectionNotifier extends _$SelectionNotifier {
   }
 
   /// Selects only [id].
-  void selectOnly(String id) =>
-      state = state.copyWith(selected: {id});
+  void selectOnly(String id) => state = state.copyWith(selected: {id});
 
   /// Selects exactly [ids].
   void setSelected(Set<String> ids) {
@@ -44,8 +43,8 @@ class SelectionNotifier extends _$SelectionNotifier {
       state = state.copyWith(selected: {...state.selected, id});
 
   /// Removes [id] from the selection.
-  void remove(String id) => state =
-      state.copyWith(selected: {...state.selected}..remove(id));
+  void remove(String id) =>
+      state = state.copyWith(selected: {...state.selected}..remove(id));
 
   void clear() {
     if (state.selected.isNotEmpty) {
@@ -56,9 +55,7 @@ class SelectionNotifier extends _$SelectionNotifier {
   /// Draws [id] above every other node.
   void raise(String id) {
     if (state.raised.isNotEmpty && state.raised.last == id) return;
-    state = state.copyWith(
-      raised: [...state.raised.where((r) => r != id), id],
-    );
+    state = state.copyWith(raised: [...state.raised.where((r) => r != id), id]);
   }
 }
 

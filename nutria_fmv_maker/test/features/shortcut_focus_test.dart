@@ -9,15 +9,22 @@ import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.
 import 'app_tester.dart';
 
 void main() {
-  testWidgets('shortcuts work again after typing in a node and clicking away',
-      (tester) async {
+  testWidgets('shortcuts work again after typing in a node and clicking away', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
-    container.read(graphEditorProvider).addVideoNode(const Position(-100, -300),
-        type: DefaultNodeType.branchedVideo);
+    container
+        .read(graphEditorProvider)
+        .addVideoNode(
+          const Position(-100, -300),
+          type: DefaultNodeType.branchedVideo,
+        );
     await tester.pumpAndSettle();
 
     final field = find.ancestor(
-        of: find.text('Option 1'), matching: find.byType(TextField));
+      of: find.text('Option 1'),
+      matching: find.byType(TextField),
+    );
     await tester.tap(field);
     await tester.enterText(field, 'Go left');
     await tester.pumpAndSettle();
@@ -35,15 +42,22 @@ void main() {
     expect(container.read(panelLayoutProvider).leftClosed, isTrue);
   });
 
-  testWidgets('shortcuts work after the focused node is deleted',
-      (tester) async {
+  testWidgets('shortcuts work after the focused node is deleted', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     final editor = container.read(graphEditorProvider);
-    final id = editor.addVideoNode(const Position(-100, -300),
-        type: DefaultNodeType.branchedVideo);
+    final id = editor.addVideoNode(
+      const Position(-100, -300),
+      type: DefaultNodeType.branchedVideo,
+    );
     await tester.pumpAndSettle();
-    await tester.tap(find.ancestor(
-        of: find.text('Option 1'), matching: find.byType(TextField)));
+    await tester.tap(
+      find.ancestor(
+        of: find.text('Option 1'),
+        matching: find.byType(TextField),
+      ),
+    );
     await tester.pumpAndSettle();
 
     editor.removeNodeOrSelection(id);

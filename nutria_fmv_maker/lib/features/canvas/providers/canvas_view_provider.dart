@@ -33,8 +33,10 @@ const kFrameAnimation = Duration(milliseconds: 250);
 class CanvasViewController extends TransformationController {
   /// Starts with the canvas center at the viewport's top-left corner.
   CanvasViewController()
-      : super(Matrix4.identity()
-          ..translateByDouble(-kCanvasCenter.dx, -kCanvasCenter.dy, 0, 1));
+    : super(
+        Matrix4.identity()
+          ..translateByDouble(-kCanvasCenter.dx, -kCanvasCenter.dy, 0, 1),
+      );
 
   /// Size of the on-screen canvas. Keyboard zoom keeps its center fixed.
   Size get viewportSize => _viewportSize;
@@ -73,8 +75,10 @@ class CanvasViewController extends TransformationController {
   void zoomAt(Offset focalPoint, {required bool zoomIn}) {
     _stopAnimation();
     final current = scale;
-    final next =
-        (current * (zoomIn ? 1 + kZoomStep : 1 - kZoomStep)).clamp(kMinZoom, kMaxZoom);
+    final next = (current * (zoomIn ? 1 + kZoomStep : 1 - kZoomStep)).clamp(
+      kMinZoom,
+      kMaxZoom,
+    );
     final factor = next / current;
     value = Matrix4.identity()
       ..translateByDouble(focalPoint.dx, focalPoint.dy, 0, 1)
@@ -125,8 +129,10 @@ class CanvasViewController extends TransformationController {
       ),
       math.max(1, viewportSize.height - kFrameMargin * 2),
     );
-    final fit = math.min(room.width / math.max(1, rect.width),
-        room.height / math.max(1, rect.height));
+    final fit = math.min(
+      room.width / math.max(1, rect.width),
+      room.height / math.max(1, rect.height),
+    );
     final target = fit.clamp(kMinZoom, 1.0);
     if (!animate) return centerOn(rect.center, scale: target);
     _animate(rect.center, target);
@@ -138,7 +144,11 @@ class CanvasViewController extends TransformationController {
     final middle = _visibleMiddle;
     return Matrix4.identity()
       ..translateByDouble(
-          middle.dx - scene.dx * scale, middle.dy - scene.dy * scale, 0, 1)
+        middle.dx - scene.dx * scale,
+        middle.dy - scene.dy * scale,
+        0,
+        1,
+      )
       ..scaleByDouble(scale, scale, 1, 1);
   }
 
@@ -151,14 +161,17 @@ class CanvasViewController extends TransformationController {
     final fromPoint = center;
     final fromScale = this.scale;
     _ticker = Ticker((elapsed) {
-      final t = (elapsed.inMicroseconds / kFrameAnimation.inMicroseconds)
-          .clamp(0.0, 1.0);
+      final t = (elapsed.inMicroseconds / kFrameAnimation.inMicroseconds).clamp(
+        0.0,
+        1.0,
+      );
       final e = Curves.easeOutCubic.transform(t);
-      value = _viewOf(Offset.lerp(fromPoint, point, e)!,
-          fromScale * math.pow(scale / fromScale, e));
+      value = _viewOf(
+        Offset.lerp(fromPoint, point, e)!,
+        fromScale * math.pow(scale / fromScale, e),
+      );
       if (t == 1) _stopAnimation();
-    }, debugLabel: 'canvas framing')
-      ..start();
+    }, debugLabel: 'canvas framing')..start();
   }
 
   void _stopAnimation() {

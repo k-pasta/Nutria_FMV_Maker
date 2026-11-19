@@ -108,16 +108,12 @@ class GraphEditor {
     _ref.read(selectedScreenElementProvider.notifier).select(null);
   }
 
-  void setMenuBackground(String? mediaId) => _document.apply(
-    'Set background',
-    (d) => d.setMenuBackground(mediaId),
-  );
+  void setMenuBackground(String? mediaId) =>
+      _document.apply('Set background', (d) => d.setMenuBackground(mediaId));
 
   /// Replaces the menu's elements with the classic layout.
-  void applyClassicMenu() => _document.apply(
-    'Classic layout',
-    (d) => d.applyClassicMenu(_newId),
-  );
+  void applyClassicMenu() =>
+      _document.apply('Classic layout', (d) => d.applyClassicMenu(_newId));
 
   void setScreenElementWidth(String id, double width) => _document.apply(
     'Change element',

@@ -14,8 +14,11 @@ Offset? knotPosition(ProjectDocument doc, NodeMetrics metrics, PortRef port) {
   final node = doc.nodes[port.nodeId];
   if (node == null) return null;
   final videoId = node.videoIdOrNull;
-  final layout = NodeLayout(node, metrics,
-      fileName: videoId == null ? null : doc.mediaById(videoId)?.fileName);
+  final layout = NodeLayout(
+    node,
+    metrics,
+    fileName: videoId == null ? null : doc.mediaById(videoId)?.fileName,
+  );
   final offset = port.port == PortRef.inputPortKey
       ? layout.input
       : layout.output(port.port);
@@ -40,9 +43,12 @@ List<Noodle> noodlesFor(
   final noodles = <Noodle>[
     for (final edge in doc.edges)
       if ((at(edge.from), at(edge.to)) case (final from?, final to?))
-        Noodle(from, to,
-            startSwatch: swatchOf(edge.from.nodeId),
-            endSwatch: swatchOf(edge.to.nodeId)),
+        Noodle(
+          from,
+          to,
+          startSwatch: swatchOf(edge.from.nodeId),
+          endSwatch: swatchOf(edge.to.nodeId),
+        ),
   ];
 
   final anchor = interaction.anchor;
@@ -64,17 +70,26 @@ List<Noodle> noodlesFor(
     // Solid in the anchored node's color until it snaps to a knot it would
     // connect to; then it fades into that node's color, as it will once
     // dropped.
-    final freeSwatch =
-        freePort == null ? fixedSwatch : swatchOf(freePort.nodeId);
+    final freeSwatch = freePort == null
+        ? fixedSwatch
+        : swatchOf(freePort.nodeId);
     if (fixed != null) {
       // Noodles always run from an output to an input.
       noodles.add(switch (anchor) {
-        AnchorOutput() => Noodle(fixed, free ?? interaction.pointer,
-            endLocked: false, startSwatch: fixedSwatch, endSwatch: freeSwatch),
-        AnchorInput() => Noodle(free ?? interaction.pointer, fixed,
-            startLocked: false,
-            startSwatch: freeSwatch,
-            endSwatch: fixedSwatch),
+        AnchorOutput() => Noodle(
+          fixed,
+          free ?? interaction.pointer,
+          endLocked: false,
+          startSwatch: fixedSwatch,
+          endSwatch: freeSwatch,
+        ),
+        AnchorInput() => Noodle(
+          free ?? interaction.pointer,
+          fixed,
+          startLocked: false,
+          startSwatch: freeSwatch,
+          endSwatch: fixedSwatch,
+        ),
       });
     }
   }

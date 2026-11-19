@@ -26,8 +26,10 @@ void main() {
     expect(h.document.node(branched), isA<BranchedVideoNode>());
 
     h = await Harness.create(
-        preferences:
-            const Preferences(defaultNodeType: DefaultNodeType.simpleVideo));
+      preferences: const Preferences(
+        defaultNodeType: DefaultNodeType.simpleVideo,
+      ),
+    );
     final simple = editor().addVideoNode(Position.zero, videoId: 'v1');
     expect(h.document.node(simple), isA<SimpleVideoNode>());
   });
@@ -59,15 +61,23 @@ void main() {
     expect(undoSteps(), 1);
   });
 
-  test('overrides start from the project value and are merged for playback',
-      () {
-    editor().enableOverride('B', VideoSettingType.pauseOnEnd);
-    expect(h.document.node('B').overridesOrNull?.pauseOnEnd, isFalse);
-    editor().editOverrides('B', (o) => o.copyWith(pauseOnEnd: true));
-    expect(h.container.read(effectiveSettingsProvider('B')).pauseOnEnd, isTrue);
-    editor().disableOverride('B', VideoSettingType.pauseOnEnd);
-    expect(h.container.read(effectiveSettingsProvider('B')).pauseOnEnd, isFalse);
-  });
+  test(
+    'overrides start from the project value and are merged for playback',
+    () {
+      editor().enableOverride('B', VideoSettingType.pauseOnEnd);
+      expect(h.document.node('B').overridesOrNull?.pauseOnEnd, isFalse);
+      editor().editOverrides('B', (o) => o.copyWith(pauseOnEnd: true));
+      expect(
+        h.container.read(effectiveSettingsProvider('B')).pauseOnEnd,
+        isTrue,
+      );
+      editor().disableOverride('B', VideoSettingType.pauseOnEnd);
+      expect(
+        h.container.read(effectiveSettingsProvider('B')).pauseOnEnd,
+        isFalse,
+      );
+    },
+  );
 
   group('preview follows the document', () {
     test('dropping another video on the previewed node switches the video', () {

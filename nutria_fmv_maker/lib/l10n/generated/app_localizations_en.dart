@@ -355,6 +355,16 @@ class AppLocalizationsEn extends AppLocalizations {
   String get musicRemove => 'Remove this music';
 
   @override
+  String get musicNone => 'None';
+
+  @override
+  String get musicNoAudio =>
+      'No audio imported yet. Import audio files in Imported Media.';
+
+  @override
+  String get musicPlayPreview => 'Play in Preview';
+
+  @override
   String get musicLoopNeverEnds =>
       'A looping track never ends by itself: it plays until other music starts.';
 

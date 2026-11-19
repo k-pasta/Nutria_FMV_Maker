@@ -45,13 +45,16 @@ void main() {
           ('placeholder text on $surface', t.cTextInactive, color, 3.0),
         ],
         for (final (i, swatch) in t.cSwatches.indexed)
-          ('node color $i on the canvas (knots, lines)', swatch,
-              t.cBackground, 3.0),
+          (
+            'node color $i on the canvas (knots, lines)',
+            swatch,
+            t.cBackground,
+            3.0,
+          ),
       ];
       for (final (what, fg, bg, minimum) in pairs) {
         test('$what: at least $minimum:1', () {
-          expect(contrast(fg, bg, over: bg),
-              greaterThanOrEqualTo(minimum));
+          expect(contrast(fg, bg, over: bg), greaterThanOrEqualTo(minimum));
         });
       }
     });

@@ -8,11 +8,9 @@ String toggled(String text, {bool bold = true}) {
   final end = text.indexOf(']') - 1;
   final plain = text.replaceAll('[', '').replaceAll(']', '');
   final edit = toggleMarkdown(plain, start, end, bold: bold);
-  return edit.text.replaceRange(edit.end, edit.end, ']').replaceRange(
-        edit.start,
-        edit.start,
-        '[',
-      );
+  return edit.text
+      .replaceRange(edit.end, edit.end, ']')
+      .replaceRange(edit.start, edit.start, '[');
 }
 
 void main() {

@@ -356,6 +356,16 @@ class AppLocalizationsEl extends AppLocalizations {
   String get musicRemove => 'Αφαίρεση μουσικής';
 
   @override
+  String get musicNone => 'Καμία';
+
+  @override
+  String get musicNoAudio =>
+      'Δεν έχει εισαχθεί ήχος. Εισάγετε αρχεία ήχου στα Εισαγόμενα Πολυμέσα.';
+
+  @override
+  String get musicPlayPreview => 'Αναπαραγωγή στην Προεπισκόπηση';
+
+  @override
   String get musicLoopNeverEnds =>
       'Ένα κομμάτι σε επανάληψη δεν τελειώνει μόνο του: παίζει μέχρι να ξεκινήσει άλλη μουσική.';
 

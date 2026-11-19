@@ -36,8 +36,7 @@ void main() {
       expect(doc.edgeFrom(fromC)?.to, PortRef.input('D'));
     });
 
-    test('lookups stay right across edits (they are cached per document)',
-        () {
+    test('lookups stay right across edits (they are cached per document)', () {
       final before = storyFixture();
       expect(before.edgeFrom(fromC), isNull); // builds the cache
       final connected = before.connect(fromC, PortRef.input('D'));
@@ -57,16 +56,21 @@ void main() {
       expect(doc.edgeFrom(fromB)?.to, PortRef.input('D'));
     });
 
-    test('rejects self-connections, unknown ports and the origin as target',
-        () {
-      final doc = storyFixture();
-      expect(doc.connect(fromC, PortRef.input('C')), same(doc));
-      expect(
-        doc.connect(const PortRef(nodeId: 'C', port: 'nope'), PortRef.input('D')),
-        same(doc),
-      );
-      expect(doc.connect(fromC, PortRef.input(kOriginNodeId)), same(doc));
-    });
+    test(
+      'rejects self-connections, unknown ports and the origin as target',
+      () {
+        final doc = storyFixture();
+        expect(doc.connect(fromC, PortRef.input('C')), same(doc));
+        expect(
+          doc.connect(
+            const PortRef(nodeId: 'C', port: 'nope'),
+            PortRef.input('D'),
+          ),
+          same(doc),
+        );
+        expect(doc.connect(fromC, PortRef.input(kOriginNodeId)), same(doc));
+      },
+    );
   });
 
   group('setChoiceText', () {
@@ -74,11 +78,13 @@ void main() {
     final newId = sequentialIds('c');
 
     setUp(() {
-      doc = ProjectDocument.empty().putNode(newBranchedVideoNode(
-        id: 'N',
-        position: Position.zero,
-        newId: sequentialIds('start'),
-      ));
+      doc = ProjectDocument.empty().putNode(
+        newBranchedVideoNode(
+          id: 'N',
+          position: Position.zero,
+          newId: sequentialIds('start'),
+        ),
+      );
     });
 
     List<String> texts(ProjectDocument d) =>
@@ -151,8 +157,9 @@ void main() {
   });
 
   test('importMedia reuses an asset with the same path', () {
-    final (doc, id) = storyFixture()
-        .importMedia(const MediaAsset(id: 'new', path: r'C:\videos\a.mp4'));
+    final (doc, id) = storyFixture().importMedia(
+      const MediaAsset(id: 'new', path: r'C:\videos\a.mp4'),
+    );
     expect(id, 'v1');
     expect(doc.media, hasLength(3));
   });

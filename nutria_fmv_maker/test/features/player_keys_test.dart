@@ -18,8 +18,9 @@ void main() {
     await tester.pump();
   }
 
-  testWidgets('Space and Ctrl+arrows control the previewed video',
-      (tester) async {
+  testWidgets('Space and Ctrl+arrows control the previewed video', (
+    tester,
+  ) async {
     final player = FakePlayer();
     final c = await pumpApp(tester, player: player);
     bool playing() => player.status.value.playing;
@@ -28,7 +29,9 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.space);
     expect(playing(), isFalse);
 
-    final video = c.read(graphEditorProvider).importFiles(['C:/v/a.mp4']).single;
+    final video = c.read(graphEditorProvider).importFiles([
+      'C:/v/a.mp4',
+    ]).single;
     c.read(videoPreviewProvider.notifier).showMedia(video);
     await tester.pumpAndSettle();
 
@@ -51,19 +54,26 @@ void main() {
     expect(player.status.value.volume, 100, reason: 'capped at 100%');
   });
 
-  testWidgets('typing a space or "f" in a field triggers no shortcut',
-      (tester) async {
+  testWidgets('typing a space or "f" in a field triggers no shortcut', (
+    tester,
+  ) async {
     final player = FakePlayer();
     final c = await pumpApp(tester, player: player);
     final editor = c.read(graphEditorProvider);
     final video = editor.importFiles(['C:/v/a.mp4']).single;
-    editor.addVideoNode(Position.zero,
-        videoId: video, type: DefaultNodeType.branchedVideo);
+    editor.addVideoNode(
+      Position.zero,
+      videoId: video,
+      type: DefaultNodeType.branchedVideo,
+    );
     c.read(videoPreviewProvider.notifier).showMedia(video);
     await tester.pumpAndSettle();
 
-    await tester.tap(find.ancestor(
-        of: find.text('Option 1'), matching: find.byType(TextField)).first);
+    await tester.tap(
+      find
+          .ancestor(of: find.text('Option 1'), matching: find.byType(TextField))
+          .first,
+    );
     await tester.pumpAndSettle();
     await tester.sendKeyEvent(LogicalKeyboardKey.space);
     await tester.sendKeyEvent(LogicalKeyboardKey.keyF);

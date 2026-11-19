@@ -35,5 +35,6 @@ class ClipboardHasNodes extends _$ClipboardHasNodes {
 /// Whether the selection has anything that can be copied or duplicated
 /// (everything but the origin node can).
 @riverpod
-bool canCopySelection(Ref ref) => ref.watch(selectionProvider
-    .select((s) => s.selected.any((id) => id != kOriginNodeId)));
+bool canCopySelection(Ref ref) => ref.watch(
+  selectionProvider.select((s) => s.selected.any((id) => id != kOriginNodeId)),
+);

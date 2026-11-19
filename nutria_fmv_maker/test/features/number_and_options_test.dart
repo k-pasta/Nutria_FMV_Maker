@@ -11,15 +11,23 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'app_tester.dart';
 
 void main() {
-  Future<void> tapArrow(WidgetTester tester, Finder field, {required bool up}) =>
-      tester.tapAt(up
-          ? tester.getRect(field).centerRight - const Offset(8, 0)
-          : tester.getRect(field).centerLeft + const Offset(8, 0));
+  Future<void> tapArrow(
+    WidgetTester tester,
+    Finder field, {
+    required bool up,
+  }) => tester.tapAt(
+    up
+        ? tester.getRect(field).centerRight - const Offset(8, 0)
+        : tester.getRect(field).centerLeft + const Offset(8, 0),
+  );
 
-  testWidgets('a variable number: pick the type by right-click, step, type',
-      (tester) async {
+  testWidgets('a variable number: pick the type by right-click, step, type', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
-    c.read(panelLayoutProvider.notifier).showSection(LeftPanelSection.variables);
+    c
+        .read(panelLayoutProvider.notifier)
+        .showSection(LeftPanelSection.variables);
     c.read(graphEditorProvider).addVariable('variable');
     await tester.pumpAndSettle();
     Variable variable() => c.read(variablesProvider).single;
@@ -38,15 +46,19 @@ void main() {
     expect((variable() as DecimalVariable).initial, 0.2);
 
     await tester.enterText(
-        find.descendant(of: field, matching: find.byType(TextField)), '-3,5');
+      find.descendant(of: field, matching: find.byType(TextField)),
+      '-3,5',
+    );
     await tester.pumpAndSettle();
     expect((variable() as DecimalVariable).initial, -3.5);
   });
 
-  testWidgets('selection time: type seconds or step; options by right-click',
-      (tester) async {
+  testWidgets('selection time: type seconds or step; options by right-click', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
-    c.read(panelLayoutProvider.notifier)
+    c
+        .read(panelLayoutProvider.notifier)
         .showSection(LeftPanelSection.projectSettings);
     await tester.pumpAndSettle();
     VideoSettings settings() => c.read(projectSettingsProvider);
@@ -57,7 +69,9 @@ void main() {
     await tester.pumpAndSettle();
     expect(settings().selectionTimeMs, 7000);
     await tester.enterText(
-        find.descendant(of: field, matching: find.byType(TextField)), '2,5');
+      find.descendant(of: field, matching: find.byType(TextField)),
+      '2,5',
+    );
     await tester.pumpAndSettle();
     expect(settings().selectionTimeMs, 2500);
 
@@ -69,7 +83,8 @@ void main() {
 
   testWidgets('preferences list their values on right-click', (tester) async {
     final c = await pumpApp(tester);
-    c.read(panelLayoutProvider.notifier)
+    c
+        .read(panelLayoutProvider.notifier)
         .showSection(LeftPanelSection.preferences);
     await tester.pumpAndSettle();
     await rightClickAt(tester, tester.getCenter(find.text('50')));

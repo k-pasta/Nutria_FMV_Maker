@@ -38,8 +38,13 @@ void main() {
   test('rejects files from before format versioning', () {
     expect(
       () => NfmvCodec.decode('{"nodes": [], "videos": []}'),
-      throwsA(isA<NfmvFormatException>().having(
-          (e) => e.reason, 'reason', NfmvReason.unsupportedOldVersion)),
+      throwsA(
+        isA<NfmvFormatException>().having(
+          (e) => e.reason,
+          'reason',
+          NfmvReason.unsupportedOldVersion,
+        ),
+      ),
     );
   });
 
@@ -55,16 +60,23 @@ void main() {
   test('rejects files from a newer version', () {
     expect(
       () => NfmvCodec.decode('{"formatVersion": 999}'),
-      throwsA(isA<NfmvFormatException>().having(
-          (e) => e.reason, 'reason', NfmvReason.unsupportedNewVersion)),
+      throwsA(
+        isA<NfmvFormatException>().having(
+          (e) => e.reason,
+          'reason',
+          NfmvReason.unsupportedNewVersion,
+        ),
+      ),
     );
   });
 
   test('rejects garbage and documents without an origin', () {
     for (final source in ['not json', '[1,2]', '{"formatVersion": 1}']) {
-      expect(() => NfmvCodec.decode(source),
-          throwsA(isA<NfmvFormatException>()),
-          reason: source);
+      expect(
+        () => NfmvCodec.decode(source),
+        throwsA(isA<NfmvFormatException>()),
+        reason: source,
+      );
     }
   });
 }

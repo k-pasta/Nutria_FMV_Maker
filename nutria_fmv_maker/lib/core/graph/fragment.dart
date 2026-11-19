@@ -177,10 +177,8 @@ extension FragmentOps on ProjectDocument {
               ),
           ],
         ),
-        ChangeVariableNode() || CompareNode() => node.copyWith(
-          id: id,
-          position: position,
-        ),
+        ChangeVariableNode() ||
+        CompareNode() => node.copyWith(id: id, position: position),
         CommentNode() => node.copyWith(
           id: id,
           position: position,

@@ -34,7 +34,8 @@ class ProjectDocumentNotifier extends _$ProjectDocumentNotifier {
 /// so the node's content doesn't rebuild on every frame of a move.
 @riverpod
 Node? nodeContent(Ref ref, String id) => ref.watch(
-    nodeProvider(id).select((n) => n?.copyWith(position: Position.zero)));
+  nodeProvider(id).select((n) => n?.copyWith(position: Position.zero)),
+);
 
 /// Node [id], or `null` once it has been removed.
 @riverpod
@@ -48,7 +49,8 @@ class NodePaintOrder extends _$NodePaintOrder {
   @override
   List<String> build() {
     final ids = ref.watch(
-        documentProvider.select((s) => s.document.nodes.keys.toList()));
+      documentProvider.select((s) => s.document.nodes.keys.toList()),
+    );
     final raised = ref.watch(selectionProvider.select((s) => s.raised));
     final present = ids.toSet();
     final raisedPresent = [
@@ -111,20 +113,25 @@ VideoSettings effectiveSettings(Ref ref, String nodeId) {
   final VideoSettings base =
       ref.watch(colorDefaultsProvider)[swatch] ??
       ref.watch(projectSettingsProvider);
-  final overrides =
-      ref.watch(nodeProvider(nodeId).select((n) => n?.overridesOrNull));
+  final overrides = ref.watch(
+    nodeProvider(nodeId).select((n) => n?.overridesOrNull),
+  );
   return overrides?.applyTo(base) ?? base;
 }
 
 /// Undo/redo availability and the names of the steps, for menus.
 @riverpod
 ({bool canUndo, bool canRedo, String? undoLabel, String? redoLabel})
-    historyStatus(Ref ref) => ref.watch(documentProvider.select((s) => (
-          canUndo: s.timeline.canUndo,
-          canRedo: s.timeline.canRedo,
-          undoLabel: s.timeline.undoLabel,
-          redoLabel: s.timeline.redoLabel,
-        )));
+historyStatus(Ref ref) => ref.watch(
+  documentProvider.select(
+    (s) => (
+      canUndo: s.timeline.canUndo,
+      canRedo: s.timeline.canRedo,
+      undoLabel: s.timeline.undoLabel,
+      redoLabel: s.timeline.redoLabel,
+    ),
+  ),
+);
 
 /// Whether there are unsaved changes.
 @riverpod

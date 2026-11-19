@@ -13,10 +13,13 @@ import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.
 import 'app_tester.dart';
 
 void main() {
-  testWidgets('a variable name keeps focus when it becomes a duplicate',
-      (tester) async {
+  testWidgets('a variable name keeps focus when it becomes a duplicate', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
-    c.read(panelLayoutProvider.notifier).showSection(LeftPanelSection.variables);
+    c
+        .read(panelLayoutProvider.notifier)
+        .showSection(LeftPanelSection.variables);
     c.read(graphEditorProvider)
       ..addVariable('variable')
       ..addVariable('variable');
@@ -34,32 +37,42 @@ void main() {
     final focused = tester
         .widgetList<EditableText>(find.byType(EditableText))
         .where((e) => e.focusNode.hasFocus);
-    expect(focused.map((e) => e.controller.text), [names[0]],
-        reason: 'the error tooltip must not rebuild the field');
+    expect(focused.map((e) => e.controller.text), [
+      names[0],
+    ], reason: 'the error tooltip must not rebuild the field');
   });
 
-  testWidgets('a text field right-click menu is not scaled by the canvas zoom',
-      (tester) async {
-    final c = await pumpApp(tester);
-    c.read(graphEditorProvider).addVideoNode(Position.zero,
-        type: DefaultNodeType.branchedVideo);
-    await tester.pumpAndSettle();
-    final view = c.read(canvasViewProvider);
-    for (var i = 0; i < 10; i++) {
-      view.zoomCentered(zoomIn: false);
-    }
-    await tester.pumpAndSettle();
-    expect(view.scale, lessThan(0.4));
+  testWidgets(
+    'a text field right-click menu is not scaled by the canvas zoom',
+    (tester) async {
+      final c = await pumpApp(tester);
+      c
+          .read(graphEditorProvider)
+          .addVideoNode(Position.zero, type: DefaultNodeType.branchedVideo);
+      await tester.pumpAndSettle();
+      final view = c.read(canvasViewProvider);
+      for (var i = 0; i < 10; i++) {
+        view.zoomCentered(zoomIn: false);
+      }
+      await tester.pumpAndSettle();
+      expect(view.scale, lessThan(0.4));
 
-    final field = find.byType(TextField).last;
-    final gesture = await tester.startGesture(tester.getCenter(field),
-        kind: PointerDeviceKind.mouse, buttons: kSecondaryMouseButton);
-    await gesture.up();
-    await tester.pumpAndSettle();
-    expect(find.text('Paste'), findsOneWidget);
-    expect(tester.getSize(find.text('Paste')).height, greaterThan(10),
-        reason: 'drawn at screen size, not at the node\'s zoom');
-  });
+      final field = find.byType(TextField).last;
+      final gesture = await tester.startGesture(
+        tester.getCenter(field),
+        kind: PointerDeviceKind.mouse,
+        buttons: kSecondaryMouseButton,
+      );
+      await gesture.up();
+      await tester.pumpAndSettle();
+      expect(find.text('Paste'), findsOneWidget);
+      expect(
+        tester.getSize(find.text('Paste')).height,
+        greaterThan(10),
+        reason: 'drawn at screen size, not at the node\'s zoom',
+      );
+    },
+  );
 
   test('the menu bar stays "open" while moving from one menu to the next', () {
     final c = ProviderContainer.test();

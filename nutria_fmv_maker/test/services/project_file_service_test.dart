@@ -74,11 +74,15 @@ void main() {
 
   test('errors are typed', () async {
     final service = ProjectFileService(FakeDialogs(null));
-    await expectLater(service.readProject(p.join(dir.path, 'missing.nfmv')),
-        throwsA(isA<ProjectIoException>()));
+    await expectLater(
+      service.readProject(p.join(dir.path, 'missing.nfmv')),
+      throwsA(isA<ProjectIoException>()),
+    );
 
     final bad = File(p.join(dir.path, 'bad.nfmv'))..writeAsStringSync('nope');
     await expectLater(
-        service.readProject(bad.path), throwsA(isA<NfmvFormatException>()));
+      service.readProject(bad.path),
+      throwsA(isA<NfmvFormatException>()),
+    );
   });
 }

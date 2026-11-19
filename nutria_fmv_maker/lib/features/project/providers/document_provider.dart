@@ -62,8 +62,7 @@ class DocumentNotifier extends _$DocumentNotifier {
     String label,
     ProjectDocument Function(ProjectDocument document) edit, {
     Object? mergeKey,
-  }) =>
-      _setTimeline(state.timeline.apply(label, edit, mergeKey: mergeKey));
+  }) => _setTimeline(state.timeline.apply(label, edit, mergeKey: mergeKey));
 
   /// Starts grouping edits into one undo step, for continuous gestures.
   void beginTransaction(String label) =>
@@ -88,8 +87,8 @@ class DocumentNotifier extends _$DocumentNotifier {
 
   /// Replaces the project with an empty one. Callers ask about unsaved
   /// changes first.
-  void newProject() => state =
-      _fresh(ProjectDocument.empty(), generation: state.generation + 1);
+  void newProject() =>
+      state = _fresh(ProjectDocument.empty(), generation: state.generation + 1);
 
   /// Asks for a project file and opens it.
   Future<FileOutcome> open() async {
@@ -118,8 +117,10 @@ class DocumentNotifier extends _$DocumentNotifier {
   /// Asks where to save and saves there.
   Future<FileOutcome> saveAs() async {
     final document = state.document;
-    final path =
-        await _files.saveProjectAs(document, suggestedName: _suggestedName());
+    final path = await _files.saveProjectAs(
+      document,
+      suggestedName: _suggestedName(),
+    );
     if (path == null) return FileOutcome.cancelled;
     state = state.copyWith(savedDocument: document, savePath: path);
     return FileOutcome.done;
@@ -128,10 +129,12 @@ class DocumentNotifier extends _$DocumentNotifier {
   /// Exports a `.fmv` for the Player. Problems such as nodes without a video
   /// don't stop the export; they're returned so the UI can report them.
   Future<({FileOutcome outcome, String? path, List<ExportIssue> issues})>
-      export() async {
+  export() async {
     final export = exportFmv(state.document);
-    final path =
-        await _files.saveExportAs(export, suggestedName: _suggestedName());
+    final path = await _files.saveExportAs(
+      export,
+      suggestedName: _suggestedName(),
+    );
     return (
       outcome: path == null ? FileOutcome.cancelled : FileOutcome.done,
       path: path,
@@ -150,11 +153,10 @@ class DocumentNotifier extends _$DocumentNotifier {
     ProjectDocument document, {
     required int generation,
     String? path,
-  }) =>
-      DocumentState(
-        timeline: DocumentTimeline.start(document),
-        savedDocument: document,
-        savePath: path,
-        generation: generation,
-      );
+  }) => DocumentState(
+    timeline: DocumentTimeline.start(document),
+    savedDocument: document,
+    savePath: path,
+    generation: generation,
+  );
 }

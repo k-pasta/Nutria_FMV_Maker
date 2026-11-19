@@ -50,9 +50,9 @@ List<LibraryGroup> libraryGroups(
     case LibraryGrouping.fileType:
       final extensions = {for (final m in sorted) m.extension}.toList()
         ..sort((a, b) {
-          final kinds = mediaKindOfExtension(a).index.compareTo(
-            mediaKindOfExtension(b).index,
-          );
+          final kinds = mediaKindOfExtension(
+            a,
+          ).index.compareTo(mediaKindOfExtension(b).index);
           return kinds != 0 ? kinds : a.compareTo(b);
         });
       return [

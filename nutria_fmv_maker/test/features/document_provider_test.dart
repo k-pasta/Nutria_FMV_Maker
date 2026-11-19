@@ -31,15 +31,17 @@ void main() {
     expect(dirty(), isFalse);
   });
 
-  test('save as: cancelled leaves everything; chosen path is remembered',
-      () async {
-    expect(await doc().saveAs(), FileOutcome.cancelled);
-    expect(h.container.read(projectFileNameProvider), 'story.nfmv');
+  test(
+    'save as: cancelled leaves everything; chosen path is remembered',
+    () async {
+      expect(await doc().saveAs(), FileOutcome.cancelled);
+      expect(h.container.read(projectFileNameProvider), 'story.nfmv');
 
-    h.files.nextSavePath = r'C:\stories\copy.nfmv';
-    expect(await doc().saveAs(), FileOutcome.done);
-    expect(h.container.read(projectFileNameProvider), 'copy.nfmv');
-  });
+      h.files.nextSavePath = r'C:\stories\copy.nfmv';
+      expect(await doc().saveAs(), FileOutcome.done);
+      expect(h.container.read(projectFileNameProvider), 'copy.nfmv');
+    },
+  );
 
   test('opening another project resets history and selection', () async {
     h.container.read(selectionProvider.notifier).selectOnly('B');
@@ -58,7 +60,9 @@ void main() {
     h.files.nextSavePath = 'out.fmv';
     final result = await doc().export();
     expect(result.outcome, FileOutcome.done);
-    expect(result.issues.map((i) => i.type),
-        contains(ExportIssueType.unconnectedChoice));
+    expect(
+      result.issues.map((i) => i.type),
+      contains(ExportIssueType.unconnectedChoice),
+    );
   });
 }

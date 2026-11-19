@@ -37,7 +37,8 @@ class SystemClipboardService implements ClipboardService {
 
   @override
   Future<String?> read() => _retry<String?>(
-      () async => (await Clipboard.getData(Clipboard.kTextPlain))?.text);
+    () async => (await Clipboard.getData(Clipboard.kTextPlain))?.text,
+  );
 
   static Future<T?> _retry<T>(Future<T> Function() access) async {
     for (var attempt = 1; ; attempt++) {

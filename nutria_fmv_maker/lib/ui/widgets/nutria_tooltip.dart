@@ -34,8 +34,9 @@ class _NutriaTooltipState extends State<NutriaTooltip> {
   Widget build(BuildContext context) {
     if (widget.stable) _childKey ??= GlobalKey();
     final key = _childKey;
-    final child =
-        key == null ? widget.child : KeyedSubtree(key: key, child: widget.child);
+    final child = key == null
+        ? widget.child
+        : KeyedSubtree(key: key, child: widget.child);
     final message = widget.message;
     if (message == null) return child;
     return _tooltip(context.appTheme, message, child);

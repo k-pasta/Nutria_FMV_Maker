@@ -11,9 +11,11 @@ import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 import '../core/fixtures.dart';
@@ -117,5 +119,31 @@ void main() {
     await tester.pumpAndSettle();
     expect((read(c).nodes[node] as BranchedVideoNode).pauseMusicId, isNotNull);
     expect(read(c).nodes[node]!.musicOrNull, isNull);
+  });
+
+  testWidgets('menu music is picked from the imported audio', (tester) async {
+    final c = await pumpApp(tester);
+    c.read(graphEditorProvider).importFiles([r'C:\m\song.mp3']);
+    // Up, so the row at its bottom is in the window.
+    c
+        .read(documentProvider.notifier)
+        .apply(
+          'up',
+          (d) => d.moveNodes({d.origin.id: const Position(-100, -400)}),
+        );
+    await tester.pumpAndSettle();
+    final row = find.ancestor(
+      of: find.text('Menu Music'),
+      matching: find.byType(NutriaSettingRow),
+    );
+    await tester.tap(
+      find.descendant(of: row.first, matching: find.text('None')).first,
+    );
+    await tester.pumpAndSettle();
+    expect(find.text('song.mp3'), findsNWidgets(2));
+    await tester.tap(find.text('song.mp3').last);
+    await tester.pumpAndSettle();
+    final doc = c.read(projectDocumentProvider);
+    expect(doc.origin.menuMusicId, doc.media.single.id);
   });
 }

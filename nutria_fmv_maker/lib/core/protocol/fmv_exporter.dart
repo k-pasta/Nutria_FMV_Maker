@@ -154,9 +154,7 @@ FmvExport exportFmv(ProjectDocument document) {
         defaultSelection: _defaultSelection(settings.defaultSelection),
       ),
       nodes: nodes,
-      variables: {
-        for (final v in document.variables) v.name: _variable(v),
-      },
+      variables: {for (final v in document.variables) v.name: _variable(v)},
       menuScreen: _menuScreen(document),
     ),
     issues: issues,

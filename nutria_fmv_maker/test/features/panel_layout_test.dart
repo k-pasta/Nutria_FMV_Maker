@@ -4,8 +4,7 @@ import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.
 
 void main() {
   late ProviderContainer container;
-  PanelLayoutNotifier panels() =>
-      container.read(panelLayoutProvider.notifier);
+  PanelLayoutNotifier panels() => container.read(panelLayoutProvider.notifier);
   PanelLayout layout() => container.read(panelLayoutProvider);
 
   setUp(() => container = ProviderContainer.test());

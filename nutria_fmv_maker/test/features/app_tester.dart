@@ -31,28 +31,34 @@ const kCanvasPoint = Offset(800, 450);
 /// The view is then reset to canvas (0, 0) in the middle at 100%, which
 /// tests place their nodes around; with [startView] it stays as the app
 /// starts (framed on the origin node).
-Future<ProviderContainer> pumpApp(WidgetTester tester,
-    {List<Override> overrides = const [],
-    MediaInfoService? mediaInfo,
-    FakePlayer? player,
-    MediaFiles? mediaFiles,
-    bool startView = false}) async {
+Future<ProviderContainer> pumpApp(
+  WidgetTester tester, {
+  List<Override> overrides = const [],
+  MediaInfoService? mediaInfo,
+  FakePlayer? player,
+  MediaFiles? mediaFiles,
+  bool startView = false,
+}) async {
   tester.view.physicalSize = const Size(1600, 900);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
   SharedPreferences.setMockInitialValues({});
   final prefs = await SharedPreferences.getInstance();
-  final container = ProviderContainer.test(overrides: [
-    sharedPreferencesProvider.overrideWithValue(prefs),
-    previewPlayerProvider.overrideWithValue(player ?? FakePlayer()),
-    thumbnailServiceProvider.overrideWithValue(const _NoThumbnails()),
-    mediaInfoServiceProvider
-        .overrideWithValue(mediaInfo ?? const _NoMediaInfo()),
-    mediaFilesProvider.overrideWithValue(mediaFiles ?? FakeMediaFiles()),
-    ...overrides,
-  ]);
+  final container = ProviderContainer.test(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      previewPlayerProvider.overrideWithValue(player ?? FakePlayer()),
+      thumbnailServiceProvider.overrideWithValue(const _NoThumbnails()),
+      mediaInfoServiceProvider.overrideWithValue(
+        mediaInfo ?? const _NoMediaInfo(),
+      ),
+      mediaFilesProvider.overrideWithValue(mediaFiles ?? FakeMediaFiles()),
+      ...overrides,
+    ],
+  );
   await tester.pumpWidget(
-      UncontrolledProviderScope(container: container, child: const NutriaApp()));
+    UncontrolledProviderScope(container: container, child: const NutriaApp()),
+  );
   await tester.pumpAndSettle();
   if (!startView) {
     container.read(canvasViewProvider).centerOn(Offset.zero, scale: 1);
@@ -62,13 +68,18 @@ Future<ProviderContainer> pumpApp(WidgetTester tester,
 }
 
 /// Turns the mouse wheel one notch at [position] (up zooms in).
-Future<void> scrollAt(WidgetTester tester, Offset position,
-    {required bool up}) async {
-  await tester.sendEventToBinding(PointerScrollEvent(
-    kind: PointerDeviceKind.mouse,
-    position: position,
-    scrollDelta: Offset(0, up ? -20 : 20),
-  ));
+Future<void> scrollAt(
+  WidgetTester tester,
+  Offset position, {
+  required bool up,
+}) async {
+  await tester.sendEventToBinding(
+    PointerScrollEvent(
+      kind: PointerDeviceKind.mouse,
+      position: position,
+      scrollDelta: Offset(0, up ? -20 : 20),
+    ),
+  );
   await tester.pump();
 }
 

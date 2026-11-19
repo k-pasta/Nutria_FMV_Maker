@@ -19,7 +19,10 @@ abstract interface class FileDialogs {
   Future<String?> pickFolder();
 
   /// Asks where to save, writes [bytes] there and returns the chosen path.
-  Future<String?> saveFile({required String fileName, required Uint8List bytes});
+  Future<String?> saveFile({
+    required String fileName,
+    required Uint8List bytes,
+  });
 }
 
 /// [FileDialogs] backed by the `file_picker` plugin.

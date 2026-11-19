@@ -46,10 +46,12 @@ class OsThumbnailService implements ThumbnailService {
     while (_running < kThumbnailConcurrency && _queue.isNotEmpty) {
       final job = _queue.removeFirst();
       _running++;
-      unawaited(job().whenComplete(() {
-        _running--;
-        _next();
-      }));
+      unawaited(
+        job().whenComplete(() {
+          _running--;
+          _next();
+        }),
+      );
     }
   }
 

@@ -7,8 +7,9 @@ import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_pa
 import 'app_tester.dart';
 
 void main() {
-  testWidgets('Ctrl+wheel over the library changes the video size',
-      (tester) async {
+  testWidgets('Ctrl+wheel over the library changes the video size', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
     c.read(graphEditorProvider).importFiles(['C:/v/a.mp4', 'C:/v/b.mp4']);
     await tester.pumpAndSettle();

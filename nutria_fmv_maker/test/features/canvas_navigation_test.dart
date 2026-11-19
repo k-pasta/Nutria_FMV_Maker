@@ -18,14 +18,17 @@ import 'app_tester.dart';
 Offset screenPoint(WidgetTester tester, ProviderContainer c, Offset point) =>
     tester.getTopLeft(find.byType(CanvasView)) +
     MatrixUtils.transformPoint(
-        c.read(canvasViewProvider).value, point + kCanvasCenter);
+      c.read(canvasViewProvider).value,
+      point + kCanvasCenter,
+    );
 
 Set<String> selected(ProviderContainer c) => c.read(selectionProvider).selected;
 
 void main() {
   // Two nodes side by side below the origin, away from it.
   Future<(ProviderContainer, String, String)> twoNodes(
-      WidgetTester tester) async {
+    WidgetTester tester,
+  ) async {
     final c = await pumpApp(tester);
     final editor = c.read(graphEditorProvider);
     final a = editor.addVideoNode(const Position(-300, -100));
@@ -34,10 +37,17 @@ void main() {
     return (c, a, b);
   }
 
-  Future<void> drag(WidgetTester tester, Offset from, Offset to,
-      {int buttons = kPrimaryButton}) async {
-    final gesture = await tester.startGesture(from,
-        kind: PointerDeviceKind.mouse, buttons: buttons);
+  Future<void> drag(
+    WidgetTester tester,
+    Offset from,
+    Offset to, {
+    int buttons = kPrimaryButton,
+  }) async {
+    final gesture = await tester.startGesture(
+      from,
+      kind: PointerDeviceKind.mouse,
+      buttons: buttons,
+    );
     for (var i = 1; i <= 10; i++) {
       await gesture.moveTo(Offset.lerp(from, to, i / 10)!);
       await tester.pump();
@@ -46,27 +56,38 @@ void main() {
     await tester.pumpAndSettle();
   }
 
-  testWidgets('dragging on empty canvas selects the nodes the box touches',
-      (tester) async {
+  testWidgets('dragging on empty canvas selects the nodes the box touches', (
+    tester,
+  ) async {
     final (c, a, b) = await twoNodes(tester);
     // From empty space above-left of node a to inside it.
-    await drag(tester, screenPoint(tester, c, const Offset(-350, -150)),
-        screenPoint(tester, c, const Offset(-200, 0)));
+    await drag(
+      tester,
+      screenPoint(tester, c, const Offset(-350, -150)),
+      screenPoint(tester, c, const Offset(-200, 0)),
+    );
     expect(selected(c), {a});
 
     // A new box replaces the selection; with Ctrl it adds to it.
-    await drag(tester, screenPoint(tester, c, const Offset(50, -150)),
-        screenPoint(tester, c, const Offset(200, 0)));
+    await drag(
+      tester,
+      screenPoint(tester, c, const Offset(50, -150)),
+      screenPoint(tester, c, const Offset(200, 0)),
+    );
     expect(selected(c), {b});
     await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
-    await drag(tester, screenPoint(tester, c, const Offset(-350, -150)),
-        screenPoint(tester, c, const Offset(-200, 0)));
+    await drag(
+      tester,
+      screenPoint(tester, c, const Offset(-350, -150)),
+      screenPoint(tester, c, const Offset(-200, 0)),
+    );
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     expect(selected(c), {a, b});
   });
 
-  testWidgets('Shift-drag and middle-drag pan instead of selecting',
-      (tester) async {
+  testWidgets('Shift-drag and middle-drag pan instead of selecting', (
+    tester,
+  ) async {
     final (c, _, _) = await twoNodes(tester);
     final view = c.read(canvasViewProvider);
     final before = view.center;
@@ -80,14 +101,17 @@ void main() {
 
     // The middle button pans even when it starts on a node.
     final onNode = screenPoint(tester, c, const Offset(-200, 0));
-    await drag(tester, onNode, onNode + const Offset(0, 100),
-        buttons: kMiddleMouseButton);
+    await drag(
+      tester,
+      onNode,
+      onNode + const Offset(0, 100),
+      buttons: kMiddleMouseButton,
+    );
     expect(view.center.dy, moreOrLessEquals(before.dy - 100, epsilon: 1));
     expect(selected(c), isEmpty);
   });
 
-  testWidgets('F glides to the selection, Home to every node',
-      (tester) async {
+  testWidgets('F glides to the selection, Home to every node', (tester) async {
     final c = await pumpApp(tester);
     final far = c
         .read(graphEditorProvider)

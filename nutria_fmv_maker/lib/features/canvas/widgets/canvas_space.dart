@@ -42,9 +42,9 @@ class CanvasSpaceState extends State<CanvasSpace> {
 
   @override
   Widget build(BuildContext context) => _CanvasSpaceScope(
-        state: this,
-        child: KeyedSubtree(key: _surfaceKey, child: widget.child),
-      );
+    state: this,
+    child: KeyedSubtree(key: _surfaceKey, child: widget.child),
+  );
 }
 
 class _CanvasSpaceScope extends InheritedWidget {

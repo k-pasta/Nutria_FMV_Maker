@@ -71,11 +71,11 @@ class ProjectFileService {
 
   /// Saves [document] to [path], overwriting it.
   Future<void> writeProject(String path, ProjectDocument document) => _guard(
-        path,
-        () => File(path).writeAsString(
-          NfmvCodec.encode(document, projectDir: p.dirname(path)),
-        ),
-      );
+    path,
+    () => File(
+      path,
+    ).writeAsString(NfmvCodec.encode(document, projectDir: p.dirname(path))),
+  );
 
   /// Asks where to save [document], saves it, and returns the chosen path.
   Future<String?> saveProjectAs(
@@ -99,12 +99,11 @@ class ProjectFileService {
   Future<String?> saveExportAs(
     FmvExport export, {
     String suggestedName = 'project',
-  }) =>
-      _saveWithDialog(
-        '$suggestedName.$kExportExtension',
-        export.project.encode(),
-        kExportExtension,
-      );
+  }) => _saveWithDialog(
+    '$suggestedName.$kExportExtension',
+    export.project.encode(),
+    kExportExtension,
+  );
 
   Future<String?> _saveWithDialog(
     String fileName,

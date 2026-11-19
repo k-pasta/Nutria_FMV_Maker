@@ -10,10 +10,10 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme_presets.dart';
 
 /// The [AppTheme] for a [ThemeChoice].
 AppTheme appThemeFor(ThemeChoice choice) => switch (choice) {
-      ThemeChoice.dark => kDarkTheme,
-      ThemeChoice.light => kLightTheme,
-      ThemeChoice.custom => kCustomTheme,
-    };
+  ThemeChoice.dark => kDarkTheme,
+  ThemeChoice.light => kLightTheme,
+  ThemeChoice.custom => kCustomTheme,
+};
 
 /// The root widget: theme and language from the preferences, around the
 /// [AppShell].
@@ -23,8 +23,9 @@ class NutriaApp extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = ref.watch(preferencesProvider.select((p) => p.theme));
-    final language =
-        ref.watch(preferencesProvider.select((p) => p.languageCode));
+    final language = ref.watch(
+      preferencesProvider.select((p) => p.languageCode),
+    );
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: kAppName,
@@ -37,7 +38,10 @@ class NutriaApp extends ConsumerWidget {
         ...GlobalMaterialLocalizations.delegates,
       ],
       supportedLocales: AppLocalizations.supportedLocales,
-      theme: buildThemeData(appThemeFor(theme), dark: theme == ThemeChoice.dark),
+      theme: buildThemeData(
+        appThemeFor(theme),
+        dark: theme == ThemeChoice.dark,
+      ),
       home: const AppShell(),
     );
   }

@@ -748,6 +748,24 @@ abstract class AppLocalizations {
   /// **'Remove this music'**
   String get musicRemove;
 
+  /// No description provided for @musicNone.
+  ///
+  /// In en, this message translates to:
+  /// **'None'**
+  String get musicNone;
+
+  /// No description provided for @musicNoAudio.
+  ///
+  /// In en, this message translates to:
+  /// **'No audio imported yet. Import audio files in Imported Media.'**
+  String get musicNoAudio;
+
+  /// No description provided for @musicPlayPreview.
+  ///
+  /// In en, this message translates to:
+  /// **'Play in Preview'**
+  String get musicPlayPreview;
+
   /// No description provided for @musicLoopNeverEnds.
   ///
   /// In en, this message translates to:

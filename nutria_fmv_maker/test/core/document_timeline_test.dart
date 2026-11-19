@@ -12,9 +12,9 @@ void main() {
 
   test('apply records an undo step and undo/redo restore documents', () {
     final start = storyFixture();
-    var timeline = DocumentTimeline.start(start)
-        .apply('Move', (d) => moveB(d, 1))
-        .apply('Move', (d) => moveB(d, 2));
+    var timeline = DocumentTimeline.start(
+      start,
+    ).apply('Move', (d) => moveB(d, 1)).apply('Move', (d) => moveB(d, 2));
 
     expect(timeline.undoStack, hasLength(2));
     timeline = timeline.undo();
@@ -36,8 +36,9 @@ void main() {
   });
 
   test('edits that change nothing are not recorded', () {
-    final timeline =
-        DocumentTimeline.start(storyFixture()).apply('No-op', (d) => d);
+    final timeline = DocumentTimeline.start(
+      storyFixture(),
+    ).apply('No-op', (d) => d);
     expect(timeline.canUndo, isFalse);
   });
 
@@ -57,10 +58,9 @@ void main() {
 
   test('cancelling a transaction restores the starting document', () {
     final start = storyFixture();
-    final timeline = DocumentTimeline.start(start)
-        .beginTransaction('Drag')
-        .apply('x', (d) => moveB(d, 9))
-        .cancel();
+    final timeline = DocumentTimeline.start(
+      start,
+    ).beginTransaction('Drag').apply('x', (d) => moveB(d, 9)).cancel();
     expect(timeline.current, same(start));
     expect(timeline.canUndo, isFalse);
   });
@@ -110,9 +110,11 @@ void main() {
           .apply('Type', (d) => moveB(d, 2), mergeKey: 'b');
       expect(timeline.undoStack, hasLength(2));
 
-      timeline = timeline
-          .undo()
-          .apply('Type', (d) => moveB(d, 3), mergeKey: 'a');
+      timeline = timeline.undo().apply(
+        'Type',
+        (d) => moveB(d, 3),
+        mergeKey: 'a',
+      );
       expect(timeline.undoStack, hasLength(2));
     });
   });

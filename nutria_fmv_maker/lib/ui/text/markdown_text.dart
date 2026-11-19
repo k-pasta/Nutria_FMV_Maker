@@ -21,7 +21,10 @@ TextSpan markdownSpan(String text, TextStyle style, {Color? markerColor}) =>
               ),
             )
           else if (markerColor != null)
-            TextSpan(text: run.text, style: TextStyle(color: markerColor)),
+            TextSpan(
+              text: run.text,
+              style: TextStyle(color: markerColor),
+            ),
       ],
     );
 

@@ -13,8 +13,10 @@ Future<void> main() async {
   // Loaded up front so preferences can be read synchronously.
   final preferences = await SharedPreferences.getInstance();
 
-  runApp(ProviderScope(
-    overrides: [sharedPreferencesProvider.overrideWithValue(preferences)],
-    child: const NutriaApp(),
-  ));
+  runApp(
+    ProviderScope(
+      overrides: [sharedPreferencesProvider.overrideWithValue(preferences)],
+      child: const NutriaApp(),
+    ),
+  );
 }

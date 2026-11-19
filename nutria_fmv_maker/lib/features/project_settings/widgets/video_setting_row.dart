@@ -20,31 +20,32 @@ String videoSettingName(AppLocalizations t, VideoSettingType type) =>
 
 /// The localized value of setting [type] in [settings].
 String videoSettingValue(
-        AppLocalizations t, VideoSettingType type, VideoSettings settings) =>
-    switch (type) {
-      VideoSettingType.selectionTime =>
-        '${(settings.selectionTimeMs / 1000).toStringAsFixed(2)} s',
-      VideoSettingType.pauseOnEnd =>
-        settings.pauseOnEnd ? t.essentialsYes : t.essentialsNo,
-      VideoSettingType.showTimer =>
-        settings.showTimer ? t.essentialsYes : t.essentialsNo,
-      VideoSettingType.videoFit => switch (settings.videoFit) {
-          VideoFit.fit => t.overrideVideoFit_Fit,
-          VideoFit.fill => t.overrideVideoFit_Fill,
-          VideoFit.fillWidth => t.overrideVideoFit_FillWidth,
-          VideoFit.fillHeight => t.overrideVideoFit_FillHeight,
-          VideoFit.stretch => t.overrideVideoFit_Stretch,
-        },
-      VideoSettingType.defaultSelection => switch (settings.defaultSelection) {
-          DefaultSelectionMethod.first => t.overrideDefaultSelection_First,
-          DefaultSelectionMethod.last => t.overrideDefaultSelection_Last,
-          DefaultSelectionMethod.lastSelected =>
-            t.overrideDefaultSelection_LastSelected,
-          DefaultSelectionMethod.random => t.overrideDefaultSelection_Random,
-          DefaultSelectionMethod.specified =>
-            t.overrideDefaultSelection_Specified,
-        },
-    };
+  AppLocalizations t,
+  VideoSettingType type,
+  VideoSettings settings,
+) => switch (type) {
+  VideoSettingType.selectionTime =>
+    '${(settings.selectionTimeMs / 1000).toStringAsFixed(2)} s',
+  VideoSettingType.pauseOnEnd =>
+    settings.pauseOnEnd ? t.essentialsYes : t.essentialsNo,
+  VideoSettingType.showTimer =>
+    settings.showTimer ? t.essentialsYes : t.essentialsNo,
+  VideoSettingType.videoFit => switch (settings.videoFit) {
+    VideoFit.fit => t.overrideVideoFit_Fit,
+    VideoFit.fill => t.overrideVideoFit_Fill,
+    VideoFit.fillWidth => t.overrideVideoFit_FillWidth,
+    VideoFit.fillHeight => t.overrideVideoFit_FillHeight,
+    VideoFit.stretch => t.overrideVideoFit_Stretch,
+  },
+  VideoSettingType.defaultSelection => switch (settings.defaultSelection) {
+    DefaultSelectionMethod.first => t.overrideDefaultSelection_First,
+    DefaultSelectionMethod.last => t.overrideDefaultSelection_Last,
+    DefaultSelectionMethod.lastSelected =>
+      t.overrideDefaultSelection_LastSelected,
+    DefaultSelectionMethod.random => t.overrideDefaultSelection_Random,
+    DefaultSelectionMethod.specified => t.overrideDefaultSelection_Specified,
+  },
+};
 
 /// Selection time as shown in its field: seconds with two decimals.
 String _seconds(int ms) => (ms / 1000).toStringAsFixed(2);
@@ -117,9 +118,9 @@ class _VideoSettingRowState extends State<VideoSettingRow> {
                 final seconds = NutriaNumberField.parse(text);
                 if (seconds == null || seconds < 0) return;
                 widget.onChanged(
-                    settings.copyWith(
-                        selectionTimeMs: (seconds * 1000).round()),
-                    mergeKey: _typing);
+                  settings.copyWith(selectionTimeMs: (seconds * 1000).round()),
+                  mergeKey: _typing,
+                );
               },
             )
           : null,

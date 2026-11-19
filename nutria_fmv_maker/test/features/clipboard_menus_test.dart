@@ -12,13 +12,17 @@ import 'app_tester.dart';
 import 'clipboard_test.dart' show MemoryClipboard;
 
 void main() {
-  testWidgets('a node menu offers Copy, and Paste only once nodes are copied',
-      (tester) async {
+  testWidgets('a node menu offers Copy, and Paste only once nodes are copied', (
+    tester,
+  ) async {
     final clipboard = MemoryClipboard();
-    final c = await pumpApp(tester,
-        overrides: [clipboardServiceProvider.overrideWithValue(clipboard)]);
-    c.read(graphEditorProvider).addVideoNode(Position.zero,
-        type: DefaultNodeType.simpleVideo);
+    final c = await pumpApp(
+      tester,
+      overrides: [clipboardServiceProvider.overrideWithValue(clipboard)],
+    );
+    c
+        .read(graphEditorProvider)
+        .addVideoNode(Position.zero, type: DefaultNodeType.simpleVideo);
     await tester.pumpAndSettle();
     final node = tester.getCenter(find.text(kNoVideo));
 
@@ -42,10 +46,13 @@ void main() {
 
   testWidgets('Ctrl+V in a text field pastes text, not nodes', (tester) async {
     final clipboard = MemoryClipboard();
-    final c = await pumpApp(tester,
-        overrides: [clipboardServiceProvider.overrideWithValue(clipboard)]);
-    c.read(graphEditorProvider).addVideoNode(Position.zero,
-        type: DefaultNodeType.branchedVideo);
+    final c = await pumpApp(
+      tester,
+      overrides: [clipboardServiceProvider.overrideWithValue(clipboard)],
+    );
+    c
+        .read(graphEditorProvider)
+        .addVideoNode(Position.zero, type: DefaultNodeType.branchedVideo);
     await tester.pumpAndSettle();
     // Nodes on the clipboard, copied earlier.
     final editor = c.read(graphEditorProvider);
@@ -63,7 +70,10 @@ void main() {
     await tester.sendKeyEvent(LogicalKeyboardKey.keyV);
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     await tester.pumpAndSettle();
-    expect(c.read(projectDocumentProvider).nodes, hasLength(nodesBefore),
-        reason: 'the app did not paste nodes');
+    expect(
+      c.read(projectDocumentProvider).nodes,
+      hasLength(nodesBefore),
+      reason: 'the app did not paste nodes',
+    );
   });
 }

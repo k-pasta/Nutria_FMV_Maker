@@ -13,11 +13,14 @@ import 'app_tester.dart';
 import 'harness.dart';
 
 void main() {
-  testWidgets('New with unsaved changes: Cancel, Don\'t Save or Save',
-      (tester) async {
+  testWidgets('New with unsaved changes: Cancel, Don\'t Save or Save', (
+    tester,
+  ) async {
     final files = MemoryProjectFiles();
-    final c = await pumpApp(tester,
-        overrides: [projectFileServiceProvider.overrideWithValue(files)]);
+    final c = await pumpApp(
+      tester,
+      overrides: [projectFileServiceProvider.overrideWithValue(files)],
+    );
     int nodes() => c.read(projectDocumentProvider).nodes.length;
     Future<void> newProject() async {
       await tester.sendKeyDownEvent(LogicalKeyboardKey.controlLeft);
@@ -62,28 +65,35 @@ void main() {
     await tester.pump(const Duration(seconds: 30));
   });
 
-  testWidgets('a node\'s settings panel resizes and has the node menu',
-      (tester) async {
+  testWidgets('a node\'s settings panel resizes and has the node menu', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
     // High up, so the settings panel below it is on screen.
-    final id = c.read(graphEditorProvider).addVideoNode(
-        const Position(-100, -420),
-        type: DefaultNodeType.branchedVideo);
+    final id = c
+        .read(graphEditorProvider)
+        .addVideoNode(
+          const Position(-100, -420),
+          type: DefaultNodeType.branchedVideo,
+        );
     c.read(graphEditorProvider).toggleExpanded(id);
     await tester.pumpAndSettle();
     // The color squares are the last row of the settings panel.
     final settings = tester.getRect(find.byType(SwatchPicker));
 
     // The right edge of the settings panel, level with its convert button.
-    final nodeRight = tester.getCenter(find.text(kNoVideo)).dx +
-        kDefaultNodeWidth / 2 -
-        2;
-    await tester.dragFrom(Offset(nodeRight, settings.center.dy),
-        const Offset(80, 0),
-        kind: PointerDeviceKind.mouse);
+    final nodeRight =
+        tester.getCenter(find.text(kNoVideo)).dx + kDefaultNodeWidth / 2 - 2;
+    await tester.dragFrom(
+      Offset(nodeRight, settings.center.dy),
+      const Offset(80, 0),
+      kind: PointerDeviceKind.mouse,
+    );
     await tester.pumpAndSettle();
-    expect(c.read(projectDocumentProvider).nodes[id]!.width,
-        greaterThan(kDefaultNodeWidth + 40));
+    expect(
+      c.read(projectDocumentProvider).nodes[id]!.width,
+      greaterThan(kDefaultNodeWidth + 40),
+    );
 
     // The panel's padding just right of the color squares.
     final squares = tester.getRect(find.byType(SwatchPicker));

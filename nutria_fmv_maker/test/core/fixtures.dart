@@ -46,9 +46,21 @@ ProjectDocument storyFixture() {
           Choice(id: 'maybe', text: 'Maybe'),
         ],
       ),
-      'B': const SimpleVideoNode(id: 'B', position: Position(700, 100), videoId: 'v2'),
-      'C': const SimpleVideoNode(id: 'C', position: Position(700, 400), videoId: 'v3'),
-      'D': const SimpleVideoNode(id: 'D', position: Position(900, 900), videoId: 'v3'),
+      'B': const SimpleVideoNode(
+        id: 'B',
+        position: Position(700, 100),
+        videoId: 'v2',
+      ),
+      'C': const SimpleVideoNode(
+        id: 'C',
+        position: Position(700, 400),
+        videoId: 'v3',
+      ),
+      'D': const SimpleVideoNode(
+        id: 'D',
+        position: Position(900, 900),
+        videoId: 'v3',
+      ),
     },
     edges: const [
       Edge(

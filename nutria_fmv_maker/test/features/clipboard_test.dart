@@ -22,11 +22,14 @@ class MemoryClipboard implements ClipboardService {
 }
 
 void main() {
-  testWidgets('Ctrl+C / Ctrl+V / Ctrl+D copy, paste and duplicate nodes',
-      (tester) async {
+  testWidgets('Ctrl+C / Ctrl+V / Ctrl+D copy, paste and duplicate nodes', (
+    tester,
+  ) async {
     final clipboard = MemoryClipboard();
-    final c = await pumpApp(tester,
-        overrides: [clipboardServiceProvider.overrideWithValue(clipboard)]);
+    final c = await pumpApp(
+      tester,
+      overrides: [clipboardServiceProvider.overrideWithValue(clipboard)],
+    );
     final id = c.read(graphEditorProvider).addVideoNode(Position.zero);
     c.read(selectionProvider.notifier).selectOnly(id);
     await tester.pumpAndSettle();

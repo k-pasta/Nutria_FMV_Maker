@@ -10,7 +10,16 @@ enum MediaKind { video, audio, image, subtitle, font }
 /// The file extensions (lower case, without the dot) of each [MediaKind].
 const kMediaExtensions = <MediaKind, List<String>>{
   MediaKind.video: [
-    'mp4', 'mkv', 'mov', 'avi', 'webm', 'wmv', 'm4v', 'mpg', 'mpeg', 'flv',
+    'mp4',
+    'mkv',
+    'mov',
+    'avi',
+    'webm',
+    'wmv',
+    'm4v',
+    'mpg',
+    'mpeg',
+    'flv',
   ],
   MediaKind.audio: ['mp3', 'wav', 'ogg', 'flac', 'm4a', 'aac', 'opus', 'wma'],
   MediaKind.image: ['png', 'jpg', 'jpeg', 'webp', 'bmp', 'gif'],

@@ -358,6 +358,16 @@ class AppLocalizationsFr extends AppLocalizations {
   String get musicRemove => 'Retirer cette musique';
 
   @override
+  String get musicNone => 'Aucune';
+
+  @override
+  String get musicNoAudio =>
+      'Aucun audio importé. Importez des fichiers audio dans Médias Importés.';
+
+  @override
+  String get musicPlayPreview => 'Écouter dans l\'aperçu';
+
+  @override
   String get musicLoopNeverEnds =>
       'Un morceau en boucle ne s’arrête pas seul : il joue jusqu’à une autre musique.';
 

@@ -20,13 +20,15 @@ import 'app_tester.dart';
 
 /// The in-place name editor (the only field with autofocus in a strip).
 Finder renameField() => find.byWidgetPredicate(
-    (w) => w is TextField && w.decoration?.border == InputBorder.none);
+  (w) => w is TextField && w.decoration?.border == InputBorder.none,
+);
 
 void main() {
   Node nodeOf(c, String id) => c.read(projectDocumentProvider).nodes[id]!;
 
-  testWidgets('F2 renames the selected node in place; Escape cancels',
-      (tester) async {
+  testWidgets('F2 renames the selected node in place; Escape cancels', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
     final id = c.read(graphEditorProvider).addVideoNode(Position.zero);
     c.read(selectionProvider.notifier).selectOnly(id);
@@ -58,8 +60,9 @@ void main() {
     expect(nodeOf(c, id).name, 'Intro');
   });
 
-  testWidgets('the origin shows "Origin Node" when it has no name',
-      (tester) async {
+  testWidgets('the origin shows "Origin Node" when it has no name', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
     expect(nodeOf(c, kOriginNodeId).name, isNull);
     expect(find.text('Origin Node'), findsOneWidget);
@@ -79,14 +82,28 @@ void main() {
   testWidgets('Ctrl+Delete disconnects the selected nodes', (tester) async {
     final c = await pumpApp(tester);
     final editor = c.read(graphEditorProvider);
-    final a = editor.addVideoNode(const Position(-200, 0),
-        type: DefaultNodeType.simpleVideo);
-    final b = editor.addVideoNode(const Position(200, 0),
-        type: DefaultNodeType.simpleVideo);
-    c.read(documentProvider.notifier).apply('connect', (d) => d
-        .connect(const PortRef(nodeId: kOriginNodeId, port: kNextPortKey),
-            PortRef.input(a))
-        .connect(PortRef(nodeId: a, port: kNextPortKey), PortRef.input(b)));
+    final a = editor.addVideoNode(
+      const Position(-200, 0),
+      type: DefaultNodeType.simpleVideo,
+    );
+    final b = editor.addVideoNode(
+      const Position(200, 0),
+      type: DefaultNodeType.simpleVideo,
+    );
+    c
+        .read(documentProvider.notifier)
+        .apply(
+          'connect',
+          (d) => d
+              .connect(
+                const PortRef(nodeId: kOriginNodeId, port: kNextPortKey),
+                PortRef.input(a),
+              )
+              .connect(
+                PortRef(nodeId: a, port: kNextPortKey),
+                PortRef.input(b),
+              ),
+        );
     c.read(selectionProvider.notifier).selectOnly(a);
     await tester.pumpAndSettle();
     expect(c.read(projectDocumentProvider).edges, hasLength(2));
@@ -96,26 +113,34 @@ void main() {
     await tester.sendKeyUpEvent(LogicalKeyboardKey.controlLeft);
     await tester.pumpAndSettle();
     expect(c.read(projectDocumentProvider).edges, isEmpty);
-    expect(c.read(projectDocumentProvider).nodes, contains(a),
-        reason: 'disconnects, does not delete');
+    expect(
+      c.read(projectDocumentProvider).nodes,
+      contains(a),
+      reason: 'disconnects, does not delete',
+    );
   });
 
-  testWidgets('Alt+drag on a node pulls its first free output',
-      (tester) async {
+  testWidgets('Alt+drag on a node pulls its first free output', (tester) async {
     final c = await pumpApp(tester);
     final editor = c.read(graphEditorProvider);
-    final a = editor.addVideoNode(const Position(-300, -100),
-        type: DefaultNodeType.simpleVideo);
-    final b = editor.addVideoNode(const Position(150, -100),
-        type: DefaultNodeType.simpleVideo);
+    final a = editor.addVideoNode(
+      const Position(-300, -100),
+      type: DefaultNodeType.simpleVideo,
+    );
+    final b = editor.addVideoNode(
+      const Position(150, -100),
+      type: DefaultNodeType.simpleVideo,
+    );
     await tester.pumpAndSettle();
     final names = find.text(kNoVideo);
     final from = tester.getCenter(names.at(0));
     final to = tester.getCenter(names.at(1));
 
     await tester.sendKeyDownEvent(LogicalKeyboardKey.altLeft);
-    final gesture =
-        await tester.startGesture(from, kind: PointerDeviceKind.mouse);
+    final gesture = await tester.startGesture(
+      from,
+      kind: PointerDeviceKind.mouse,
+    );
     for (var i = 1; i <= 10; i++) {
       await gesture.moveTo(Offset.lerp(from, to, i / 10)!);
       await tester.pump();
@@ -125,39 +150,60 @@ void main() {
     await tester.pumpAndSettle();
 
     final doc = c.read(projectDocumentProvider);
-    expect(doc.edgeFrom(PortRef(nodeId: a, port: kNextPortKey))?.to,
-        PortRef.input(b));
-    expect(doc.nodes[a]!.position, const Position(-300, -100),
-        reason: 'the node did not move');
+    expect(
+      doc.edgeFrom(PortRef(nodeId: a, port: kNextPortKey))?.to,
+      PortRef.input(b),
+    );
+    expect(
+      doc.nodes[a]!.position,
+      const Position(-300, -100),
+      reason: 'the node did not move',
+    );
   });
 
-  testWidgets('a question row sits above the choices and is exported',
-      (tester) async {
+  testWidgets('a question row sits above the choices and is exported', (
+    tester,
+  ) async {
     final c = await pumpApp(tester);
     final editor = c.read(graphEditorProvider);
-    final id = editor.addVideoNode(const Position(-100, -350),
-        type: DefaultNodeType.branchedVideo);
+    final id = editor.addVideoNode(
+      const Position(-100, -350),
+      type: DefaultNodeType.branchedVideo,
+    );
     editor.setQuestionEnabled(id, true);
     await tester.pumpAndSettle();
     final question = find.ancestor(
-        of: find.text('Question above the choices'),
-        matching: find.byType(TextField));
+      of: find.text('Question above the choices'),
+      matching: find.byType(TextField),
+    );
     await tester.enterText(question.first, 'Which door?');
     await tester.pumpAndSettle();
 
     final node = nodeOf(c, id) as BranchedVideoNode;
     expect(node.question, 'Which door?');
     // The first choice's knot is level with its field, below the question.
-    final knot = find.byWidgetPredicate((w) =>
-        w is Knot && w.port == PortRef(nodeId: id, port: node.choices[0].id));
+    final knot = find.byWidgetPredicate(
+      (w) =>
+          w is Knot && w.port == PortRef(nodeId: id, port: node.choices[0].id),
+    );
     final field = find.ancestor(
-        of: find.text('Option 1'), matching: find.byType(TextField));
-    expect(tester.getCenter(knot).dy,
-        moreOrLessEquals(tester.getCenter(field).dy, epsilon: 0.5));
+      of: find.text('Option 1'),
+      matching: find.byType(TextField),
+    );
+    expect(
+      tester.getCenter(knot).dy,
+      moreOrLessEquals(tester.getCenter(field).dy, epsilon: 0.5),
+    );
 
-    c.read(documentProvider.notifier).apply('connect', (d) => d.connect(
-        const PortRef(nodeId: kOriginNodeId, port: kNextPortKey),
-        PortRef.input(id)));
+    c
+        .read(documentProvider.notifier)
+        .apply(
+          'connect',
+          (d) => d.connect(
+            const PortRef(nodeId: kOriginNodeId, port: kNextPortKey),
+            PortRef.input(id),
+          ),
+        );
     final exported = exportFmv(c.read(projectDocumentProvider)).project;
     expect(exported.nodes['001']!.question, 'Which door?');
   });

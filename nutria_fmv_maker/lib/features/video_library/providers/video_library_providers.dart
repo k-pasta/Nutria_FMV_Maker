@@ -46,9 +46,9 @@ Future<String?> mediaFontFamily(Ref ref, String path) async {
   if (bytes == null) return null;
   final family = 'nutria-media-font-${path.hashCode}';
   try {
-    await (FontLoader(family)
-          ..addFont(Future.value(ByteData.sublistView(bytes))))
-        .load();
+    await (FontLoader(
+      family,
+    )..addFont(Future.value(ByteData.sublistView(bytes)))).load();
   } on Object {
     return null;
   }
@@ -68,9 +68,8 @@ class CollapsedLibraryGroups extends _$CollapsedLibraryGroups {
   @override
   Set<Object> build() => const {};
 
-  void toggle(Object key) => state = state.contains(key)
-      ? ({...state}..remove(key))
-      : {...state, key};
+  void toggle(Object key) =>
+      state = state.contains(key) ? ({...state}..remove(key)) : {...state, key};
 }
 
 /// Thumbnail image bytes for the video at [path], or `null` if none could be

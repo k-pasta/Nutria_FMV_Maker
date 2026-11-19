@@ -16,8 +16,11 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'app_tester.dart';
 
 /// Adds a node at canvas (0, 0), the middle of the screen.
-Future<String> addNode(WidgetTester tester, ProviderContainer container,
-    {DefaultNodeType type = DefaultNodeType.simpleVideo}) async {
+Future<String> addNode(
+  WidgetTester tester,
+  ProviderContainer container, {
+  DefaultNodeType type = DefaultNodeType.simpleVideo,
+}) async {
   final id = container
       .read(graphEditorProvider)
       .addVideoNode(Position.zero, type: type);
@@ -36,8 +39,9 @@ void main() {
     expect(find.text('Convert to Branching Node'), findsOneWidget);
   });
 
-  testWidgets('clicking a node selects it, clicking the canvas deselects',
-      (tester) async {
+  testWidgets('clicking a node selects it, clicking the canvas deselects', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
 
@@ -50,21 +54,30 @@ void main() {
     expect(container.read(selectionProvider).selected, isEmpty);
   });
 
-  testWidgets("using a node's text field or buttons selects the node",
-      (tester) async {
+  testWidgets("using a node's text field or buttons selects the node", (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
-    final id = await addNode(tester, container,
-        type: DefaultNodeType.branchedVideo);
+    final id = await addNode(
+      tester,
+      container,
+      type: DefaultNodeType.branchedVideo,
+    );
     expect(container.read(selectionProvider).selected, isEmpty);
 
-    await tester.tap(find.ancestor(
-        of: find.text('Option 1'), matching: find.byType(TextField)));
+    await tester.tap(
+      find.ancestor(
+        of: find.text('Option 1'),
+        matching: find.byType(TextField),
+      ),
+    );
     await tester.pumpAndSettle();
     expect(container.read(selectionProvider).selected, {id});
   });
 
-  testWidgets('dragging a node moves it, and undo puts it back in one step',
-      (tester) async {
+  testWidgets('dragging a node moves it, and undo puts it back in one step', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
     if (container.read(preferencesProvider).gridSnapping) {
@@ -72,8 +85,9 @@ void main() {
     }
 
     final gesture = await tester.startGesture(
-        tester.getCenter(find.text(kNoVideo)),
-        kind: PointerDeviceKind.mouse);
+      tester.getCenter(find.text(kNoVideo)),
+      kind: PointerDeviceKind.mouse,
+    );
     for (var i = 0; i < 10; i++) {
       await gesture.moveBy(const Offset(10, 5));
       await tester.pump();
@@ -99,13 +113,13 @@ void main() {
         .addVideoNode(const Position(-400, -200));
     await tester.pumpAndSettle();
     // Same widget instances afterwards means Flutter skipped rebuilding them.
-    List<Widget> frames() =>
-        tester.widgetList(find.byType(NodeFrame)).toList();
+    List<Widget> frames() => tester.widgetList(find.byType(NodeFrame)).toList();
     final before = frames();
 
     final gesture = await tester.startGesture(
-        tester.getCenter(find.text(kNoVideo).first),
-        kind: PointerDeviceKind.mouse);
+      tester.getCenter(find.text(kNoVideo).first),
+      kind: PointerDeviceKind.mouse,
+    );
     for (var i = 0; i < 10; i++) {
       await gesture.moveBy(const Offset(10, 5));
       await tester.pump();
@@ -125,51 +139,66 @@ void main() {
     final id = await addNode(tester, container);
     // The file name is centered; aim at the node's right border instead,
     // on the button row (the output knot is higher up, by the thumbnail).
-    final nodeRight = tester.getCenter(find.text(kNoVideo)).dx +
-        kDefaultNodeWidth / 2 -
-        2;
+    final nodeRight =
+        tester.getCenter(find.text(kNoVideo)).dx + kDefaultNodeWidth / 2 - 2;
     final row = tester.getCenter(find.text('Convert to Branching Node')).dy;
     await tester.dragFrom(
-        Offset(nodeRight, row), const Offset(100, 0),
-        kind: PointerDeviceKind.mouse);
+      Offset(nodeRight, row),
+      const Offset(100, 0),
+      kind: PointerDeviceKind.mouse,
+    );
     await tester.pumpAndSettle();
     expect(nodeOf(container, id).width, greaterThan(kDefaultNodeWidth + 50));
   });
 
   for (final name in ['a.mp4', 'Recording 2026-04-01 12-54-49 final v2.mp4']) {
-    testWidgets('choice knots line up with their rows (file name "$name")',
-        (tester) async {
+    testWidgets('choice knots line up with their rows (file name "$name")', (
+      tester,
+    ) async {
       final container = await pumpApp(tester);
       final editor = container.read(graphEditorProvider);
       final video = editor.importFiles(['C:/v/$name']).single;
-      final id = editor.addVideoNode(const Position(-100, -300),
-          videoId: video, type: DefaultNodeType.branchedVideo);
+      final id = editor.addVideoNode(
+        const Position(-100, -300),
+        videoId: video,
+        type: DefaultNodeType.branchedVideo,
+      );
       await tester.pumpAndSettle();
 
       final node = nodeOf(container, id) as BranchedVideoNode;
       for (final (i, choice) in node.choices.indexed) {
-        final knot = find.byWidgetPredicate((w) =>
-            w is Knot && w.port == PortRef(nodeId: id, port: choice.id));
+        final knot = find.byWidgetPredicate(
+          (w) => w is Knot && w.port == PortRef(nodeId: id, port: choice.id),
+        );
         final field = find.ancestor(
-            of: find.text('Option ${i + 1}'), matching: find.byType(TextField));
-        expect(tester.getCenter(knot).dy,
-            moreOrLessEquals(tester.getCenter(field).dy, epsilon: 0.5));
+          of: find.text('Option ${i + 1}'),
+          matching: find.byType(TextField),
+        );
+        expect(
+          tester.getCenter(knot).dy,
+          moreOrLessEquals(tester.getCenter(field).dy, epsilon: 0.5),
+        );
       }
     });
   }
 
-  testWidgets("a simple node's input and output knots are level",
-      (tester) async {
+  testWidgets("a simple node's input and output knots are level", (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     final id = await addNode(tester, container);
     Finder knot(String port) => find.byWidgetPredicate(
-        (w) => w is Knot && w.port == PortRef(nodeId: id, port: port));
-    expect(tester.getCenter(knot(PortRef.inputPortKey)).dy,
-        moreOrLessEquals(tester.getCenter(knot('next')).dy, epsilon: 0.01));
+      (w) => w is Knot && w.port == PortRef(nodeId: id, port: port),
+    );
+    expect(
+      tester.getCenter(knot(PortRef.inputPortKey)).dy,
+      moreOrLessEquals(tester.getCenter(knot('next')).dy, epsilon: 0.01),
+    );
   });
 
-  testWidgets('a branched node has a knot per choice plus its input',
-      (tester) async {
+  testWidgets('a branched node has a knot per choice plus its input', (
+    tester,
+  ) async {
     final container = await pumpApp(tester);
     await addNode(tester, container, type: DefaultNodeType.branchedVideo);
     // Origin output + branched input + 2 choices.
@@ -177,9 +206,12 @@ void main() {
     expect(find.text('Option 3'), findsOneWidget); // the empty typing row
 
     await tester.enterText(
-        find.ancestor(
-            of: find.text('Option 3'), matching: find.byType(TextField)),
-        'Run');
+      find.ancestor(
+        of: find.text('Option 3'),
+        matching: find.byType(TextField),
+      ),
+      'Run',
+    );
     await tester.pumpAndSettle();
     expect(find.byType(Knot), findsNWidgets(5));
   });

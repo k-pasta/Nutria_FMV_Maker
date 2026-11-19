@@ -51,7 +51,7 @@ List<(String, String)> videoInfoRows(VideoInfo info, AppLocalizations t) {
     if (duration != null)
       (
         t.videoMetadataDuration,
-        formatTimecode(duration, frameRate: frameRate ?? kFallbackFrameRate)
+        formatTimecode(duration, frameRate: frameRate ?? kFallbackFrameRate),
       ),
     if ((info.width, info.height) case (final w?, final h?))
       (t.videoMetadataResolution, '$w × $h'),
@@ -59,7 +59,7 @@ List<(String, String)> videoInfoRows(VideoInfo info, AppLocalizations t) {
       (
         t.videoMetadataFrameRate,
         '${frameRate.toStringAsFixed(frameRate % 1 == 0 ? 0 : 2)} '
-            '${t.videoMetadataNamesFps}'
+            '${t.videoMetadataNamesFps}',
       ),
   ];
 }
