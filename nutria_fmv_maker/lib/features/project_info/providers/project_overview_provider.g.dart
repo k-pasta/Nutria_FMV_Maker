@@ -111,3 +111,114 @@ final class StoryLengthOverviewProvider
 
 String _$storyLengthOverviewHash() =>
     r'a3b108ee0beb54d041e0142bc75523c72156714f';
+
+/// The problems the export would find in the main branch (the part of the
+/// story the origin reaches): videos missing, answers leading nowhere,
+/// logic that can't run.
+
+@ProviderFor(storyProblems)
+final storyProblemsProvider = StoryProblemsProvider._();
+
+/// The problems the export would find in the main branch (the part of the
+/// story the origin reaches): videos missing, answers leading nowhere,
+/// logic that can't run.
+
+final class StoryProblemsProvider
+    extends
+        $FunctionalProvider<
+          List<ExportIssue>,
+          List<ExportIssue>,
+          List<ExportIssue>
+        >
+    with $Provider<List<ExportIssue>> {
+  /// The problems the export would find in the main branch (the part of the
+  /// story the origin reaches): videos missing, answers leading nowhere,
+  /// logic that can't run.
+  StoryProblemsProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'storyProblemsProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$storyProblemsHash();
+
+  @$internal
+  @override
+  $ProviderElement<List<ExportIssue>> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  List<ExportIssue> create(Ref ref) {
+    return storyProblems(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(List<ExportIssue> value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<List<ExportIssue>>(value),
+    );
+  }
+}
+
+String _$storyProblemsHash() => r'80b6b514b8e9095dfdcb7412e839a61048b6df15';
+
+/// How many story nodes there are, and how many the origin reaches.
+
+@ProviderFor(storyNodeCountsOverview)
+final storyNodeCountsOverviewProvider = StoryNodeCountsOverviewProvider._();
+
+/// How many story nodes there are, and how many the origin reaches.
+
+final class StoryNodeCountsOverviewProvider
+    extends
+        $FunctionalProvider<
+          ({int main, int total}),
+          ({int main, int total}),
+          ({int main, int total})
+        >
+    with $Provider<({int main, int total})> {
+  /// How many story nodes there are, and how many the origin reaches.
+  StoryNodeCountsOverviewProvider._()
+    : super(
+        from: null,
+        argument: null,
+        retry: null,
+        name: r'storyNodeCountsOverviewProvider',
+        isAutoDispose: true,
+        dependencies: null,
+        $allTransitiveDependencies: null,
+      );
+
+  @override
+  String debugGetCreateSourceHash() => _$storyNodeCountsOverviewHash();
+
+  @$internal
+  @override
+  $ProviderElement<({int main, int total})> $createElement(
+    $ProviderPointer pointer,
+  ) => $ProviderElement(pointer);
+
+  @override
+  ({int main, int total}) create(Ref ref) {
+    return storyNodeCountsOverview(ref);
+  }
+
+  /// {@macro riverpod.override_with_value}
+  Override overrideWithValue(({int main, int total}) value) {
+    return $ProviderOverride(
+      origin: this,
+      providerOverride: $SyncValueProvider<({int main, int total})>(value),
+    );
+  }
+}
+
+String _$storyNodeCountsOverviewHash() =>
+    r'ca2b101f7199658ff9f68e9487bddd0b3a553aec';

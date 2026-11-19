@@ -2,7 +2,9 @@
 // uses and how long it plays.
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/story_stats.dart';
+import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
+import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -43,3 +45,17 @@ Future<StoryLength> storyLengthOverview(Ref ref) async {
   }
   return storyLength(doc, (id) => durations[id]);
 }
+
+/// The problems the export would find in the main branch (the part of the
+/// story the origin reaches): videos missing, answers leading nowhere,
+/// logic that can't run.
+@riverpod
+List<ExportIssue> storyProblems(Ref ref) => exportFmv(
+  ref.watch(projectDocumentProvider),
+  allowSingleChoice: ref.watch(preferencesProvider).allowNoBrainers,
+).issues;
+
+/// How many story nodes there are, and how many the origin reaches.
+@riverpod
+({int total, int main}) storyNodeCountsOverview(Ref ref) =>
+    storyNodeCounts(ref.watch(projectDocumentProvider));

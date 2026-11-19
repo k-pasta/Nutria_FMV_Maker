@@ -164,6 +164,66 @@ class AppLocalizationsEl extends AppLocalizations {
   String get projectOverview => 'Επισκόπηση';
 
   @override
+  String get projectProblems => 'Προβλήματα';
+
+  @override
+  String get projectNoProblems =>
+      'Κανένα στο κομμάτι της ιστορίας που φτάνει η αρχή.';
+
+  @override
+  String get projectNodes => 'Κόμβοι';
+
+  @override
+  String projectNodeCounts(int total, int main, int inactive) {
+    return '$total ($main στον κύριο κλάδο, $inactive εκτός)';
+  }
+
+  @override
+  String projectWay(String time, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count βίντεο',
+      one: '1 βίντεο',
+    );
+    return '$time · $_temp0';
+  }
+
+  @override
+  String get issueMissingVideo => 'Χωρίς βίντεο';
+
+  @override
+  String get issueUnconnectedChoice =>
+      'Μια απάντηση με κείμενο δεν οδηγεί πουθενά';
+
+  @override
+  String get issueInvalidLogic => 'Λογική που δεν μπορεί να εκτελεστεί';
+
+  @override
+  String get issueSingleChoice =>
+      'Μόνο μία απάντηση (το «Επιτρέπονται προφανείς» είναι κλειστό)';
+
+  @override
+  String get nodeUntitled => 'Κόμβος χωρίς όνομα';
+
+  @override
+  String dialogExportProblems(int count, String list) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count προβλήματα',
+      one: 'Ένα πρόβλημα',
+    );
+    return '$_temp0 στο κομμάτι της ιστορίας που φτάνει η αρχή:\n$list\n\nΕξαγωγή παρ’ όλα αυτά;';
+  }
+
+  @override
+  String get dialogExportAnyway => 'Εξαγωγή';
+
+  @override
+  String get editSelectOutsideMain => 'Επιλογή Κόμβων Εκτός Κύριου Κλάδου';
+
+  @override
   String get projectFile => 'Αρχείο';
 
   @override

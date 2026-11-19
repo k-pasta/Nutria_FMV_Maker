@@ -80,6 +80,11 @@ typedef StoryLength = ({
   /// Reachable videos whose length isn't known (missing or unreadable
   /// files), counted as zero.
   int unknown,
+
+  /// How many videos the shortest and longest ways play (`null` with no
+  /// such way).
+  int? shortestVideos,
+  int? longestVideos,
 });
 
 /// The [StoryLength] of [document]; [durationOf] gives a video's length by
@@ -91,20 +96,26 @@ StoryLength storyLength(
   final reachable = reachableNodeIds(document);
   var unknown = 0;
   final weight = <String, Duration>{};
+  // The nodes that play a video.
+  final videos = <String>{};
   for (final nodeId in reachable) {
     final videoId = document.node(nodeId).videoIdOrNull;
     final length = videoId == null ? null : durationOf(videoId);
     if (videoId != null && length == null) unknown++;
     weight[nodeId] = length ?? Duration.zero;
+    if (videoId != null) videos.add(nodeId);
   }
+  int videosIn(String nodeId) => videos.contains(nodeId) ? 1 : 0;
   final start = document.origin.id;
   bool isEnd(String nodeId) =>
       nodeId != start && _nextOf(document, nodeId).isEmpty;
 
   // Shortest: Dijkstra over node lengths (small graphs, so a plain scan).
   final best = <String, Duration>{start: Duration.zero};
+  final count = <String, int>{start: 0};
   final done = <String>{};
   Duration? shortest;
+  int? shortestVideos;
   while (true) {
     String? current;
     for (final MapEntry(:key, :value) in best.entries) {
@@ -116,32 +127,37 @@ StoryLength storyLength(
     final here = best[current]!;
     if (isEnd(current)) {
       shortest = here;
+      shortestVideos = count[current];
       break;
     }
     for (final next in _nextOf(document, current)) {
       final through = here + weight[next]!;
-      if (best[next] == null || through < best[next]!) best[next] = through;
+      if (best[next] == null || through < best[next]!) {
+        best[next] = through;
+        count[next] = count[current]! + videosIn(next);
+      }
     }
   }
 
   // Longest: depth-first with memory, giving up on the first loop.
-  final longestFrom = <String, Duration?>{};
+  // Each node's longest way on: its length and how many videos it plays.
+  final longestFrom = <String, (Duration, int)?>{};
   final onPath = <String>{};
   var hasLoops = false;
-  Duration? longestOf(String nodeId) {
+  (Duration, int)? longestOf(String nodeId) {
     if (longestFrom.containsKey(nodeId)) return longestFrom[nodeId];
     if (!onPath.add(nodeId)) {
       hasLoops = true;
       return null;
     }
-    Duration? best;
+    (Duration, int)? best;
     final next = _nextOf(document, nodeId);
-    if (next.isEmpty && nodeId != start) best = Duration.zero;
+    if (next.isEmpty && nodeId != start) best = (Duration.zero, 0);
     for (final n in next) {
       final rest = longestOf(n);
       if (rest == null) continue;
-      final total = weight[n]! + rest;
-      if (best == null || total > best) best = total;
+      final total = (weight[n]! + rest.$1, rest.$2 + videosIn(n));
+      if (best == null || total.$1 > best.$1) best = total;
     }
     onPath.remove(nodeId);
     longestFrom[nodeId] = best;
@@ -151,8 +167,32 @@ StoryLength storyLength(
   final longest = longestOf(start);
   return (
     shortest: shortest,
-    longest: hasLoops ? null : longest,
+    longest: hasLoops ? null : longest?.$1,
     hasLoops: hasLoops,
     unknown: unknown,
+    shortestVideos: shortestVideos,
+    longestVideos: hasLoops ? null : longest?.$2,
   );
+}
+
+/// The story's nodes (videos and logic; not the origin or comments) that
+/// can't be reached from the origin: they aren't exported.
+Set<String> nodesOutsideMainBranch(ProjectDocument document) {
+  final reachable = reachableNodeIds(document).toSet();
+  return {
+    for (final node in document.nodes.values)
+      if (node is! OriginNode &&
+          node is! CommentNode &&
+          !reachable.contains(node.id))
+        node.id,
+  };
+}
+
+/// How many story nodes there are (videos and logic), and how many of
+/// them the origin reaches (the main branch).
+({int total, int main}) storyNodeCounts(ProjectDocument document) {
+  final total = document.nodes.values
+      .where((n) => n is! OriginNode && n is! CommentNode)
+      .length;
+  return (total: total, main: total - nodesOutsideMainBranch(document).length);
 }

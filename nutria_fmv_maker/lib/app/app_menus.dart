@@ -114,6 +114,11 @@ List<NutriaMenu> buildAppMenus({
         onPressed: commands.selectAll,
       ),
       NutriaMenuEntry(
+        label: t.editSelectOutsideMain,
+        icon: Icons.highlight_alt,
+        onPressed: commands.selectOutsideMainBranch,
+      ),
+      NutriaMenuEntry(
         label: t.editPlayPause,
         icon: Icons.play_arrow,
         shortcut: kShortcutPlayPause,

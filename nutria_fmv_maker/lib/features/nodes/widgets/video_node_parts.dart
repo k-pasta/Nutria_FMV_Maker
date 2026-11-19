@@ -12,6 +12,7 @@ import 'package:nutria_fmv_maker/ui/painters/diagonal_stripes_painter.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 /// The video's thumbnail, or a button to pick a video if there is none.
 /// Shows a play mark while the node is in the preview.
@@ -104,18 +105,36 @@ class NodeFileName extends ConsumerWidget {
     final name = videoId == null
         ? null
         : ref.watch(mediaAssetProvider(videoId).select((v) => v?.fileName));
+    final text = Text(
+      NodeMetrics.wrappable(name ?? metrics.noVideoText),
+      style: metrics.fileNameStyle,
+      textAlign: TextAlign.center,
+      maxLines: kFileNameMaxLines,
+      overflow: TextOverflow.ellipsis,
+      textScaler: TextScaler.noScaling,
+    );
     return Padding(
       padding: EdgeInsets.all(metrics.panelPadding),
       child: SizedBox(
         height: metrics.fileNameHeight(name, node.width),
-        child: Text(
-          NodeMetrics.wrappable(name ?? metrics.noVideoText),
-          style: metrics.fileNameStyle,
-          textAlign: TextAlign.center,
-          maxLines: kFileNameMaxLines,
-          overflow: TextOverflow.ellipsis,
-          textScaler: TextScaler.noScaling,
-        ),
+        child: name != null
+            ? text
+            // No video: the problem sign before the text.
+            : Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  NutriaTooltip(
+                    message: AppLocalizations.of(context).issueMissingVideo,
+                    child: Icon(
+                      Icons.warning_amber_rounded,
+                      size: metrics.fileNameStyle.fontSize,
+                      color: context.appTheme.cAccent,
+                    ),
+                  ),
+                  SizedBox(width: metrics.panelPadding / 2),
+                  Flexible(child: text),
+                ],
+              ),
       ),
     );
   }

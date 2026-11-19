@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/knot.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_parts.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -206,7 +207,7 @@ void main() {
     // The file name is centered; aim at the node's right border instead,
     // on the button row (the output knot is higher up, by the thumbnail).
     final nodeRight =
-        tester.getCenter(find.text(kNoVideo)).dx + kDefaultNodeWidth / 2 - 2;
+        tester.getRect(find.byType(NodeFileName)).right - 2;
     final row = tester.getCenter(find.text('Convert to Branching Node')).dy;
     await tester.dragFrom(
       Offset(nodeRight, row),

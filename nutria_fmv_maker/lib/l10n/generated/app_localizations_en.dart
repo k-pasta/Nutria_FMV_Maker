@@ -164,6 +164,64 @@ class AppLocalizationsEn extends AppLocalizations {
   String get projectOverview => 'Overview';
 
   @override
+  String get projectProblems => 'Problems';
+
+  @override
+  String get projectNoProblems =>
+      'None in the part of the story the origin reaches.';
+
+  @override
+  String get projectNodes => 'Nodes';
+
+  @override
+  String projectNodeCounts(int total, int main, int inactive) {
+    return '$total ($main in the main branch, $inactive not reached)';
+  }
+
+  @override
+  String projectWay(String time, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count videos',
+      one: '1 video',
+    );
+    return '$time · $_temp0';
+  }
+
+  @override
+  String get issueMissingVideo => 'No video';
+
+  @override
+  String get issueUnconnectedChoice => 'An answer with text leads nowhere';
+
+  @override
+  String get issueInvalidLogic => 'Logic that can\'t run';
+
+  @override
+  String get issueSingleChoice => 'Only one answer (Allow No-Brainers is off)';
+
+  @override
+  String get nodeUntitled => 'Untitled node';
+
+  @override
+  String dialogExportProblems(int count, String list) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count problems',
+      one: 'One problem',
+    );
+    return '$_temp0 in the part of the story the origin reaches:\n$list\n\nExport anyway?';
+  }
+
+  @override
+  String get dialogExportAnyway => 'Export Anyway';
+
+  @override
+  String get editSelectOutsideMain => 'Select Nodes Outside the Main Branch';
+
+  @override
   String get projectFile => 'File';
 
   @override

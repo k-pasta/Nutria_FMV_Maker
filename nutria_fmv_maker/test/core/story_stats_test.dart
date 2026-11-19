@@ -69,6 +69,14 @@ void main() {
     expect(length.longest, const Duration(seconds: 30));
     expect(length.hasLoops, isFalse);
     expect(length.unknown, 0);
+    expect(length.shortestVideos, 2, reason: 'A, then B');
+    expect(length.longestVideos, 2);
+  });
+
+  test('nodes outside the main branch are counted and found', () {
+    final doc = _story();
+    expect(nodesOutsideMainBranch(doc), {'D'});
+    expect(storyNodeCounts(doc), (total: 4, main: 3));
   });
 
   test('a loop leaves the longest open; unknown lengths are counted', () {

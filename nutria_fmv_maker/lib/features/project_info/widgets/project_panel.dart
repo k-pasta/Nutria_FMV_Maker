@@ -2,9 +2,11 @@
 // and languages, and an overview (file, size, how long it plays).
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/app/app_commands.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_info/providers/project_overview_provider.dart';
+import 'package:nutria_fmv_maker/features/project_info/story_problems.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -139,6 +141,8 @@ class _ProjectPanelState extends ConsumerState<ProjectPanel> {
         onOpenChanged: menuOpen,
       ),
       _Note(text: t.projectLanguagesNote),
+      _Header(text: t.projectProblems),
+      const _Problems(),
       _Header(text: t.projectOverview),
       const _Overview(),
     ];
@@ -175,13 +179,18 @@ class _Overview extends ConsumerWidget {
     final file = ref.watch(projectFileNameProvider);
     final size = ref.watch(usedMediaSizeProvider);
     final length = ref.watch(storyLengthOverviewProvider);
-    String way(Duration? d, {required bool longest}) => switch (length) {
-      AsyncData(:final value) =>
-        d != null
-            ? formatLength(d)
-            : (longest && value.hasLoops ? t.projectLoops : t.projectNoEnding),
-      _ => t.projectReading,
-    };
+    final counts = ref.watch(storyNodeCountsOverviewProvider);
+    // A way's playing time and how many videos it plays.
+    String way(Duration? d, int? videos, {required bool longest}) =>
+        switch (length) {
+          AsyncData(:final value) =>
+            d != null
+                ? t.projectWay(formatLength(d), videos ?? 0)
+                : (longest && value.hasLoops
+                      ? t.projectLoops
+                      : t.projectNoEnding),
+          _ => t.projectReading,
+        };
     final rows = <Widget>[
       _Fact(label: t.projectFile, value: file ?? t.statusUnsavedFile),
       _Fact(
@@ -191,12 +200,28 @@ class _Overview extends ConsumerWidget {
       if (size.unreadable > 0)
         _Note(text: t.projectUnreadable(size.unreadable)),
       _Fact(
+        label: t.projectNodes,
+        value: t.projectNodeCounts(
+          counts.total,
+          counts.main,
+          counts.total - counts.main,
+        ),
+      ),
+      _Fact(
         label: t.projectShortest,
-        value: way(length.value?.shortest, longest: false),
+        value: way(
+          length.value?.shortest,
+          length.value?.shortestVideos,
+          longest: false,
+        ),
       ),
       _Fact(
         label: t.projectLongest,
-        value: way(length.value?.longest, longest: true),
+        value: way(
+          length.value?.longest,
+          length.value?.longestVideos,
+          longest: true,
+        ),
       ),
       if (length.value case final l? when l.unknown > 0)
         _Note(text: t.projectUnknownLengths(l.unknown)),
@@ -256,4 +281,49 @@ class _Fact extends StatelessWidget {
       ),
     ],
   );
+}
+
+/// The problems in the main branch, one per line; clicking one shows its
+/// node on the canvas.
+class _Problems extends ConsumerWidget {
+  const _Problems();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = context.appTheme;
+    final t = AppLocalizations.of(context);
+    final problems = ref.watch(storyProblemsProvider);
+    if (problems.isEmpty) return _Note(text: t.projectNoProblems);
+    final doc = ref.watch(projectDocumentProvider);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        for (final (i, issue) in problems.indexed) ...[
+          if (i > 0) SizedBox(height: theme.dPanelPadding / 2),
+          MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () => AppCommands(context, ref).showNode(issue.nodeId),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.warning_amber_rounded,
+                    size: theme.dTextHeight * 1.2,
+                    color: theme.cAccent,
+                  ),
+                  SizedBox(width: theme.dPanelPadding),
+                  Expanded(
+                    child: NutriaText(
+                      text: exportIssueLine(doc, issue, t),
+                      maxLines: 2,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ],
+    );
+  }
 }

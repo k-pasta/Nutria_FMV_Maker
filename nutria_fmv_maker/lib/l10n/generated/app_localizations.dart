@@ -382,6 +382,84 @@ abstract class AppLocalizations {
   /// **'Overview'**
   String get projectOverview;
 
+  /// No description provided for @projectProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'Problems'**
+  String get projectProblems;
+
+  /// No description provided for @projectNoProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'None in the part of the story the origin reaches.'**
+  String get projectNoProblems;
+
+  /// No description provided for @projectNodes.
+  ///
+  /// In en, this message translates to:
+  /// **'Nodes'**
+  String get projectNodes;
+
+  /// No description provided for @projectNodeCounts.
+  ///
+  /// In en, this message translates to:
+  /// **'{total} ({main} in the main branch, {inactive} not reached)'**
+  String projectNodeCounts(int total, int main, int inactive);
+
+  /// No description provided for @projectWay.
+  ///
+  /// In en, this message translates to:
+  /// **'{time} · {count, plural, =1{1 video} other{{count} videos}}'**
+  String projectWay(String time, int count);
+
+  /// No description provided for @issueMissingVideo.
+  ///
+  /// In en, this message translates to:
+  /// **'No video'**
+  String get issueMissingVideo;
+
+  /// No description provided for @issueUnconnectedChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'An answer with text leads nowhere'**
+  String get issueUnconnectedChoice;
+
+  /// No description provided for @issueInvalidLogic.
+  ///
+  /// In en, this message translates to:
+  /// **'Logic that can\'t run'**
+  String get issueInvalidLogic;
+
+  /// No description provided for @issueSingleChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Only one answer (Allow No-Brainers is off)'**
+  String get issueSingleChoice;
+
+  /// No description provided for @nodeUntitled.
+  ///
+  /// In en, this message translates to:
+  /// **'Untitled node'**
+  String get nodeUntitled;
+
+  /// No description provided for @dialogExportProblems.
+  ///
+  /// In en, this message translates to:
+  /// **'{count, plural, =1{One problem} other{{count} problems}} in the part of the story the origin reaches:\n{list}\n\nExport anyway?'**
+  String dialogExportProblems(int count, String list);
+
+  /// No description provided for @dialogExportAnyway.
+  ///
+  /// In en, this message translates to:
+  /// **'Export Anyway'**
+  String get dialogExportAnyway;
+
+  /// No description provided for @editSelectOutsideMain.
+  ///
+  /// In en, this message translates to:
+  /// **'Select Nodes Outside the Main Branch'**
+  String get editSelectOutsideMain;
+
   /// No description provided for @projectFile.
   ///
   /// In en, this message translates to:

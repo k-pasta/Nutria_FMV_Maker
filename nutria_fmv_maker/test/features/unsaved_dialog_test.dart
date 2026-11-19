@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_parts.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/video_node_views.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
@@ -83,7 +84,7 @@ void main() {
 
     // The right edge of the settings panel, level with its convert button.
     final nodeRight =
-        tester.getCenter(find.text(kNoVideo)).dx + kDefaultNodeWidth / 2 - 2;
+        tester.getRect(find.byType(NodeFileName)).right - 2;
     await tester.dragFrom(
       Offset(nodeRight, settings.center.dy),
       const Offset(80, 0),

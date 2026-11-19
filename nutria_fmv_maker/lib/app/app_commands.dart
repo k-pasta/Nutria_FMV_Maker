@@ -19,6 +19,7 @@ import 'package:nutria_fmv_maker/features/preferences/providers/preferences_prov
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/project_info/story_problems.dart';
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
@@ -164,6 +165,29 @@ class AppCommands {
   });
 
   Future<void> export() => _guard(() async {
+    // Problems in the main branch: say which before exporting.
+    final problems = exportFmv(
+      _ref.read(projectDocumentProvider),
+      allowSingleChoice: _ref.read(preferencesProvider).allowNoBrainers,
+    ).issues;
+    if (problems.isNotEmpty) {
+      final doc = _ref.read(projectDocumentProvider);
+      const shown = 6;
+      final lines = [
+        for (final issue in problems.take(shown))
+          '\u2022 ${exportIssueLine(doc, issue, _t)}',
+        if (problems.length > shown) '\u2026',
+      ];
+      final go = await showNutriaChoiceDialog<bool>(
+        _context,
+        message: _t.dialogExportProblems(problems.length, lines.join('\n')),
+        choices: [
+          (value: false, label: _t.essentialsCancel, isAccented: false),
+          (value: true, label: _t.dialogExportAnyway, isAccented: true),
+        ],
+      );
+      if (go != true) return;
+    }
     final result = await _document.export();
     if (result.outcome == FileOutcome.cancelled) return;
     _notify(
@@ -298,6 +322,17 @@ class AppCommands {
   Future<void> cut() => _ref.read(graphEditorProvider).cutSelection();
   void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();
   void selectAll() => _ref.read(graphEditorProvider).selectAll();
+
+  /// Shows node [id] on the story graph: selects and frames it.
+  void showNode(String id) {
+    showView(EditorView.graph);
+    _ref.read(selectionProvider.notifier).selectOnly(id);
+    frameSelected();
+  }
+
+  /// Selects the nodes the origin can't reach.
+  void selectOutsideMainBranch() =>
+      _ref.read(graphEditorProvider).selectOutsideMainBranch();
   void collapseAll() => _ref.read(graphEditorProvider).collapseAll();
 
   /// Pastes under the mouse if it's over the canvas, otherwise in the middle

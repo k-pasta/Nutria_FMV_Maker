@@ -91,6 +91,52 @@
   "projectRemoveLanguage": "Remove this language",
   "projectLanguagesNote": "The first is the main language. With more than one, linking subtitles asks which language they are in.",
   "projectOverview": "Overview",
+  "projectProblems": "Problems",
+  "projectNoProblems": "None in the part of the story the origin reaches.",
+  "projectNodes": "Nodes",
+  "projectNodeCounts": "{total} ({main} in the main branch, {inactive} not reached)",
+  "@projectNodeCounts": {
+    "placeholders": {
+      "total": {
+        "type": "int"
+      },
+      "main": {
+        "type": "int"
+      },
+      "inactive": {
+        "type": "int"
+      }
+    }
+  },
+  "projectWay": "{time} · {count, plural, =1{1 video} other{{count} videos}}",
+  "@projectWay": {
+    "placeholders": {
+      "time": {
+        "type": "String"
+      },
+      "count": {
+        "type": "int"
+      }
+    }
+  },
+  "issueMissingVideo": "No video",
+  "issueUnconnectedChoice": "An answer with text leads nowhere",
+  "issueInvalidLogic": "Logic that can't run",
+  "issueSingleChoice": "Only one answer (Allow No-Brainers is off)",
+  "nodeUntitled": "Untitled node",
+  "dialogExportProblems": "{count, plural, =1{One problem} other{{count} problems}} in the part of the story the origin reaches:\n{list}\n\nExport anyway?",
+  "@dialogExportProblems": {
+    "placeholders": {
+      "count": {
+        "type": "int"
+      },
+      "list": {
+        "type": "String"
+      }
+    }
+  },
+  "dialogExportAnyway": "Export Anyway",
+  "editSelectOutsideMain": "Select Nodes Outside the Main Branch",
   "projectFile": "File",
   "projectFilesUsed": "Files Used",
   "projectFilesSize": "{count} · {size}",

@@ -10,6 +10,7 @@ import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/story_stats.dart';
 import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
@@ -484,6 +485,11 @@ class GraphEditor {
   void selectAll() => _ref
       .read(selectionProvider.notifier)
       .setSelected(_current.nodes.keys.toSet());
+
+  /// Selects the nodes the origin can't reach (they aren't exported).
+  void selectOutsideMainBranch() => _ref
+      .read(selectionProvider.notifier)
+      .setSelected(nodesOutsideMainBranch(_current));
 
   /// Closes the settings of every node.
   void collapseAll() => _document.apply('Collapse all', (d) => d.collapseAll());

@@ -166,6 +166,66 @@ class AppLocalizationsFr extends AppLocalizations {
   String get projectOverview => 'Aperçu';
 
   @override
+  String get projectProblems => 'Problèmes';
+
+  @override
+  String get projectNoProblems =>
+      'Aucun dans la partie de l’histoire que l’origine atteint.';
+
+  @override
+  String get projectNodes => 'Nœuds';
+
+  @override
+  String projectNodeCounts(int total, int main, int inactive) {
+    return '$total ($main dans la branche principale, $inactive hors d’atteinte)';
+  }
+
+  @override
+  String projectWay(String time, int count) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count vidéos',
+      one: '1 vidéo',
+    );
+    return '$time · $_temp0';
+  }
+
+  @override
+  String get issueMissingVideo => 'Pas de vidéo';
+
+  @override
+  String get issueUnconnectedChoice => 'Une réponse écrite ne mène nulle part';
+
+  @override
+  String get issueInvalidLogic => 'Une logique qui ne peut pas s’exécuter';
+
+  @override
+  String get issueSingleChoice =>
+      'Une seule réponse (« Autoriser les évidences » est désactivé)';
+
+  @override
+  String get nodeUntitled => 'Nœud sans nom';
+
+  @override
+  String dialogExportProblems(int count, String list) {
+    String _temp0 = intl.Intl.pluralLogic(
+      count,
+      locale: localeName,
+      other: '$count problèmes',
+      one: 'Un problème',
+    );
+    return '$_temp0 dans la partie de l’histoire que l’origine atteint :\n$list\n\nExporter quand même ?';
+  }
+
+  @override
+  String get dialogExportAnyway => 'Exporter quand même';
+
+  @override
+  String get editSelectOutsideMain =>
+      'Sélectionner les nœuds hors de la branche principale';
+
+  @override
   String get projectFile => 'Fichier';
 
   @override
