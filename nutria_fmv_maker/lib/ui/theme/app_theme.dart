@@ -52,6 +52,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cLogoBadge = const Color(0x00000000),
     this.logoAsset = 'assets/icons/nutria_logo_top.svg',
     this.cDimmer = const Color(0x73000000),
+    this.cWindowClose = const Color(0xffc42b1c),
+    this.cOnWindowClose = const Color(0xffffffff),
     this.cSwatches = kDefaultSwatches,
     this.dTextHeight = 14,
     this.dTextfieldPadding = 8,
@@ -144,6 +146,10 @@ class AppTheme extends ThemeExtension<AppTheme> {
 
   /// Darkens the editor behind open menus and dialogs.
   final Color cDimmer;
+
+  /// Behind the window's close button while it's hovered (Windows red).
+  final Color cWindowClose;
+  final Color cOnWindowClose;
 
   /// Node color swatches, indexed by `Node.swatch`.
   final List<Color> cSwatches;
@@ -240,6 +246,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cLogoBadge,
     String? logoAsset,
     Color? cDimmer,
+    Color? cWindowClose,
+    Color? cOnWindowClose,
     List<Color>? cSwatches,
     double? dTextHeight,
     double? dTextfieldPadding,
@@ -291,6 +299,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     cLogoBadge: cLogoBadge ?? this.cLogoBadge,
     logoAsset: logoAsset ?? this.logoAsset,
     cDimmer: cDimmer ?? this.cDimmer,
+    cWindowClose: cWindowClose ?? this.cWindowClose,
+    cOnWindowClose: cOnWindowClose ?? this.cOnWindowClose,
     cSwatches: cSwatches ?? this.cSwatches,
     dTextHeight: dTextHeight ?? this.dTextHeight,
     dTextfieldPadding: dTextfieldPadding ?? this.dTextfieldPadding,

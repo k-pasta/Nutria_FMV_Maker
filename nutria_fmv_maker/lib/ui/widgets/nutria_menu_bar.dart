@@ -36,17 +36,31 @@ class NutriaMenuEntry {
 
 /// The menu bar. Clicking the logo calls [onLogoTap]; [onOpenChanged] reports
 /// whether any menu is open, so the app can dim the canvas.
+///
+/// When the app draws its own title bar, the bar's empty part after the
+/// menus is the title area: pressing and dragging it calls
+/// [onTitleDragStart], a double-click [onTitleDoubleTap] and a right-click
+/// [onTitleSecondaryTap] (with the click's global position); [trailing]
+/// (the window buttons) sits at the right end.
 class NutriaMenuBar extends StatelessWidget {
   const NutriaMenuBar({
     super.key,
     required this.menus,
     this.onLogoTap,
     this.onOpenChanged,
+    this.trailing,
+    this.onTitleDragStart,
+    this.onTitleDoubleTap,
+    this.onTitleSecondaryTap,
   });
 
   final List<NutriaMenu> menus;
   final VoidCallback? onLogoTap;
   final ValueChanged<bool>? onOpenChanged;
+  final Widget? trailing;
+  final VoidCallback? onTitleDragStart;
+  final VoidCallback? onTitleDoubleTap;
+  final ValueChanged<Offset>? onTitleSecondaryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -61,36 +75,27 @@ class NutriaMenuBar extends StatelessWidget {
           SizedBox(
             height: theme.dMenuBarHeight,
             width: double.infinity,
-            child: MenuBar(
-              style: styles.bar,
-              children: [
-                // Click target over the logo, which is drawn on top below.
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    // The box is empty, so it must catch clicks itself.
-                    behavior: HitTestBehavior.opaque,
-                    onTap: onLogoTap,
-                    child: SizedBox(
-                      width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
-                      height: theme.dMenuBarHeight,
+            child: ColoredBox(
+              color: theme.cMenuBar,
+              child: Row(
+                children: [
+                  // Shrinks (and clips its menus) in a narrow window.
+                  Flexible(child: _menuBar(theme, styles)),
+                  Expanded(
+                    child: GestureDetector(
+                      behavior: HitTestBehavior.opaque,
+                      onPanStart: onTitleDragStart == null
+                          ? null
+                          : (_) => onTitleDragStart!(),
+                      onDoubleTap: onTitleDoubleTap,
+                      onSecondaryTapUp: onTitleSecondaryTap == null
+                          ? null
+                          : (d) => onTitleSecondaryTap!(d.globalPosition),
                     ),
                   ),
-                ),
-                for (final menu in menus)
-                  SubmenuButton(
-                    onOpen: () => onOpenChanged?.call(true),
-                    onClose: () => onOpenChanged?.call(false),
-                    style: styles.barButton,
-                    menuChildren: [
-                      for (final entry in menu.entries) _entry(entry, styles),
-                    ],
-                    child: NutriaText(
-                      text: menu.title,
-                      state: NutriaTextState.accented,
-                    ),
-                  ),
-              ],
+                  ?trailing,
+                ],
+              ),
             ),
           ),
           Positioned(
@@ -121,6 +126,36 @@ class NutriaMenuBar extends StatelessWidget {
       ),
     );
   }
+
+  /// The menus themselves, as wide as they need.
+  Widget _menuBar(AppTheme theme, NutriaMenuStyles styles) => MenuBar(
+    style: styles.bar,
+    children: [
+      // Click target over the logo, which is drawn on top below.
+      MouseRegion(
+        cursor: SystemMouseCursors.click,
+        child: GestureDetector(
+          // The box is empty, so it must catch clicks itself.
+          behavior: HitTestBehavior.opaque,
+          onTap: onLogoTap,
+          child: SizedBox(
+            width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
+            height: theme.dMenuBarHeight,
+          ),
+        ),
+      ),
+      for (final menu in menus)
+        SubmenuButton(
+          onOpen: () => onOpenChanged?.call(true),
+          onClose: () => onOpenChanged?.call(false),
+          style: styles.barButton,
+          menuChildren: [
+            for (final entry in menu.entries) _entry(entry, styles),
+          ],
+          child: NutriaText(text: menu.title, state: NutriaTextState.accented),
+        ),
+    ],
+  );
 
   Widget _entry(NutriaMenuEntry entry, NutriaMenuStyles styles) {
     final label = Row(

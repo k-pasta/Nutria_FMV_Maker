@@ -584,6 +584,18 @@ class AppLocalizationsFr extends AppLocalizations {
   String get editCut => 'Couper';
 
   @override
+  String get windowMinimize => 'Réduire';
+
+  @override
+  String get windowMaximize => 'Agrandir';
+
+  @override
+  String get windowRestore => 'Restaurer';
+
+  @override
+  String get windowClose => 'Fermer';
+
+  @override
   String get editPaste => 'Coller';
 
   @override

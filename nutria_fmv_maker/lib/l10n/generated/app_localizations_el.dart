@@ -582,6 +582,18 @@ class AppLocalizationsEl extends AppLocalizations {
   String get editCut => 'Αποκοπή';
 
   @override
+  String get windowMinimize => 'Ελαχιστοποίηση';
+
+  @override
+  String get windowMaximize => 'Μεγιστοποίηση';
+
+  @override
+  String get windowRestore => 'Επαναφορά';
+
+  @override
+  String get windowClose => 'Κλείσιμο';
+
+  @override
   String get editPaste => 'Επικόλληση';
 
   @override

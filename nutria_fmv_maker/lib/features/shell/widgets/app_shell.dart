@@ -24,9 +24,12 @@ import 'package:nutria_fmv_maker/features/video_library/providers/video_library_
 import 'package:nutria_fmv_maker/features/video_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
+import 'package:nutria_fmv_maker/services/window_service.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_modal.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_window_buttons.dart';
 
 /// The window layout (menu bar, canvas between the side panels, status bar),
 /// with the app's keyboard shortcuts and dialogs.
@@ -98,6 +101,10 @@ class _AppShellState extends ConsumerState<AppShell> {
     final history = ref.watch(historyStatusProvider);
     final preferences = ref.watch(preferencesProvider);
     final overlays = ref.read(overlayProvider.notifier);
+    final window = ref.watch(windowControlsProvider);
+    // Closing the window (its button, Alt+F4, the taskbar) asks about
+    // unsaved changes first, like File > Exit.
+    window.onCloseRequested = commands.exitApp;
     // A right-click is about to open a context menu: re-read the clipboard
     // so the menu knows whether it can offer Paste.
     return Listener(
@@ -128,6 +135,18 @@ class _AppShellState extends ConsumerState<AppShell> {
                     overlays.setMenuOpen(open);
                     if (open) _refreshClipboard();
                   },
+                  trailing: window.hasCustomFrame
+                      ? _WindowButtons(window: window)
+                      : null,
+                  onTitleDragStart: window.hasCustomFrame
+                      ? window.startDragging
+                      : null,
+                  onTitleDoubleTap: window.hasCustomFrame
+                      ? window.toggleMaximize
+                      : null,
+                  onTitleSecondaryTap: window.hasCustomFrame
+                      ? (at) => _windowMenu(context, window, at)
+                      : null,
                 ),
                 const Expanded(
                   child: ClipRect(
@@ -147,6 +166,59 @@ class _AppShellState extends ConsumerState<AppShell> {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+/// Restore or maximize, minimize and close, from a right-click on the
+/// title area of the menu bar.
+void _windowMenu(BuildContext context, WindowControls window, Offset at) {
+  final t = AppLocalizations.of(context);
+  final maximized = window.isMaximized.value;
+  showNutriaMenu(context, at, [
+    NutriaContextMenuItem(
+      icon: maximized ? Icons.filter_none : Icons.crop_square,
+      label: maximized ? t.windowRestore : t.windowMaximize,
+      onSelected: window.toggleMaximize,
+    ),
+    NutriaContextMenuItem(
+      icon: Icons.remove,
+      label: t.windowMinimize,
+      onSelected: window.minimize,
+    ),
+    const NutriaContextMenuItem.divider(),
+    NutriaContextMenuItem(
+      icon: Icons.close,
+      label: t.windowClose,
+      onSelected: window.close,
+    ),
+  ]);
+}
+
+/// The window buttons at the right of the menu bar, following whether the
+/// window is maximized.
+class _WindowButtons extends StatelessWidget {
+  const _WindowButtons({required this.window});
+
+  final WindowControls window;
+
+  @override
+  Widget build(BuildContext context) {
+    final t = AppLocalizations.of(context);
+    return ValueListenableBuilder(
+      valueListenable: window.isMaximized,
+      builder: (context, maximized, _) => NutriaWindowButtons(
+        isMaximized: maximized,
+        labels: (
+          minimize: t.windowMinimize,
+          maximize: t.windowMaximize,
+          restore: t.windowRestore,
+          close: t.windowClose,
+        ),
+        onMinimize: window.minimize,
+        onToggleMaximize: window.toggleMaximize,
+        onClose: window.close,
       ),
     );
   }

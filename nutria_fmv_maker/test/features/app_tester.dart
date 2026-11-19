@@ -13,6 +13,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
 import 'package:nutria_fmv_maker/services/thumbnail_service.dart';
+import 'package:nutria_fmv_maker/services/window_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'harness.dart';
@@ -26,7 +27,8 @@ const kCanvasPoint = Offset(800, 450);
 /// Pumps [NutriaApp] in a 1600x900 window and returns its container.
 /// [mediaInfo] replaces the default, which knows nothing about any file;
 /// [player] lets a test see what the preview player was asked to do;
-/// [mediaFiles] says which files exist (by default, all of them).
+/// [mediaFiles] says which files exist (by default, all of them); [window]
+/// is the app window (by default, one with the system's title bar).
 ///
 /// The view is then reset to canvas (0, 0) in the middle at 100%, which
 /// tests place their nodes around; with [startView] it stays as the app
@@ -37,6 +39,7 @@ Future<ProviderContainer> pumpApp(
   MediaInfoService? mediaInfo,
   FakePlayer? player,
   MediaFiles? mediaFiles,
+  WindowControls? window,
   bool startView = false,
 }) async {
   tester.view.physicalSize = const Size(1600, 900);
@@ -53,6 +56,7 @@ Future<ProviderContainer> pumpApp(
         mediaInfo ?? const _NoMediaInfo(),
       ),
       mediaFilesProvider.overrideWithValue(mediaFiles ?? FakeMediaFiles()),
+      windowControlsProvider.overrideWithValue(window ?? FakeWindowControls()),
       ...overrides,
     ],
   );

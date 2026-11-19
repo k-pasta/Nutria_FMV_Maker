@@ -32,6 +32,7 @@ dependencies:
   # The .fmv format, shared with Nutria FMV Player.
   nutria_fmv_protocol:
     path: ../packages/nutria_fmv_protocol
+  window_manager: ^0.5.1
 
 dev_dependencies:
   flutter_test:

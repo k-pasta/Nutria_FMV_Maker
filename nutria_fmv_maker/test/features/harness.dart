@@ -13,6 +13,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/services/file_dialogs.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
+import 'package:nutria_fmv_maker/services/window_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/fixtures.dart';
@@ -150,6 +151,37 @@ class FakeMediaFiles implements MediaFiles {
 }
 
 /// Everything a provider test needs.
+/// The app window, recording what it was asked to do.
+class FakeWindowControls implements WindowControls {
+  FakeWindowControls({this.hasCustomFrame = false});
+
+  @override
+  final bool hasCustomFrame;
+
+  @override
+  final ValueNotifier<bool> isMaximized = ValueNotifier(false);
+
+  final calls = <String>[];
+
+  @override
+  set onCloseRequested(Future<void> Function()? handler) {}
+
+  @override
+  void minimize() => calls.add('minimize');
+
+  @override
+  void toggleMaximize() {
+    calls.add('toggleMaximize');
+    isMaximized.value = !isMaximized.value;
+  }
+
+  @override
+  void startDragging() => calls.add('drag');
+
+  @override
+  void close() => calls.add('close');
+}
+
 class Harness {
   Harness._(this.container, this.files, this.player);
 
