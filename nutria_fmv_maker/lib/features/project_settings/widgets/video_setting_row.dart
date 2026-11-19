@@ -16,6 +16,8 @@ String videoSettingName(AppLocalizations t, VideoSettingType type) =>
       VideoSettingType.showTimer => t.overrideShowTimer,
       VideoSettingType.videoFit => t.overrideVideoFit,
       VideoSettingType.defaultSelection => t.overrideDefaultSelection,
+      VideoSettingType.pauseMusic => t.musicPause,
+      VideoSettingType.pauseMusicFadeOut => t.musicPauseFadeOut,
     };
 
 /// The localized value of setting [type] in [settings].
@@ -45,6 +47,10 @@ String videoSettingValue(
     DefaultSelectionMethod.random => t.overrideDefaultSelection_Random,
     DefaultSelectionMethod.specified => t.overrideDefaultSelection_Specified,
   },
+  // Shown by their own rows (music_rows.dart); here only for completeness.
+  VideoSettingType.pauseMusic => settings.pauseMusicId,
+  VideoSettingType.pauseMusicFadeOut =>
+    '${(settings.pauseMusicFadeOutMs / 1000).toStringAsFixed(2)} s',
 };
 
 /// Selection time as shown in its field: seconds with two decimals.

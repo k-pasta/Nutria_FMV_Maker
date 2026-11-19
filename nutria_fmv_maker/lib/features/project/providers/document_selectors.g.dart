@@ -315,17 +315,17 @@ abstract class _$NodePaintOrder extends $Notifier<List<String>> {
   }
 }
 
-/// Imported video [id], or `null`.
+/// Imported file [id], or `null`.
 
 @ProviderFor(mediaAsset)
 final mediaAssetProvider = MediaAssetFamily._();
 
-/// Imported video [id], or `null`.
+/// Imported file [id], or `null`.
 
 final class MediaAssetProvider
     extends $FunctionalProvider<MediaAsset?, MediaAsset?, MediaAsset?>
     with $Provider<MediaAsset?> {
-  /// Imported video [id], or `null`.
+  /// Imported file [id], or `null`.
   MediaAssetProvider._({
     required MediaAssetFamily super.from,
     required String super.argument,
@@ -379,7 +379,7 @@ final class MediaAssetProvider
 
 String _$mediaAssetHash() => r'1fa31dc8ac7edbd79372e77853682fc377f210d6';
 
-/// Imported video [id], or `null`.
+/// Imported file [id], or `null`.
 
 final class MediaAssetFamily extends $Family
     with $FunctionalFamilyOverride<MediaAsset?, String> {
@@ -392,7 +392,7 @@ final class MediaAssetFamily extends $Family
         isAutoDispose: true,
       );
 
-  /// Imported video [id], or `null`.
+  /// Imported file [id], or `null`.
 
   MediaAssetProvider call(String id) =>
       MediaAssetProvider._(argument: id, from: this);

@@ -3,6 +3,7 @@
 import 'dart:collection';
 
 import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
@@ -36,14 +37,17 @@ List<String> _nextOf(ProjectDocument document, String nodeId) => [
 ];
 
 /// The imported files an export of [document] uses: the videos, subtitles
-/// and music of reachable nodes, the menu music, and the backgrounds and
-/// fonts of the designed screens.
+/// and music of reachable nodes (pause music from their defaults too), the
+/// menu music, and the backgrounds and fonts of the designed screens.
 Set<String> usedMediaIds(ProjectDocument document) {
   final ids = <String>{};
   for (final nodeId in reachableNodeIds(document)) {
     final node = document.node(nodeId);
     ids.addAll(node.mediaIds);
     ids.addAll(document.subtitlesOf(node.videoIdOrNull).values);
+    if (node case BranchedVideoNode(:final overrides, :final swatch)) {
+      ids.add(overrides.applyTo(document.defaultsFor(swatch)).pauseMusicId);
+    }
   }
   for (final kind in ScreenKind.values) {
     final screen = document.screenOf(kind);

@@ -423,6 +423,9 @@ class AppLocalizationsFr extends AppLocalizations {
   String get musicMenu => 'Musique du menu';
 
   @override
+  String get musicPauseMenu => 'Musique du menu pause';
+
+  @override
   String get musicRemove => 'Retirer cette musique';
 
   @override

@@ -126,21 +126,16 @@ extension GraphOps on ProjectDocument {
     },
   );
 
-  /// Sets (or with `null` removes) branched node [id]'s pause music.
-  ProjectDocument setPauseMusic(String id, String? audioId) => updateNode(
-    id,
-    (n) => n is BranchedVideoNode ? n.copyWith(pauseMusicId: audioId) : n,
-  );
-
-  ProjectDocument setPauseMusicFadeOut(String id, int ms) => updateNode(
-    id,
-    (n) => n is BranchedVideoNode ? n.copyWith(pauseMusicFadeOutMs: ms) : n,
-  );
-
   /// Sets (or with `null` removes) the main menu music.
   ProjectDocument setMenuMusic(String? audioId) => updateNode(
     origin.id,
     (n) => n is OriginNode ? n.copyWith(menuMusicId: audioId) : n,
+  );
+
+  /// Sets (or with `null` removes) the pause menu music.
+  ProjectDocument setPauseMenuMusic(String? audioId) => updateNode(
+    origin.id,
+    (n) => n is OriginNode ? n.copyWith(pauseMenuMusicId: audioId) : n,
   );
 
   // ------------------------------------------------------------------ logic

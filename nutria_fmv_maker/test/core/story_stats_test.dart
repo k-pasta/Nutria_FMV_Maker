@@ -4,6 +4,7 @@ import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/graph/story_stats.dart';
@@ -29,7 +30,7 @@ ProjectDocument _story() {
             Choice(id: 'x'),
             Choice(id: 'y'),
           ],
-          pauseMusicId: 'song',
+          overrides: VideoSettingsOverride(pauseMusicId: 'song'),
         ),
       )
       .putNode(

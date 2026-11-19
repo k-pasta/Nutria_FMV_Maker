@@ -776,12 +776,12 @@ return compare(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music,  String? pauseMusicId,  int pauseMusicFadeOutMs)?  branchedVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId,  String? pauseMenuMusicId)?  origin,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)?  simpleVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music)?  branchedVideo,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
-return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId);case SimpleVideoNode() when simpleVideo != null:
+return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId,_that.pauseMenuMusicId);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.music);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case CommentNode() when comment != null:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music);case CommentNode() when comment != null:
 return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode() when changeVariable != null:
 return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode() when compare != null:
 return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);case _:
@@ -802,12 +802,12 @@ return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music,  String? pauseMusicId,  int pauseMusicFadeOutMs)  branchedVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)  comment,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)  changeVariable,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)  compare,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId,  String? pauseMenuMusicId)  origin,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)  simpleVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music)  branchedVideo,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)  comment,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)  changeVariable,required TResult Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)  compare,}) {final _that = this;
 switch (_that) {
 case OriginNode():
-return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId);case SimpleVideoNode():
+return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId,_that.pauseMenuMusicId);case SimpleVideoNode():
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.music);case BranchedVideoNode():
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case CommentNode():
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music);case CommentNode():
 return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode():
 return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode():
 return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);}
@@ -824,12 +824,12 @@ return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music,  String? pauseMusicId,  int pauseMusicFadeOutMs)?  branchedVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? menuMusicId,  String? pauseMenuMusicId)?  origin,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  MusicCue? music)?  simpleVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? videoId,  VideoSettingsOverride overrides,  List<Choice> choices,  String? question,  MusicCue? music)?  branchedVideo,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String text,  String? attachedTo)?  comment,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  String? variableId,  FmvChangeOperation operation,  String value)?  changeVariable,TResult? Function( String id,  Position position,  double width,  String? name,  int swatch,  bool isExpanded,  List<LogicCondition> conditions,  bool matchAny,  String? expression)?  compare,}) {final _that = this;
 switch (_that) {
 case OriginNode() when origin != null:
-return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId);case SimpleVideoNode() when simpleVideo != null:
+return origin(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.menuMusicId,_that.pauseMenuMusicId);case SimpleVideoNode() when simpleVideo != null:
 return simpleVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.music);case BranchedVideoNode() when branchedVideo != null:
-return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case CommentNode() when comment != null:
+return branchedVideo(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.videoId,_that.overrides,_that.choices,_that.question,_that.music);case CommentNode() when comment != null:
 return comment(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.text,_that.attachedTo);case ChangeVariableNode() when changeVariable != null:
 return changeVariable(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.variableId,_that.operation,_that.value);case CompareNode() when compare != null:
 return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that.isExpanded,_that.conditions,_that.matchAny,_that.expression);case _:
@@ -844,7 +844,7 @@ return compare(_that.id,_that.position,_that.width,_that.name,_that.swatch,_that
 @JsonSerializable()
 
 class OriginNode extends Node {
-  const OriginNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 1, this.isExpanded = false, this.menuMusicId,  String? $type}): $type = $type ?? 'origin',super._();
+  const OriginNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 1, this.isExpanded = false, this.menuMusicId, this.pauseMenuMusicId,  String? $type}): $type = $type ?? 'origin',super._();
   factory OriginNode.fromJson(Map<String, dynamic> json) => _$OriginNodeFromJson(json);
 
 @override final  String id;
@@ -855,6 +855,9 @@ class OriginNode extends Node {
 @override@JsonKey() final  bool isExpanded;
 /// Imported audio that loops in the main menu, if any.
  final  String? menuMusicId;
+/// Imported audio that loops in the pause menu (the viewer paused the
+/// story), if any. Pause music at the end of a video is a setting.
+ final  String? pauseMenuMusicId;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -873,18 +876,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is OriginNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.menuMusicId, menuMusicId) || other.menuMusicId == menuMusicId));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is OriginNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.menuMusicId, menuMusicId) || other.menuMusicId == menuMusicId)&&(identical(other.pauseMenuMusicId, pauseMenuMusicId) || other.pauseMenuMusicId == pauseMenuMusicId));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,menuMusicId);
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,menuMusicId,pauseMenuMusicId);
 }
 
 @override
 String toString() {
-    return 'Node.origin(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, menuMusicId: $menuMusicId)';
+    return 'Node.origin(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, menuMusicId: $menuMusicId, pauseMenuMusicId: $pauseMenuMusicId)';
 }
 
 
@@ -895,7 +898,7 @@ abstract mixin class $OriginNodeCopyWith<$Res> implements $NodeCopyWith<$Res> {
   factory $OriginNodeCopyWith(OriginNode value, $Res Function(OriginNode) _then) = _$OriginNodeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, Position position, double width, String? name, int swatch, bool isExpanded, String? menuMusicId
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, String? menuMusicId, String? pauseMenuMusicId
 });
 
 
@@ -912,7 +915,7 @@ class _$OriginNodeCopyWithImpl<$Res>
 
 /// Create a copy of Node
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? menuMusicId = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? menuMusicId = freezed,Object? pauseMenuMusicId = freezed,}) {
   return _then(OriginNode(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
@@ -921,6 +924,7 @@ as double,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_
 as String?,swatch: null == swatch ? _self.swatch : swatch // ignore: cast_nullable_to_non_nullable
 as int,isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
 as bool,menuMusicId: freezed == menuMusicId ? _self.menuMusicId : menuMusicId // ignore: cast_nullable_to_non_nullable
+as String?,pauseMenuMusicId: freezed == pauseMenuMusicId ? _self.pauseMenuMusicId : pauseMenuMusicId // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -1062,7 +1066,7 @@ $MusicCueCopyWith<$Res>? get music {
 @JsonSerializable()
 
 class BranchedVideoNode extends Node {
-  const BranchedVideoNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 0, this.isExpanded = false, this.videoId, this.overrides = const VideoSettingsOverride(),  List<Choice> choices = const <Choice>[], this.question, this.music, this.pauseMusicId, this.pauseMusicFadeOutMs = 1000,  String? $type}): _choices = choices,$type = $type ?? 'branchedVideo',super._();
+  const BranchedVideoNode({required this.id, required this.position, this.width = kDefaultNodeWidth, this.name, this.swatch = 0, this.isExpanded = false, this.videoId, this.overrides = const VideoSettingsOverride(),  List<Choice> choices = const <Choice>[], this.question, this.music,  String? $type}): _choices = choices,$type = $type ?? 'branchedVideo',super._();
   factory BranchedVideoNode.fromJson(Map<String, dynamic> json) => _$BranchedVideoNodeFromJson(json);
 
 @override final  String id;
@@ -1084,9 +1088,6 @@ class BranchedVideoNode extends Node {
 /// `null` when the node has none (the "Question" setting is off).
  final  String? question;
  final  MusicCue? music;
-/// Imported audio that loops while the viewer chooses, if any.
- final  String? pauseMusicId;
-@JsonKey() final  int pauseMusicFadeOutMs;
 
 @JsonKey(name: 'type')
 final String $type;
@@ -1105,18 +1106,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is BranchedVideoNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&const DeepCollectionEquality().equals(other.choices, _choices)&&(identical(other.question, question) || other.question == question)&&(identical(other.music, music) || other.music == music)&&(identical(other.pauseMusicId, pauseMusicId) || other.pauseMusicId == pauseMusicId)&&(identical(other.pauseMusicFadeOutMs, pauseMusicFadeOutMs) || other.pauseMusicFadeOutMs == pauseMusicFadeOutMs));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is BranchedVideoNode&&(identical(other.id, id) || other.id == id)&&(identical(other.position, position) || other.position == position)&&(identical(other.width, width) || other.width == width)&&(identical(other.name, name) || other.name == name)&&(identical(other.swatch, swatch) || other.swatch == swatch)&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded)&&(identical(other.videoId, videoId) || other.videoId == videoId)&&(identical(other.overrides, overrides) || other.overrides == overrides)&&const DeepCollectionEquality().equals(other.choices, _choices)&&(identical(other.question, question) || other.question == question)&&(identical(other.music, music) || other.music == music));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,videoId,overrides,const DeepCollectionEquality().hash(_choices),question,music,pauseMusicId,pauseMusicFadeOutMs);
+    return Object.hash(runtimeType,id,position,width,name,swatch,isExpanded,videoId,overrides,const DeepCollectionEquality().hash(_choices),question,music);
 }
 
 @override
 String toString() {
-    return 'Node.branchedVideo(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, videoId: $videoId, overrides: $overrides, choices: $choices, question: $question, music: $music, pauseMusicId: $pauseMusicId, pauseMusicFadeOutMs: $pauseMusicFadeOutMs)';
+    return 'Node.branchedVideo(id: $id, position: $position, width: $width, name: $name, swatch: $swatch, isExpanded: $isExpanded, videoId: $videoId, overrides: $overrides, choices: $choices, question: $question, music: $music)';
 }
 
 
@@ -1127,7 +1128,7 @@ abstract mixin class $BranchedVideoNodeCopyWith<$Res> implements $NodeCopyWith<$
   factory $BranchedVideoNodeCopyWith(BranchedVideoNode value, $Res Function(BranchedVideoNode) _then) = _$BranchedVideoNodeCopyWithImpl;
 @override @useResult
 $Res call({
- String id, Position position, double width, String? name, int swatch, bool isExpanded, String? videoId, VideoSettingsOverride overrides, List<Choice> choices, String? question, MusicCue? music, String? pauseMusicId, int pauseMusicFadeOutMs
+ String id, Position position, double width, String? name, int swatch, bool isExpanded, String? videoId, VideoSettingsOverride overrides, List<Choice> choices, String? question, MusicCue? music
 });
 
 
@@ -1144,7 +1145,7 @@ class _$BranchedVideoNodeCopyWithImpl<$Res>
 
 /// Create a copy of Node
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? videoId = freezed,Object? overrides = null,Object? choices = null,Object? question = freezed,Object? music = freezed,Object? pauseMusicId = freezed,Object? pauseMusicFadeOutMs = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? position = null,Object? width = null,Object? name = freezed,Object? swatch = null,Object? isExpanded = null,Object? videoId = freezed,Object? overrides = null,Object? choices = null,Object? question = freezed,Object? music = freezed,}) {
   return _then(BranchedVideoNode(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,position: null == position ? _self.position : position // ignore: cast_nullable_to_non_nullable
@@ -1157,9 +1158,7 @@ as String?,overrides: null == overrides ? _self.overrides : overrides // ignore:
 as VideoSettingsOverride,choices: null == choices ? _self._choices : choices // ignore: cast_nullable_to_non_nullable
 as List<Choice>,question: freezed == question ? _self.question : question // ignore: cast_nullable_to_non_nullable
 as String?,music: freezed == music ? _self.music : music // ignore: cast_nullable_to_non_nullable
-as MusicCue?,pauseMusicId: freezed == pauseMusicId ? _self.pauseMusicId : pauseMusicId // ignore: cast_nullable_to_non_nullable
-as String?,pauseMusicFadeOutMs: null == pauseMusicFadeOutMs ? _self.pauseMusicFadeOutMs : pauseMusicFadeOutMs // ignore: cast_nullable_to_non_nullable
-as int,
+as MusicCue?,
   ));
 }
 

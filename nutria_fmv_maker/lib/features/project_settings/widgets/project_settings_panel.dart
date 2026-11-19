@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/features/nodes/widgets/music_rows.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/video_setting_row.dart';
@@ -41,21 +42,29 @@ class ProjectSettingsPanel extends ConsumerWidget {
               theme.dSectionPadding,
               theme.dButtonHeight + theme.dSectionPadding * 2,
             ),
-            child: swatches.isEmpty
-                ? _DefaultsRows(swatch: 0, settings: settings)
-                : Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      _DefaultsGroup(swatch: 0, settings: settings),
-                      for (final swatch in swatches) ...[
-                        SizedBox(height: theme.dSectionPadding),
-                        _DefaultsGroup(
-                          swatch: swatch,
-                          settings: colors[swatch]!,
-                        ),
-                      ],
-                    ],
-                  ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // Story-wide, not per color: the pause menu's music.
+                const PauseMenuMusicRow(),
+                SizedBox(height: theme.dSectionPadding),
+                swatches.isEmpty
+                    ? _DefaultsRows(swatch: 0, settings: settings)
+                    : Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          _DefaultsGroup(swatch: 0, settings: settings),
+                          for (final swatch in swatches) ...[
+                            SizedBox(height: theme.dSectionPadding),
+                            _DefaultsGroup(
+                              swatch: swatch,
+                              settings: colors[swatch]!,
+                            ),
+                          ],
+                        ],
+                      ),
+              ],
+            ),
           ),
         ),
         if (next != null)
@@ -149,7 +158,7 @@ class _DefaultsRows extends ConsumerWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        for (final type in VideoSettingType.values) ...[
+        for (final type in kPlaybackSettingTypes) ...[
           if (type.index > 0) SizedBox(height: theme.dPanelPadding),
           VideoSettingRow(
             onDragStart: editor.beginValueDrag,
@@ -165,6 +174,14 @@ class _DefaultsRows extends ConsumerWidget {
                 .setContextMenuOpen,
           ),
         ],
+        for (final row in pauseMusicRows(
+          context,
+          ref,
+          settings: settings,
+          onChanged: (_, next, {mergeKey}) =>
+              editor.editDefaults(swatch, (_) => next, mergeKey: mergeKey),
+          fadeMergeKey: ('defaults pause fade', swatch),
+        )) ...[SizedBox(height: theme.dPanelPadding), row],
       ],
     );
   }

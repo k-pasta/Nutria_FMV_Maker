@@ -126,6 +126,7 @@
   "musicPause": "Musique de pause",
   "musicPauseFadeOut": "Fondu de la pause",
   "musicMenu": "Musique du menu",
+  "musicPauseMenu": "Musique du menu pause",
   "musicRemove": "Retirer cette musique",
   "musicNone": "Aucune",
   "musicNoAudio": "Aucun audio importé. Importez des fichiers audio dans Médias Importés.",

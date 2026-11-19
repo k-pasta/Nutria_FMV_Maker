@@ -13,7 +13,7 @@ part 'project_document.g.dart';
 
 /// Version of the `.nfmv` format written by this code. Bump it when the
 /// format changes and add an upgrade step in `nfmv_codec.dart`.
-const int kNfmvFormatVersion = 3;
+const int kNfmvFormatVersion = 4;
 
 /// Id of the origin node in a new project.
 const String kOriginNodeId = 'origin';

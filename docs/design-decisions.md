@@ -757,3 +757,24 @@ what the Maker checks.
 - **Colour picker button:** a small colour wheel (Material's "colors" icon
   is in the newer Material Symbols set only, not in Flutter's icons). After
   picking your own colour, the square shows that colour.
+
+### B. Every branched-node setting can be overridden, pause music too
+- **Pause music** (the loop while the viewer chooses at the end of a
+  video) is now a setting like selection time: the project's Defaults, a
+  colour's defaults and a node can each set the track and its fade-out. A
+  node without its own takes its colour's, then the project's. On a node,
+  an overridden pause music is pink with an (x) to go back to the
+  defaults. Its list starts with "None", so one node can be silent while
+  the defaults have music.
+- **Pause menu music** (the viewer paused the story): one track for the
+  whole story, at the top of the Defaults section. The Player plays it
+  while the pause menu is open; the video's music waits, paused, and goes
+  on afterwards.
+- **Project file format 4:** a node's own pause music moves into its
+  overrides when an older project is opened.
+- **Export:** each branched node gets its pause music already resolved
+  (`pauseMusic`), as before, so older Players still play it. The pause
+  menu music is a new optional key, `pauseMenuMusic`, in the project info.
+- Other settings on a branched node that are not overridable: the
+  question (it's the node's text, like its answers) and its own music,
+  which belongs to the video rather than to a group of nodes.

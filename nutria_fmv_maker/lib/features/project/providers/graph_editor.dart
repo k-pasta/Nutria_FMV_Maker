@@ -92,20 +92,23 @@ class GraphEditor {
   void removeMusic(String id) =>
       _document.apply('Remove music', (d) => d.updateMusic(id, (_) => null));
 
-  /// Sets (or with `null` removes) branched node [id]'s pause music.
-  void setPauseMusic(String id, String? audioId) =>
-      _document.apply('Set pause music', (d) => d.setPauseMusic(id, audioId));
-
-  void setPauseMusicFadeOut(String id, int ms, {Object? mergeKey}) =>
-      _document.apply(
-        'Change pause music',
-        (d) => d.setPauseMusicFadeOut(id, ms),
-        mergeKey: mergeKey,
-      );
+  /// Gives branched node [id] its own pause music ([audioId]; `''` for
+  /// none), overriding its color's and the project's.
+  void setPauseMusic(String id, String audioId) => _updateOverrides(
+    'Set pause music',
+    id,
+    (o) => o.copyWith(pauseMusicId: audioId),
+  );
 
   /// Sets (or with `null` removes) the main menu music.
   void setMenuMusic(String? audioId) =>
       _document.apply('Set menu music', (d) => d.setMenuMusic(audioId));
+
+  /// Sets (or with `null` removes) the pause menu music.
+  void setPauseMenuMusic(String? audioId) => _document.apply(
+    'Set pause menu music',
+    (d) => d.setPauseMenuMusic(audioId),
+  );
 
   // ---------------------------------------------------------------- screens
 

@@ -420,6 +420,9 @@ class AppLocalizationsEn extends AppLocalizations {
   String get musicMenu => 'Menu Music';
 
   @override
+  String get musicPauseMenu => 'Pause Menu Music';
+
+  @override
   String get musicRemove => 'Remove this music';
 
   @override

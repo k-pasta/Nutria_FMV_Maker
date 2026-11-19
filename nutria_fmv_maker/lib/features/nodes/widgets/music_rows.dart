@@ -4,6 +4,8 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/core/document/video_setting_steps.dart';
+import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
@@ -59,15 +61,19 @@ String _name(WidgetRef ref, String id) =>
     ref.watch(mediaAssetProvider(id).select((a) => a?.fileName)) ?? '?';
 
 /// A music setting row: a searchable list of the imported audio files,
-/// with (x) to remove the track and, on right-click, playing it in the
-/// preview.
+/// with (x) ([onRemoved]) to remove the track and, on right-click, playing
+/// it in the preview. With [onNone], the list starts with "None" (a node
+/// overriding its defaults' music with silence); [isAccented] shows an
+/// override.
 Widget _trackRow(
   BuildContext context,
   WidgetRef ref, {
   required String label,
   required String? audioId,
   required ValueChanged<String> onPicked,
-  required VoidCallback onRemoved,
+  required VoidCallback? onRemoved,
+  VoidCallback? onNone,
+  bool isAccented = false,
 }) {
   final t = AppLocalizations.of(context);
   final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
@@ -75,18 +81,24 @@ Widget _trackRow(
     for (final m in ref.watch(mediaAssetsProvider))
       if (m.kind == MediaKind.audio) m,
   ];
+  final none = onNone == null ? 0 : 1;
   return NutriaSettingRow(
     label: label,
     value: '',
-    onReset: audioId == null ? null : onRemoved,
-    resetTooltip: t.musicRemove,
+    isAccented: isAccented,
+    onReset: onRemoved,
+    resetTooltip: isAccented ? t.tooltipResetOverride : t.musicRemove,
     field: NutriaSearchMenu(
       label: audioId == null ? t.musicNone : _name(ref, audioId),
       isPlaceholder: audioId == null,
-      options: [for (final m in audio) m.fileName],
+      isAccented: isAccented,
+      options: [
+        if (onNone != null) t.musicNone,
+        for (final m in audio) m.fileName,
+      ],
       searchHint: t.logicSearchVariables,
       emptyText: t.musicNoAudio,
-      onSelected: (i) => onPicked(audio[i].id),
+      onSelected: (i) => i < none ? onNone!() : onPicked(audio[i - none].id),
       onOpenChanged: menuOpen,
     ),
     options: audioId == null
@@ -105,7 +117,8 @@ Widget _trackRow(
 
 /// The music rows of a video node's settings: its music, picked from the
 /// imported audio, and (once picked) when it ends, loop, fade out and
-/// pausing; and for branched nodes the pause music.
+/// pausing; and for branched nodes the pause music, which like the other
+/// settings comes from the defaults unless the node overrides it.
 List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
   final t = AppLocalizations.of(context);
   final theme = context.appTheme;
@@ -203,46 +216,131 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
     ]);
   }
   if (node is BranchedVideoNode) {
-    rows.add(
-      _trackRow(
+    final overrides = node.overrides;
+    rows.addAll(
+      pauseMusicRows(
         context,
         ref,
-        label: t.musicPause,
-        audioId: node.pauseMusicId,
-        onPicked: (audioId) => editor.setPauseMusic(node.id, audioId),
-        onRemoved: () => editor.setPauseMusic(node.id, null),
+        settings: ref.watch(effectiveSettingsProvider(node.id)),
+        overridden: overrides.activeTypes.toSet(),
+        onChanged: (type, next, {mergeKey}) => editor.editOverrides(
+          node.id,
+          (o) => o.enable(type, next),
+          mergeKey: mergeKey,
+        ),
+        onReset: (type) => editor.disableOverride(node.id, type),
+        fadeMergeKey: ('pause fade', node.id),
       ),
     );
   }
-  if (node case BranchedVideoNode(pauseMusicId: _?)) {
-    rows.addAll([
+  return rows;
+}
+
+/// The pause music rows (the track, and once there is one its fade-out),
+/// for a node's settings or a color's defaults. [settings] are the values
+/// shown. On a node, [onReset] removes an override: settings in
+/// [overridden] are accented and get an (x). In the defaults ([onReset]
+/// `null`), the (x) removes the track.
+List<Widget> pauseMusicRows(
+  BuildContext context,
+  WidgetRef ref, {
+  required VideoSettings settings,
+  required void Function(
+    VideoSettingType type,
+    VideoSettings next, {
+    Object? mergeKey,
+  })
+  onChanged,
+  required Object fadeMergeKey,
+  Set<VideoSettingType> overridden = const {},
+  void Function(VideoSettingType type)? onReset,
+}) {
+  final t = AppLocalizations.of(context);
+  final editor = ref.read(graphEditorProvider);
+  final menuOpen = ref.read(overlayProvider.notifier).setContextMenuOpen;
+  const track = VideoSettingType.pauseMusic;
+  const fade = VideoSettingType.pauseMusicFadeOut;
+  final audioId = settings.pauseMusicOrNull;
+  void set(VideoSettingType type, VideoSettings next, {Object? mergeKey}) =>
+      onChanged(type, next, mergeKey: mergeKey);
+  return [
+    _trackRow(
+      context,
+      ref,
+      label: t.musicPause,
+      audioId: audioId,
+      isAccented: overridden.contains(track),
+      onPicked: (id) => set(track, settings.copyWith(pauseMusicId: id)),
+      onNone: onReset == null || audioId == null
+          ? null
+          : () => set(track, settings.copyWith(pauseMusicId: '')),
+      onRemoved: onReset != null
+          ? (overridden.contains(track) ? () => onReset(track) : null)
+          : (audioId == null
+                ? null
+                : () => set(track, settings.copyWith(pauseMusicId: ''))),
+    ),
+    if (audioId != null)
       NutriaSettingRow(
         label: t.musicPauseFadeOut,
         value: '',
-        field: _fadeField(
-          editor,
-          node.pauseMusicFadeOutMs,
-          onStep: (d) => editor.setPauseMusicFadeOut(
-            node.id,
-            stepFade(node.pauseMusicFadeOutMs, d),
-          ),
-          onTyped: (ms) => editor.setPauseMusicFadeOut(
-            node.id,
-            ms,
-            mergeKey: ('pause fade', node.id),
-          ),
+        isAccented: overridden.contains(fade),
+        onReset: onReset != null && overridden.contains(fade)
+            ? () => onReset(fade)
+            : null,
+        resetTooltip: t.tooltipResetOverride,
+        field: NutriaNumberField(
+          text: (settings.pauseMusicFadeOutMs / 1000).toStringAsFixed(2),
+          decimals: true,
+          isAccented: overridden.contains(fade),
+          onStep: (d) => set(fade, settings.step(fade, d)),
+          onDragStart: editor.beginValueDrag,
+          onDragEnd: editor.endValueDrag,
+          onChanged: (text) {
+            final ms = fadeFromSeconds(NutriaNumberField.parse(text));
+            if (ms == null) return;
+            set(
+              fade,
+              settings.copyWith(pauseMusicFadeOutMs: ms),
+              mergeKey: fadeMergeKey,
+            );
+          },
         ),
-        options: options(
-          kMusicFadeSteps,
-          node.pauseMusicFadeOutMs,
-          fadeLabel,
-          (ms) => editor.setPauseMusicFadeOut(node.id, ms),
-        ),
+        options: [
+          for (final option in settings.optionsFor(fade))
+            NutriaContextMenuItem(
+              icon: settings.sameValue(option, fade)
+                  ? Icons.check
+                  : Icons.circle_outlined,
+              label: fadeLabel(option.pauseMusicFadeOutMs),
+              onSelected: () => set(fade, option),
+            ),
+        ],
         onOptionsOpenChanged: menuOpen,
       ),
-    ]);
+  ];
+}
+
+/// The pause menu music (when the viewer pauses the story), for the
+/// Defaults section.
+class PauseMenuMusicRow extends ConsumerWidget {
+  const PauseMenuMusicRow({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final editor = ref.read(graphEditorProvider);
+    final id = ref.watch(
+      projectDocumentProvider.select((d) => d.origin.pauseMenuMusicId),
+    );
+    return _trackRow(
+      context,
+      ref,
+      label: AppLocalizations.of(context).musicPauseMenu,
+      audioId: id,
+      onPicked: editor.setPauseMenuMusic,
+      onRemoved: id == null ? null : () => editor.setPauseMenuMusic(null),
+    );
   }
-  return rows;
 }
 
 /// The main menu music on the origin node, picked from the imported audio.
@@ -269,7 +367,7 @@ class MenuMusicRow extends ConsumerWidget {
         label: t.musicMenu,
         audioId: id,
         onPicked: editor.setMenuMusic,
-        onRemoved: () => editor.setMenuMusic(null),
+        onRemoved: id == null ? null : () => editor.setMenuMusic(null),
       ),
     );
   }

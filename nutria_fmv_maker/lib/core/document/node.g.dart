@@ -49,6 +49,7 @@ OriginNode _$OriginNodeFromJson(Map<String, dynamic> json) => OriginNode(
   swatch: (json['swatch'] as num?)?.toInt() ?? 1,
   isExpanded: json['isExpanded'] as bool? ?? false,
   menuMusicId: json['menuMusicId'] as String?,
+  pauseMenuMusicId: json['pauseMenuMusicId'] as String?,
   $type: json['type'] as String?,
 );
 
@@ -61,6 +62,7 @@ Map<String, dynamic> _$OriginNodeToJson(OriginNode instance) =>
       'swatch': instance.swatch,
       'isExpanded': instance.isExpanded,
       'menuMusicId': instance.menuMusicId,
+      'pauseMenuMusicId': instance.pauseMenuMusicId,
       'type': instance.$type,
     };
 
@@ -121,9 +123,6 @@ BranchedVideoNode _$BranchedVideoNodeFromJson(Map<String, dynamic> json) =>
       music: json['music'] == null
           ? null
           : MusicCue.fromJson(json['music'] as Map<String, dynamic>),
-      pauseMusicId: json['pauseMusicId'] as String?,
-      pauseMusicFadeOutMs:
-          (json['pauseMusicFadeOutMs'] as num?)?.toInt() ?? 1000,
       $type: json['type'] as String?,
     );
 
@@ -140,8 +139,6 @@ Map<String, dynamic> _$BranchedVideoNodeToJson(BranchedVideoNode instance) =>
       'choices': instance.choices.map((e) => e.toJson()).toList(),
       'question': instance.question,
       'music': instance.music?.toJson(),
-      'pauseMusicId': instance.pauseMusicId,
-      'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
       'type': instance.$type,
     };
 

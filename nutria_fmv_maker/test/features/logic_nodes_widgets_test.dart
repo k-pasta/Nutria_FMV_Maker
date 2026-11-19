@@ -92,10 +92,9 @@ void main() {
   });
 
   test('comparisons show the signs people write', () {
-    expect(
-      [for (final c in FmvComparison.values) comparisonSymbol(c)],
-      containsAll(['=', '≠', '≥', '≤', '>', '<']),
-    );
+    expect([
+      for (final c in FmvComparison.values) comparisonSymbol(c),
+    ], containsAll(['=', '≠', '≥', '≤', '>', '<']));
   });
 
   testWidgets('a compare condition takes three rows, with its x after the '

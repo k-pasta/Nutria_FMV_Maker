@@ -19,7 +19,9 @@ mixin _$VideoSettings {
 /// Time, in milliseconds before the end of the video, when choices appear.
  int get selectionTimeMs;/// Whether playback pauses when the choices appear instead of auto-selecting.
  bool get pauseOnEnd;/// Whether the Player shows the remaining-time bar.
- bool get showTimer; VideoFit get videoFit; DefaultSelectionMethod get defaultSelection;
+ bool get showTimer; VideoFit get videoFit; DefaultSelectionMethod get defaultSelection;/// Imported audio that loops while the viewer chooses; `''` for none
+/// (so a node can override it to "no music").
+ String get pauseMusicId; int get pauseMusicFadeOutMs;
 /// Create a copy of VideoSettings
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -33,20 +35,20 @@ $VideoSettingsCopyWith<VideoSettings> get copyWith => _$VideoSettingsCopyWithImp
 @override
 bool operator ==(Object other) {
   final _this = this as VideoSettings;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoSettings&&(identical(other.selectionTimeMs, _this.selectionTimeMs) || other.selectionTimeMs == _this.selectionTimeMs)&&(identical(other.pauseOnEnd, _this.pauseOnEnd) || other.pauseOnEnd == _this.pauseOnEnd)&&(identical(other.showTimer, _this.showTimer) || other.showTimer == _this.showTimer)&&(identical(other.videoFit, _this.videoFit) || other.videoFit == _this.videoFit)&&(identical(other.defaultSelection, _this.defaultSelection) || other.defaultSelection == _this.defaultSelection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoSettings&&(identical(other.selectionTimeMs, _this.selectionTimeMs) || other.selectionTimeMs == _this.selectionTimeMs)&&(identical(other.pauseOnEnd, _this.pauseOnEnd) || other.pauseOnEnd == _this.pauseOnEnd)&&(identical(other.showTimer, _this.showTimer) || other.showTimer == _this.showTimer)&&(identical(other.videoFit, _this.videoFit) || other.videoFit == _this.videoFit)&&(identical(other.defaultSelection, _this.defaultSelection) || other.defaultSelection == _this.defaultSelection)&&(identical(other.pauseMusicId, _this.pauseMusicId) || other.pauseMusicId == _this.pauseMusicId)&&(identical(other.pauseMusicFadeOutMs, _this.pauseMusicFadeOutMs) || other.pauseMusicFadeOutMs == _this.pauseMusicFadeOutMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as VideoSettings;
-  return Object.hash(runtimeType,_this.selectionTimeMs,_this.pauseOnEnd,_this.showTimer,_this.videoFit,_this.defaultSelection);
+  return Object.hash(runtimeType,_this.selectionTimeMs,_this.pauseOnEnd,_this.showTimer,_this.videoFit,_this.defaultSelection,_this.pauseMusicId,_this.pauseMusicFadeOutMs);
 }
 
 @override
 String toString() {
   final _this = this as VideoSettings;
-  return 'VideoSettings(selectionTimeMs: ${_this.selectionTimeMs}, pauseOnEnd: ${_this.pauseOnEnd}, showTimer: ${_this.showTimer}, videoFit: ${_this.videoFit}, defaultSelection: ${_this.defaultSelection})';
+  return 'VideoSettings(selectionTimeMs: ${_this.selectionTimeMs}, pauseOnEnd: ${_this.pauseOnEnd}, showTimer: ${_this.showTimer}, videoFit: ${_this.videoFit}, defaultSelection: ${_this.defaultSelection}, pauseMusicId: ${_this.pauseMusicId}, pauseMusicFadeOutMs: ${_this.pauseMusicFadeOutMs})';
 }
 
 
@@ -57,7 +59,7 @@ abstract mixin class $VideoSettingsCopyWith<$Res>  {
   factory $VideoSettingsCopyWith(VideoSettings value, $Res Function(VideoSettings) _then) = _$VideoSettingsCopyWithImpl;
 @useResult
 $Res call({
- int selectionTimeMs, bool pauseOnEnd, bool showTimer, VideoFit videoFit, DefaultSelectionMethod defaultSelection
+ int selectionTimeMs, bool pauseOnEnd, bool showTimer, VideoFit videoFit, DefaultSelectionMethod defaultSelection, String pauseMusicId, int pauseMusicFadeOutMs
 });
 
 
@@ -74,14 +76,16 @@ class _$VideoSettingsCopyWithImpl<$Res>
 
 /// Create a copy of VideoSettings
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectionTimeMs = null,Object? pauseOnEnd = null,Object? showTimer = null,Object? videoFit = null,Object? defaultSelection = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectionTimeMs = null,Object? pauseOnEnd = null,Object? showTimer = null,Object? videoFit = null,Object? defaultSelection = null,Object? pauseMusicId = null,Object? pauseMusicFadeOutMs = null,}) {
   return _then(VideoSettings(
 selectionTimeMs: null == selectionTimeMs ? _self.selectionTimeMs : selectionTimeMs // ignore: cast_nullable_to_non_nullable
 as int,pauseOnEnd: null == pauseOnEnd ? _self.pauseOnEnd : pauseOnEnd // ignore: cast_nullable_to_non_nullable
 as bool,showTimer: null == showTimer ? _self.showTimer : showTimer // ignore: cast_nullable_to_non_nullable
 as bool,videoFit: null == videoFit ? _self.videoFit : videoFit // ignore: cast_nullable_to_non_nullable
 as VideoFit,defaultSelection: null == defaultSelection ? _self.defaultSelection : defaultSelection // ignore: cast_nullable_to_non_nullable
-as DefaultSelectionMethod,
+as DefaultSelectionMethod,pauseMusicId: null == pauseMusicId ? _self.pauseMusicId : pauseMusicId // ignore: cast_nullable_to_non_nullable
+as String,pauseMusicFadeOutMs: null == pauseMusicFadeOutMs ? _self.pauseMusicFadeOutMs : pauseMusicFadeOutMs // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -166,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection,  String pauseMusicId,  int pauseMusicFadeOutMs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VideoSettings() when $default != null:
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   return orElse();
 
 }
@@ -187,10 +191,10 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection,  String pauseMusicId,  int pauseMusicFadeOutMs)  $default,) {final _that = this;
 switch (_that) {
 case _VideoSettings():
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -207,10 +211,10 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int selectionTimeMs,  bool pauseOnEnd,  bool showTimer,  VideoFit videoFit,  DefaultSelectionMethod defaultSelection,  String pauseMusicId,  int pauseMusicFadeOutMs)?  $default,) {final _that = this;
 switch (_that) {
 case _VideoSettings() when $default != null:
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   return null;
 
 }
@@ -222,7 +226,7 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 @JsonSerializable()
 
 class _VideoSettings extends VideoSettings {
-  const _VideoSettings({this.selectionTimeMs = 6000, this.pauseOnEnd = false, this.showTimer = true, this.videoFit = VideoFit.fit, this.defaultSelection = DefaultSelectionMethod.first}): super._();
+  const _VideoSettings({this.selectionTimeMs = 6000, this.pauseOnEnd = false, this.showTimer = true, this.videoFit = VideoFit.fit, this.defaultSelection = DefaultSelectionMethod.first, this.pauseMusicId = '', this.pauseMusicFadeOutMs = 1000}): super._();
   factory _VideoSettings.fromJson(Map<String, dynamic> json) => _$VideoSettingsFromJson(json);
 
 /// Time, in milliseconds before the end of the video, when choices appear.
@@ -233,6 +237,10 @@ class _VideoSettings extends VideoSettings {
 @override@JsonKey() final  bool showTimer;
 @override@JsonKey() final  VideoFit videoFit;
 @override@JsonKey() final  DefaultSelectionMethod defaultSelection;
+/// Imported audio that loops while the viewer chooses; `''` for none
+/// (so a node can override it to "no music").
+@override@JsonKey() final  String pauseMusicId;
+@override@JsonKey() final  int pauseMusicFadeOutMs;
 
 /// Create a copy of VideoSettings
 /// with the given fields replaced by the non-null parameter values.
@@ -247,18 +255,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VideoSettings&&(identical(other.selectionTimeMs, selectionTimeMs) || other.selectionTimeMs == selectionTimeMs)&&(identical(other.pauseOnEnd, pauseOnEnd) || other.pauseOnEnd == pauseOnEnd)&&(identical(other.showTimer, showTimer) || other.showTimer == showTimer)&&(identical(other.videoFit, videoFit) || other.videoFit == videoFit)&&(identical(other.defaultSelection, defaultSelection) || other.defaultSelection == defaultSelection));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VideoSettings&&(identical(other.selectionTimeMs, selectionTimeMs) || other.selectionTimeMs == selectionTimeMs)&&(identical(other.pauseOnEnd, pauseOnEnd) || other.pauseOnEnd == pauseOnEnd)&&(identical(other.showTimer, showTimer) || other.showTimer == showTimer)&&(identical(other.videoFit, videoFit) || other.videoFit == videoFit)&&(identical(other.defaultSelection, defaultSelection) || other.defaultSelection == defaultSelection)&&(identical(other.pauseMusicId, pauseMusicId) || other.pauseMusicId == pauseMusicId)&&(identical(other.pauseMusicFadeOutMs, pauseMusicFadeOutMs) || other.pauseMusicFadeOutMs == pauseMusicFadeOutMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,selectionTimeMs,pauseOnEnd,showTimer,videoFit,defaultSelection);
+    return Object.hash(runtimeType,selectionTimeMs,pauseOnEnd,showTimer,videoFit,defaultSelection,pauseMusicId,pauseMusicFadeOutMs);
 }
 
 @override
 String toString() {
-    return 'VideoSettings(selectionTimeMs: $selectionTimeMs, pauseOnEnd: $pauseOnEnd, showTimer: $showTimer, videoFit: $videoFit, defaultSelection: $defaultSelection)';
+    return 'VideoSettings(selectionTimeMs: $selectionTimeMs, pauseOnEnd: $pauseOnEnd, showTimer: $showTimer, videoFit: $videoFit, defaultSelection: $defaultSelection, pauseMusicId: $pauseMusicId, pauseMusicFadeOutMs: $pauseMusicFadeOutMs)';
 }
 
 
@@ -269,7 +277,7 @@ abstract mixin class _$VideoSettingsCopyWith<$Res> implements $VideoSettingsCopy
   factory _$VideoSettingsCopyWith(_VideoSettings value, $Res Function(_VideoSettings) _then) = __$VideoSettingsCopyWithImpl;
 @override @useResult
 $Res call({
- int selectionTimeMs, bool pauseOnEnd, bool showTimer, VideoFit videoFit, DefaultSelectionMethod defaultSelection
+ int selectionTimeMs, bool pauseOnEnd, bool showTimer, VideoFit videoFit, DefaultSelectionMethod defaultSelection, String pauseMusicId, int pauseMusicFadeOutMs
 });
 
 
@@ -286,14 +294,16 @@ class __$VideoSettingsCopyWithImpl<$Res>
 
 /// Create a copy of VideoSettings
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectionTimeMs = null,Object? pauseOnEnd = null,Object? showTimer = null,Object? videoFit = null,Object? defaultSelection = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectionTimeMs = null,Object? pauseOnEnd = null,Object? showTimer = null,Object? videoFit = null,Object? defaultSelection = null,Object? pauseMusicId = null,Object? pauseMusicFadeOutMs = null,}) {
   return _then(_VideoSettings(
 selectionTimeMs: null == selectionTimeMs ? _self.selectionTimeMs : selectionTimeMs // ignore: cast_nullable_to_non_nullable
 as int,pauseOnEnd: null == pauseOnEnd ? _self.pauseOnEnd : pauseOnEnd // ignore: cast_nullable_to_non_nullable
 as bool,showTimer: null == showTimer ? _self.showTimer : showTimer // ignore: cast_nullable_to_non_nullable
 as bool,videoFit: null == videoFit ? _self.videoFit : videoFit // ignore: cast_nullable_to_non_nullable
 as VideoFit,defaultSelection: null == defaultSelection ? _self.defaultSelection : defaultSelection // ignore: cast_nullable_to_non_nullable
-as DefaultSelectionMethod,
+as DefaultSelectionMethod,pauseMusicId: null == pauseMusicId ? _self.pauseMusicId : pauseMusicId // ignore: cast_nullable_to_non_nullable
+as String,pauseMusicFadeOutMs: null == pauseMusicFadeOutMs ? _self.pauseMusicFadeOutMs : pauseMusicFadeOutMs // ignore: cast_nullable_to_non_nullable
+as int,
   ));
 }
 
@@ -304,7 +314,7 @@ as DefaultSelectionMethod,
 /// @nodoc
 mixin _$VideoSettingsOverride {
 
- int? get selectionTimeMs; bool? get pauseOnEnd; bool? get showTimer; VideoFit? get videoFit; DefaultSelectionMethod? get defaultSelection;
+ int? get selectionTimeMs; bool? get pauseOnEnd; bool? get showTimer; VideoFit? get videoFit; DefaultSelectionMethod? get defaultSelection; String? get pauseMusicId; int? get pauseMusicFadeOutMs;
 /// Create a copy of VideoSettingsOverride
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -318,20 +328,20 @@ $VideoSettingsOverrideCopyWith<VideoSettingsOverride> get copyWith => _$VideoSet
 @override
 bool operator ==(Object other) {
   final _this = this as VideoSettingsOverride;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoSettingsOverride&&(identical(other.selectionTimeMs, _this.selectionTimeMs) || other.selectionTimeMs == _this.selectionTimeMs)&&(identical(other.pauseOnEnd, _this.pauseOnEnd) || other.pauseOnEnd == _this.pauseOnEnd)&&(identical(other.showTimer, _this.showTimer) || other.showTimer == _this.showTimer)&&(identical(other.videoFit, _this.videoFit) || other.videoFit == _this.videoFit)&&(identical(other.defaultSelection, _this.defaultSelection) || other.defaultSelection == _this.defaultSelection));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VideoSettingsOverride&&(identical(other.selectionTimeMs, _this.selectionTimeMs) || other.selectionTimeMs == _this.selectionTimeMs)&&(identical(other.pauseOnEnd, _this.pauseOnEnd) || other.pauseOnEnd == _this.pauseOnEnd)&&(identical(other.showTimer, _this.showTimer) || other.showTimer == _this.showTimer)&&(identical(other.videoFit, _this.videoFit) || other.videoFit == _this.videoFit)&&(identical(other.defaultSelection, _this.defaultSelection) || other.defaultSelection == _this.defaultSelection)&&(identical(other.pauseMusicId, _this.pauseMusicId) || other.pauseMusicId == _this.pauseMusicId)&&(identical(other.pauseMusicFadeOutMs, _this.pauseMusicFadeOutMs) || other.pauseMusicFadeOutMs == _this.pauseMusicFadeOutMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as VideoSettingsOverride;
-  return Object.hash(runtimeType,_this.selectionTimeMs,_this.pauseOnEnd,_this.showTimer,_this.videoFit,_this.defaultSelection);
+  return Object.hash(runtimeType,_this.selectionTimeMs,_this.pauseOnEnd,_this.showTimer,_this.videoFit,_this.defaultSelection,_this.pauseMusicId,_this.pauseMusicFadeOutMs);
 }
 
 @override
 String toString() {
   final _this = this as VideoSettingsOverride;
-  return 'VideoSettingsOverride(selectionTimeMs: ${_this.selectionTimeMs}, pauseOnEnd: ${_this.pauseOnEnd}, showTimer: ${_this.showTimer}, videoFit: ${_this.videoFit}, defaultSelection: ${_this.defaultSelection})';
+  return 'VideoSettingsOverride(selectionTimeMs: ${_this.selectionTimeMs}, pauseOnEnd: ${_this.pauseOnEnd}, showTimer: ${_this.showTimer}, videoFit: ${_this.videoFit}, defaultSelection: ${_this.defaultSelection}, pauseMusicId: ${_this.pauseMusicId}, pauseMusicFadeOutMs: ${_this.pauseMusicFadeOutMs})';
 }
 
 
@@ -342,7 +352,7 @@ abstract mixin class $VideoSettingsOverrideCopyWith<$Res>  {
   factory $VideoSettingsOverrideCopyWith(VideoSettingsOverride value, $Res Function(VideoSettingsOverride) _then) = _$VideoSettingsOverrideCopyWithImpl;
 @useResult
 $Res call({
- int? selectionTimeMs, bool? pauseOnEnd, bool? showTimer, VideoFit? videoFit, DefaultSelectionMethod? defaultSelection
+ int? selectionTimeMs, bool? pauseOnEnd, bool? showTimer, VideoFit? videoFit, DefaultSelectionMethod? defaultSelection, String? pauseMusicId, int? pauseMusicFadeOutMs
 });
 
 
@@ -359,14 +369,16 @@ class _$VideoSettingsOverrideCopyWithImpl<$Res>
 
 /// Create a copy of VideoSettingsOverride
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? selectionTimeMs = freezed,Object? pauseOnEnd = freezed,Object? showTimer = freezed,Object? videoFit = freezed,Object? defaultSelection = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? selectionTimeMs = freezed,Object? pauseOnEnd = freezed,Object? showTimer = freezed,Object? videoFit = freezed,Object? defaultSelection = freezed,Object? pauseMusicId = freezed,Object? pauseMusicFadeOutMs = freezed,}) {
   return _then(VideoSettingsOverride(
 selectionTimeMs: freezed == selectionTimeMs ? _self.selectionTimeMs : selectionTimeMs // ignore: cast_nullable_to_non_nullable
 as int?,pauseOnEnd: freezed == pauseOnEnd ? _self.pauseOnEnd : pauseOnEnd // ignore: cast_nullable_to_non_nullable
 as bool?,showTimer: freezed == showTimer ? _self.showTimer : showTimer // ignore: cast_nullable_to_non_nullable
 as bool?,videoFit: freezed == videoFit ? _self.videoFit : videoFit // ignore: cast_nullable_to_non_nullable
 as VideoFit?,defaultSelection: freezed == defaultSelection ? _self.defaultSelection : defaultSelection // ignore: cast_nullable_to_non_nullable
-as DefaultSelectionMethod?,
+as DefaultSelectionMethod?,pauseMusicId: freezed == pauseMusicId ? _self.pauseMusicId : pauseMusicId // ignore: cast_nullable_to_non_nullable
+as String?,pauseMusicFadeOutMs: freezed == pauseMusicFadeOutMs ? _self.pauseMusicFadeOutMs : pauseMusicFadeOutMs // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -451,10 +463,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection,  String? pauseMusicId,  int? pauseMusicFadeOutMs)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VideoSettingsOverride() when $default != null:
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   return orElse();
 
 }
@@ -472,10 +484,10 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection,  String? pauseMusicId,  int? pauseMusicFadeOutMs)  $default,) {final _that = this;
 switch (_that) {
 case _VideoSettingsOverride():
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -492,10 +504,10 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? selectionTimeMs,  bool? pauseOnEnd,  bool? showTimer,  VideoFit? videoFit,  DefaultSelectionMethod? defaultSelection,  String? pauseMusicId,  int? pauseMusicFadeOutMs)?  $default,) {final _that = this;
 switch (_that) {
 case _VideoSettingsOverride() when $default != null:
-return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection);case _:
+return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.videoFit,_that.defaultSelection,_that.pauseMusicId,_that.pauseMusicFadeOutMs);case _:
   return null;
 
 }
@@ -507,7 +519,7 @@ return $default(_that.selectionTimeMs,_that.pauseOnEnd,_that.showTimer,_that.vid
 @JsonSerializable()
 
 class _VideoSettingsOverride extends VideoSettingsOverride {
-  const _VideoSettingsOverride({this.selectionTimeMs, this.pauseOnEnd, this.showTimer, this.videoFit, this.defaultSelection}): super._();
+  const _VideoSettingsOverride({this.selectionTimeMs, this.pauseOnEnd, this.showTimer, this.videoFit, this.defaultSelection, this.pauseMusicId, this.pauseMusicFadeOutMs}): super._();
   factory _VideoSettingsOverride.fromJson(Map<String, dynamic> json) => _$VideoSettingsOverrideFromJson(json);
 
 @override final  int? selectionTimeMs;
@@ -515,6 +527,8 @@ class _VideoSettingsOverride extends VideoSettingsOverride {
 @override final  bool? showTimer;
 @override final  VideoFit? videoFit;
 @override final  DefaultSelectionMethod? defaultSelection;
+@override final  String? pauseMusicId;
+@override final  int? pauseMusicFadeOutMs;
 
 /// Create a copy of VideoSettingsOverride
 /// with the given fields replaced by the non-null parameter values.
@@ -529,18 +543,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VideoSettingsOverride&&(identical(other.selectionTimeMs, selectionTimeMs) || other.selectionTimeMs == selectionTimeMs)&&(identical(other.pauseOnEnd, pauseOnEnd) || other.pauseOnEnd == pauseOnEnd)&&(identical(other.showTimer, showTimer) || other.showTimer == showTimer)&&(identical(other.videoFit, videoFit) || other.videoFit == videoFit)&&(identical(other.defaultSelection, defaultSelection) || other.defaultSelection == defaultSelection));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VideoSettingsOverride&&(identical(other.selectionTimeMs, selectionTimeMs) || other.selectionTimeMs == selectionTimeMs)&&(identical(other.pauseOnEnd, pauseOnEnd) || other.pauseOnEnd == pauseOnEnd)&&(identical(other.showTimer, showTimer) || other.showTimer == showTimer)&&(identical(other.videoFit, videoFit) || other.videoFit == videoFit)&&(identical(other.defaultSelection, defaultSelection) || other.defaultSelection == defaultSelection)&&(identical(other.pauseMusicId, pauseMusicId) || other.pauseMusicId == pauseMusicId)&&(identical(other.pauseMusicFadeOutMs, pauseMusicFadeOutMs) || other.pauseMusicFadeOutMs == pauseMusicFadeOutMs));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,selectionTimeMs,pauseOnEnd,showTimer,videoFit,defaultSelection);
+    return Object.hash(runtimeType,selectionTimeMs,pauseOnEnd,showTimer,videoFit,defaultSelection,pauseMusicId,pauseMusicFadeOutMs);
 }
 
 @override
 String toString() {
-    return 'VideoSettingsOverride(selectionTimeMs: $selectionTimeMs, pauseOnEnd: $pauseOnEnd, showTimer: $showTimer, videoFit: $videoFit, defaultSelection: $defaultSelection)';
+    return 'VideoSettingsOverride(selectionTimeMs: $selectionTimeMs, pauseOnEnd: $pauseOnEnd, showTimer: $showTimer, videoFit: $videoFit, defaultSelection: $defaultSelection, pauseMusicId: $pauseMusicId, pauseMusicFadeOutMs: $pauseMusicFadeOutMs)';
 }
 
 
@@ -551,7 +565,7 @@ abstract mixin class _$VideoSettingsOverrideCopyWith<$Res> implements $VideoSett
   factory _$VideoSettingsOverrideCopyWith(_VideoSettingsOverride value, $Res Function(_VideoSettingsOverride) _then) = __$VideoSettingsOverrideCopyWithImpl;
 @override @useResult
 $Res call({
- int? selectionTimeMs, bool? pauseOnEnd, bool? showTimer, VideoFit? videoFit, DefaultSelectionMethod? defaultSelection
+ int? selectionTimeMs, bool? pauseOnEnd, bool? showTimer, VideoFit? videoFit, DefaultSelectionMethod? defaultSelection, String? pauseMusicId, int? pauseMusicFadeOutMs
 });
 
 
@@ -568,14 +582,16 @@ class __$VideoSettingsOverrideCopyWithImpl<$Res>
 
 /// Create a copy of VideoSettingsOverride
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? selectionTimeMs = freezed,Object? pauseOnEnd = freezed,Object? showTimer = freezed,Object? videoFit = freezed,Object? defaultSelection = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? selectionTimeMs = freezed,Object? pauseOnEnd = freezed,Object? showTimer = freezed,Object? videoFit = freezed,Object? defaultSelection = freezed,Object? pauseMusicId = freezed,Object? pauseMusicFadeOutMs = freezed,}) {
   return _then(_VideoSettingsOverride(
 selectionTimeMs: freezed == selectionTimeMs ? _self.selectionTimeMs : selectionTimeMs // ignore: cast_nullable_to_non_nullable
 as int?,pauseOnEnd: freezed == pauseOnEnd ? _self.pauseOnEnd : pauseOnEnd // ignore: cast_nullable_to_non_nullable
 as bool?,showTimer: freezed == showTimer ? _self.showTimer : showTimer // ignore: cast_nullable_to_non_nullable
 as bool?,videoFit: freezed == videoFit ? _self.videoFit : videoFit // ignore: cast_nullable_to_non_nullable
 as VideoFit?,defaultSelection: freezed == defaultSelection ? _self.defaultSelection : defaultSelection // ignore: cast_nullable_to_non_nullable
-as DefaultSelectionMethod?,
+as DefaultSelectionMethod?,pauseMusicId: freezed == pauseMusicId ? _self.pauseMusicId : pauseMusicId // ignore: cast_nullable_to_non_nullable
+as String?,pauseMusicFadeOutMs: freezed == pauseMusicFadeOutMs ? _self.pauseMusicFadeOutMs : pauseMusicFadeOutMs // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 

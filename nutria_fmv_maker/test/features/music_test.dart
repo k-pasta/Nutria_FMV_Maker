@@ -7,6 +7,7 @@ import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
@@ -58,8 +59,14 @@ void main() {
       )
       .setMusic('b', 's')
       .updateMusic('b', (c) => c!.copyWith(end: FmvMusicEnd.laterNodeChanges))
-      .setPauseMusic('b', 'p')
-      .setMenuMusic('s');
+      .updateNode(
+        'b',
+        (n) => (n as BranchedVideoNode).copyWith(
+          overrides: const VideoSettingsOverride(pauseMusicId: 'p'),
+        ),
+      )
+      .setMenuMusic('s')
+      .setPauseMenuMusic('s');
 
   test('fade lengths step a quarter second, onto whole quarters', () {
     expect(stepFade(1000, 1), 1250);
@@ -79,6 +86,46 @@ void main() {
     expect(node.music!.track, r'C:\m\theme.mp3');
     expect(node.music!.end, FmvMusicEnd.laterNodeChanges);
     expect(node.pauseMusic!.track, r'C:\m\tick.wav');
+    expect(project.info.pauseMenuMusic!.track, r'C:\m\theme.mp3');
+  });
+
+  test('pause music is a setting: from the project, a color, or the node', () {
+    // Without its own, the node takes the project's pause music.
+    var d = doc.updateNode(
+      'b',
+      (n) => (n as BranchedVideoNode).copyWith(
+        overrides: const VideoSettingsOverride(),
+      ),
+    );
+    d = d.editDefaults(
+      0,
+      (s) => s.copyWith(pauseMusicId: 's', pauseMusicFadeOutMs: 2000),
+    );
+    var music = exportFmv(d).project.nodes['001']!.pauseMusic!;
+    expect(music.track, r'C:\m\theme.mp3');
+    expect(music.fadeOutMs, 2000);
+    expect(
+      exportFmv(d).project.nodes['001']!.overrides.toJson(),
+      isNot(contains('pauseMusicId')),
+      reason: 'not a playback override in the .fmv',
+    );
+
+    // Its color's defaults come before the project's.
+    final colored = d
+        .updateNode('b', (n) => n.copyWith(swatch: 2))
+        .addColorDefaults(2)
+        .editDefaults(2, (s) => s.copyWith(pauseMusicId: 'p'));
+    music = exportFmv(colored).project.nodes['001']!.pauseMusic!;
+    expect(music.track, r'C:\m\tick.wav');
+
+    // A node can override it with silence.
+    final silent = d.updateNode(
+      'b',
+      (n) => (n as BranchedVideoNode).copyWith(
+        overrides: const VideoSettingsOverride(pauseMusicId: ''),
+      ),
+    );
+    expect(exportFmv(silent).project.nodes['001']!.pauseMusic, isNull);
   });
 
   test('converting keeps the music; copying brings the audio along', () {
@@ -93,7 +140,10 @@ void main() {
     );
     final copy = pasted.node(ids.single) as BranchedVideoNode;
     expect(pasted.mediaById(copy.music!.audioId)!.path, r'C:\m\theme.mp3');
-    expect(pasted.mediaById(copy.pauseMusicId)!.path, r'C:\m\tick.wav');
+    expect(
+      pasted.mediaById(copy.overrides.pauseMusicId)!.path,
+      r'C:\m\tick.wav',
+    );
   });
 
   testWidgets('dropping audio: menu music on the origin; on a branched node '
@@ -129,7 +179,10 @@ void main() {
     );
     await tester.tap(find.text('Pause Music (While Choosing)'));
     await tester.pumpAndSettle();
-    expect((read(c).nodes[node] as BranchedVideoNode).pauseMusicId, isNotNull);
+    expect(
+      (read(c).nodes[node] as BranchedVideoNode).overrides.pauseMusicId,
+      isNotNull,
+    );
     expect(read(c).nodes[node]!.musicOrNull, isNull);
   });
 

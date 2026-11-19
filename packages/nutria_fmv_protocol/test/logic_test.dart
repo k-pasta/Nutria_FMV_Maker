@@ -105,9 +105,12 @@ void main() {
     });
   });
 
-  test('music: with a video, while choosing and in the menu', () {
+  test('music: with a video, while choosing and in the menus', () {
     const project = FmvProject(
-      info: FmvProjectInfo(menuMusic: FmvLoopMusic(track: 'menu.mp3')),
+      info: FmvProjectInfo(
+        menuMusic: FmvLoopMusic(track: 'menu.mp3'),
+        pauseMenuMusic: FmvLoopMusic(track: 'paused.mp3'),
+      ),
       nodes: {
         '001': FmvNode(
           video: 'a.mp4',
@@ -124,6 +127,9 @@ void main() {
     final read = FmvProject.decode(project.encode());
     expect(read.encode(), project.encode());
     expect(read.info.menuMusic!.track, 'menu.mp3');
+    expect(read.info.pauseMenuMusic!.track, 'paused.mp3');
+    expect(const FmvProjectInfo().toJson().containsKey('pauseMenuMusic'),
+        isFalse);
     final node = read.nodes['001']!;
     expect(node.music!.end, FmvMusicEnd.laterNodeChanges);
     expect(node.music!.fadeOutMs, 2000);

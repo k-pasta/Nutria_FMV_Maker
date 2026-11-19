@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 
@@ -65,6 +66,22 @@ void main() {
     media.add({'id': 'srt', 'path': r'C:.srt'});
     final read = NfmvCodec.decode(jsonEncode(json));
     expect(read.media.first.subtitles, {'': 'srt'});
+    expect(read.formatVersion, kNfmvFormatVersion);
+  });
+
+  test('reads version 3, which kept pause music on the node', () {
+    final json = jsonDecode(NfmvCodec.encode(storyFixture())) as Map;
+    json['formatVersion'] = 3;
+    final nodes = json['nodes'] as Map;
+    final branched =
+        nodes.values.firstWhere((n) => (n as Map)['type'] == 'branchedVideo')
+            as Map;
+    branched['pauseMusicId'] = 'tick';
+    branched['pauseMusicFadeOutMs'] = 500;
+    final read = NfmvCodec.decode(jsonEncode(json));
+    final node = read.nodes[branched['id']]! as BranchedVideoNode;
+    expect(node.overrides.pauseMusicId, 'tick');
+    expect(node.overrides.pauseMusicFadeOutMs, 500);
     expect(read.formatVersion, kNfmvFormatVersion);
   });
 

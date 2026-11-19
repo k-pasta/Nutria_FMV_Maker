@@ -6,21 +6,23 @@ part of 'video_settings.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_VideoSettings _$VideoSettingsFromJson(Map<String, dynamic> json) =>
-    _VideoSettings(
-      selectionTimeMs: (json['selectionTimeMs'] as num?)?.toInt() ?? 6000,
-      pauseOnEnd: json['pauseOnEnd'] as bool? ?? false,
-      showTimer: json['showTimer'] as bool? ?? true,
-      videoFit:
-          $enumDecodeNullable(_$VideoFitEnumMap, json['videoFit']) ??
-          VideoFit.fit,
-      defaultSelection:
-          $enumDecodeNullable(
-            _$DefaultSelectionMethodEnumMap,
-            json['defaultSelection'],
-          ) ??
-          DefaultSelectionMethod.first,
-    );
+_VideoSettings _$VideoSettingsFromJson(
+  Map<String, dynamic> json,
+) => _VideoSettings(
+  selectionTimeMs: (json['selectionTimeMs'] as num?)?.toInt() ?? 6000,
+  pauseOnEnd: json['pauseOnEnd'] as bool? ?? false,
+  showTimer: json['showTimer'] as bool? ?? true,
+  videoFit:
+      $enumDecodeNullable(_$VideoFitEnumMap, json['videoFit']) ?? VideoFit.fit,
+  defaultSelection:
+      $enumDecodeNullable(
+        _$DefaultSelectionMethodEnumMap,
+        json['defaultSelection'],
+      ) ??
+      DefaultSelectionMethod.first,
+  pauseMusicId: json['pauseMusicId'] as String? ?? '',
+  pauseMusicFadeOutMs: (json['pauseMusicFadeOutMs'] as num?)?.toInt() ?? 1000,
+);
 
 Map<String, dynamic> _$VideoSettingsToJson(_VideoSettings instance) =>
     <String, dynamic>{
@@ -30,6 +32,8 @@ Map<String, dynamic> _$VideoSettingsToJson(_VideoSettings instance) =>
       'videoFit': _$VideoFitEnumMap[instance.videoFit]!,
       'defaultSelection':
           _$DefaultSelectionMethodEnumMap[instance.defaultSelection]!,
+      'pauseMusicId': instance.pauseMusicId,
+      'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
     };
 
 const _$VideoFitEnumMap = {
@@ -59,6 +63,8 @@ _VideoSettingsOverride _$VideoSettingsOverrideFromJson(
     _$DefaultSelectionMethodEnumMap,
     json['defaultSelection'],
   ),
+  pauseMusicId: json['pauseMusicId'] as String?,
+  pauseMusicFadeOutMs: (json['pauseMusicFadeOutMs'] as num?)?.toInt(),
 );
 
 Map<String, dynamic> _$VideoSettingsOverrideToJson(
@@ -70,4 +76,6 @@ Map<String, dynamic> _$VideoSettingsOverrideToJson(
   'videoFit': _$VideoFitEnumMap[instance.videoFit],
   'defaultSelection':
       _$DefaultSelectionMethodEnumMap[instance.defaultSelection],
+  'pauseMusicId': instance.pauseMusicId,
+  'pauseMusicFadeOutMs': instance.pauseMusicFadeOutMs,
 };

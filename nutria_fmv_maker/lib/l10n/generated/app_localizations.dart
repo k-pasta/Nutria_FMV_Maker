@@ -862,6 +862,12 @@ abstract class AppLocalizations {
   /// **'Menu Music'**
   String get musicMenu;
 
+  /// No description provided for @musicPauseMenu.
+  ///
+  /// In en, this message translates to:
+  /// **'Pause Menu Music'**
+  String get musicPauseMenu;
+
   /// No description provided for @musicRemove.
   ///
   /// In en, this message translates to:

@@ -216,6 +216,7 @@
   "musicPause": "Pause Music",
   "musicPauseFadeOut": "Pause Music Fade Out",
   "musicMenu": "Menu Music",
+  "musicPauseMenu": "Pause Menu Music",
   "musicRemove": "Remove this music",
   "musicNone": "None",
   "musicNoAudio": "No audio imported yet. Import audio files in Imported Media.",

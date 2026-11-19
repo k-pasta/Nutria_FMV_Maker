@@ -138,6 +138,7 @@ class FmvProjectInfo {
     this.title,
     this.description,
     this.menuMusic,
+    this.pauseMenuMusic,
     this.languages = const [],
   });
 
@@ -151,10 +152,15 @@ class FmvProjectInfo {
   /// Music looping in the main menu. (Added after version 1.0.)
   final FmvLoopMusic? menuMusic;
 
+  /// Music looping in the pause menu, when the viewer pauses the story.
+  /// (Added after version 1.0.)
+  final FmvLoopMusic? pauseMenuMusic;
+
   Map<String, Object?> toJson() => {
         if (title != null) 'title': title,
         if (description != null) 'description': description,
         if (menuMusic != null) 'menuMusic': menuMusic!.toJson(),
+        if (pauseMenuMusic != null) 'pauseMenuMusic': pauseMenuMusic!.toJson(),
         if (languages.isNotEmpty) 'languages': languages,
       };
 
@@ -164,6 +170,7 @@ class FmvProjectInfo {
       title: _string(json['title']),
       description: _string(json['description']),
       menuMusic: FmvLoopMusic.fromJson(_map(json['menuMusic'])),
+      pauseMenuMusic: FmvLoopMusic.fromJson(_map(json['pauseMenuMusic'])),
       languages: [
         if (languages is List)
           for (final code in languages)

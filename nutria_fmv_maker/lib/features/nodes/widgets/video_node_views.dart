@@ -248,7 +248,8 @@ class VideoNodeExpansion extends ConsumerWidget {
         ),
       ],
       for (final type in types)
-        VideoSettingRow(
+        if (!type.isMusic)
+          VideoSettingRow(
           onDragStart: editor.beginValueDrag,
           onDragEnd: editor.endValueDrag,
           type: type,

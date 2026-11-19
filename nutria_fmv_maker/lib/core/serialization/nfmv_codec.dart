@@ -88,6 +88,7 @@ abstract final class NfmvCodec {
     var upgraded = decoded;
     if (version < 2) upgraded = _v1ToV2(upgraded);
     if (version < 3) upgraded = _v2ToV3(upgraded);
+    if (version < 4) upgraded = _v3ToV4(upgraded);
 
     final ProjectDocument document;
     try {
@@ -143,6 +144,41 @@ abstract final class NfmvCodec {
     ],
     'formatVersion': 3,
   };
+
+  /// Version 3 kept a branched node's pause music on the node
+  /// (`pauseMusicId`, `pauseMusicFadeOutMs`); version 4 makes it a setting,
+  /// so it moves into the node's overrides.
+  static Map<String, dynamic> _v3ToV4(Map<String, dynamic> json) {
+    final nodes = json['nodes'];
+    if (nodes is! Map<String, dynamic>) return {...json, 'formatVersion': 4};
+    Object? upgrade(Object? node) {
+      if (node is! Map<String, dynamic> ||
+          node['type'] != 'branchedVideo' ||
+          node['pauseMusicId'] is! String) {
+        return node;
+      }
+      final overrides = node['overrides'];
+      return <String, dynamic>{
+        for (final MapEntry(:key, :value) in node.entries)
+          if (key != 'pauseMusicId' && key != 'pauseMusicFadeOutMs')
+            key: value,
+        'overrides': <String, dynamic>{
+          if (overrides is Map<String, dynamic>) ...overrides,
+          'pauseMusicId': node['pauseMusicId'],
+          'pauseMusicFadeOutMs': node['pauseMusicFadeOutMs'] ?? 1000,
+        },
+      };
+    }
+
+    return {
+      ...json,
+      'nodes': <String, dynamic>{
+        for (final MapEntry(:key, :value) in nodes.entries)
+          key: upgrade(value),
+      },
+      'formatVersion': 4,
+    };
+  }
 
   static String _resolvePath({
     required String absolute,

@@ -76,6 +76,10 @@ sealed class Node with _$Node {
 
     /// Imported audio that loops in the main menu, if any.
     String? menuMusicId,
+
+    /// Imported audio that loops in the pause menu (the viewer paused the
+    /// story), if any. Pause music at the end of a video is a setting.
+    String? pauseMenuMusicId,
   }) = OriginNode;
 
   /// Plays a video, then continues to a single next node.
@@ -109,10 +113,6 @@ sealed class Node with _$Node {
     /// `null` when the node has none (the "Question" setting is off).
     String? question,
     MusicCue? music,
-
-    /// Imported audio that loops while the viewer chooses, if any.
-    String? pauseMusicId,
-    @Default(1000) int pauseMusicFadeOutMs,
   }) = BranchedVideoNode;
 
   /// A note for the author: text only, never exported. It stands on the
@@ -187,12 +187,14 @@ sealed class Node with _$Node {
     _ => null,
   };
 
-  /// Every imported file this node uses (video and music).
+  /// Every imported file this node uses itself (video and music). Pause
+  /// music from the project's or a color's defaults isn't counted here.
   Iterable<String> get mediaIds => [
     ?videoIdOrNull,
     ?musicOrNull?.audioId,
-    if (this case BranchedVideoNode(:final pauseMusicId?)) pauseMusicId,
+    if (overridesOrNull?.pauseMusicId case final id? when id.isNotEmpty) id,
     if (this case OriginNode(:final menuMusicId?)) menuMusicId,
+    if (this case OriginNode(:final pauseMenuMusicId?)) pauseMenuMusicId,
   ];
 
   /// Whether this node changes or tests variables.

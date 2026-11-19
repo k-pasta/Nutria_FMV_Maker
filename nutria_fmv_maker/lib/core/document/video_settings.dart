@@ -10,15 +10,35 @@ enum VideoFit { fit, fill, fillWidth, fillHeight, stretch }
 /// Which choice the Player picks when the viewer doesn't choose in time.
 enum DefaultSelectionMethod { first, last, lastSelected, random, specified }
 
-/// Every setting a video node can override. The enum names are the keys used
-/// in exported `.fmv` files, so renaming one is a protocol change.
+/// Every setting a video node can override. The playback ones' names are the
+/// keys used in exported `.fmv` files, so renaming one is a protocol change;
+/// the pause music ones ([isMusic]) are exported as each node's
+/// `pauseMusic` instead.
 enum VideoSettingType {
   selectionTime,
   pauseOnEnd,
   showTimer,
   videoFit,
   defaultSelection,
+
+  /// The music that loops while the viewer chooses at the end of a video.
+  pauseMusic,
+
+  /// How long that music fades out once an answer is picked.
+  pauseMusicFadeOut;
+
+  /// Pause music settings, which have their own rows (a track picker).
+  bool get isMusic => this == pauseMusic || this == pauseMusicFadeOut;
 }
+
+/// The settings shown as ordinary setting rows (everything but music).
+const kPlaybackSettingTypes = [
+  VideoSettingType.selectionTime,
+  VideoSettingType.pauseOnEnd,
+  VideoSettingType.showTimer,
+  VideoSettingType.videoFit,
+  VideoSettingType.defaultSelection,
+];
 
 /// The full set of playback settings. Used as the project defaults, and as the
 /// result of merging a node's [VideoSettingsOverride] onto those defaults.
@@ -38,7 +58,15 @@ abstract class VideoSettings with _$VideoSettings {
     @Default(VideoFit.fit) VideoFit videoFit,
     @Default(DefaultSelectionMethod.first)
     DefaultSelectionMethod defaultSelection,
+
+    /// Imported audio that loops while the viewer chooses; `''` for none
+    /// (so a node can override it to "no music").
+    @Default('') String pauseMusicId,
+    @Default(1000) int pauseMusicFadeOutMs,
   }) = _VideoSettings;
+
+  /// [pauseMusicId], or `null` when there is no pause music.
+  String? get pauseMusicOrNull => pauseMusicId.isEmpty ? null : pauseMusicId;
 
   factory VideoSettings.fromJson(Map<String, dynamic> json) =>
       _$VideoSettingsFromJson(json);
@@ -50,6 +78,8 @@ abstract class VideoSettings with _$VideoSettings {
     VideoSettingType.showTimer => showTimer,
     VideoSettingType.videoFit => videoFit,
     VideoSettingType.defaultSelection => defaultSelection,
+    VideoSettingType.pauseMusic => pauseMusicId,
+    VideoSettingType.pauseMusicFadeOut => pauseMusicFadeOutMs,
   };
 }
 
@@ -65,6 +95,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     bool? showTimer,
     VideoFit? videoFit,
     DefaultSelectionMethod? defaultSelection,
+    String? pauseMusicId,
+    int? pauseMusicFadeOutMs,
   }) = _VideoSettingsOverride;
 
   factory VideoSettingsOverride.fromJson(Map<String, dynamic> json) =>
@@ -77,6 +109,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     if (showTimer != null) VideoSettingType.showTimer,
     if (videoFit != null) VideoSettingType.videoFit,
     if (defaultSelection != null) VideoSettingType.defaultSelection,
+    if (pauseMusicId != null) VideoSettingType.pauseMusic,
+    if (pauseMusicFadeOutMs != null) VideoSettingType.pauseMusicFadeOut,
   ];
 
   bool get isEmpty => activeTypes.isEmpty;
@@ -88,6 +122,8 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     showTimer: showTimer ?? base.showTimer,
     videoFit: videoFit ?? base.videoFit,
     defaultSelection: defaultSelection ?? base.defaultSelection,
+    pauseMusicId: pauseMusicId ?? base.pauseMusicId,
+    pauseMusicFadeOutMs: pauseMusicFadeOutMs ?? base.pauseMusicFadeOutMs,
   );
 
   /// Starts overriding [type], copying its current value from [base] so the
@@ -102,6 +138,12 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
         VideoSettingType.videoFit => copyWith(videoFit: base.videoFit),
         VideoSettingType.defaultSelection => copyWith(
           defaultSelection: base.defaultSelection,
+        ),
+        VideoSettingType.pauseMusic => copyWith(
+          pauseMusicId: base.pauseMusicId,
+        ),
+        VideoSettingType.pauseMusicFadeOut => copyWith(
+          pauseMusicFadeOutMs: base.pauseMusicFadeOutMs,
         ),
       };
 
@@ -130,5 +172,7 @@ abstract class VideoSettingsOverride with _$VideoSettingsOverride {
     VideoSettingType.showTimer => copyWith(showTimer: null),
     VideoSettingType.videoFit => copyWith(videoFit: null),
     VideoSettingType.defaultSelection => copyWith(defaultSelection: null),
+    VideoSettingType.pauseMusic => copyWith(pauseMusicId: null),
+    VideoSettingType.pauseMusicFadeOut => copyWith(pauseMusicFadeOutMs: null),
   };
 }

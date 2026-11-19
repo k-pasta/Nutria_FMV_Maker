@@ -1,11 +1,13 @@
 // How each playback setting changes when the user clicks it in the editor.
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 
 /// Selection time changes by this much per click.
 const kSelectionTimeStepMs = 1000;
 
-/// Which settings a node of each kind can override. Simple video nodes have
-/// no choices, so only the picture settings apply.
+/// Which settings a node of each kind can override (all of them for
+/// branched nodes, pause music included). Simple video nodes have no
+/// choices, so only the picture settings apply.
 const kBranchedNodeSettings = VideoSettingType.values;
 const kSimpleNodeSettings = [VideoSettingType.videoFit];
 
@@ -39,6 +41,11 @@ extension VideoSettingSteps on VideoSettings {
       for (final method in DefaultSelectionMethod.values)
         copyWith(defaultSelection: method),
     ],
+    // Tracks are picked from the imported audio.
+    VideoSettingType.pauseMusic => const [],
+    VideoSettingType.pauseMusicFadeOut => [
+      for (final ms in kMusicFadeSteps) copyWith(pauseMusicFadeOutMs: ms),
+    ],
   };
 
   /// Whether [other] has the same value of [type] as these settings.
@@ -49,6 +56,9 @@ extension VideoSettingSteps on VideoSettings {
     VideoSettingType.videoFit => videoFit == other.videoFit,
     VideoSettingType.defaultSelection =>
       defaultSelection == other.defaultSelection,
+    VideoSettingType.pauseMusic => pauseMusicId == other.pauseMusicId,
+    VideoSettingType.pauseMusicFadeOut =>
+      pauseMusicFadeOutMs == other.pauseMusicFadeOutMs,
   };
 
   /// Steps [type] forward ([direction] 1) or back (-1). Toggles flip either
@@ -69,6 +79,10 @@ extension VideoSettingSteps on VideoSettings {
         defaultSelection,
         direction,
       ),
+    ),
+    VideoSettingType.pauseMusic => this,
+    VideoSettingType.pauseMusicFadeOut => copyWith(
+      pauseMusicFadeOutMs: stepFade(pauseMusicFadeOutMs, direction),
     ),
   };
 }

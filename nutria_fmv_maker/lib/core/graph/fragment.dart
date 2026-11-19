@@ -169,7 +169,12 @@ extension FragmentOps on ProjectDocument {
           music: node.music?.copyWith(
             audioId: videoIds[node.music!.audioId] ?? node.music!.audioId,
           ),
-          pauseMusicId: videoIds[node.pauseMusicId],
+          overrides: switch (node.overrides.pauseMusicId) {
+            final id? when id.isNotEmpty => node.overrides.copyWith(
+              pauseMusicId: videoIds[id] ?? id,
+            ),
+            _ => node.overrides,
+          },
           choices: [
             for (final choice in node.choices)
               choice.copyWith(

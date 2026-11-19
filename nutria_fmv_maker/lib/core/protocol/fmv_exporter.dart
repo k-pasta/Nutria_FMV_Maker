@@ -139,13 +139,7 @@ FmvExport exportFmv(
           choices: choices.isEmpty ? null : choices,
           overrides: _overrides(document, node, kBranchedNodeSettings),
           music: _music(document, node.music),
-          pauseMusic: switch (document.mediaById(node.pauseMusicId)) {
-            final audio? => FmvLoopMusic(
-              track: audio.path,
-              fadeOutMs: node.pauseMusicFadeOutMs,
-            ),
-            null => null,
-          },
+          pauseMusic: _pauseMusic(document, node),
         );
     }
   }
@@ -158,6 +152,12 @@ FmvExport exportFmv(
         description: document.info.description,
         languages: document.info.languages,
         menuMusic: switch (document.mediaById(document.origin.menuMusicId)) {
+          final audio? => FmvLoopMusic(track: audio.path),
+          null => null,
+        },
+        pauseMenuMusic: switch (document.mediaById(
+          document.origin.pauseMenuMusicId,
+        )) {
           final audio? => FmvLoopMusic(track: audio.path),
           null => null,
         },
@@ -269,8 +269,22 @@ Map<String, String> _moreTracks(ProjectDocument document, Node node) {
   return tracks.length > 1 ? tracks : const {};
 }
 
+/// The pause music of branched node [node]: its own, else its color's, else
+/// the project's. The Player gets it on the node, already resolved.
+FmvLoopMusic? _pauseMusic(ProjectDocument document, BranchedVideoNode node) {
+  final settings = node.overrides.applyTo(document.defaultsFor(node.swatch));
+  return switch (document.mediaById(settings.pauseMusicOrNull)) {
+    final audio? => FmvLoopMusic(
+      track: audio.path,
+      fadeOutMs: settings.pauseMusicFadeOutMs,
+    ),
+    null => null,
+  };
+}
+
 /// The node's own overrides plus its color's defaults, as overrides of the
-/// project defaults: the Player knows nothing about colors.
+/// project defaults: the Player knows nothing about colors. (Pause music is
+/// resolved separately, see [_pauseMusic].)
 FmvOverrides _overrides(
   ProjectDocument document,
   Node node,
@@ -279,7 +293,7 @@ FmvOverrides _overrides(
   final o = node.overridesOrNull!.layeredOver(
     document.settings,
     document.defaultsFor(node.swatch),
-    types,
+    types.where((t) => !t.isMusic),
   );
   return FmvOverrides(
     selectionTimeMs: o.selectionTimeMs,

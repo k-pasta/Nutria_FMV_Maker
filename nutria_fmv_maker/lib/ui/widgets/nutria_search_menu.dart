@@ -21,6 +21,7 @@ class NutriaSearchMenu extends StatefulWidget {
     this.emptyText,
     this.isError = false,
     this.isPlaceholder = false,
+    this.isAccented = false,
     this.onOpenChanged,
   });
 
@@ -37,6 +38,10 @@ class NutriaSearchMenu extends StatefulWidget {
 
   /// Shows [label] faintly (nothing picked yet).
   final bool isPlaceholder;
+
+  /// Shows [label] in the accent color for a changed value (an override),
+  /// like other setting rows.
+  final bool isAccented;
   final ValueChanged<bool>? onOpenChanged;
 
   @override
@@ -96,6 +101,8 @@ class _NutriaSearchMenuState extends State<NutriaSearchMenu> {
         text: widget.label,
         state: widget.isError
             ? NutriaTextState.error
+            : widget.isAccented
+            ? NutriaTextState.highlighted
             : (widget.isPlaceholder
                   ? NutriaTextState.inactive
                   : NutriaTextState.normal),

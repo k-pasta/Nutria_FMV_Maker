@@ -421,6 +421,9 @@ class AppLocalizationsEl extends AppLocalizations {
   String get musicMenu => 'Μουσική Μενού';
 
   @override
+  String get musicPauseMenu => 'Μουσική Μενού Παύσης';
+
+  @override
   String get musicRemove => 'Αφαίρεση μουσικής';
 
   @override
