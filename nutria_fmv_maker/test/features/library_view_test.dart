@@ -1,8 +1,8 @@
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 
 import 'app_tester.dart';
 
@@ -14,7 +14,7 @@ void main() {
     c.read(graphEditorProvider).importFiles(['C:/v/a.mp4', 'C:/v/b.mp4']);
     await tester.pumpAndSettle();
     LibraryView view() => c.read(preferencesProvider).libraryView;
-    final library = tester.getCenter(find.byType(VideoLibraryPanel));
+    final library = tester.getCenter(find.byType(MediaLibraryPanel));
     expect(view(), LibraryView.thumbnails);
 
     // A plain wheel scrolls; it doesn't resize.
@@ -39,7 +39,7 @@ void main() {
     final c = await pumpApp(tester);
     c.read(graphEditorProvider).importFiles(['C:/v/a.mp4']);
     await tester.pumpAndSettle();
-    final library = tester.getRect(find.byType(VideoLibraryPanel));
+    final library = tester.getRect(find.byType(MediaLibraryPanel));
 
     await rightClickAt(tester, library.center + const Offset(0, 100));
     await tester.tap(find.text('List'));

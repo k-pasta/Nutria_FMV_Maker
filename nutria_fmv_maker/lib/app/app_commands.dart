@@ -10,6 +10,7 @@ import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
 import 'package:nutria_fmv_maker/features/canvas/canvas_framing.dart';
 import 'package:nutria_fmv_maker/features/canvas/providers/canvas_view_provider.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/comment_provider.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/rename_provider.dart';
@@ -22,7 +23,6 @@ import 'package:nutria_fmv_maker/features/selection/providers/selection_provider
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';

@@ -11,11 +11,11 @@ import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
@@ -108,7 +108,7 @@ void main() {
     );
     await tester.pumpAndSettle();
     final librarySong = find.descendant(
-      of: find.byType(VideoLibraryEntry),
+      of: find.byType(MediaLibraryEntry),
       matching: find.text('song.mp3'),
     );
 

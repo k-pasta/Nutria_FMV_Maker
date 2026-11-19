@@ -228,12 +228,15 @@ Waiting for your OK (I was not allowed to delete these on my own):
   that never reached `main`, so they are experiments worth a look before
   deleting. Delete them, or keep them?
 
-In the code (I'll do these as a step of their own):
-- Names left from when the library held only videos:
-  `video_library/` → `media_library/`, `videoAssetProvider` →
-  `mediaAssetProvider`, `boardImportedVideos` → `boardImportedMedia`, …
-- Strings in the `.arb` files that nothing uses any more.
-- The demo-project script and other tools: keep only what's documented.
+In the code (done):
+- Names left from when the library held only videos are renamed:
+  `video_library/` → `media_library/` (with `MediaLibraryPanel`,
+  `MediaLibraryEntry`), `videoAssetProvider` → `mediaAssetProvider`,
+  `boardImportedVideos` → `boardImportedMedia`. Names that really are
+  about videos (thumbnails, video information, the preview) stay.
+- 7 strings that nothing used any more are gone from the `.arb` files.
+- No stray tools or scripts are left in the repository (the demo script
+  was never committed).
 
 ### To do from these answers
 - **Project information editor**, in a renamed Defaults/Project section:

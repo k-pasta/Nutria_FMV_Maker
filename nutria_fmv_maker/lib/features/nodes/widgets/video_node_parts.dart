@@ -2,10 +2,10 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/painters/diagonal_stripes_painter.dart';
@@ -27,7 +27,7 @@ class NodeThumbnail extends ConsumerWidget {
     final videoId = node.videoIdOrNull;
     final path = videoId == null
         ? null
-        : ref.watch(videoAssetProvider(videoId).select((v) => v?.path));
+        : ref.watch(mediaAssetProvider(videoId).select((v) => v?.path));
     if (path == null) {
       return SizedBox(
         height: height,
@@ -103,7 +103,7 @@ class NodeFileName extends ConsumerWidget {
     final videoId = node.videoIdOrNull;
     final name = videoId == null
         ? null
-        : ref.watch(videoAssetProvider(videoId).select((v) => v?.fileName));
+        : ref.watch(mediaAssetProvider(videoId).select((v) => v?.fileName));
     return Padding(
       padding: EdgeInsets.all(metrics.panelPadding),
       child: SizedBox(

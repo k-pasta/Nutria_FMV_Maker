@@ -9,7 +9,7 @@ class AppLocalizationsEn extends AppLocalizations {
   AppLocalizationsEn([String locale = 'en']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Imported Media';
+  String get boardImportedMedia => 'Imported Media';
 
   @override
   String get libraryLargeThumbnails => 'Large Thumbnails';
@@ -443,9 +443,6 @@ class AppLocalizationsEn extends AppLocalizations {
   String get musicDropAsPause => 'Pause Music (While Choosing)';
 
   @override
-  String get boardScreen => 'Main Menu Design';
-
-  @override
   String get viewStoryGraph => 'Story Graph';
 
   @override
@@ -612,9 +609,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Drop an image or a video here for the background';
 
   @override
-  String get screenOpenDesigner => 'Open the Screen Designer';
-
-  @override
   String get screenBackground => 'Background';
 
   @override
@@ -622,9 +616,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get screenRemoveBackground => 'Remove the background';
-
-  @override
-  String get screenClassicLayout => 'Classic Layout';
 
   @override
   String get screenRemoveElement => 'Remove this element';
@@ -732,15 +723,6 @@ class AppLocalizationsEn extends AppLocalizations {
       'Some logic nodes have problems; the Player will skip what they do';
 
   @override
-  String get contextCompareNode => 'Compare Value';
-
-  @override
-  String get contextMathNode => 'Math';
-
-  @override
-  String get contextSetNode => 'Set Value';
-
-  @override
   String get contextSimpleVideoNode => 'Simple Video';
 
   @override
@@ -793,9 +775,6 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get nodeQuestionHint => 'Question above the choices';
-
-  @override
-  String get editProjectSettings => 'Project Settings';
 
   @override
   String get editRedo => 'Redo';

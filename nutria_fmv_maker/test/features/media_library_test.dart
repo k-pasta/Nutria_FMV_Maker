@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/features/media_library/library_order.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
-import 'package:nutria_fmv_maker/features/video_library/library_order.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 
 import 'app_tester.dart';
 
@@ -97,9 +97,9 @@ void main() {
     c.read(preferencesProvider.notifier).setAutoLinkSubtitles(false);
     c.read(graphEditorProvider).importFiles(_files);
     await tester.pumpAndSettle();
-    expect(find.byType(VideoLibraryEntry), findsNWidgets(_files.length));
+    expect(find.byType(MediaLibraryEntry), findsNWidgets(_files.length));
 
-    final library = tester.getRect(find.byType(VideoLibraryPanel));
+    final library = tester.getRect(find.byType(MediaLibraryPanel));
     await rightClickAt(tester, library.center + const Offset(0, 200));
     await tester.tap(find.text('Group by Kind'));
     await tester.pumpAndSettle();
@@ -110,7 +110,7 @@ void main() {
 
     await tester.tap(find.widgetWithText(LibraryGroupHeader, 'Videos'));
     await tester.pumpAndSettle();
-    expect(find.byType(VideoLibraryEntry), findsNWidgets(_files.length - 2));
+    expect(find.byType(MediaLibraryEntry), findsNWidgets(_files.length - 2));
     expect(
       find.byType(LibraryThumbnail),
       findsNothing,
@@ -148,7 +148,7 @@ void main() {
     tester,
   ) async {
     await pumpApp(tester);
-    final library = tester.getRect(find.byType(VideoLibraryPanel));
+    final library = tester.getRect(find.byType(MediaLibraryPanel));
     await rightClickAt(tester, library.bottomCenter - const Offset(0, 70));
     final last = find.text('Group by File Type');
     expect(last, findsOneWidget);

@@ -10,7 +10,7 @@ import 'package:nutria_fmv_maker/services/thumbnail_service.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
-part 'video_library_providers.g.dart';
+part 'media_library_providers.g.dart';
 
 /// Technical information about the video at [path]. Not saved in the
 /// project; read once per session. `null` if the file is missing.

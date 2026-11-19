@@ -2,8 +2,8 @@
 // uses and how long it plays.
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/story_stats.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 

@@ -10,6 +10,8 @@ import 'package:nutria_fmv_maker/features/about/widgets/about_window.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/canvas_view.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/marquee_layer.dart';
 import 'package:nutria_fmv_maker/features/canvas/widgets/noodle_layer.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_layer.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
@@ -21,8 +23,6 @@ import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.
 import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/status_bar.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/services/window_service.dart';

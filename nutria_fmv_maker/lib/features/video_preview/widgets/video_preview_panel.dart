@@ -4,9 +4,9 @@ import 'package:material_ui/material_ui.dart';
 import 'package:media_kit_video/media_kit_video.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/video_info_format.dart';
 import 'package:nutria_fmv_maker/features/video_preview/widgets/media_details.dart';
@@ -33,7 +33,7 @@ class VideoPreviewPanel extends ConsumerWidget {
     final target = ref.watch(videoPreviewProvider);
     final asset = target == null
         ? null
-        : ref.watch(videoAssetProvider(target.mediaId));
+        : ref.watch(mediaAssetProvider(target.mediaId));
     if (asset != null && !asset.isPlayable) {
       return NutriaScrollArea(
         padding: EdgeInsets.all(theme.dSectionPadding),

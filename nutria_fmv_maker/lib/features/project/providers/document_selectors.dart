@@ -70,9 +70,9 @@ class NodePaintOrder extends _$NodePaintOrder {
       !const ListEquality<String>().equals(previous, next);
 }
 
-/// Imported video [id], or `null`.
+/// Imported file [id], or `null`.
 @riverpod
-MediaAsset? videoAsset(Ref ref, String id) =>
+MediaAsset? mediaAsset(Ref ref, String id) =>
     ref.watch(documentProvider.select((s) => s.document.mediaById(id)));
 
 /// All imported videos, in import order.

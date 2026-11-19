@@ -56,7 +56,7 @@ T _step<T>(List<T> values, T current, int direction) {
 
 /// The file name of imported file [id] ("?" if it's gone).
 String _name(WidgetRef ref, String id) =>
-    ref.watch(videoAssetProvider(id).select((a) => a?.fileName)) ?? '?';
+    ref.watch(mediaAssetProvider(id).select((a) => a?.fileName)) ?? '?';
 
 /// A music setting row: a searchable list of the imported audio files,
 /// with (x) to remove the track and, on right-click, playing it in the

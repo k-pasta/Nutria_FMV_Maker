@@ -5,11 +5,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/missing_files_window.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 
 import 'app_tester.dart';

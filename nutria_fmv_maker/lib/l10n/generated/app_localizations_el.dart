@@ -9,7 +9,7 @@ class AppLocalizationsEl extends AppLocalizations {
   AppLocalizationsEl([String locale = 'el']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Εισαγόμενα Πολυμέσα';
+  String get boardImportedMedia => 'Εισαγόμενα Πολυμέσα';
 
   @override
   String get libraryLargeThumbnails => 'Μεγάλες Μικρογραφίες';
@@ -444,9 +444,6 @@ class AppLocalizationsEl extends AppLocalizations {
   String get musicDropAsPause => 'Μουσική Παύσης (στις Επιλογές)';
 
   @override
-  String get boardScreen => 'Σχεδίαση Κεντρικού Μενού';
-
-  @override
   String get viewStoryGraph => 'Γράφημα Ιστορίας';
 
   @override
@@ -613,9 +610,6 @@ class AppLocalizationsEl extends AppLocalizations {
       'Ρίξτε εδώ μια εικόνα ή ένα βίντεο για φόντο';
 
   @override
-  String get screenOpenDesigner => 'Άνοιγμα Σχεδιαστή Οθονών';
-
-  @override
   String get screenBackground => 'Φόντο';
 
   @override
@@ -623,9 +617,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get screenRemoveBackground => 'Αφαίρεση φόντου';
-
-  @override
-  String get screenClassicLayout => 'Κλασική Διάταξη';
 
   @override
   String get screenRemoveElement => 'Αφαίρεση στοιχείου';
@@ -733,15 +724,6 @@ class AppLocalizationsEl extends AppLocalizations {
       'Κάποιοι κόμβοι λογικής έχουν προβλήματα· το Player θα τους παραλείψει';
 
   @override
-  String get contextCompareNode => 'Σύγκριση Τιμής';
-
-  @override
-  String get contextMathNode => 'Μαθηματικά';
-
-  @override
-  String get contextSetNode => 'Ορισμός Τιμής';
-
-  @override
   String get contextSimpleVideoNode => 'Απλό Βίντεο';
 
   @override
@@ -794,9 +776,6 @@ class AppLocalizationsEl extends AppLocalizations {
 
   @override
   String get nodeQuestionHint => 'Ερώτηση πάνω από τις επιλογές';
-
-  @override
-  String get editProjectSettings => 'Ρυθμίσεις Πρότζεκτ';
 
   @override
   String get editRedo => 'Επανάληψη';

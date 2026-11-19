@@ -100,11 +100,11 @@ abstract class AppLocalizations {
     Locale('fr'),
   ];
 
-  /// No description provided for @boardImportedVideos.
+  /// No description provided for @boardImportedMedia.
   ///
   /// In en, this message translates to:
   /// **'Imported Media'**
-  String get boardImportedVideos;
+  String get boardImportedMedia;
 
   /// No description provided for @libraryLargeThumbnails.
   ///
@@ -904,12 +904,6 @@ abstract class AppLocalizations {
   /// **'Pause Music (While Choosing)'**
   String get musicDropAsPause;
 
-  /// No description provided for @boardScreen.
-  ///
-  /// In en, this message translates to:
-  /// **'Main Menu Design'**
-  String get boardScreen;
-
   /// No description provided for @viewStoryGraph.
   ///
   /// In en, this message translates to:
@@ -1204,12 +1198,6 @@ abstract class AppLocalizations {
   /// **'Drop an image or a video here for the background'**
   String get screenDropBackground;
 
-  /// No description provided for @screenOpenDesigner.
-  ///
-  /// In en, this message translates to:
-  /// **'Open the Screen Designer'**
-  String get screenOpenDesigner;
-
   /// No description provided for @screenBackground.
   ///
   /// In en, this message translates to:
@@ -1227,12 +1215,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Remove the background'**
   String get screenRemoveBackground;
-
-  /// No description provided for @screenClassicLayout.
-  ///
-  /// In en, this message translates to:
-  /// **'Classic Layout'**
-  String get screenClassicLayout;
 
   /// No description provided for @screenRemoveElement.
   ///
@@ -1420,24 +1402,6 @@ abstract class AppLocalizations {
   /// **'Some logic nodes have problems; the Player will skip what they do'**
   String get notifyExportLogicIssues;
 
-  /// No description provided for @contextCompareNode.
-  ///
-  /// In en, this message translates to:
-  /// **'Compare Value'**
-  String get contextCompareNode;
-
-  /// No description provided for @contextMathNode.
-  ///
-  /// In en, this message translates to:
-  /// **'Math'**
-  String get contextMathNode;
-
-  /// No description provided for @contextSetNode.
-  ///
-  /// In en, this message translates to:
-  /// **'Set Value'**
-  String get contextSetNode;
-
   /// No description provided for @contextSimpleVideoNode.
   ///
   /// In en, this message translates to:
@@ -1545,12 +1509,6 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Question above the choices'**
   String get nodeQuestionHint;
-
-  /// No description provided for @editProjectSettings.
-  ///
-  /// In en, this message translates to:
-  /// **'Project Settings'**
-  String get editProjectSettings;
 
   /// No description provided for @editRedo.
   ///

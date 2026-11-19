@@ -9,12 +9,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_commands.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/features/media_library/library_order.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/library_order.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/painters/diagonal_stripes_painter.dart';
@@ -57,8 +57,8 @@ String libraryGroupTitle(AppLocalizations t, Object? key) => switch (key) {
 /// The imported media as a grid or a list, optionally in collapsible groups,
 /// with an import (+) button that floats over them. Ctrl+wheel, or the
 /// right-click menu, changes the size; the menu also sorts and groups.
-class VideoLibraryPanel extends ConsumerWidget {
-  const VideoLibraryPanel({super.key});
+class MediaLibraryPanel extends ConsumerWidget {
+  const MediaLibraryPanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -87,7 +87,7 @@ class VideoLibraryPanel extends ConsumerWidget {
     Widget entriesOf(List<MediaAsset> list) {
       final entries = [
         for (final asset in list)
-          VideoLibraryEntry(
+          MediaLibraryEntry(
             key: ValueKey(asset.id),
             video: asset,
             view: view,
@@ -314,8 +314,8 @@ class LibraryGroupHeader extends StatelessWidget {
 /// One imported file: thumbnail (unless [view] is a plain list) and file
 /// name. Clicking a video previews it; dragging one onto the canvas creates a
 /// node, onto a node sets that node's video.
-class VideoLibraryEntry extends ConsumerStatefulWidget {
-  const VideoLibraryEntry({
+class MediaLibraryEntry extends ConsumerStatefulWidget {
+  const MediaLibraryEntry({
     super.key,
     required this.video,
     required this.view,
@@ -327,10 +327,10 @@ class VideoLibraryEntry extends ConsumerStatefulWidget {
   final bool isPreviewed;
 
   @override
-  ConsumerState<VideoLibraryEntry> createState() => _VideoLibraryEntryState();
+  ConsumerState<MediaLibraryEntry> createState() => _MediaLibraryEntryState();
 }
 
-class _VideoLibraryEntryState extends ConsumerState<VideoLibraryEntry> {
+class _MediaLibraryEntryState extends ConsumerState<MediaLibraryEntry> {
   bool _hovered = false;
 
   @override

@@ -5,6 +5,7 @@ import 'package:material_ui/material_ui.dart' show Icons;
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_layout.dart';
 import 'package:nutria_fmv_maker/features/nodes/widgets/node_frame.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
@@ -12,7 +13,6 @@ import 'package:nutria_fmv_maker/features/project/providers/document_provider.da
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 
@@ -33,7 +33,7 @@ Future<ProviderContainer> pumpWithVideos(WidgetTester tester) {
 Future<void> importFiles(WidgetTester tester) async {
   await tester.tap(
     find.descendant(
-      of: find.byType(VideoLibraryPanel),
+      of: find.byType(MediaLibraryPanel),
       matching: find.byIcon(Icons.add),
     ),
   );
@@ -70,7 +70,7 @@ void main() {
     await tester.tap(find.text('ending.mp4'));
     await tester.pumpAndSettle();
     final previewed = container.read(videoPreviewProvider)!.mediaId;
-    expect(container.read(videoAssetProvider(previewed))!.path, videos[1]);
+    expect(container.read(mediaAssetProvider(previewed))!.path, videos[1]);
   });
 
   testWidgets('dropping a library video on the canvas creates a node', (
@@ -85,7 +85,7 @@ void main() {
     final nodes = container.read(projectDocumentProvider).nodes.values;
     expect(nodes, hasLength(before + 1));
     final videoId = nodes.last.videoIdOrNull!;
-    expect(container.read(videoAssetProvider(videoId))!.path, videos[0]);
+    expect(container.read(mediaAssetProvider(videoId))!.path, videos[0]);
   });
 
   testWidgets('dropping a library video on a node sets its video', (
@@ -109,7 +109,7 @@ void main() {
 
     final node = container.read(projectDocumentProvider).nodes[id]!;
     expect(
-      container.read(videoAssetProvider(node.videoIdOrNull!))!.path,
+      container.read(mediaAssetProvider(node.videoIdOrNull!))!.path,
       videos[1],
     );
     // On the node, the file name replaces "No Video".

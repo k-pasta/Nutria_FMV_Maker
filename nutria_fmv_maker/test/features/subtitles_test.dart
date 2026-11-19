@@ -9,11 +9,11 @@ import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
 
@@ -90,13 +90,13 @@ void main() {
       r'C:\m\intro.srt',
     ]);
     await tester.pumpAndSettle();
-    expect(find.byType(VideoLibraryEntry), findsOneWidget);
+    expect(find.byType(MediaLibraryEntry), findsOneWidget);
     expect(find.byIcon(Icons.closed_caption), findsOneWidget);
 
     await rightClickAt(tester, tester.getCenter(find.text('intro.mp4')));
     await tester.tap(find.text('Unlink Subtitles'));
     await tester.pumpAndSettle();
-    expect(find.byType(VideoLibraryEntry), findsNWidgets(2));
+    expect(find.byType(MediaLibraryEntry), findsNWidgets(2));
     expect(find.byIcon(Icons.closed_caption), findsNothing);
   });
 

@@ -178,7 +178,7 @@ class _NodeFrameState extends ConsumerState<NodeFrame> {
     final videoId = node.videoIdOrNull;
     final fileName = videoId == null
         ? null
-        : ref.watch(videoAssetProvider(videoId).select((v) => v?.fileName));
+        : ref.watch(mediaAssetProvider(videoId).select((v) => v?.fileName));
     final layout = NodeLayout(
       node,
       NodeMetrics.of(context),

@@ -7,11 +7,11 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
+import 'package:nutria_fmv_maker/features/media_library/providers/media_library_providers.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/providers/video_library_providers.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/text/markdown_text.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -218,7 +218,7 @@ class _Stage extends ConsumerWidget {
     final screen = ref.watch(
       projectDocumentProvider.select((d) => d.screenOf(kind)),
     );
-    final background = ref.watch(videoAssetProvider(screen.backgroundId ?? ''));
+    final background = ref.watch(mediaAssetProvider(screen.backgroundId ?? ''));
     final guides = ref.watch(screenDragProvider);
     final editor = ref.read(graphEditorProvider);
     return LayoutBuilder(

@@ -1,6 +1,7 @@
 // The left panel: a dropdown to pick a section, and that section.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/widgets/preferences_panel.dart';
 import 'package:nutria_fmv_maker/features/project_info/widgets/project_panel.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/project_settings_panel.dart';
@@ -8,7 +9,6 @@ import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dar
 import 'package:nutria_fmv_maker/features/screens/widgets/screen_panel.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/variables/widgets/variables_panel.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
@@ -49,7 +49,7 @@ class LeftPanel extends ConsumerWidget {
                   switch (s) {
                     LeftPanelSection.media => NutriaDropdownOption(
                       icon: Icons.camera_roll,
-                      text: t.boardImportedVideos,
+                      text: t.boardImportedMedia,
                     ),
                     LeftPanelSection.variables => NutriaDropdownOption(
                       icon: Icons.data_object,
@@ -88,7 +88,7 @@ class LeftPanel extends ConsumerWidget {
               child: SizedBox.expand(
                 key: ValueKey(section),
                 child: switch (section) {
-                  LeftPanelSection.media => const VideoLibraryPanel(),
+                  LeftPanelSection.media => const MediaLibraryPanel(),
                   LeftPanelSection.variables => const VariablesPanel(),
                   LeftPanelSection.screen => const ScreenPanel(),
                   LeftPanelSection.project => const ProjectPanel(),

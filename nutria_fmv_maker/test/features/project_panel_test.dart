@@ -1,11 +1,11 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart' show TextField;
+import 'package:nutria_fmv_maker/features/media_library/widgets/media_library_panel.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
-import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
 
 import 'app_tester.dart';
 
@@ -51,7 +51,7 @@ void main() {
     layout.showSection(LeftPanelSection.media);
     await tester.pumpAndSettle();
     Finder entry(String name) => find.descendant(
-      of: find.byType(VideoLibraryEntry),
+      of: find.byType(MediaLibraryEntry),
       matching: find.text(name),
     );
     await _drag(

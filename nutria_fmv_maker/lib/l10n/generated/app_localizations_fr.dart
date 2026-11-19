@@ -9,7 +9,7 @@ class AppLocalizationsFr extends AppLocalizations {
   AppLocalizationsFr([String locale = 'fr']) : super(locale);
 
   @override
-  String get boardImportedVideos => 'Médias Importés';
+  String get boardImportedMedia => 'Médias Importés';
 
   @override
   String get libraryLargeThumbnails => 'Grandes miniatures';
@@ -446,9 +446,6 @@ class AppLocalizationsFr extends AppLocalizations {
   String get musicDropAsPause => 'Musique de pause (pendant le choix)';
 
   @override
-  String get boardScreen => 'Conception du menu';
-
-  @override
   String get viewStoryGraph => 'Graphe de l’histoire';
 
   @override
@@ -615,9 +612,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Déposez ici une image ou une vidéo pour le fond';
 
   @override
-  String get screenOpenDesigner => 'Ouvrir le concepteur d’écrans';
-
-  @override
   String get screenBackground => 'Fond';
 
   @override
@@ -625,9 +619,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get screenRemoveBackground => 'Retirer le fond';
-
-  @override
-  String get screenClassicLayout => 'Disposition classique';
 
   @override
   String get screenRemoveElement => 'Retirer cet élément';
@@ -734,15 +725,6 @@ class AppLocalizationsFr extends AppLocalizations {
       'Certains nœuds logiques ont des problèmes ; le Player les ignorera';
 
   @override
-  String get contextCompareNode => 'Comparaison de Valeur';
-
-  @override
-  String get contextMathNode => 'Mathématique';
-
-  @override
-  String get contextSetNode => 'Définition de Valeur';
-
-  @override
   String get contextSimpleVideoNode => 'Vidéo Simple';
 
   @override
@@ -796,9 +778,6 @@ class AppLocalizationsFr extends AppLocalizations {
 
   @override
   String get nodeQuestionHint => 'Question au-dessus des choix';
-
-  @override
-  String get editProjectSettings => 'Paramètres du Projet';
 
   @override
   String get editRedo => 'Rétablir';

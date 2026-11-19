@@ -317,32 +317,32 @@ abstract class _$NodePaintOrder extends $Notifier<List<String>> {
 
 /// Imported video [id], or `null`.
 
-@ProviderFor(videoAsset)
-final videoAssetProvider = VideoAssetFamily._();
+@ProviderFor(mediaAsset)
+final mediaAssetProvider = MediaAssetFamily._();
 
 /// Imported video [id], or `null`.
 
-final class VideoAssetProvider
+final class MediaAssetProvider
     extends $FunctionalProvider<MediaAsset?, MediaAsset?, MediaAsset?>
     with $Provider<MediaAsset?> {
   /// Imported video [id], or `null`.
-  VideoAssetProvider._({
-    required VideoAssetFamily super.from,
+  MediaAssetProvider._({
+    required MediaAssetFamily super.from,
     required String super.argument,
   }) : super(
          retry: null,
-         name: r'videoAssetProvider',
+         name: r'mediaAssetProvider',
          isAutoDispose: true,
          dependencies: null,
          $allTransitiveDependencies: null,
        );
 
   @override
-  String debugGetCreateSourceHash() => _$videoAssetHash();
+  String debugGetCreateSourceHash() => _$mediaAssetHash();
 
   @override
   String toString() {
-    return r'videoAssetProvider'
+    return r'mediaAssetProvider'
         ''
         '($argument)';
   }
@@ -355,7 +355,7 @@ final class VideoAssetProvider
   @override
   MediaAsset? create(Ref ref) {
     final argument = this.argument as String;
-    return videoAsset(ref, argument);
+    return mediaAsset(ref, argument);
   }
 
   /// {@macro riverpod.override_with_value}
@@ -368,7 +368,7 @@ final class VideoAssetProvider
 
   @override
   bool operator ==(Object other) {
-    return other is VideoAssetProvider && other.argument == argument;
+    return other is MediaAssetProvider && other.argument == argument;
   }
 
   @override
@@ -377,16 +377,16 @@ final class VideoAssetProvider
   }
 }
 
-String _$videoAssetHash() => r'20e459881079c1f914bb5cd7a8097dcf7b088433';
+String _$mediaAssetHash() => r'1fa31dc8ac7edbd79372e77853682fc377f210d6';
 
 /// Imported video [id], or `null`.
 
-final class VideoAssetFamily extends $Family
+final class MediaAssetFamily extends $Family
     with $FunctionalFamilyOverride<MediaAsset?, String> {
-  VideoAssetFamily._()
+  MediaAssetFamily._()
     : super(
         retry: null,
-        name: r'videoAssetProvider',
+        name: r'mediaAssetProvider',
         dependencies: null,
         $allTransitiveDependencies: null,
         isAutoDispose: true,
@@ -394,11 +394,11 @@ final class VideoAssetFamily extends $Family
 
   /// Imported video [id], or `null`.
 
-  VideoAssetProvider call(String id) =>
-      VideoAssetProvider._(argument: id, from: this);
+  MediaAssetProvider call(String id) =>
+      MediaAssetProvider._(argument: id, from: this);
 
   @override
-  String toString() => r'videoAssetProvider';
+  String toString() => r'mediaAssetProvider';
 }
 
 /// All imported videos, in import order.
