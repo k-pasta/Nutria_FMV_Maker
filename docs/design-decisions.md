@@ -104,8 +104,10 @@ Waiting for your OK (I was not allowed to delete these on my own):
   downloads only what's needed (slower once).
 - **Old branches** in the Maker repository: `immutable-data`,
   `k-pasta/issue1`, `k-pasta/issue4`, `new-node-workaround` (local and on
-  GitHub). Everything they hold is older than `legacy`; delete them, or
-  keep them?
+  GitHub), all from early 2025. The two `k-pasta/issue` branches are fully
+  in `legacy`; `immutable-data` and `new-node-workaround` have commits
+  that never reached `main`, so they are experiments worth a look before
+  deleting. Delete them, or keep them?
 
 In the code (I'll do these as a step of their own):
 - Names left from when the library held only videos:
