@@ -4,6 +4,39 @@ Decisions made while working on my own, newest round first. Each entry says
 what was decided and why. **"Ask"** marks questions I would have asked you;
 change any of them and I'll adapt.
 
+## Open questions at a glance
+Each is explained in its section below. The Maker works without answers;
+these only change details.
+
+### Player and protocol
+1. **May I update the Player?** It isn't under git, so I haven't touched
+   it. It needs to switch to the shared package and to play logic nodes,
+   variables, music, subtitles, bold/italic text, questions and the
+   designed menu. Until then, files with logic nodes won't play in the
+   current Player.
+
+### Earlier phases
+2. Allow non-ASCII letters in variable names?
+3. Keep a variable's min/max when switching between whole and decimal?
+4. Should F2 be ignored while typing in a field?
+5. Does a lone Alt press focus the window menu on your machine?
+6. Should color groups follow the first group's values until changed?
+7. Keep the notification history across restarts?
+8. Check for missing files again when the window regains focus?
+9. Several subtitle files (languages) per video?
+10. Hide bold/italic markers except near the cursor?
+11. Should a single click on a selected comment start typing?
+12. When a node is deleted, should its comment stay behind?
+
+### Logic, music and screens
+13. Problems are shown as tooltips, not as an error row above the node.
+    Is that OK?
+14. Should Tab move to the next field when there's nothing to complete?
+15. Music fade out: steps, or a typed number?
+16. A picker for music, besides dropping audio on a node?
+17. Screens: add elements with buttons and then drag them. Is that OK?
+18. Screens: a full colour picker, and creating and renaming styles?
+
 ## Fifth round (from the big feature list)
 
 ### Phase 1a: bug fixes
