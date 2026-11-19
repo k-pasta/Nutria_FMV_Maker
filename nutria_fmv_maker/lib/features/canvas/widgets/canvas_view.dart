@@ -20,6 +20,7 @@ import 'package:nutria_fmv_maker/features/project/providers/document_provider.da
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/painters/dot_grid_painter.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
@@ -58,6 +59,14 @@ class CanvasView extends ConsumerWidget {
     ref.listen(documentProvider.select((s) => s.generation), (_, _) {
       frameAll();
     });
+
+    // The side panels lie over the canvas; framing avoids them.
+    final panels = ref.watch(panelLayoutProvider);
+    controller
+      ..coveredLeft = panels.leftClosed ? 0 : panels.left + kPanelHandleWidth
+      ..coveredRight = panels.rightClosed
+          ? 0
+          : panels.right + kPanelHandleWidth;
 
     return LayoutBuilder(
       builder: (context, constraints) {

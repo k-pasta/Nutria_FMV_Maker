@@ -368,3 +368,13 @@ what the Maker checks.
   as words.
 - No separate "simple math" colouring: in simple math the same field
   just accepts less.
+
+### Real-app check of the logic nodes, and a framing fix
+- Logic nodes looked right in the real app: their titles, the
+  operation stepper, knots level with the first row, and the wavy
+  underline under an unknown name.
+- **Fixed: "Frame All" and opening a project ignored the side panels.**
+  The panels lie over the canvas, so nodes were fitted and centred on
+  the whole window, and some ended up under a panel. Framing, the
+  starting view and "paste at the view's centre" now use the part
+  between the open panels. This bug was there before this session.

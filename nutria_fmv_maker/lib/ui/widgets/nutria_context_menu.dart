@@ -84,68 +84,9 @@ class _NutriaContextMenuAreaState extends State<NutriaContextMenuArea>
     _close();
     final items = widget.itemsAt(localPosition);
     if (items.isEmpty) return;
-    final position = globalPosition;
-    final theme = context.appTheme;
-    final itemStyle = NutriaMenuStyles(theme).item;
-
     _entry = OverlayEntry(
-      builder: (_) => Stack(
-        children: [
-          // Any click outside the menu closes it and still reaches the app.
-          Positioned.fill(
-            child: Listener(
-              behavior: HitTestBehavior.translucent,
-              onPointerDown: (_) => _close(),
-            ),
-          ),
-          // Opens at the click, moved in as needed to stay in the window.
-          CustomSingleChildLayout(
-            delegate: _InsideWindow(position),
-            child: IntrinsicWidth(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: theme.cCard,
-                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                  boxShadow: theme.cardShadow(lifted: true),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      for (final item in items)
-                        if (item.isDivider)
-                          Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: theme.dPanelPadding / 2,
-                            ),
-                            child: Container(
-                              height: theme.dDividerWidth,
-                              color: theme.cDivider,
-                            ),
-                          )
-                        else
-                          MenuItemButton(
-                            leadingIcon: Icon(item.icon),
-                            style: itemStyle,
-                            onPressed: () {
-                              _close();
-                              item.onSelected!();
-                            },
-                            child: NutriaText(
-                              text: item.label!,
-                              state: NutriaTextState.accented,
-                            ),
-                          ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      builder: (_) =>
+          _menuOverlay(context.appTheme, globalPosition, items, _close),
     );
     Overlay.of(context).insert(_entry!);
     widget.onOpenChanged?.call(true);
@@ -207,4 +148,97 @@ class _InsideWindow extends SingleChildLayoutDelegate {
   @override
   bool shouldRelayout(_InsideWindow oldDelegate) =>
       oldDelegate.position != position;
+}
+
+/// Opens a menu of [items] at [globalPosition] (moved in to fit the
+/// window), as a right-click would, e.g. after something is dropped.
+/// [onOpenChanged] hears when it opens and closes.
+void showNutriaMenu(
+  BuildContext context,
+  Offset globalPosition,
+  List<NutriaContextMenuItem> items, {
+  ValueChanged<bool>? onOpenChanged,
+}) {
+  late final OverlayEntry entry;
+  var open = true;
+  void close() {
+    if (!open) return;
+    open = false;
+    entry.remove();
+    onOpenChanged?.call(false);
+  }
+
+  entry = OverlayEntry(
+    builder: (_) =>
+        _menuOverlay(context.appTheme, globalPosition, items, close),
+  );
+  Overlay.of(context).insert(entry);
+  onOpenChanged?.call(true);
+}
+
+/// The menu itself, over a layer that closes it on any click elsewhere.
+Widget _menuOverlay(
+  AppTheme theme,
+  Offset position,
+  List<NutriaContextMenuItem> items,
+  VoidCallback close,
+) {
+  final itemStyle = NutriaMenuStyles(theme).item;
+  return Stack(
+    children: [
+      // Any click outside the menu closes it and still reaches the app.
+      Positioned.fill(
+        child: Listener(
+          behavior: HitTestBehavior.translucent,
+          onPointerDown: (_) => close(),
+        ),
+      ),
+      // Opens at the click, moved in as needed to stay in the window.
+      CustomSingleChildLayout(
+        delegate: _InsideWindow(position),
+        child: IntrinsicWidth(
+          child: Container(
+            decoration: BoxDecoration(
+              color: theme.cCard,
+              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+              boxShadow: theme.cardShadow(lifted: true),
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(theme.dPanelBorderRadius),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  for (final item in items)
+                    if (item.isDivider)
+                      Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: theme.dPanelPadding / 2,
+                        ),
+                        child: Container(
+                          height: theme.dDividerWidth,
+                          color: theme.cDivider,
+                        ),
+                      )
+                    else
+                      MenuItemButton(
+                        leadingIcon: Icon(item.icon),
+                        style: itemStyle,
+                        onPressed: () {
+                          close();
+                          item.onSelected!();
+                        },
+                        child: NutriaText(
+                          text: item.label!,
+                          state: NutriaTextState.accented,
+                        ),
+                      ),
+                ],
+              ),
+            ),
+          ),
+        ),
+      ),
+    ],
+  );
 }

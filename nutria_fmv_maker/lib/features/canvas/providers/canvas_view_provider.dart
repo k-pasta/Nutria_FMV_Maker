@@ -38,6 +38,18 @@ class CanvasViewController extends TransformationController {
 
   /// Size of the on-screen canvas. Keyboard zoom keeps its center fixed.
   Size get viewportSize => _viewportSize;
+
+  /// How far the side panels reach over the viewport from its left and
+  /// right edges. Framing and centering use the part between them.
+  double coveredLeft = 0;
+  double coveredRight = 0;
+
+  /// The middle of the part of the viewport not under a panel.
+  Offset get _visibleMiddle => Offset(
+    coveredLeft +
+        math.max(0, viewportSize.width - coveredLeft - coveredRight) / 2,
+    viewportSize.height / 2,
+  );
   Size _viewportSize = Size.zero;
 
   /// Called by the canvas widget after layout. The first time, the view is
@@ -92,8 +104,8 @@ class CanvasViewController extends TransformationController {
   /// it's elsewhere. Pasting puts nodes there.
   Offset? pointer;
 
-  /// The node position in the middle of the viewport.
-  Offset get center => toCanvasPosition(viewportSize.center(Offset.zero));
+  /// The node position in the middle of the visible viewport.
+  Offset get center => toCanvasPosition(_visibleMiddle);
 
   /// Shows [point] (node coordinates) in the middle of the viewport at
   /// [scale] (default: the current zoom).
@@ -107,7 +119,10 @@ class CanvasViewController extends TransformationController {
   /// [animate], the view glides there; any pan or zoom stops it.
   void frame(Rect rect, {bool animate = false}) {
     final room = Size(
-      math.max(1, viewportSize.width - kFrameMargin * 2),
+      math.max(
+        1,
+        viewportSize.width - coveredLeft - coveredRight - kFrameMargin * 2,
+      ),
       math.max(1, viewportSize.height - kFrameMargin * 2),
     );
     final fit = math.min(room.width / math.max(1, rect.width),
@@ -120,7 +135,7 @@ class CanvasViewController extends TransformationController {
   /// The pan/zoom that shows node position [point] in the viewport's middle.
   Matrix4 _viewOf(Offset point, double scale) {
     final scene = point + kCanvasCenter;
-    final middle = viewportSize.center(Offset.zero);
+    final middle = _visibleMiddle;
     return Matrix4.identity()
       ..translateByDouble(
           middle.dx - scene.dx * scale, middle.dy - scene.dy * scale, 0, 1)
