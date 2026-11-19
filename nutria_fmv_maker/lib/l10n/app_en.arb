@@ -387,6 +387,7 @@
   "screenBuiltInFonts": "Fonts that come with Nutria FMV",
   "screenImportedFonts": "Imported fonts",
   "screenFullScreenPreview": "Full-Screen Preview (Esc closes it)",
+  "screenPercentNote": "Numbers are percentages of the screen: widths of its width, other sizes of its height.",
   "overrideChoiceScreen": "Choice Screen",
   "overrideEndChoiceScreen": "Pause Choice Screen",
   "logicProblemNoVariable": "Pick a variable.",

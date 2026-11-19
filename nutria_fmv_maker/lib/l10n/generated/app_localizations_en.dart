@@ -805,6 +805,10 @@ class AppLocalizationsEn extends AppLocalizations {
   String get screenFullScreenPreview => 'Full-Screen Preview (Esc closes it)';
 
   @override
+  String get screenPercentNote =>
+      'Numbers are percentages of the screen: widths of its width, other sizes of its height.';
+
+  @override
   String get overrideChoiceScreen => 'Choice Screen';
 
   @override

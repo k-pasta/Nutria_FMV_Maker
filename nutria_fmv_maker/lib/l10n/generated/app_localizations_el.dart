@@ -807,6 +807,10 @@ class AppLocalizationsEl extends AppLocalizations {
       'Προεπισκόπηση σε Πλήρη Οθόνη (Esc για κλείσιμο)';
 
   @override
+  String get screenPercentNote =>
+      'Οι αριθμοί είναι ποσοστά της οθόνης: τα πλάτη του πλάτους της, τα άλλα μεγέθη του ύψους της.';
+
+  @override
   String get overrideChoiceScreen => 'Οθόνη Επιλογής';
 
   @override

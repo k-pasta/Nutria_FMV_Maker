@@ -778,3 +778,69 @@ what the Maker checks.
 - Other settings on a branched node that are not overridable: the
   question (it's the node's text, like its answers) and its own music,
   which belongs to the video rather than to a group of nodes.
+
+### C. Screens
+- **One drawing for both apps.** A new shared package,
+  `packages/nutria_fmv_screens`, draws every designed screen. The
+  designer's stage, its full-screen preview, the origin node and the Player
+  all use it, so what you design is what viewers see. The Player gets it
+  from GitHub, like the protocol.
+- **Built-in fonts** (all SIL Open Font License 1.1, which allows bundling
+  them and using them in commercial stories; they just can't be sold on
+  their own). Each covers Latin, Greek, Cyrillic and Vietnamese; none
+  covers Chinese, Japanese or Korean, whose fonts are tens of MB each:
+  - **Modern, geometric:** Manrope (close to Montserrat, but Montserrat
+    has no Greek).
+  - **Garamond-like:** EB Garamond.
+  - **Monospace:** JetBrains Mono.
+  - **Rounded, visual-novel feel:** Comfortaa.
+  - **Roboto/Arial-like:** Inter.
+  The default styles now use Manrope (headings) and Inter. Their licences
+  are added to the app's licence page. They add about 3.9 MB to each app.
+- **Screens:**
+  - Every project has a Main Menu, a Choice Screen, a **Pause Choice
+    Screen** (over the last frame when a video waits) and a Pause Menu.
+  - A **Settings Screen** appears once a menu has a Settings button, and a
+    **Saved Games Screen** once one has Load or Save. They stay if the
+    button is removed (marked "not used", and not exported).
+  - **More answer screens:** "+ New Choice Screen" and "+ New Pause Choice
+    Screen". Rename by double-click or right-click; delete extra ones by
+    right-click (nodes using a deleted screen go back to the first one).
+    Styles are renamed the same way.
+  - **Which screen a node uses** is a setting like the others: the
+    project's, a colour's, or the node's own. The pause choice screen row
+    shows only when Pause on End is on.
+- **Required elements:** a menu needs Start, an answer screen its question
+  and answers (and the timer, on the one over the video), the pause menu
+  Resume, settings their volume, subtitles, full-screen and Back, saved
+  games the list and Back. They're always there; the tray offers only the
+  rest, and their delete button is greyed out with a tooltip saying why.
+- **Answer layouts**, picked from a row of icons:
+  - One under another (more columns when they don't fit) and side by side
+    (more rows when each would get narrower than 14% of the screen).
+    Any number of answers fits: a block bigger than the screen is scaled
+    down.
+  - Full screen in columns, in bands, or as a pie. The whole part is
+    clickable and lights up under the mouse. Two pie answers are left and
+    right; three are left, top and right.
+- **Timer:** its own Thickness instead of the text size, Runs Down to the
+  left, to the middle, or from the middle out, and the style's colours are
+  called Bar and Track colour for it.
+- **Styles:** Blur (of what's behind the box), and every number (text
+  size, opacity, roundness, padding, blur, width, gap, thickness) can be
+  typed, stepped, or dragged sideways; a drag is one undo step.
+- **Defaults for everything:** new projects start with every screen laid
+  out. Older projects keep their designed screens; the others get the
+  default layouts (project file format 5).
+- **Full-screen preview:** the button after the tray shows the screen
+  filling the window, with answers lighting up as in the Player; Escape or
+  a click closes it.
+- **The origin node** shows the main menu as designed (imported fonts
+  aren't loaded there; it's a small preview).
+- **Player:** it draws the node's own answer screen and the designed
+  settings and saved-games screens (Load opens the saved games when the
+  story designed that screen), with defaults for older stories.
+- **Not done (as you suggested, for later):** the node editor's video
+  player showing the screens over the videos.
+- **Ask:** in the pie layout the question sits in the middle, where the
+  lines meet. Should it get a background by default, or go elsewhere?

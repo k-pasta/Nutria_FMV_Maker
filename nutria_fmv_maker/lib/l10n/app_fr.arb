@@ -245,6 +245,7 @@
   "screenBuiltInFonts": "Polices fournies avec Nutria FMV",
   "screenImportedFonts": "Polices importées",
   "screenFullScreenPreview": "Aperçu plein écran (Échap pour fermer)",
+  "screenPercentNote": "Les nombres sont des pourcentages de l’écran : les largeurs de sa largeur, les autres tailles de sa hauteur.",
   "overrideChoiceScreen": "Écran de choix",
   "overrideEndChoiceScreen": "Écran de choix en pause",
   "logicProblemNoVariable": "Choisissez une variable.",

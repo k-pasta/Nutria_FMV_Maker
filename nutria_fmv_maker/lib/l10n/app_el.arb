@@ -245,6 +245,7 @@
   "screenBuiltInFonts": "Γραμματοσειρές του Nutria FMV",
   "screenImportedFonts": "Εισαγόμενες γραμματοσειρές",
   "screenFullScreenPreview": "Προεπισκόπηση σε Πλήρη Οθόνη (Esc για κλείσιμο)",
+  "screenPercentNote": "Οι αριθμοί είναι ποσοστά της οθόνης: τα πλάτη του πλάτους της, τα άλλα μεγέθη του ύψους της.",
   "overrideChoiceScreen": "Οθόνη Επιλογής",
   "overrideEndChoiceScreen": "Οθόνη Επιλογής σε Παύση",
   "logicProblemNoVariable": "Επιλέξτε μεταβλητή.",

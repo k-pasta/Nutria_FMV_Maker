@@ -1576,6 +1576,12 @@ abstract class AppLocalizations {
   /// **'Full-Screen Preview (Esc closes it)'**
   String get screenFullScreenPreview;
 
+  /// No description provided for @screenPercentNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Numbers are percentages of the screen: widths of its width, other sizes of its height.'**
+  String get screenPercentNote;
+
   /// No description provided for @overrideChoiceScreen.
   ///
   /// In en, this message translates to:

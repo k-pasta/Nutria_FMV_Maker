@@ -95,9 +95,10 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
   /// Which color has its full picker open: `'text'`, `'back'` or `null`.
   String? _openPicker;
 
-  /// A number setting shown as a percentage of the screen ([value] is a
-  /// fraction): typed, stepped by [step] with the arrows, or dragged (one
-  /// undo step per drag), kept within [min] and [max].
+  /// A number setting shown as a percentage ([value] is a fraction of the
+  /// screen's height or width, or an opacity): typed, stepped by [step]
+  /// with the arrows, or dragged (one undo step per drag), kept within [min]
+  /// and [max].
   Widget _fraction(
     String label,
     double value, {
@@ -109,7 +110,7 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     final editor = ref.read(graphEditorProvider);
     double clamp(double v) => v.clamp(min, max).toDouble();
     return NutriaSettingRow(
-      label: '$label (%)',
+      label: label,
       value: '',
       field: NutriaNumberField(
         text: _percent(value),
@@ -274,9 +275,9 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
 
       return [
         NutriaText(
-          text: t.screenStyleNote(style.name),
+          text: '${t.screenStyleNote(style.name)} ${t.screenPercentNote}',
           state: NutriaTextState.inactive,
-          maxLines: 3,
+          maxLines: 4,
           sizeMultiplier: 0.85,
         ),
         if (!forTimer) ...[

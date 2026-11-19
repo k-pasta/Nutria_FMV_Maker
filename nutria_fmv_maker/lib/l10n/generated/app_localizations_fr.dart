@@ -809,6 +809,10 @@ class AppLocalizationsFr extends AppLocalizations {
       'Aperçu plein écran (Échap pour fermer)';
 
   @override
+  String get screenPercentNote =>
+      'Les nombres sont des pourcentages de l’écran : les largeurs de sa largeur, les autres tailles de sa hauteur.';
+
+  @override
   String get overrideChoiceScreen => 'Écran de choix';
 
   @override

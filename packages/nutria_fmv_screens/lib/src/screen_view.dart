@@ -214,7 +214,12 @@ class ScreenView extends StatelessWidget {
           );
         }
       }
-      return ClipRect(child: Stack(children: children));
+      // A plain default text style: drawn outside a Material (a preview
+      // window), text would otherwise get Flutter's "no style" underline.
+      return DefaultTextStyle(
+        style: const TextStyle(),
+        child: ClipRect(child: Stack(children: children)),
+      );
     },
   );
 
