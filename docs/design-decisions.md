@@ -86,6 +86,34 @@ Nothing changes where the answer kept the current behaviour.
   warning that names the preference. New branched nodes still start with
   two answer slots either way.
 
+### Cleanup plan (your request, 2026-11-19)
+**FFmpeg:** the Maker hasn't used it since the refactor started (commit
+`ffe6c9b`); nothing downloaded an FFmpeg for it on this computer. Its three
+old packages in Flutter's package cache (`ffmpeg_helper`, `ffmpeg_kit_*`,
+about 26 MB) are deleted. Video playback still needs `libmpv`
+(media_kit), which has FFmpeg built in; that can't go.
+
+Waiting for your OK (I was not allowed to delete these on my own):
+- **The Player's `build` folder:** 595 MB, rebuilt automatically.
+- **The Maker's `build` folder:** 1.1 GB, rebuilt automatically. Only while
+  the app isn't running from VS Code.
+- **10 Maker crash dumps** in `%LOCALAPPDATA%\CrashDumps`, 103 MB. They
+  are from earlier crashes during development.
+- **Flutter's package cache:** 1.25 GB; holds several old versions of
+  packages. `flutter pub cache clean` empties it, and the next build
+  downloads only what's needed (slower once).
+- **Old branches** in the Maker repository: `immutable-data`,
+  `k-pasta/issue1`, `k-pasta/issue4`, `new-node-workaround` (local and on
+  GitHub). Everything they hold is older than `legacy`; delete them, or
+  keep them?
+
+In the code (I'll do these as a step of their own):
+- Names left from when the library held only videos:
+  `video_library/` → `media_library/`, `videoAssetProvider` →
+  `mediaAssetProvider`, `boardImportedVideos` → `boardImportedMedia`, …
+- Strings in the `.arb` files that nothing uses any more.
+- The demo-project script and other tools: keep only what's documented.
+
 ### To do from these answers
 - **Project information editor**, in a renamed Defaults/Project section:
   - Read-only: the file name, the estimated export size (every media file
