@@ -482,7 +482,15 @@ class GraphEditor {
     Object? mergeKey,
   }) => _document.apply(
     'Edit choice',
-    (d) => d.setChoiceText(nodeId, index, text, newId: _newId),
+    (d) => d.setChoiceText(
+      nodeId,
+      index,
+      text,
+      newId: _newId,
+      minChoices: _ref.read(preferencesProvider).allowNoBrainers
+          ? 1
+          : kMinChoices,
+    ),
     mergeKey: mergeKey,
   );
 

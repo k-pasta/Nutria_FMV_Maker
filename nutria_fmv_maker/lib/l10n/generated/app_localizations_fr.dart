@@ -504,6 +504,29 @@ class AppLocalizationsFr extends AppLocalizations {
   String get prefSimpleMath => 'Calcul simple';
 
   @override
+  String get prefAllowNoBrainers => 'Questions à une Réponse';
+
+  @override
+  String get prefAllowNoBrainersNote =>
+      'Les nœuds à embranchements peuvent n\'offrir qu\'une réponse.';
+
+  @override
+  String get prefGroupAppearance => 'Apparence';
+
+  @override
+  String get prefGroupCanvas => 'Canevas';
+
+  @override
+  String get prefGroupStory => 'Logique de l\'Histoire';
+
+  @override
+  String get prefGroupMedia => 'Médias';
+
+  @override
+  String get notifyExportSingleChoice =>
+      'Exporté, mais certaines questions n\'ont qu\'une réponse. Autorisez-les dans Préférences > Questions à une Réponse.';
+
+  @override
   String get notifyExportLogicIssues =>
       'Certains nœuds logiques ont des problèmes ; le Player les ignorera';
 

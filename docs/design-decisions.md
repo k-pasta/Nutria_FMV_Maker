@@ -68,11 +68,23 @@ Nothing changes where the answer kept the current behaviour.
   means (button, Alt+F4, taskbar) now asks about unsaved changes; before,
   only File > Exit did.
 - **Repositories:** `legacy` branches keep your own code in both repos
-  (Maker: `9541768`; Player: `0478e8c`, your uncommitted May 2025 edits
-  committed as they were). `main` of the Maker is fast-forwarded to this
-  work. Nothing is pushed. The Player stays where it is and in its own
+  (Maker: `9541768`; Player: `b0b52a3`, your uncommitted May 2025 edits
+  committed as they were, on top of the README and LICENSE commits made on
+  GitHub). `main` of the Maker is fast-forwarded to this work. Everything
+  is pushed to GitHub as `k-pasta` (the active `gh` account,
+  `ksepastremenos`, can't push to those repositories). The Player stays where it is and in its own
   repository (separate releases); I deleted the empty
   `Sensilab_AR_Sandbox_christmas` folder next to it.
+
+### Step 2: preferences
+- **Groups:** Appearance (theme, language, connection style), Canvas
+  (snapping, grid size, default node type), Story Logic (Simple Math,
+  Allow No-Brainers), Media (automatic subtitle linking).
+- **Allow No-Brainers** (off by default): branched nodes may keep a single
+  answer (empty trailing answers trim back to one instead of two). When
+  off, exporting a branched node left with one connected answer gives a
+  warning that names the preference. New branched nodes still start with
+  two answer slots either way.
 
 ### To do from these answers
 - **Project information editor**, in a renamed Defaults/Project section:

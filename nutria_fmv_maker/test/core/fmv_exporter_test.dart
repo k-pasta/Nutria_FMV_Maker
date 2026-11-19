@@ -2,7 +2,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
+import 'package:nutria_fmv_maker/core/document/edge.dart';
+import 'package:nutria_fmv_maker/core/document/node.dart';
+import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/ports.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
@@ -41,6 +46,29 @@ void main() {
           .where((i) => i.type == ExportIssueType.missingVideo)
           .map((i) => i.nodeId);
       expect(missing, unorderedEquals(['A', 'B', 'C']));
+    });
+
+    test('a question with a single answer warns unless allowed', () {
+      var doc = ProjectDocument.empty()
+          .putNode(
+            newBranchedVideoNode(
+              id: 'N',
+              position: Position.zero,
+              newId: sequentialIds('c'),
+            ),
+          )
+          .putNode(const SimpleVideoNode(id: 'T', position: Position.zero));
+      final only = (doc.node('N') as BranchedVideoNode).choices.first;
+      doc = doc
+          .connect(
+            PortRef(nodeId: doc.origin.id, port: kNextPortKey),
+            PortRef.input('N'),
+          )
+          .connect(PortRef(nodeId: 'N', port: only.id), PortRef.input('T'));
+      bool warns(FmvExport e) =>
+          e.issues.any((i) => i.type == ExportIssueType.singleChoice);
+      expect(warns(exportFmv(doc)), isTrue);
+      expect(warns(exportFmv(doc, allowSingleChoice: true)), isFalse);
     });
 
     test('an empty project exports no nodes', () {

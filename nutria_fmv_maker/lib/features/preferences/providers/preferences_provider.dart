@@ -82,6 +82,11 @@ abstract class Preferences with _$Preferences {
     /// Logic nodes take one number, true/false or variable as a value, and
     /// offer no power, absolute, and/or/xor or expressions.
     @Default(true) bool simpleMath,
+
+    /// Branched nodes may offer a single answer ("no-brainer"); otherwise
+    /// they keep two answer slots and exporting one with a single answer
+    /// warns.
+    @Default(false) bool allowNoBrainers,
   }) = _Preferences;
 
   factory Preferences.fromJson(Map<String, dynamic> json) =>
@@ -152,6 +157,9 @@ class PreferencesNotifier extends _$PreferencesNotifier {
       _update(state.copyWith(libraryGrouping: grouping));
 
   void setSimpleMath(bool on) => _update(state.copyWith(simpleMath: on));
+
+  void setAllowNoBrainers(bool on) =>
+      _update(state.copyWith(allowNoBrainers: on));
 
   void setAutoLinkSubtitles(bool on) =>
       _update(state.copyWith(autoLinkSubtitles: on));

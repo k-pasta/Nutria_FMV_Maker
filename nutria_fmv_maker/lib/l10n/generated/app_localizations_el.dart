@@ -503,6 +503,29 @@ class AppLocalizationsEl extends AppLocalizations {
   String get prefSimpleMath => 'Απλά Μαθηματικά';
 
   @override
+  String get prefAllowNoBrainers => 'Ερωτήσεις μίας Απάντησης';
+
+  @override
+  String get prefAllowNoBrainersNote =>
+      'Οι κόμβοι διακλάδωσης μπορούν να έχουν μία μόνο απάντηση.';
+
+  @override
+  String get prefGroupAppearance => 'Εμφάνιση';
+
+  @override
+  String get prefGroupCanvas => 'Καμβάς';
+
+  @override
+  String get prefGroupStory => 'Λογική Ιστορίας';
+
+  @override
+  String get prefGroupMedia => 'Πολυμέσα';
+
+  @override
+  String get notifyExportSingleChoice =>
+      'Εξήχθη, αλλά κάποιες ερωτήσεις έχουν μία μόνο απάντηση. Επιτρέψτε τις από Προτιμήσεις > Ερωτήσεις μίας Απάντησης.';
+
+  @override
   String get notifyExportLogicIssues =>
       'Κάποιοι κόμβοι λογικής έχουν προβλήματα· το Player θα τους παραλείψει';
 

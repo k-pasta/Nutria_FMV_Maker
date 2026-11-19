@@ -502,6 +502,29 @@ class AppLocalizationsEn extends AppLocalizations {
   String get prefSimpleMath => 'Simple Math';
 
   @override
+  String get prefAllowNoBrainers => 'Allow No-Brainers';
+
+  @override
+  String get prefAllowNoBrainersNote =>
+      'Branched nodes may offer a single answer.';
+
+  @override
+  String get prefGroupAppearance => 'Appearance';
+
+  @override
+  String get prefGroupCanvas => 'Canvas';
+
+  @override
+  String get prefGroupStory => 'Story Logic';
+
+  @override
+  String get prefGroupMedia => 'Media';
+
+  @override
+  String get notifyExportSingleChoice =>
+      'Exported, but some questions have a single answer. Allow them with Preferences > Allow No-Brainers.';
+
+  @override
   String get notifyExportLogicIssues =>
       'Some logic nodes have problems; the Player will skip what they do';
 

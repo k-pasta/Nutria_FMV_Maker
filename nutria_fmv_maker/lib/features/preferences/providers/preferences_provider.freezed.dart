@@ -20,7 +20,10 @@ mixin _$Preferences {
  bool get gridSnapping; double get gridSize; DefaultNodeType get defaultNodeType; ThemeChoice get theme; String get languageCode; NoodleStyle get noodleStyle; LibraryView get libraryView; LibrarySort get librarySort; LibraryGrouping get libraryGrouping;/// Link a video and a subtitle file of the same name when importing.
  bool get autoLinkSubtitles;/// Logic nodes take one number, true/false or variable as a value, and
 /// offer no power, absolute, and/or/xor or expressions.
- bool get simpleMath;
+ bool get simpleMath;/// Branched nodes may offer a single answer ("no-brainer"); otherwise
+/// they keep two answer slots and exporting one with a single answer
+/// warns.
+ bool get allowNoBrainers;
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -34,20 +37,20 @@ $PreferencesCopyWith<Preferences> get copyWith => _$PreferencesCopyWithImpl<Pref
 @override
 bool operator ==(Object other) {
   final _this = this as Preferences;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preferences&&(identical(other.gridSnapping, _this.gridSnapping) || other.gridSnapping == _this.gridSnapping)&&(identical(other.gridSize, _this.gridSize) || other.gridSize == _this.gridSize)&&(identical(other.defaultNodeType, _this.defaultNodeType) || other.defaultNodeType == _this.defaultNodeType)&&(identical(other.theme, _this.theme) || other.theme == _this.theme)&&(identical(other.languageCode, _this.languageCode) || other.languageCode == _this.languageCode)&&(identical(other.noodleStyle, _this.noodleStyle) || other.noodleStyle == _this.noodleStyle)&&(identical(other.libraryView, _this.libraryView) || other.libraryView == _this.libraryView)&&(identical(other.librarySort, _this.librarySort) || other.librarySort == _this.librarySort)&&(identical(other.libraryGrouping, _this.libraryGrouping) || other.libraryGrouping == _this.libraryGrouping)&&(identical(other.autoLinkSubtitles, _this.autoLinkSubtitles) || other.autoLinkSubtitles == _this.autoLinkSubtitles)&&(identical(other.simpleMath, _this.simpleMath) || other.simpleMath == _this.simpleMath));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Preferences&&(identical(other.gridSnapping, _this.gridSnapping) || other.gridSnapping == _this.gridSnapping)&&(identical(other.gridSize, _this.gridSize) || other.gridSize == _this.gridSize)&&(identical(other.defaultNodeType, _this.defaultNodeType) || other.defaultNodeType == _this.defaultNodeType)&&(identical(other.theme, _this.theme) || other.theme == _this.theme)&&(identical(other.languageCode, _this.languageCode) || other.languageCode == _this.languageCode)&&(identical(other.noodleStyle, _this.noodleStyle) || other.noodleStyle == _this.noodleStyle)&&(identical(other.libraryView, _this.libraryView) || other.libraryView == _this.libraryView)&&(identical(other.librarySort, _this.librarySort) || other.librarySort == _this.librarySort)&&(identical(other.libraryGrouping, _this.libraryGrouping) || other.libraryGrouping == _this.libraryGrouping)&&(identical(other.autoLinkSubtitles, _this.autoLinkSubtitles) || other.autoLinkSubtitles == _this.autoLinkSubtitles)&&(identical(other.simpleMath, _this.simpleMath) || other.simpleMath == _this.simpleMath)&&(identical(other.allowNoBrainers, _this.allowNoBrainers) || other.allowNoBrainers == _this.allowNoBrainers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as Preferences;
-  return Object.hash(runtimeType,_this.gridSnapping,_this.gridSize,_this.defaultNodeType,_this.theme,_this.languageCode,_this.noodleStyle,_this.libraryView,_this.librarySort,_this.libraryGrouping,_this.autoLinkSubtitles,_this.simpleMath);
+  return Object.hash(runtimeType,_this.gridSnapping,_this.gridSize,_this.defaultNodeType,_this.theme,_this.languageCode,_this.noodleStyle,_this.libraryView,_this.librarySort,_this.libraryGrouping,_this.autoLinkSubtitles,_this.simpleMath,_this.allowNoBrainers);
 }
 
 @override
 String toString() {
   final _this = this as Preferences;
-  return 'Preferences(gridSnapping: ${_this.gridSnapping}, gridSize: ${_this.gridSize}, defaultNodeType: ${_this.defaultNodeType}, theme: ${_this.theme}, languageCode: ${_this.languageCode}, noodleStyle: ${_this.noodleStyle}, libraryView: ${_this.libraryView}, librarySort: ${_this.librarySort}, libraryGrouping: ${_this.libraryGrouping}, autoLinkSubtitles: ${_this.autoLinkSubtitles}, simpleMath: ${_this.simpleMath})';
+  return 'Preferences(gridSnapping: ${_this.gridSnapping}, gridSize: ${_this.gridSize}, defaultNodeType: ${_this.defaultNodeType}, theme: ${_this.theme}, languageCode: ${_this.languageCode}, noodleStyle: ${_this.noodleStyle}, libraryView: ${_this.libraryView}, librarySort: ${_this.librarySort}, libraryGrouping: ${_this.libraryGrouping}, autoLinkSubtitles: ${_this.autoLinkSubtitles}, simpleMath: ${_this.simpleMath}, allowNoBrainers: ${_this.allowNoBrainers})';
 }
 
 
@@ -58,7 +61,7 @@ abstract mixin class $PreferencesCopyWith<$Res>  {
   factory $PreferencesCopyWith(Preferences value, $Res Function(Preferences) _then) = _$PreferencesCopyWithImpl;
 @useResult
 $Res call({
- bool gridSnapping, double gridSize, DefaultNodeType defaultNodeType, ThemeChoice theme, String languageCode, NoodleStyle noodleStyle, LibraryView libraryView, LibrarySort librarySort, LibraryGrouping libraryGrouping, bool autoLinkSubtitles, bool simpleMath
+ bool gridSnapping, double gridSize, DefaultNodeType defaultNodeType, ThemeChoice theme, String languageCode, NoodleStyle noodleStyle, LibraryView libraryView, LibrarySort librarySort, LibraryGrouping libraryGrouping, bool autoLinkSubtitles, bool simpleMath, bool allowNoBrainers
 });
 
 
@@ -75,7 +78,7 @@ class _$PreferencesCopyWithImpl<$Res>
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? gridSnapping = null,Object? gridSize = null,Object? defaultNodeType = null,Object? theme = null,Object? languageCode = null,Object? noodleStyle = null,Object? libraryView = null,Object? librarySort = null,Object? libraryGrouping = null,Object? autoLinkSubtitles = null,Object? simpleMath = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? gridSnapping = null,Object? gridSize = null,Object? defaultNodeType = null,Object? theme = null,Object? languageCode = null,Object? noodleStyle = null,Object? libraryView = null,Object? librarySort = null,Object? libraryGrouping = null,Object? autoLinkSubtitles = null,Object? simpleMath = null,Object? allowNoBrainers = null,}) {
   return _then(Preferences(
 gridSnapping: null == gridSnapping ? _self.gridSnapping : gridSnapping // ignore: cast_nullable_to_non_nullable
 as bool,gridSize: null == gridSize ? _self.gridSize : gridSize // ignore: cast_nullable_to_non_nullable
@@ -88,6 +91,7 @@ as LibraryView,librarySort: null == librarySort ? _self.librarySort : librarySor
 as LibrarySort,libraryGrouping: null == libraryGrouping ? _self.libraryGrouping : libraryGrouping // ignore: cast_nullable_to_non_nullable
 as LibraryGrouping,autoLinkSubtitles: null == autoLinkSubtitles ? _self.autoLinkSubtitles : autoLinkSubtitles // ignore: cast_nullable_to_non_nullable
 as bool,simpleMath: null == simpleMath ? _self.simpleMath : simpleMath // ignore: cast_nullable_to_non_nullable
+as bool,allowNoBrainers: null == allowNoBrainers ? _self.allowNoBrainers : allowNoBrainers // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }
@@ -173,10 +177,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath,  bool allowNoBrainers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Preferences() when $default != null:
-return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath);case _:
+return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath,_that.allowNoBrainers);case _:
   return orElse();
 
 }
@@ -194,10 +198,10 @@ return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.th
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath,  bool allowNoBrainers)  $default,) {final _that = this;
 switch (_that) {
 case _Preferences():
-return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath);case _:
+return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath,_that.allowNoBrainers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -214,10 +218,10 @@ return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.th
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool gridSnapping,  double gridSize,  DefaultNodeType defaultNodeType,  ThemeChoice theme,  String languageCode,  NoodleStyle noodleStyle,  LibraryView libraryView,  LibrarySort librarySort,  LibraryGrouping libraryGrouping,  bool autoLinkSubtitles,  bool simpleMath,  bool allowNoBrainers)?  $default,) {final _that = this;
 switch (_that) {
 case _Preferences() when $default != null:
-return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath);case _:
+return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.theme,_that.languageCode,_that.noodleStyle,_that.libraryView,_that.librarySort,_that.libraryGrouping,_that.autoLinkSubtitles,_that.simpleMath,_that.allowNoBrainers);case _:
   return null;
 
 }
@@ -229,7 +233,7 @@ return $default(_that.gridSnapping,_that.gridSize,_that.defaultNodeType,_that.th
 @JsonSerializable()
 
 class _Preferences implements Preferences {
-  const _Preferences({this.gridSnapping = false, this.gridSize = kDefaultGridSize, this.defaultNodeType = DefaultNodeType.branchedVideo, this.theme = ThemeChoice.dark, this.languageCode = 'en', this.noodleStyle = NoodleStyle.straight, this.libraryView = LibraryView.thumbnails, this.librarySort = LibrarySort.dateAdded, this.libraryGrouping = LibraryGrouping.none, this.autoLinkSubtitles = true, this.simpleMath = true});
+  const _Preferences({this.gridSnapping = false, this.gridSize = kDefaultGridSize, this.defaultNodeType = DefaultNodeType.branchedVideo, this.theme = ThemeChoice.dark, this.languageCode = 'en', this.noodleStyle = NoodleStyle.straight, this.libraryView = LibraryView.thumbnails, this.librarySort = LibrarySort.dateAdded, this.libraryGrouping = LibraryGrouping.none, this.autoLinkSubtitles = true, this.simpleMath = true, this.allowNoBrainers = false});
   factory _Preferences.fromJson(Map<String, dynamic> json) => _$PreferencesFromJson(json);
 
 /// Snap nodes to the grid while moving them (Shift does it temporarily).
@@ -247,6 +251,10 @@ class _Preferences implements Preferences {
 /// Logic nodes take one number, true/false or variable as a value, and
 /// offer no power, absolute, and/or/xor or expressions.
 @override@JsonKey() final  bool simpleMath;
+/// Branched nodes may offer a single answer ("no-brainer"); otherwise
+/// they keep two answer slots and exporting one with a single answer
+/// warns.
+@override@JsonKey() final  bool allowNoBrainers;
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
@@ -261,18 +269,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preferences&&(identical(other.gridSnapping, gridSnapping) || other.gridSnapping == gridSnapping)&&(identical(other.gridSize, gridSize) || other.gridSize == gridSize)&&(identical(other.defaultNodeType, defaultNodeType) || other.defaultNodeType == defaultNodeType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.noodleStyle, noodleStyle) || other.noodleStyle == noodleStyle)&&(identical(other.libraryView, libraryView) || other.libraryView == libraryView)&&(identical(other.librarySort, librarySort) || other.librarySort == librarySort)&&(identical(other.libraryGrouping, libraryGrouping) || other.libraryGrouping == libraryGrouping)&&(identical(other.autoLinkSubtitles, autoLinkSubtitles) || other.autoLinkSubtitles == autoLinkSubtitles)&&(identical(other.simpleMath, simpleMath) || other.simpleMath == simpleMath));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Preferences&&(identical(other.gridSnapping, gridSnapping) || other.gridSnapping == gridSnapping)&&(identical(other.gridSize, gridSize) || other.gridSize == gridSize)&&(identical(other.defaultNodeType, defaultNodeType) || other.defaultNodeType == defaultNodeType)&&(identical(other.theme, theme) || other.theme == theme)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.noodleStyle, noodleStyle) || other.noodleStyle == noodleStyle)&&(identical(other.libraryView, libraryView) || other.libraryView == libraryView)&&(identical(other.librarySort, librarySort) || other.librarySort == librarySort)&&(identical(other.libraryGrouping, libraryGrouping) || other.libraryGrouping == libraryGrouping)&&(identical(other.autoLinkSubtitles, autoLinkSubtitles) || other.autoLinkSubtitles == autoLinkSubtitles)&&(identical(other.simpleMath, simpleMath) || other.simpleMath == simpleMath)&&(identical(other.allowNoBrainers, allowNoBrainers) || other.allowNoBrainers == allowNoBrainers));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,gridSnapping,gridSize,defaultNodeType,theme,languageCode,noodleStyle,libraryView,librarySort,libraryGrouping,autoLinkSubtitles,simpleMath);
+    return Object.hash(runtimeType,gridSnapping,gridSize,defaultNodeType,theme,languageCode,noodleStyle,libraryView,librarySort,libraryGrouping,autoLinkSubtitles,simpleMath,allowNoBrainers);
 }
 
 @override
 String toString() {
-    return 'Preferences(gridSnapping: $gridSnapping, gridSize: $gridSize, defaultNodeType: $defaultNodeType, theme: $theme, languageCode: $languageCode, noodleStyle: $noodleStyle, libraryView: $libraryView, librarySort: $librarySort, libraryGrouping: $libraryGrouping, autoLinkSubtitles: $autoLinkSubtitles, simpleMath: $simpleMath)';
+    return 'Preferences(gridSnapping: $gridSnapping, gridSize: $gridSize, defaultNodeType: $defaultNodeType, theme: $theme, languageCode: $languageCode, noodleStyle: $noodleStyle, libraryView: $libraryView, librarySort: $librarySort, libraryGrouping: $libraryGrouping, autoLinkSubtitles: $autoLinkSubtitles, simpleMath: $simpleMath, allowNoBrainers: $allowNoBrainers)';
 }
 
 
@@ -283,7 +291,7 @@ abstract mixin class _$PreferencesCopyWith<$Res> implements $PreferencesCopyWith
   factory _$PreferencesCopyWith(_Preferences value, $Res Function(_Preferences) _then) = __$PreferencesCopyWithImpl;
 @override @useResult
 $Res call({
- bool gridSnapping, double gridSize, DefaultNodeType defaultNodeType, ThemeChoice theme, String languageCode, NoodleStyle noodleStyle, LibraryView libraryView, LibrarySort librarySort, LibraryGrouping libraryGrouping, bool autoLinkSubtitles, bool simpleMath
+ bool gridSnapping, double gridSize, DefaultNodeType defaultNodeType, ThemeChoice theme, String languageCode, NoodleStyle noodleStyle, LibraryView libraryView, LibrarySort librarySort, LibraryGrouping libraryGrouping, bool autoLinkSubtitles, bool simpleMath, bool allowNoBrainers
 });
 
 
@@ -300,7 +308,7 @@ class __$PreferencesCopyWithImpl<$Res>
 
 /// Create a copy of Preferences
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? gridSnapping = null,Object? gridSize = null,Object? defaultNodeType = null,Object? theme = null,Object? languageCode = null,Object? noodleStyle = null,Object? libraryView = null,Object? librarySort = null,Object? libraryGrouping = null,Object? autoLinkSubtitles = null,Object? simpleMath = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? gridSnapping = null,Object? gridSize = null,Object? defaultNodeType = null,Object? theme = null,Object? languageCode = null,Object? noodleStyle = null,Object? libraryView = null,Object? librarySort = null,Object? libraryGrouping = null,Object? autoLinkSubtitles = null,Object? simpleMath = null,Object? allowNoBrainers = null,}) {
   return _then(_Preferences(
 gridSnapping: null == gridSnapping ? _self.gridSnapping : gridSnapping // ignore: cast_nullable_to_non_nullable
 as bool,gridSize: null == gridSize ? _self.gridSize : gridSize // ignore: cast_nullable_to_non_nullable
@@ -313,6 +321,7 @@ as LibraryView,librarySort: null == librarySort ? _self.librarySort : librarySor
 as LibrarySort,libraryGrouping: null == libraryGrouping ? _self.libraryGrouping : libraryGrouping // ignore: cast_nullable_to_non_nullable
 as LibraryGrouping,autoLinkSubtitles: null == autoLinkSubtitles ? _self.autoLinkSubtitles : autoLinkSubtitles // ignore: cast_nullable_to_non_nullable
 as bool,simpleMath: null == simpleMath ? _self.simpleMath : simpleMath // ignore: cast_nullable_to_non_nullable
+as bool,allowNoBrainers: null == allowNoBrainers ? _self.allowNoBrainers : allowNoBrainers // ignore: cast_nullable_to_non_nullable
 as bool,
   ));
 }

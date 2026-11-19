@@ -25,6 +25,10 @@ enum ExportIssueType {
   /// A logic node has no variable, an unknown one, or a value or condition
   /// that isn't a valid expression; the Player would skip what it does.
   invalidLogic,
+
+  /// A branched node offers a single answer ("no-brainer") while that isn't
+  /// allowed in the preferences.
+  singleChoice,
 }
 
 /// One [ExportIssueType] on a specific node (by its editor id).
@@ -37,8 +41,12 @@ typedef FmvExport = ({FmvProject project, List<ExportIssue> issues});
 ///
 /// Only nodes reachable from the origin are exported. Nodes get short
 /// sequential ids in breadth-first order; the origin is `000` and is itself
-/// left out, so playback starts at `001`. Only connected choices are kept.
-FmvExport exportFmv(ProjectDocument document) {
+/// left out, so playback starts at `001`. Only connected choices are kept;
+/// a branched node left with one is an issue unless [allowSingleChoice].
+FmvExport exportFmv(
+  ProjectDocument document, {
+  bool allowSingleChoice = false,
+}) {
   final order = _reachableInBfsOrder(document);
   final ids = {
     for (final (index, nodeId) in order.indexed)
@@ -112,6 +120,9 @@ FmvExport exportFmv(ProjectDocument document) {
               nodeId: nodeId,
             ));
           }
+        }
+        if (choices.length == 1 && !allowSingleChoice) {
+          issues.add((type: ExportIssueType.singleChoice, nodeId: nodeId));
         }
         nodes[ids[nodeId]!] = FmvNode(
           video: _videoPath(document, node, issues),

@@ -1018,6 +1018,48 @@ abstract class AppLocalizations {
   /// **'Simple Math'**
   String get prefSimpleMath;
 
+  /// No description provided for @prefAllowNoBrainers.
+  ///
+  /// In en, this message translates to:
+  /// **'Allow No-Brainers'**
+  String get prefAllowNoBrainers;
+
+  /// No description provided for @prefAllowNoBrainersNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Branched nodes may offer a single answer.'**
+  String get prefAllowNoBrainersNote;
+
+  /// No description provided for @prefGroupAppearance.
+  ///
+  /// In en, this message translates to:
+  /// **'Appearance'**
+  String get prefGroupAppearance;
+
+  /// No description provided for @prefGroupCanvas.
+  ///
+  /// In en, this message translates to:
+  /// **'Canvas'**
+  String get prefGroupCanvas;
+
+  /// No description provided for @prefGroupStory.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Logic'**
+  String get prefGroupStory;
+
+  /// No description provided for @prefGroupMedia.
+  ///
+  /// In en, this message translates to:
+  /// **'Media'**
+  String get prefGroupMedia;
+
+  /// No description provided for @notifyExportSingleChoice.
+  ///
+  /// In en, this message translates to:
+  /// **'Exported, but some questions have a single answer. Allow them with Preferences > Allow No-Brainers.'**
+  String get notifyExportSingleChoice;
+
   /// No description provided for @notifyExportLogicIssues.
   ///
   /// In en, this message translates to:

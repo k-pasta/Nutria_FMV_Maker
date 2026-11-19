@@ -113,6 +113,13 @@ void main() {
       expect(texts(doc), ['a', 'b']);
     });
 
+    test('with single answers allowed, trimming stops at one choice', () {
+      doc = doc
+          .setChoiceText('N', 0, 'a', newId: newId)
+          .setChoiceText('N', 1, '', newId: newId, minChoices: 1);
+      expect(texts(doc), ['a']);
+    });
+
     test('empty choices that are still connected are kept', () {
       doc = doc.setChoiceText('N', 2, 'c', newId: newId);
       final third = (doc.node('N') as BranchedVideoNode).choices[2];

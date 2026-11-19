@@ -8,6 +8,7 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 
 T _cycle<T>(List<T> values, T current, int direction) =>
     values[(values.indexOf(current) + direction) % values.length];
@@ -60,7 +61,49 @@ class PreferencesPanel extends ConsumerWidget {
       NoodleStyle.curved => t.prefNoodleCurved,
     };
 
-    final rows = [
+    final rows = <Widget>[
+      _Header(text: t.prefGroupAppearance),
+      NutriaSettingRow(
+        label: t.viewTheme,
+        value: themeName(prefs.theme),
+        onPrevious: () => stepTheme(-1),
+        onNext: () => stepTheme(1),
+        options: optionsMenu(
+          ThemeChoice.values,
+          prefs.theme,
+          themeName,
+          notifier.setTheme,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      NutriaSettingRow(
+        label: t.viewLanguage,
+        value: kLanguageNames[prefs.languageCode] ?? prefs.languageCode,
+        onPrevious: () => stepLanguage(-1),
+        onNext: () => stepLanguage(1),
+        options: optionsMenu(
+          kSupportedLanguages,
+          prefs.languageCode,
+          (code) => kLanguageNames[code] ?? code,
+          notifier.setLanguage,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      NutriaSettingRow(
+        label: t.prefNoodleStyle,
+        value: noodleStyleName(prefs.noodleStyle),
+        onTap: () => notifier.setNoodleStyle(
+          _cycle(NoodleStyle.values, prefs.noodleStyle, 1),
+        ),
+        options: optionsMenu(
+          NoodleStyle.values,
+          prefs.noodleStyle,
+          noodleStyleName,
+          notifier.setNoodleStyle,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      _Header(text: t.prefGroupCanvas),
       NutriaSettingRow(
         label: t.prefGridSnapping,
         value: yesNo(prefs.gridSnapping),
@@ -97,6 +140,7 @@ class PreferencesPanel extends ConsumerWidget {
         ),
         onOptionsOpenChanged: menuOpen,
       ),
+      _Header(text: t.prefGroupStory),
       NutriaSettingRow(
         label: t.prefSimpleMath,
         value: yesNo(prefs.simpleMath),
@@ -110,6 +154,25 @@ class PreferencesPanel extends ConsumerWidget {
         onOptionsOpenChanged: menuOpen,
       ),
       NutriaSettingRow(
+        label: t.prefAllowNoBrainers,
+        value: yesNo(prefs.allowNoBrainers),
+        onTap: () => notifier.setAllowNoBrainers(!prefs.allowNoBrainers),
+        options: optionsMenu(
+          [true, false],
+          prefs.allowNoBrainers,
+          yesNo,
+          notifier.setAllowNoBrainers,
+        ),
+        onOptionsOpenChanged: menuOpen,
+      ),
+      NutriaText(
+        text: t.prefAllowNoBrainersNote,
+        state: NutriaTextState.inactive,
+        maxLines: 3,
+        sizeMultiplier: 0.85,
+      ),
+      _Header(text: t.prefGroupMedia),
+      NutriaSettingRow(
         label: t.prefAutoLinkSubtitles,
         value: yesNo(prefs.autoLinkSubtitles),
         onTap: () => notifier.setAutoLinkSubtitles(!prefs.autoLinkSubtitles),
@@ -121,57 +184,35 @@ class PreferencesPanel extends ConsumerWidget {
         ),
         onOptionsOpenChanged: menuOpen,
       ),
-      NutriaSettingRow(
-        label: t.prefNoodleStyle,
-        value: noodleStyleName(prefs.noodleStyle),
-        onTap: () => notifier.setNoodleStyle(
-          _cycle(NoodleStyle.values, prefs.noodleStyle, 1),
-        ),
-        options: optionsMenu(
-          NoodleStyle.values,
-          prefs.noodleStyle,
-          noodleStyleName,
-          notifier.setNoodleStyle,
-        ),
-        onOptionsOpenChanged: menuOpen,
-      ),
-      NutriaSettingRow(
-        label: t.viewTheme,
-        value: themeName(prefs.theme),
-        onPrevious: () => stepTheme(-1),
-        onNext: () => stepTheme(1),
-        options: optionsMenu(
-          ThemeChoice.values,
-          prefs.theme,
-          themeName,
-          notifier.setTheme,
-        ),
-        onOptionsOpenChanged: menuOpen,
-      ),
-      NutriaSettingRow(
-        label: t.viewLanguage,
-        value: kLanguageNames[prefs.languageCode] ?? prefs.languageCode,
-        onPrevious: () => stepLanguage(-1),
-        onNext: () => stepLanguage(1),
-        options: optionsMenu(
-          kSupportedLanguages,
-          prefs.languageCode,
-          (code) => kLanguageNames[code] ?? code,
-          notifier.setLanguage,
-        ),
-        onOptionsOpenChanged: menuOpen,
-      ),
     ];
     return NutriaScrollArea(
       padding: EdgeInsets.symmetric(horizontal: theme.dSectionPadding),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           for (var i = 0; i < rows.length; i++) ...[
-            if (i > 0) SizedBox(height: theme.dPanelPadding),
+            if (i > 0)
+              SizedBox(
+                // More room above each group's header.
+                height: rows[i] is _Header
+                    ? theme.dSectionPadding * 2
+                    : theme.dPanelPadding,
+              ),
             rows[i],
           ],
         ],
       ),
     );
   }
+}
+
+/// The title of a group of preferences.
+class _Header extends StatelessWidget {
+  const _Header({required this.text});
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) =>
+      NutriaText(text: text, textStyle: NutriaTextStyle.bold);
 }

@@ -30,6 +30,7 @@ _Preferences _$PreferencesFromJson(Map<String, dynamic> json) => _Preferences(
       LibraryGrouping.none,
   autoLinkSubtitles: json['autoLinkSubtitles'] as bool? ?? true,
   simpleMath: json['simpleMath'] as bool? ?? true,
+  allowNoBrainers: json['allowNoBrainers'] as bool? ?? false,
 );
 
 Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
@@ -45,6 +46,7 @@ Map<String, dynamic> _$PreferencesToJson(_Preferences instance) =>
       'libraryGrouping': _$LibraryGroupingEnumMap[instance.libraryGrouping]!,
       'autoLinkSubtitles': instance.autoLinkSubtitles,
       'simpleMath': instance.simpleMath,
+      'allowNoBrainers': instance.allowNoBrainers,
     };
 
 const _$DefaultNodeTypeEnumMap = {
@@ -181,7 +183,7 @@ final class PreferencesNotifierProvider
 }
 
 String _$preferencesNotifierHash() =>
-    r'b1e637649e01bd49c35d25cc90952c5023efa29b';
+    r'f3be06694a2619f627ccd8b2f0f867ac5371c807';
 
 /// Reads and persists [Preferences].
 

@@ -139,6 +139,8 @@ class AppCommands {
           ? _t.notifyExported(p.basename(result.path!))
           : result.issues.any((i) => i.type == ExportIssueType.invalidLogic)
           ? _t.notifyExportLogicIssues
+          : result.issues.every((i) => i.type == ExportIssueType.singleChoice)
+          ? _t.notifyExportSingleChoice
           : _t.notifyExportWarnings(result.issues.length),
     );
   });

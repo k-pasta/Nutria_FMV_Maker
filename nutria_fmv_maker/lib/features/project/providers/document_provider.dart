@@ -3,6 +3,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/history/document_timeline.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
+import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/services/project_file_service.dart';
 import 'package:path/path.dart' as p;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -130,7 +131,10 @@ class DocumentNotifier extends _$DocumentNotifier {
   /// don't stop the export; they're returned so the UI can report them.
   Future<({FileOutcome outcome, String? path, List<ExportIssue> issues})>
   export() async {
-    final export = exportFmv(state.document);
+    final export = exportFmv(
+      state.document,
+      allowSingleChoice: ref.read(preferencesProvider).allowNoBrainers,
+    );
     final path = await _files.saveExportAs(
       export,
       suggestedName: _suggestedName(),
