@@ -24,7 +24,8 @@ bool get _additive =>
 
 /// A comment, in the node card's color, with no strip and no knots.
 ///
-/// It shows its text with bold and italic; a double-click (or F2) edits it.
+/// It shows its text with bold and italic; a double-click, a click once it
+/// is selected, or F2 edits it.
 /// Like a node, a click selects it, a drag moves it and its edges resize
 /// it. An attached comment (see [CommentNode.attachedTo]) has no padding
 /// above or below, takes its node's width, and its edges resize the node.
@@ -39,6 +40,10 @@ class CommentFrame extends ConsumerStatefulWidget {
 
 class _CommentFrameState extends ConsumerState<CommentFrame> {
   bool _hovered = false;
+
+  /// Whether the comment was already selected when the pointer went down: a
+  /// click on a selected comment starts editing it.
+  bool _wasSelected = false;
 
   /// One undo step per editing session.
   Object _editSession = Object();
@@ -123,6 +128,7 @@ class _CommentFrameState extends ConsumerState<CommentFrame> {
         child: Listener(
           onPointerDown: (event) {
             if (event.buttons & kMiddleMouseButton != 0) return;
+            _wasSelected = ref.read(isNodeSelectedProvider(node.id));
             _gestures.pointerDown(node.id, additive: _additive);
           },
           child: MouseRegion(
@@ -154,7 +160,9 @@ class _CommentFrameState extends ConsumerState<CommentFrame> {
               ],
               child: GestureDetector(
                 behavior: HitTestBehavior.opaque,
-                onTap: () => _gestures.tap(node.id, additive: _additive),
+                onTap: () => _wasSelected && !_additive
+                    ? _startEditing()
+                    : _gestures.tap(node.id, additive: _additive),
                 onDoubleTap: _startEditing,
                 onPanStart: (_) =>
                     _gestures.beginMove(node.id, additive: _additive),

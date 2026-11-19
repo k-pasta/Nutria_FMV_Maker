@@ -10,6 +10,7 @@ import 'package:nutria_fmv_maker/features/preferences/providers/preferences_prov
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 
 import 'app_tester.dart';
 
@@ -59,6 +60,29 @@ void main() {
     // Typing was one undo step, and the comment is another.
     c.read(documentProvider.notifier).undo();
     expect(_comment(c)!.text, '');
+  });
+
+  testWidgets('a click selects a comment; a click on a selected comment '
+      'edits it', (tester) async {
+    final c = await pumpApp(tester);
+    final editor = c.read(graphEditorProvider);
+    editor.addComment(const Position(-200, -100));
+    editor.setCommentText(_comment(c)!.id, 'Note');
+    c.read(selectionProvider.notifier).clear();
+    await tester.pumpAndSettle();
+    final field = find.descendant(
+      of: find.byType(CommentFrame),
+      matching: find.byType(TextField),
+    );
+    // Wait past the double-click time after each click.
+    await tester.tap(find.text('Note'));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    expect(field, findsNothing);
+    await tester.tap(find.text('Note'));
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.pumpAndSettle();
+    expect(field, findsOneWidget);
   });
 
   testWidgets('dropping a comment on a node attaches it; it follows the node '
