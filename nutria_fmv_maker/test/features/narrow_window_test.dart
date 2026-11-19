@@ -3,8 +3,10 @@
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_provider.dart';
 import 'package:nutria_fmv_maker/services/media_info_service.dart';
@@ -42,6 +44,15 @@ void main() {
       );
       container.read(videoPreviewProvider.notifier).showNode(node);
       container.read(panelLayoutProvider.notifier).showSection(section);
+      // The Design section belongs to the screen designer, with its own
+      // right panel: show it with an element selected.
+      if (section == LeftPanelSection.screen) {
+        container.read(editorViewProvider.notifier).show(EditorView.screens);
+        container
+            .read(selectedScreenProvider.notifier)
+            .select(ScreenKind.choice);
+        editor.addScreenElement(ScreenElementKind.choices);
+      }
       await tester.pumpAndSettle();
 
       final problems = <String>[];

@@ -14,12 +14,14 @@ import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart'
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_color_picker.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_scroll_area.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 
 /// Colors offered for text and backgrounds (ARGB).
 const kScreenPalette = [
@@ -50,6 +52,9 @@ class ScreenPanel extends ConsumerStatefulWidget {
 
 class _ScreenPanelState extends ConsumerState<ScreenPanel> {
   Object _textSession = Object();
+
+  /// Which color has its full picker open: `'text'`, `'back'` or `null`.
+  String? _openPicker;
 
   @override
   Widget build(BuildContext context) {
@@ -111,30 +116,83 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
     List<Widget> styleRows(ScreenStyle style) {
       void editStyle(ScreenStyle Function(ScreenStyle s) edit) =>
           editor.editScreenStyle(style.id, edit);
-      Widget palette(int current, ValueChanged<int> onPicked) => Wrap(
-        spacing: theme.dPanelPadding / 2,
-        runSpacing: theme.dPanelPadding / 2,
-        children: [
-          for (final color in kScreenPalette)
-            GestureDetector(
-              onTap: () => onPicked(color),
-              child: Container(
-                width: theme.dButtonHeight * 0.7,
-                height: theme.dButtonHeight * 0.7,
-                decoration: BoxDecoration(
-                  color: Color(color),
-                  borderRadius: BorderRadius.circular(
-                    theme.dButtonBorderRadius,
-                  ),
-                  border: Border.all(
-                    color: color == current ? theme.cAccent : theme.cDivider,
-                    width: color == current ? 2 : 1,
-                  ),
+      List<Widget> swatches(int current, ValueChanged<int> onPicked) => [
+        for (final color in kScreenPalette)
+          GestureDetector(
+            onTap: () => onPicked(color),
+            child: Container(
+              width: theme.dButtonHeight * 0.7,
+              height: theme.dButtonHeight * 0.7,
+              decoration: BoxDecoration(
+                color: Color(color),
+                borderRadius: BorderRadius.circular(theme.dButtonBorderRadius),
+                border: Border.all(
+                  color: color == current ? theme.cAccent : theme.cDivider,
+                  width: color == current ? 2 : 1,
                 ),
               ),
             ),
-        ],
-      );
+          ),
+      ];
+
+      // The palette, then a square that opens the full picker below it.
+      Widget palette(String which, int current, ValueChanged<int> onPicked) {
+        final open = _openPicker == which;
+        final square = theme.dButtonHeight * 0.7;
+        final own = !kScreenPalette.contains(current);
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Wrap(
+              spacing: theme.dPanelPadding / 2,
+              runSpacing: theme.dPanelPadding / 2,
+              children: [
+                ...swatches(current, onPicked),
+                NutriaTooltip(
+                  message: t.screenPickColor,
+                  child: GestureDetector(
+                    onTap: () =>
+                        setState(() => _openPicker = open ? null : which),
+                    child: Container(
+                      width: square,
+                      height: square,
+                      decoration: BoxDecoration(
+                        color: own ? Color(current) : theme.cButton,
+                        borderRadius: BorderRadius.circular(
+                          theme.dButtonBorderRadius,
+                        ),
+                        border: Border.all(
+                          color: own || open ? theme.cAccent : theme.cDivider,
+                          width: own || open ? 2 : 1,
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.colorize,
+                        size: square * 0.6,
+                        color: own
+                            ? (Color(current).computeLuminance() > 0.5
+                                  ? const Color(0xFF000000)
+                                  : const Color(0xFFFFFFFF))
+                            : theme.cTextActive,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            if (open) ...[
+              SizedBox(height: theme.dPanelPadding),
+              NutriaColorPicker(
+                color: current,
+                onChanged: onPicked,
+                onChangeStart: editor.beginValueDrag,
+                onChangeEnd: editor.endValueDrag,
+              ),
+            ],
+          ],
+        );
+      }
+
       return [
         NutriaText(
           text: t.screenStyleNote(style.name),
@@ -169,11 +227,13 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
         ),
         NutriaText(text: t.screenTextColor, state: NutriaTextState.inactive),
         palette(
+          'text',
           style.textColor,
           (c) => editStyle((s) => s.copyWith(textColor: c)),
         ),
         NutriaText(text: t.screenBackColor, state: NutriaTextState.inactive),
         palette(
+          'back',
           style.backgroundColor,
           (c) => editStyle(
             (s) => s.copyWith(

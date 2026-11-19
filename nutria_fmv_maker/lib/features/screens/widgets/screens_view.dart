@@ -69,27 +69,38 @@ class ScreensView extends ConsumerWidget {
         ),
         child: Column(
           children: [
-            // The tray: one button per kind of element. Click to add one;
-            // drag one onto the screen to place it.
-            Wrap(
-              spacing: theme.dPanelPadding,
-              runSpacing: theme.dPanelPadding,
-              alignment: WrapAlignment.center,
-              children: [
-                for (final kind in kScreenElementKinds[screen]!)
-                  _TrayButton(
-                    label: '+ ${screenElementLabel(kind, t)}',
-                    kind: kind,
-                    onTap: () => editor.addScreenElement(kind),
-                  ),
-              ],
+            // The tray (and the preview's scenario); in a small window it
+            // scrolls instead of squeezing the stage.
+            Flexible(
+              child: SingleChildScrollView(
+                child: Column(
+                  children: [
+                    // The tray: one button per kind of element. Click to add one;
+                    // drag one onto the screen to place it.
+                    Wrap(
+                      spacing: theme.dPanelPadding,
+                      runSpacing: theme.dPanelPadding,
+                      alignment: WrapAlignment.center,
+                      children: [
+                        for (final kind in kScreenElementKinds[screen]!)
+                          _TrayButton(
+                            label: '+ ${screenElementLabel(kind, t)}',
+                            kind: kind,
+                            onTap: () => editor.addScreenElement(kind),
+                          ),
+                      ],
+                    ),
+                    if (screen == ScreenKind.choice) ...[
+                      SizedBox(height: theme.dPanelPadding),
+                      const _ScenarioBar(),
+                    ],
+                  ],
+                ),
+              ),
             ),
-            if (screen == ScreenKind.choice) ...[
-              SizedBox(height: theme.dPanelPadding),
-              const _ScenarioBar(),
-            ],
             SizedBox(height: theme.dSectionPadding * 2),
             const Expanded(
+              flex: 4,
               child: Center(
                 child: AspectRatio(aspectRatio: 16 / 9, child: _Stage()),
               ),

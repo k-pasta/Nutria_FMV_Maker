@@ -1,15 +1,19 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:material_ui/material_ui.dart' show AspectRatio;
+import 'package:material_ui/material_ui.dart' show AspectRatio, CustomPaint;
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
 import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_maker/core/protocol/fmv_exporter.dart';
 import 'package:nutria_fmv_maker/core/serialization/nfmv_codec.dart';
+import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
+import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/screens/widgets/screens_view.dart';
+import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_color_picker.dart';
 
 import '../core/fixtures.dart';
 import 'app_tester.dart';
@@ -141,6 +145,48 @@ void main() {
     await tester.tap(find.text('Replace'));
     await tester.pumpAndSettle();
     expect(c.read(projectDocumentProvider).choiceScreen.elements, hasLength(3));
+  });
+
+  test('hex color codes', () {
+    expect(colorHex(0xFFFF4E6A), 'FF4E6A');
+    expect(parseColorHex('#00ff80'), 0xFF00FF80);
+    expect(parseColorHex('12345'), isNull);
+  });
+
+  testWidgets('the full color picker changes a style; a drag is one undo '
+      'step', (tester) async {
+    final c = await pumpApp(tester);
+    c.read(editorViewProvider.notifier).show(EditorView.screens);
+    c.read(panelLayoutProvider.notifier).showSection(LeftPanelSection.screen);
+    c.read(graphEditorProvider).addScreenElement(ScreenElementKind.start);
+    await tester.pumpAndSettle();
+    final before = c.read(projectDocumentProvider).styles;
+
+    await tester.tap(find.byTooltip('Pick a Color').first);
+    await tester.pumpAndSettle();
+    final picker = find.byType(NutriaColorPicker);
+    expect(picker, findsOneWidget);
+    final square = tester.getRect(
+      find.descendant(of: picker, matching: find.byType(CustomPaint)).first,
+    );
+    final gesture = await tester.startGesture(
+      square.center,
+      kind: PointerDeviceKind.mouse,
+    );
+    for (var i = 1; i <= 5; i++) {
+      await gesture.moveTo(square.center + Offset(i * 8.0, i * 4.0));
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pumpAndSettle();
+    final button = c
+        .read(projectDocumentProvider)
+        .styles
+        .firstWhere((s) => s.id == 'button');
+    expect(button.textColor, isNot(0xFFFFFFFF));
+
+    c.read(documentProvider.notifier).undo();
+    expect(c.read(projectDocumentProvider).styles, before);
   });
 
   testWidgets('Ctrl+2 opens the designer; elements are added, dragged with '
