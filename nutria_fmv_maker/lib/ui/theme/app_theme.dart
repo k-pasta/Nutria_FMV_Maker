@@ -54,6 +54,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cDimmer = const Color(0x73000000),
     this.cWindowClose = const Color(0xffc42b1c),
     this.cOnWindowClose = const Color(0xffffffff),
+    this.cScreenStage = const Color(0xff16161b),
+    this.cScreenStageText = const Color(0x99ffffff),
     this.cSwatches = kDefaultSwatches,
     this.dTextHeight = 14,
     this.dTextfieldPadding = 8,
@@ -150,6 +152,11 @@ class AppTheme extends ThemeExtension<AppTheme> {
   /// Behind the window's close button while it's hovered (Windows red).
   final Color cWindowClose;
   final Color cOnWindowClose;
+
+  /// The screen designer's stage without a background: dark in every
+  /// theme, like the Player's screen and the videos behind choices.
+  final Color cScreenStage;
+  final Color cScreenStageText;
 
   /// Node color swatches, indexed by `Node.swatch`.
   final List<Color> cSwatches;
@@ -248,6 +255,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cDimmer,
     Color? cWindowClose,
     Color? cOnWindowClose,
+    Color? cScreenStage,
+    Color? cScreenStageText,
     List<Color>? cSwatches,
     double? dTextHeight,
     double? dTextfieldPadding,
@@ -301,6 +310,8 @@ class AppTheme extends ThemeExtension<AppTheme> {
     cDimmer: cDimmer ?? this.cDimmer,
     cWindowClose: cWindowClose ?? this.cWindowClose,
     cOnWindowClose: cOnWindowClose ?? this.cOnWindowClose,
+    cScreenStage: cScreenStage ?? this.cScreenStage,
+    cScreenStageText: cScreenStageText ?? this.cScreenStageText,
     cSwatches: cSwatches ?? this.cSwatches,
     dTextHeight: dTextHeight ?? this.dTextHeight,
     dTextfieldPadding: dTextfieldPadding ?? this.dTextfieldPadding,

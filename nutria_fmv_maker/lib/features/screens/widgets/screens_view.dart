@@ -67,45 +67,50 @@ class ScreensView extends ConsumerWidget {
               theme.dSectionPadding * 2,
           theme.dSectionPadding * 2,
         ),
-        child: Column(
-          children: [
-            // The tray (and the preview's scenario); in a small window it
-            // scrolls instead of squeezing the stage.
-            Flexible(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    // The tray: one button per kind of element. Click to add one;
-                    // drag one onto the screen to place it.
-                    Wrap(
-                      spacing: theme.dPanelPadding,
-                      runSpacing: theme.dPanelPadding,
-                      alignment: WrapAlignment.center,
-                      children: [
-                        for (final kind in kScreenElementKinds[screen]!)
-                          _TrayButton(
-                            label: '+ ${screenElementLabel(kind, t)}',
-                            kind: kind,
-                            onTap: () => editor.addScreenElement(kind),
-                          ),
+        child: LayoutBuilder(
+          builder: (context, constraints) => Column(
+            children: [
+              // The tray (and the preview's scenario): as tall as it needs,
+              // but in a small window it scrolls instead of squeezing the
+              // stage.
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  maxHeight: constraints.maxHeight * 0.4,
+                ),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      // The tray: one button per kind of element. Click to add one;
+                      // drag one onto the screen to place it.
+                      Wrap(
+                        spacing: theme.dPanelPadding,
+                        runSpacing: theme.dPanelPadding,
+                        alignment: WrapAlignment.center,
+                        children: [
+                          for (final kind in kScreenElementKinds[screen]!)
+                            _TrayButton(
+                              label: '+ ${screenElementLabel(kind, t)}',
+                              kind: kind,
+                              onTap: () => editor.addScreenElement(kind),
+                            ),
+                        ],
+                      ),
+                      if (screen == ScreenKind.choice) ...[
+                        SizedBox(height: theme.dPanelPadding),
+                        const _ScenarioBar(),
                       ],
-                    ),
-                    if (screen == ScreenKind.choice) ...[
-                      SizedBox(height: theme.dPanelPadding),
-                      const _ScenarioBar(),
                     ],
-                  ],
+                  ),
                 ),
               ),
-            ),
-            SizedBox(height: theme.dSectionPadding * 2),
-            const Expanded(
-              flex: 4,
-              child: Center(
-                child: AspectRatio(aspectRatio: 16 / 9, child: _Stage()),
+              SizedBox(height: theme.dSectionPadding * 2),
+              const Expanded(
+                child: Center(
+                  child: AspectRatio(aspectRatio: 16 / 9, child: _Stage()),
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -244,7 +249,7 @@ class _Stage extends ConsumerWidget {
                 ref.read(selectedScreenElementProvider.notifier).select(null),
             child: Container(
               decoration: BoxDecoration(
-                color: theme.cPanel,
+                color: theme.cScreenStage,
                 border: Border.all(
                   color: candidates.isNotEmpty ? theme.cAccent : theme.cDivider,
                   width: theme.dSelectionWidth,
@@ -257,11 +262,14 @@ class _Stage extends ConsumerWidget {
                       child: background != null
                           ? _Background(asset: background)
                           : Center(
-                              child: NutriaText(
-                                text: kind == ScreenKind.choice
+                              child: Text(
+                                kind == ScreenKind.choice
                                     ? t.screenVideoBehind
                                     : t.screenDropBackground,
-                                state: NutriaTextState.inactive,
+                                style: TextStyle(
+                                  color: theme.cScreenStageText,
+                                  fontSize: theme.dTextHeight,
+                                ),
                               ),
                             ),
                     ),

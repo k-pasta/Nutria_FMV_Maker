@@ -78,9 +78,9 @@ List<_Place> _presetPlaces(ScreenPreset preset) => switch (preset) {
     ),
   ],
   ScreenPreset.bottomChoices => [
-    (ScreenElementKind.question, 0.5, 0.6, 0.8),
-    (ScreenElementKind.choices, 0.5, 0.8, 0.5),
-    (ScreenElementKind.timer, 0.5, 0.96, 0.6),
+    (ScreenElementKind.question, 0.5, 0.42, 0.8),
+    (ScreenElementKind.choices, 0.5, 0.68, 0.5),
+    (ScreenElementKind.timer, 0.5, 0.94, 0.6),
   ],
   ScreenPreset.sideChoices => [
     (ScreenElementKind.question, 0.27, 0.25, 0.44),
