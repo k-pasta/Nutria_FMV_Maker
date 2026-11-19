@@ -847,3 +847,8 @@ what the Maker checks.
   player showing the screens over the videos.
 - **Ask:** in the pie layout the question sits in the middle, where the
   lines meet. Should it get a background by default, or go elsewhere?
+
+## Seventh round (2026-11-20)
+Everything changed in this round, and feedback on the plans for bundles,
+Twine and audience voting, is in
+[changes-2026-11-20.md](changes-2026-11-20.md).
