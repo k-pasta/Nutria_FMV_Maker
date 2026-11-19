@@ -124,6 +124,51 @@ Nothing changes where the answer kept the current behaviour.
 - **Ask:** the Player should let the viewer pick a subtitle language
   (in its settings, or on the main menu?).
 
+### Step 4: the screen designer's new layout
+- **Switch button:** floating at the top right of the main area, just
+  left of the right panel, the size of the play button, on a normal
+  button background (it floats over the dots and over the stage).
+  Palette icon in the graph, polyline icon in the designer; Ctrl+1/2
+  and the View menu still work.
+- **Screens, not single questions:** the list on the right is Main Menu,
+  Choice Screen, Pause Screen (with how many elements each has). One
+  choice-screen design is used for every question; the scenario controls
+  above the stage (1–10 answers, long answers, with/without a question)
+  preview the cases. A question with a design of its own could come
+  later as a per-node override.
+- **Elements per screen:**
+  - Menu: title, description, Start, Load, Settings, Credits, Quit.
+  - Choice: question, the answers (one element showing all of them, with
+    a "Space Between" setting) and a timer bar.
+  - Pause: title, Resume, Save, Load, Settings, Main Menu, Quit.
+- **Layouts** (where the video player was): three for the menu, two for
+  choices, two for pause. Applying one to a screen that has elements
+  asks first ("You can undo this").
+- **Styles** are listed with how many elements use them. Click one to
+  edit it on the left (with its name); **+ New Style** copies the
+  selected element's style (or Button) and gives it to that element.
+  The three built-in styles can't be deleted; deleting another sends
+  its elements back to their kind's default.
+- **Colours:** after each palette, an eyedropper square opens a full
+  picker inline (saturation/brightness square, hue strip, hex code). A
+  drag is one undo step.
+- **Tray buttons** add an element below the others when clicked, or where
+  they are dropped when dragged onto the stage.
+- **The stage is dark in every theme** (new tokens `cScreenStage`,
+  `cScreenStageText`): it stands for the Player's screen, and the choice
+  screen is drawn over a video.
+- **Left panel in the designer:** Design, Imported Media, Preferences.
+  Variables, Project and Defaults are hidden there; back in the graph,
+  the section you had is shown again.
+- **`.fmv`:** `Screens` gets optional `choice` and `pause` (same shape as
+  `menu`); elements may have `gap`.
+- **Not done yet:** pause effects (shaders), animation presets,
+  align/distribute buttons, stock images.
+- **Ask:** should the choices element grow up from its position instead
+  of from its middle? With many answers, a list placed low on the screen
+  goes past the bottom; the preview shows it, but anchoring the list's
+  bottom edge would avoid it.
+
 ### Cleanup plan (your request, 2026-11-19)
 **FFmpeg:** the Maker hasn't used it since the refactor started (commit
 `ffe6c9b`); nothing downloaded an FFmpeg for it on this computer. Its three

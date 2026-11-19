@@ -99,7 +99,10 @@ lib/
 - **Geometry** (`features/nodes/node_layout.dart`): `NodeMetrics` and `NodeLayout` compute knot positions from fixed row heights and a cached measurement of the wrapped file name. Widgets and the pure `noodlesFor` (connection lines) both use them, so knots and lines always agree.
 - Laid-out node sizes are recorded in `NodeBounds` (no rebuilds) for box selection and framing.
 - **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`, `graph_ops.dart`); add a body widget.
-- **Screens view:** `editorViewProvider` swaps the canvas for `ScreensView` (Ctrl+1 / Ctrl+2). Element positions and sizes are fractions of the screen.
+- **Screen designer:** `editorViewProvider` swaps the canvas for `ScreensView` (Ctrl+1 / Ctrl+2, or the floating button at the top right) and the right panel for `ScreensSidePanel` (screens, styles, layouts). The left panel then offers only Design, Imported Media and Preferences.
+  - Three screens (`ScreenKind`: menu, choice, pause), each a `ScreenDesign` in `ProjectDocument`, with the element kinds of `kScreenElementKinds`. Element ids are unique across screens, so element ops (`screen_ops.dart`) find the screen themselves.
+  - Element positions and sizes are fractions of the screen; style sizes are fractions of its height.
+  - `selectedScreenProvider`, `selectedScreenStyleProvider` and `choiceScenarioProvider` (the preview's answer count, long answers, question) are editor-only.
 
 ### File formats
 - **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus media paths relative to the project file.

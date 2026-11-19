@@ -261,14 +261,19 @@ class _Stage extends ConsumerWidget {
                     Positioned.fill(
                       child: background != null
                           ? _Background(asset: background)
-                          : Center(
-                              child: Text(
-                                kind == ScreenKind.choice
-                                    ? t.screenVideoBehind
-                                    : t.screenDropBackground,
-                                style: TextStyle(
-                                  color: theme.cScreenStageText,
-                                  fontSize: theme.dTextHeight,
+                          // At the top, where elements rarely are.
+                          : Align(
+                              alignment: Alignment.topCenter,
+                              child: Padding(
+                                padding: EdgeInsets.all(theme.dPanelPadding),
+                                child: Text(
+                                  kind == ScreenKind.choice
+                                      ? t.screenVideoBehind
+                                      : t.screenDropBackground,
+                                  style: TextStyle(
+                                    color: theme.cScreenStageText,
+                                    fontSize: theme.dTextHeight,
+                                  ),
                                 ),
                               ),
                             ),
