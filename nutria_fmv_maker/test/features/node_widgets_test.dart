@@ -12,6 +12,8 @@ import 'package:nutria_fmv_maker/features/project/providers/document_provider.da
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 
 import 'app_tester.dart';
 
@@ -127,6 +129,46 @@ void main() {
     await gesture.up();
     await tester.pumpAndSettle();
     expect(nodeOf(container, id).position.x, greaterThan(80));
+  });
+
+  testWidgets('dragging a number field sideways changes it, not the node; '
+      'one undo step', (tester) async {
+    final container = await pumpApp(tester);
+    // High up, so its settings are in the window.
+    const at = Position(0, -400);
+    final id = container
+        .read(graphEditorProvider)
+        .addVideoNode(at, type: DefaultNodeType.branchedVideo);
+    container.read(graphEditorProvider).toggleExpanded(id);
+    await tester.pumpAndSettle();
+    final row = find.ancestor(
+      of: find.text('Selection Time'),
+      matching: find.byType(NutriaSettingRow),
+    );
+    final field = find.descendant(
+      of: row,
+      matching: find.byType(NutriaNumberField),
+    );
+    int seconds() =>
+        container.read(effectiveSettingsProvider(id)).selectionTimeMs ~/ 1000;
+    final before = seconds();
+
+    final gesture = await tester.startGesture(
+      tester.getCenter(field),
+      kind: PointerDeviceKind.mouse,
+    );
+    for (var i = 0; i < 4; i++) {
+      await gesture.moveBy(const Offset(6, 0));
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pumpAndSettle();
+    expect(seconds(), before + 3, reason: '24px is three steps');
+    expect(nodeOf(container, id).position, at);
+
+    container.read(documentProvider.notifier).undo();
+    await tester.pumpAndSettle();
+    expect(seconds(), before);
   });
 
   testWidgets('moving a node rebuilds no node content', (tester) async {

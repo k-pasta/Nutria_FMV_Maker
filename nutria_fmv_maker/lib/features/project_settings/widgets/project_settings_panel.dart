@@ -152,6 +152,8 @@ class _DefaultsRows extends ConsumerWidget {
         for (final type in VideoSettingType.values) ...[
           if (type.index > 0) SizedBox(height: theme.dPanelPadding),
           VideoSettingRow(
+            onDragStart: editor.beginValueDrag,
+            onDragEnd: editor.endValueDrag,
             type: type,
             settings: settings,
             onStep: (direction) =>

@@ -249,6 +249,8 @@ class VideoNodeExpansion extends ConsumerWidget {
       ],
       for (final type in types)
         VideoSettingRow(
+          onDragStart: editor.beginValueDrag,
+          onDragEnd: editor.endValueDrag,
           type: type,
           settings: settings,
           isOverridden: overridden.contains(type),

@@ -1,10 +1,12 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme_presets.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_button.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text_field.dart';
 
 Widget _app(Widget child, {AppTheme theme = kDarkTheme}) => MaterialApp(
@@ -28,8 +30,9 @@ void main() {
     for (final file in Directory('lib/ui').listSync(recursive: true)) {
       if (file is! File || !file.path.endsWith('.dart')) continue;
       for (final line in file.readAsLinesSync()) {
-        if (forbidden.any(line.startsWith))
+        if (forbidden.any(line.startsWith)) {
           offenders.add('${file.path}: $line');
+        }
       }
     }
     expect(offenders, isEmpty);
@@ -96,5 +99,48 @@ void main() {
       expect(find.text('typing'), findsOneWidget);
       expect(focus, [true]);
     });
+  });
+
+  testWidgets('number fields: drag the middle to step, click to type', (
+    tester,
+  ) async {
+    final steps = <int>[];
+    final events = <String>[];
+    await tester.pumpWidget(
+      _app(
+        NutriaNumberField(
+          text: '5',
+          onStep: steps.add,
+          onChanged: (_) {},
+          onDragStart: () => events.add('start'),
+          onDragEnd: () => events.add('end'),
+          onFocusChanged: (f) => events.add('focus $f'),
+        ),
+      ),
+    );
+    final middle = tester.getCenter(find.byType(NutriaNumberField));
+    final gesture = await tester.startGesture(
+      middle,
+      kind: PointerDeviceKind.mouse,
+    );
+    for (var i = 0; i < 6; i++) {
+      await gesture.moveBy(const Offset(5, 0));
+      await tester.pump();
+    }
+    for (var i = 0; i < 4; i++) {
+      await gesture.moveBy(const Offset(-5, 0));
+      await tester.pump();
+    }
+    await gesture.up();
+    await tester.pump();
+    // 30px right: 3 steps of 8px, 6px left over; 20px back: 1 step down.
+    expect(steps, [1, 1, 1, -1]);
+    expect(events, ['start', 'end'], reason: 'no typing');
+
+    steps.clear();
+    await tester.tapAt(middle, kind: PointerDeviceKind.mouse);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(steps, isEmpty);
+    expect(events.last, 'focus true', reason: 'typing');
   });
 }

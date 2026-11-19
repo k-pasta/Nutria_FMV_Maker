@@ -162,6 +162,8 @@ class _VariableCardState extends ConsumerState<_VariableCard> {
               decimals: variable.type == VariableType.decimal,
               onStep: (direction) =>
                   editor.stepVariable(variable.id, direction),
+              onDragStart: editor.beginValueDrag,
+              onDragEnd: editor.endValueDrag,
               onFocusChanged: (focused) {
                 if (focused) _valueSession = Object();
               },

@@ -54,7 +54,7 @@ String _seconds(int ms) => (ms / 1000).toStringAsFixed(2);
 /// accented and gets a reset (x) button.
 ///
 /// The selection time is a number field (type seconds, or step a second with
-/// its arrows); every other setting steps through its values by clicking,
+/// its arrows or by dragging); every other setting steps through its values by clicking,
 /// and right-clicking it lists them all.
 class VideoSettingRow extends StatefulWidget {
   const VideoSettingRow({
@@ -66,6 +66,8 @@ class VideoSettingRow extends StatefulWidget {
     this.isOverridden = false,
     this.onReset,
     this.onMenuOpenChanged,
+    this.onDragStart,
+    this.onDragEnd,
   });
 
   final VideoSettingType type;
@@ -84,6 +86,11 @@ class VideoSettingRow extends StatefulWidget {
   /// Removes the override. Shown only when [isOverridden].
   final VoidCallback? onReset;
   final ValueChanged<bool>? onMenuOpenChanged;
+
+  /// Dragging the selection time's field: the steps between are one undo
+  /// step (see [NutriaNumberField.onDragStart]).
+  final VoidCallback? onDragStart;
+  final VoidCallback? onDragEnd;
 
   @override
   State<VideoSettingRow> createState() => _VideoSettingRowState();
@@ -111,6 +118,8 @@ class _VideoSettingRowState extends State<VideoSettingRow> {
               decimals: true,
               isAccented: widget.isOverridden,
               onStep: widget.onStep,
+              onDragStart: widget.onDragStart,
+              onDragEnd: widget.onDragEnd,
               onFocusChanged: (focused) {
                 if (focused) _typing = Object();
               },

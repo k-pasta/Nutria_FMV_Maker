@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
+import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
@@ -59,6 +60,17 @@ void main() {
       .updateMusic('b', (c) => c!.copyWith(end: FmvMusicEnd.laterNodeChanges))
       .setPauseMusic('b', 'p')
       .setMenuMusic('s');
+
+  test('fade lengths step a quarter second, onto whole quarters', () {
+    expect(stepFade(1000, 1), 1250);
+    expect(stepFade(1000, -1), 750);
+    expect(stepFade(1100, 1), 1250);
+    expect(stepFade(1100, -1), 1000);
+    expect(stepFade(0, -1), 0);
+    expect(stepFade(kMaxMusicFadeMs, 1), kMaxMusicFadeMs);
+    expect(fadeFromSeconds(1.5), 1500);
+    expect(fadeFromSeconds(-1), isNull);
+  });
 
   test('music is exported with paths and settings', () {
     final project = exportFmv(doc).project;

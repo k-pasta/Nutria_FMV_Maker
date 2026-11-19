@@ -11,6 +11,7 @@ import 'package:nutria_fmv_maker/features/video_preview/providers/video_preview_
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
+import 'package:nutria_fmv_maker/ui/widgets/nutria_number_field.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_search_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_setting_row.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_text.dart';
@@ -26,6 +27,25 @@ String _musicEndLabel(FmvMusicEnd end, AppLocalizations t) => switch (end) {
   FmvMusicEnd.videoEnds => t.musicEndVideo,
   FmvMusicEnd.laterNodeChanges => t.musicEndLater,
 };
+
+/// A fade length field, in seconds: type it, or step it a quarter second
+/// with the arrows or by dragging.
+Widget _fadeField(
+  GraphEditor editor,
+  int ms, {
+  required ValueChanged<int> onStep,
+  required ValueChanged<int> onTyped,
+}) => NutriaNumberField(
+  text: (ms / 1000).toStringAsFixed(2),
+  decimals: true,
+  onStep: onStep,
+  onDragStart: editor.beginValueDrag,
+  onDragEnd: editor.endValueDrag,
+  onChanged: (text) {
+    final typed = fadeFromSeconds(NutriaNumberField.parse(text));
+    if (typed != null) onTyped(typed);
+  },
+);
 
 /// The next ([direction] 1) or previous of [values] after [current].
 T _step<T>(List<T> values, T current, int direction) {
@@ -119,8 +139,8 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
     ),
   ];
   if (cue != null) {
-    void edit(MusicCue Function(MusicCue c) change) =>
-        editor.editMusic(node.id, change);
+    void edit(MusicCue Function(MusicCue c) change, {Object? mergeKey}) =>
+        editor.editMusic(node.id, change, mergeKey: mergeKey);
     if (cue.loop && cue.end == FmvMusicEnd.trackEnds) {
       rows.add(
         Padding(
@@ -156,12 +176,16 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
       ),
       NutriaSettingRow(
         label: t.musicFadeOut,
-        value: fadeLabel(cue.fadeOutMs),
-        onPrevious: () => edit(
-          (c) => c.copyWith(fadeOutMs: _step(kMusicFadeSteps, c.fadeOutMs, -1)),
-        ),
-        onNext: () => edit(
-          (c) => c.copyWith(fadeOutMs: _step(kMusicFadeSteps, c.fadeOutMs, 1)),
+        value: '',
+        field: _fadeField(
+          editor,
+          cue.fadeOutMs,
+          onStep: (d) =>
+              edit((c) => c.copyWith(fadeOutMs: stepFade(c.fadeOutMs, d))),
+          onTyped: (ms) => edit(
+            (c) => c.copyWith(fadeOutMs: ms),
+            mergeKey: ('fade', node.id),
+          ),
         ),
         options: options(
           kMusicFadeSteps,
@@ -194,14 +218,19 @@ List<Widget> musicRows(BuildContext context, WidgetRef ref, Node node) {
     rows.addAll([
       NutriaSettingRow(
         label: t.musicPauseFadeOut,
-        value: fadeLabel(node.pauseMusicFadeOutMs),
-        onPrevious: () => editor.setPauseMusicFadeOut(
-          node.id,
-          _step(kMusicFadeSteps, node.pauseMusicFadeOutMs, -1),
-        ),
-        onNext: () => editor.setPauseMusicFadeOut(
-          node.id,
-          _step(kMusicFadeSteps, node.pauseMusicFadeOutMs, 1),
+        value: '',
+        field: _fadeField(
+          editor,
+          node.pauseMusicFadeOutMs,
+          onStep: (d) => editor.setPauseMusicFadeOut(
+            node.id,
+            stepFade(node.pauseMusicFadeOutMs, d),
+          ),
+          onTyped: (ms) => editor.setPauseMusicFadeOut(
+            node.id,
+            ms,
+            mergeKey: ('pause fade', node.id),
+          ),
         ),
         options: options(
           kMusicFadeSteps,

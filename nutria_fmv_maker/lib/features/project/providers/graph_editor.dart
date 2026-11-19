@@ -67,16 +67,27 @@ class GraphEditor {
     return id;
   }
 
+  /// A number field is being dragged: the steps until [endValueDrag] are
+  /// one undo step.
+  void beginValueDrag() => _document.beginTransaction('Change value');
+
+  /// Ends the drag started with [beginValueDrag].
+  void endValueDrag() => _document.commit();
+
   /// Gives video node [id] music [audioId] (keeping its music settings).
   void setMusic(String id, String audioId) =>
       _document.apply('Set music', (d) => d.setMusic(id, audioId));
 
   /// Edits video node [id]'s music settings.
-  void editMusic(String id, MusicCue Function(MusicCue cue) edit) =>
-      _document.apply(
-        'Change music',
-        (d) => d.updateMusic(id, (cue) => cue == null ? null : edit(cue)),
-      );
+  void editMusic(
+    String id,
+    MusicCue Function(MusicCue cue) edit, {
+    Object? mergeKey,
+  }) => _document.apply(
+    'Change music',
+    (d) => d.updateMusic(id, (cue) => cue == null ? null : edit(cue)),
+    mergeKey: mergeKey,
+  );
 
   void removeMusic(String id) =>
       _document.apply('Remove music', (d) => d.updateMusic(id, (_) => null));
@@ -85,10 +96,12 @@ class GraphEditor {
   void setPauseMusic(String id, String? audioId) =>
       _document.apply('Set pause music', (d) => d.setPauseMusic(id, audioId));
 
-  void setPauseMusicFadeOut(String id, int ms) => _document.apply(
-    'Change pause music',
-    (d) => d.setPauseMusicFadeOut(id, ms),
-  );
+  void setPauseMusicFadeOut(String id, int ms, {Object? mergeKey}) =>
+      _document.apply(
+        'Change pause music',
+        (d) => d.setPauseMusicFadeOut(id, ms),
+        mergeKey: mergeKey,
+      );
 
   /// Sets (or with `null` removes) the main menu music.
   void setMenuMusic(String? audioId) =>
