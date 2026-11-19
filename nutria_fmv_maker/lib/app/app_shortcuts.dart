@@ -2,6 +2,7 @@
 import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:nutria_fmv_maker/app/app_commands.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 
 const kShortcutNew = SingleActivator(LogicalKeyboardKey.keyN, control: true);
@@ -48,6 +49,10 @@ const kShortcutLeftPanel = SingleActivator(LogicalKeyboardKey.keyT);
 const kShortcutRightPanel = SingleActivator(LogicalKeyboardKey.keyN);
 const kShortcutFrameSelected = SingleActivator(LogicalKeyboardKey.keyF);
 const kShortcutFrameAll = SingleActivator(LogicalKeyboardKey.home);
+const kShortcutGraphView =
+    SingleActivator(LogicalKeyboardKey.digit1, control: true);
+const kShortcutScreensView =
+    SingleActivator(LogicalKeyboardKey.digit2, control: true);
 const kShortcutZoomIn = [
   SingleActivator(LogicalKeyboardKey.add),
   SingleActivator(LogicalKeyboardKey.numpadAdd),
@@ -81,6 +86,8 @@ Map<ShortcutActivator, VoidCallback> appShortcuts(AppCommands commands) => {
       kShortcutDelete: commands.deleteSelection,
       kShortcutDisconnect: commands.disconnectSelection,
       kShortcutRename: commands.renameSelected,
+      kShortcutGraphView: () => commands.showView(EditorView.graph),
+      kShortcutScreensView: () => commands.showView(EditorView.screens),
       kShortcutCopy: commands.copy,
       kShortcutPaste: commands.paste,
       kShortcutDuplicate: commands.duplicate,

@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/features/preferences/widgets/preferences_panel.dart';
 import 'package:nutria_fmv_maker/features/project_settings/widgets/project_settings_panel.dart';
+import 'package:nutria_fmv_maker/features/screens/widgets/screen_panel.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/features/variables/widgets/variables_panel.dart';
 import 'package:nutria_fmv_maker/features/video_library/widgets/video_library_panel.dart';
@@ -39,6 +40,10 @@ class LeftPanel extends ConsumerWidget {
                       icon: Icons.data_object,
                       text: t.boardVariables,
                     ),
+                    LeftPanelSection.screen => NutriaDropdownOption(
+                      icon: Icons.dashboard_customize,
+                      text: t.boardScreen,
+                    ),
                     LeftPanelSection.projectSettings => NutriaDropdownOption(
                       icon: Icons.tune,
                       text: t.boardProjectSettings,
@@ -66,6 +71,7 @@ class LeftPanel extends ConsumerWidget {
                 child: switch (section) {
                   LeftPanelSection.media => const VideoLibraryPanel(),
                   LeftPanelSection.variables => const VariablesPanel(),
+                  LeftPanelSection.screen => const ScreenPanel(),
                   LeftPanelSection.projectSettings =>
                     const ProjectSettingsPanel(),
                   LeftPanelSection.preferences => const PreferencesPanel(),

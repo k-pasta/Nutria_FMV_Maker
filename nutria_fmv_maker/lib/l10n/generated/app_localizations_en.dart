@@ -365,6 +365,100 @@ class AppLocalizationsEn extends AppLocalizations {
   String get musicDropAsPause => 'Pause Music (While Choosing)';
 
   @override
+  String get boardScreen => 'Main Menu Design';
+
+  @override
+  String get viewStoryGraph => 'Story Graph';
+
+  @override
+  String get viewScreens => 'Screens';
+
+  @override
+  String get screenTitle => 'Title';
+
+  @override
+  String get screenDescription => 'Description';
+
+  @override
+  String get screenStart => 'Start';
+
+  @override
+  String get screenLoad => 'Load';
+
+  @override
+  String get screenSettings => 'Settings';
+
+  @override
+  String get screenCredits => 'Credits';
+
+  @override
+  String get screenQuit => 'Quit';
+
+  @override
+  String get screenDropBackground =>
+      'Drop an image or a video here for the background';
+
+  @override
+  String get screenOpenDesigner => 'Open the Screen Designer';
+
+  @override
+  String get screenBackground => 'Background';
+
+  @override
+  String get screenNoBackground => 'No Background';
+
+  @override
+  String get screenRemoveBackground => 'Remove the background';
+
+  @override
+  String get screenClassicLayout => 'Classic Layout';
+
+  @override
+  String get screenRemoveElement => 'Remove this element';
+
+  @override
+  String get screenTextHint => 'Own text (else the default)…';
+
+  @override
+  String get screenWidth => 'Width';
+
+  @override
+  String get screenStyle => 'Style';
+
+  @override
+  String screenStyleNote(String name) {
+    return 'Changes below apply to every element in the $name style.';
+  }
+
+  @override
+  String get screenTextSize => 'Text Size';
+
+  @override
+  String get screenBold => 'Bold';
+
+  @override
+  String get screenDefaultFont => 'Default Font';
+
+  @override
+  String get screenTextColor => 'Text color';
+
+  @override
+  String get screenBackColor => 'Background color';
+
+  @override
+  String get screenBackOpacity => 'Background Opacity';
+
+  @override
+  String get screenRoundness => 'Roundness';
+
+  @override
+  String get screenPadding => 'Padding';
+
+  @override
+  String get screenSelectHint =>
+      'Click an element on the screen to change it. Drag elements to move them; they snap to the middle and to each other.';
+
+  @override
   String get logicProblemNoVariable => 'Pick a variable.';
 
   @override

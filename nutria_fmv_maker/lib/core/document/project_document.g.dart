@@ -55,6 +55,14 @@ _ProjectDocument _$ProjectDocumentFromJson(Map<String, dynamic> json) =>
               ?.map((e) => Variable.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const <Variable>[],
+      menuScreen: json['menuScreen'] == null
+          ? const MenuScreen()
+          : MenuScreen.fromJson(json['menuScreen'] as Map<String, dynamic>),
+      styles:
+          (json['styles'] as List<dynamic>?)
+              ?.map((e) => ScreenStyle.fromJson(e as Map<String, dynamic>))
+              .toList() ??
+          kDefaultScreenStyles,
     );
 
 Map<String, dynamic> _$ProjectDocumentToJson(_ProjectDocument instance) =>
@@ -69,4 +77,6 @@ Map<String, dynamic> _$ProjectDocumentToJson(_ProjectDocument instance) =>
       'edges': instance.edges.map((e) => e.toJson()).toList(),
       'media': instance.media.map((e) => e.toJson()).toList(),
       'variables': instance.variables.map((e) => e.toJson()).toList(),
+      'menuScreen': instance.menuScreen.toJson(),
+      'styles': instance.styles.map((e) => e.toJson()).toList(),
     };

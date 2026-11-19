@@ -409,3 +409,53 @@ what the Maker checks.
 - **Protocol:** optional `"music"` and `"pauseMusic"` on nodes, and
   `"menuMusic"` in ProjectInfo. Older Players ignore them. The Player
   still has to play them, which is part of the Player update.
+
+## Phase 7: screen designer (first part: the main menu)
+- **A Screens view replaces the story graph.** Switch with View > Screens
+  or Story Graph, or Ctrl+2 and Ctrl+1. It opens the "Main Menu Design"
+  section in the left panel. The side panels stay as they are, and the
+  stage fits between them.
+- **The stage is 16:9.**
+  - Drop an image or a video from Imported Media on it to make the
+    background, or pick one in the panel. A video shows its thumbnail.
+  - The row of buttons above the stage adds elements: Title, Description,
+    Start, Load, Settings, Credits and Quit. A new element goes below the
+    lowest one.
+  - **Ask:** I used buttons to add elements instead of dragging them from a
+    tray. Dragging an added element is how you place it. Is that OK?
+- **Placing elements:**
+  - Drag an element to move it.
+  - It snaps to the middle and to the centres of other elements, within
+    1.2% of the screen. Accent guide lines show what it snapped to.
+  - Positions and widths are stored as fractions of the screen, so the
+    layout fits any resolution.
+  - Delete removes the selected element.
+  - No align or distribute buttons yet.
+- **"Classic Layout"** puts a title and description near the top and
+  Start, Load, Settings and Quit in a column below. It replaces the
+  current elements, as one undo step.
+- **What elements say:** the Title and Description show the project's
+  title and description, with bold and italic. Buttons show their name in
+  the editor's language. Any element can have its own text instead.
+- **Styles are shared objects:**
+  - Every project starts with Heading, Text and Button. Title uses Heading,
+    Description uses Text, and buttons use Button.
+  - Editing a style changes every element that uses it, and a note in the
+    panel says so.
+  - A style has text size, bold, font (an imported font, or the
+    Player's), text colour, background colour and opacity, roundness and
+    padding.
+  - Colours come from a 9-colour palette. Sizes are fractions of the
+    screen height.
+  - **Ask:** do you want a full colour picker, and a way to create and
+    rename styles in the panel? The data model already supports more
+    styles.
+- **Export:** a "Screens" → "menu" section, written only when something is
+  designed. Each element carries its resolved style, so the Player
+  doesn't look styles up. Colours are written as "#AARRGGBB".
+- **Not done yet:**
+  - Choice and pause screens.
+  - The pause effects (vignette, chromatic aberration, broken glass) as
+    shaders.
+  - Animation presets.
+  - Stock nutria images, whose licences still need checking.

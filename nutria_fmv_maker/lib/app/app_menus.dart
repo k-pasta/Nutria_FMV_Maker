@@ -3,6 +3,7 @@ import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/app/app_commands.dart';
 import 'package:nutria_fmv_maker/app/app_shortcuts.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/panel_layout_provider.dart';
 import 'package:nutria_fmv_maker/l10n/generated/app_localizations.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_menu_bar.dart';
@@ -141,6 +142,16 @@ List<NutriaMenu> buildAppMenus({
               onPressed: () => commands.setTheme(choice),
             ),
         ]),
+        NutriaMenuEntry(
+            label: t.viewStoryGraph,
+            icon: Icons.account_tree,
+            shortcut: kShortcutGraphView,
+            onPressed: () => commands.showView(EditorView.graph)),
+        NutriaMenuEntry(
+            label: t.viewScreens,
+            icon: Icons.dashboard_customize,
+            shortcut: kShortcutScreensView,
+            onPressed: () => commands.showView(EditorView.screens)),
         NutriaMenuEntry(
             label: t.viewFrameAll,
             icon: Icons.fit_screen,

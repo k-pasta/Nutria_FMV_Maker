@@ -12,4 +12,5 @@ export 'src/fmv_project.dart';
 export 'src/inline_markdown.dart';
 export 'src/logic.dart';
 export 'src/music.dart';
+export 'src/screens.dart';
 export 'src/srt.dart';

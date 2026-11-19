@@ -366,6 +366,100 @@ class AppLocalizationsEl extends AppLocalizations {
   String get musicDropAsPause => 'Μουσική Παύσης (στις Επιλογές)';
 
   @override
+  String get boardScreen => 'Σχεδίαση Κεντρικού Μενού';
+
+  @override
+  String get viewStoryGraph => 'Γράφημα Ιστορίας';
+
+  @override
+  String get viewScreens => 'Οθόνες';
+
+  @override
+  String get screenTitle => 'Τίτλος';
+
+  @override
+  String get screenDescription => 'Περιγραφή';
+
+  @override
+  String get screenStart => 'Έναρξη';
+
+  @override
+  String get screenLoad => 'Φόρτωση';
+
+  @override
+  String get screenSettings => 'Ρυθμίσεις';
+
+  @override
+  String get screenCredits => 'Συντελεστές';
+
+  @override
+  String get screenQuit => 'Έξοδος';
+
+  @override
+  String get screenDropBackground =>
+      'Ρίξτε εδώ μια εικόνα ή ένα βίντεο για φόντο';
+
+  @override
+  String get screenOpenDesigner => 'Άνοιγμα Σχεδιαστή Οθονών';
+
+  @override
+  String get screenBackground => 'Φόντο';
+
+  @override
+  String get screenNoBackground => 'Χωρίς Φόντο';
+
+  @override
+  String get screenRemoveBackground => 'Αφαίρεση φόντου';
+
+  @override
+  String get screenClassicLayout => 'Κλασική Διάταξη';
+
+  @override
+  String get screenRemoveElement => 'Αφαίρεση στοιχείου';
+
+  @override
+  String get screenTextHint => 'Δικό του κείμενο (αλλιώς το προεπιλεγμένο)…';
+
+  @override
+  String get screenWidth => 'Πλάτος';
+
+  @override
+  String get screenStyle => 'Στυλ';
+
+  @override
+  String screenStyleNote(String name) {
+    return 'Οι αλλαγές παρακάτω ισχύουν για κάθε στοιχείο με στυλ $name.';
+  }
+
+  @override
+  String get screenTextSize => 'Μέγεθος Κειμένου';
+
+  @override
+  String get screenBold => 'Έντονα';
+
+  @override
+  String get screenDefaultFont => 'Προεπιλεγμένη Γραμματοσειρά';
+
+  @override
+  String get screenTextColor => 'Χρώμα κειμένου';
+
+  @override
+  String get screenBackColor => 'Χρώμα φόντου';
+
+  @override
+  String get screenBackOpacity => 'Αδιαφάνεια Φόντου';
+
+  @override
+  String get screenRoundness => 'Στρογγύλεμα';
+
+  @override
+  String get screenPadding => 'Περιθώριο';
+
+  @override
+  String get screenSelectHint =>
+      'Κάντε κλικ σε ένα στοιχείο για να το αλλάξετε. Σύρετε τα στοιχεία για να τα μετακινήσετε· κουμπώνουν στο κέντρο και μεταξύ τους.';
+
+  @override
   String get logicProblemNoVariable => 'Επιλέξτε μεταβλητή.';
 
   @override

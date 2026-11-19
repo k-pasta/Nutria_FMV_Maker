@@ -4,6 +4,7 @@ import 'package:nutria_fmv_maker/core/document/edge.dart';
 import 'package:nutria_fmv_maker/core/document/media.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
+import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 
@@ -61,6 +62,12 @@ abstract class ProjectDocument with _$ProjectDocument {
 
     /// Named values for the story. Missing in older files, hence empty.
     @Default(<Variable>[]) List<Variable> variables,
+
+    /// The main menu's design. Missing in older files, hence empty.
+    @Default(MenuScreen()) MenuScreen menuScreen,
+
+    /// Styles of screen elements. Older files get the defaults.
+    @Default(kDefaultScreenStyles) List<ScreenStyle> styles,
   }) = _ProjectDocument;
 
   factory ProjectDocument.fromJson(Map<String, dynamic> json) =>

@@ -131,4 +131,30 @@ void main() {
     expect(const FmvNode(video: 'b.mp4').toJson().containsKey('music'),
         isFalse);
   });
+
+  test('the menu screen is written only when designed', () {
+    const project = FmvProject(
+      menuScreen: FmvMenuScreen(
+        background: 'bg.png',
+        elements: [
+          FmvScreenElement(
+            kind: 'start',
+            x: 0.5,
+            y: 0.6,
+            width: 0.3,
+            text: 'Play',
+            style: FmvScreenStyle(textColor: 0xFFFF0000, bold: true),
+          ),
+        ],
+      ),
+    );
+    final json = project.toJson();
+    final style = ((((json['Screens'] as Map)['menu'] as Map)['elements']
+        as List).single as Map)['style'] as Map;
+    expect(style['textColor'], '#FFFF0000');
+    final read = FmvProject.decode(project.encode());
+    expect(read.encode(), project.encode());
+    expect(read.menuScreen.elements.single.style.textColor, 0xFFFF0000);
+    expect(const FmvProject().toJson().containsKey('Screens'), isFalse);
+  });
 }

@@ -10,6 +10,7 @@ import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/logic_check.dart';
 import 'package:nutria_fmv_maker/core/graph/ports.dart';
+import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 /// A problem found while exporting. Export still succeeds; the editor can
@@ -156,8 +157,38 @@ FmvExport exportFmv(ProjectDocument document) {
       variables: {
         for (final v in document.variables) v.name: _variable(v),
       },
+      menuScreen: _menuScreen(document),
     ),
     issues: issues,
+  );
+}
+
+/// The main menu design, with every element's style written out.
+FmvMenuScreen _menuScreen(ProjectDocument document) {
+  final screen = document.menuScreen;
+  return FmvMenuScreen(
+    background: document.mediaById(screen.backgroundId)?.path,
+    elements: [
+      for (final e in screen.elements)
+        if (document.styleOf(e) case final style)
+          FmvScreenElement(
+            kind: e.kind.name,
+            x: e.x,
+            y: e.y,
+            width: e.width,
+            text: e.text,
+            style: FmvScreenStyle(
+              fontSize: style.fontSize,
+              bold: style.bold,
+              font: document.mediaById(style.fontId)?.path,
+              textColor: style.textColor,
+              backgroundColor: style.backgroundColor,
+              backgroundOpacity: style.backgroundOpacity,
+              radius: style.radius,
+              padding: style.padding,
+            ),
+          ),
+    ],
   );
 }
 

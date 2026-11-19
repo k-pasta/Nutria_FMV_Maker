@@ -5,16 +5,19 @@ import 'package:nutria_fmv_maker/core/document/music.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
 import 'package:nutria_fmv_maker/core/document/position.dart';
 import 'package:nutria_fmv_maker/core/document/project_document.dart';
+import 'package:nutria_fmv_maker/core/document/screen.dart';
 import 'package:nutria_fmv_maker/core/document/variable.dart';
 import 'package:nutria_fmv_maker/core/document/video_settings.dart';
 import 'package:nutria_fmv_maker/core/graph/fragment.dart';
 import 'package:nutria_fmv_maker/core/graph/graph_ops.dart';
+import 'package:nutria_fmv_maker/core/graph/screen_ops.dart';
 import 'package:nutria_fmv_maker/core/graph/variable_ops.dart';
 import 'package:nutria_fmv_maker/features/nodes/node_bounds.dart';
 import 'package:nutria_fmv_maker/features/nodes/providers/node_gesture_provider.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/services/clipboard_service.dart';
 import 'package:nutria_fmv_maker/services/media_files_service.dart';
@@ -90,6 +93,52 @@ class GraphEditor {
   /// Sets (or with `null` removes) the main menu music.
   void setMenuMusic(String? audioId) =>
       _document.apply('Set menu music', (d) => d.setMenuMusic(audioId));
+
+  // ---------------------------------------------------------------- screens
+
+  /// Adds a menu element of [kind] and selects it.
+  void addScreenElement(ScreenElementKind kind) {
+    final id = _newId();
+    _document.apply('Add element', (d) => d.addScreenElement(id, kind));
+    _ref.read(selectedScreenElementProvider.notifier).select(id);
+  }
+
+  void removeScreenElement(String id) {
+    _document.apply('Remove element', (d) => d.removeScreenElement(id));
+    _ref.read(selectedScreenElementProvider.notifier).select(null);
+  }
+
+  void setMenuBackground(String? mediaId) => _document.apply(
+    'Set background',
+    (d) => d.setMenuBackground(mediaId),
+  );
+
+  /// Replaces the menu's elements with the classic layout.
+  void applyClassicMenu() => _document.apply(
+    'Classic layout',
+    (d) => d.applyClassicMenu(_newId),
+  );
+
+  void setScreenElementWidth(String id, double width) => _document.apply(
+    'Change element',
+    (d) => d.setScreenElementWidth(id, width),
+  );
+
+  void setScreenElementStyle(String id, String? styleId) => _document.apply(
+    'Change element',
+    (d) => d.setScreenElementStyle(id, styleId),
+  );
+
+  void setScreenElementText(String id, String text, {Object? mergeKey}) =>
+      _document.apply(
+        'Change element',
+        (d) => d.setScreenElementText(id, text),
+        mergeKey: mergeKey,
+      );
+
+  /// Edits screen style [id] (every element using it changes).
+  void editScreenStyle(String id, ScreenStyle Function(ScreenStyle s) edit) =>
+      _document.apply('Change style', (d) => d.editScreenStyle(id, edit));
 
   /// Adds a Change Variable node at [position] and returns its id.
   String addChangeNode(Position position) {

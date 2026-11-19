@@ -4,6 +4,7 @@ import 'dart:convert';
 import 'package:nutria_fmv_protocol/src/enums.dart';
 import 'package:nutria_fmv_protocol/src/logic.dart';
 import 'package:nutria_fmv_protocol/src/music.dart';
+import 'package:nutria_fmv_protocol/src/screens.dart';
 
 /// Thrown by [FmvProject.decode] for text that isn't a .fmv project.
 class FmvFormatException implements Exception {
@@ -44,6 +45,7 @@ class FmvProject {
     this.settings = const FmvSettings(),
     this.nodes = const {},
     this.variables = const {},
+    this.menuScreen = const FmvMenuScreen(),
   });
 
   final FmvProjectInfo info;
@@ -55,6 +57,9 @@ class FmvProject {
   /// The story's variables by name.
   final Map<String, FmvVariable> variables;
 
+  /// The main menu's design ("Screens" → "menu"; added after 1.0).
+  final FmvMenuScreen menuScreen;
+
   /// The id of the node playback starts at, or `null` for an empty project.
   String? get startNodeId => nodes.isEmpty ? null : nodes.keys.first;
 
@@ -64,6 +69,7 @@ class FmvProject {
         'Nodes': {
           for (final entry in nodes.entries) entry.key: entry.value.toJson(),
         },
+        if (!menuScreen.isEmpty) 'Screens': {'menu': menuScreen.toJson()},
         if (variables.isNotEmpty)
           'Variables': {
             for (final entry in variables.entries)
@@ -84,6 +90,8 @@ class FmvProject {
         for (final entry in nodes.entries)
           '${entry.key}': FmvNode.fromJson(_map(entry.value)),
       },
+      menuScreen:
+          FmvMenuScreen.fromJson(_map(_map(json['Screens'])['menu'])),
       variables: {
         for (final entry in _map(json['Variables']).entries)
           if (FmvVariable.fromJson(_map(entry.value)) case final variable?)

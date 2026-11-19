@@ -368,6 +368,100 @@ class AppLocalizationsFr extends AppLocalizations {
   String get musicDropAsPause => 'Musique de pause (pendant le choix)';
 
   @override
+  String get boardScreen => 'Conception du menu';
+
+  @override
+  String get viewStoryGraph => 'Graphe de l’histoire';
+
+  @override
+  String get viewScreens => 'Écrans';
+
+  @override
+  String get screenTitle => 'Titre';
+
+  @override
+  String get screenDescription => 'Description';
+
+  @override
+  String get screenStart => 'Commencer';
+
+  @override
+  String get screenLoad => 'Charger';
+
+  @override
+  String get screenSettings => 'Paramètres';
+
+  @override
+  String get screenCredits => 'Crédits';
+
+  @override
+  String get screenQuit => 'Quitter';
+
+  @override
+  String get screenDropBackground =>
+      'Déposez ici une image ou une vidéo pour le fond';
+
+  @override
+  String get screenOpenDesigner => 'Ouvrir le concepteur d’écrans';
+
+  @override
+  String get screenBackground => 'Fond';
+
+  @override
+  String get screenNoBackground => 'Aucun fond';
+
+  @override
+  String get screenRemoveBackground => 'Retirer le fond';
+
+  @override
+  String get screenClassicLayout => 'Disposition classique';
+
+  @override
+  String get screenRemoveElement => 'Retirer cet élément';
+
+  @override
+  String get screenTextHint => 'Texte propre (sinon par défaut)…';
+
+  @override
+  String get screenWidth => 'Largeur';
+
+  @override
+  String get screenStyle => 'Style';
+
+  @override
+  String screenStyleNote(String name) {
+    return 'Les changements ci-dessous valent pour tous les éléments au style $name.';
+  }
+
+  @override
+  String get screenTextSize => 'Taille du texte';
+
+  @override
+  String get screenBold => 'Gras';
+
+  @override
+  String get screenDefaultFont => 'Police par défaut';
+
+  @override
+  String get screenTextColor => 'Couleur du texte';
+
+  @override
+  String get screenBackColor => 'Couleur du fond';
+
+  @override
+  String get screenBackOpacity => 'Opacité du fond';
+
+  @override
+  String get screenRoundness => 'Arrondi';
+
+  @override
+  String get screenPadding => 'Marge';
+
+  @override
+  String get screenSelectHint =>
+      'Cliquez sur un élément pour le modifier. Faites glisser les éléments pour les déplacer ; ils s’alignent au centre et entre eux.';
+
+  @override
   String get logicProblemNoVariable => 'Choisissez une variable.';
 
   @override

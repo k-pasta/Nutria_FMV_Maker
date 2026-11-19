@@ -17,6 +17,7 @@ import 'package:nutria_fmv_maker/features/preferences/providers/preferences_prov
 import 'package:nutria_fmv_maker/features/project/providers/document_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
 import 'package:nutria_fmv_maker/features/selection/providers/selection_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/notifications_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
@@ -212,7 +213,24 @@ class AppCommands {
     }
   }
 
-  void deleteSelection() => _ref.read(graphEditorProvider).removeSelection();
+  /// Delete: the selected nodes, or in the Screens view the selected
+  /// element.
+  void deleteSelection() {
+    if (_ref.read(editorViewProvider) == EditorView.screens) {
+      final id = _ref.read(selectedScreenElementProvider);
+      if (id != null) _ref.read(graphEditorProvider).removeScreenElement(id);
+      return;
+    }
+    _ref.read(graphEditorProvider).removeSelection();
+  }
+
+  /// Shows the story graph or the screen designer (with its panel section).
+  void showView(EditorView view) {
+    _ref.read(editorViewProvider.notifier).show(view);
+    if (view == EditorView.screens) {
+      _ref.read(panelLayoutProvider.notifier).showSection(LeftPanelSection.screen);
+    }
+  }
   Future<void> copy() => _ref.read(graphEditorProvider).copySelection();
   void duplicate() => _ref.read(graphEditorProvider).duplicateSelection();
   void selectAll() => _ref.read(graphEditorProvider).selectAll();

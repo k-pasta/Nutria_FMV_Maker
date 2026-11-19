@@ -766,6 +766,186 @@ abstract class AppLocalizations {
   /// **'Pause Music (While Choosing)'**
   String get musicDropAsPause;
 
+  /// No description provided for @boardScreen.
+  ///
+  /// In en, this message translates to:
+  /// **'Main Menu Design'**
+  String get boardScreen;
+
+  /// No description provided for @viewStoryGraph.
+  ///
+  /// In en, this message translates to:
+  /// **'Story Graph'**
+  String get viewStoryGraph;
+
+  /// No description provided for @viewScreens.
+  ///
+  /// In en, this message translates to:
+  /// **'Screens'**
+  String get viewScreens;
+
+  /// No description provided for @screenTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Title'**
+  String get screenTitle;
+
+  /// No description provided for @screenDescription.
+  ///
+  /// In en, this message translates to:
+  /// **'Description'**
+  String get screenDescription;
+
+  /// No description provided for @screenStart.
+  ///
+  /// In en, this message translates to:
+  /// **'Start'**
+  String get screenStart;
+
+  /// No description provided for @screenLoad.
+  ///
+  /// In en, this message translates to:
+  /// **'Load'**
+  String get screenLoad;
+
+  /// No description provided for @screenSettings.
+  ///
+  /// In en, this message translates to:
+  /// **'Settings'**
+  String get screenSettings;
+
+  /// No description provided for @screenCredits.
+  ///
+  /// In en, this message translates to:
+  /// **'Credits'**
+  String get screenCredits;
+
+  /// No description provided for @screenQuit.
+  ///
+  /// In en, this message translates to:
+  /// **'Quit'**
+  String get screenQuit;
+
+  /// No description provided for @screenDropBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Drop an image or a video here for the background'**
+  String get screenDropBackground;
+
+  /// No description provided for @screenOpenDesigner.
+  ///
+  /// In en, this message translates to:
+  /// **'Open the Screen Designer'**
+  String get screenOpenDesigner;
+
+  /// No description provided for @screenBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Background'**
+  String get screenBackground;
+
+  /// No description provided for @screenNoBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'No Background'**
+  String get screenNoBackground;
+
+  /// No description provided for @screenRemoveBackground.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove the background'**
+  String get screenRemoveBackground;
+
+  /// No description provided for @screenClassicLayout.
+  ///
+  /// In en, this message translates to:
+  /// **'Classic Layout'**
+  String get screenClassicLayout;
+
+  /// No description provided for @screenRemoveElement.
+  ///
+  /// In en, this message translates to:
+  /// **'Remove this element'**
+  String get screenRemoveElement;
+
+  /// No description provided for @screenTextHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Own text (else the default)…'**
+  String get screenTextHint;
+
+  /// No description provided for @screenWidth.
+  ///
+  /// In en, this message translates to:
+  /// **'Width'**
+  String get screenWidth;
+
+  /// No description provided for @screenStyle.
+  ///
+  /// In en, this message translates to:
+  /// **'Style'**
+  String get screenStyle;
+
+  /// No description provided for @screenStyleNote.
+  ///
+  /// In en, this message translates to:
+  /// **'Changes below apply to every element in the {name} style.'**
+  String screenStyleNote(String name);
+
+  /// No description provided for @screenTextSize.
+  ///
+  /// In en, this message translates to:
+  /// **'Text Size'**
+  String get screenTextSize;
+
+  /// No description provided for @screenBold.
+  ///
+  /// In en, this message translates to:
+  /// **'Bold'**
+  String get screenBold;
+
+  /// No description provided for @screenDefaultFont.
+  ///
+  /// In en, this message translates to:
+  /// **'Default Font'**
+  String get screenDefaultFont;
+
+  /// No description provided for @screenTextColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Text color'**
+  String get screenTextColor;
+
+  /// No description provided for @screenBackColor.
+  ///
+  /// In en, this message translates to:
+  /// **'Background color'**
+  String get screenBackColor;
+
+  /// No description provided for @screenBackOpacity.
+  ///
+  /// In en, this message translates to:
+  /// **'Background Opacity'**
+  String get screenBackOpacity;
+
+  /// No description provided for @screenRoundness.
+  ///
+  /// In en, this message translates to:
+  /// **'Roundness'**
+  String get screenRoundness;
+
+  /// No description provided for @screenPadding.
+  ///
+  /// In en, this message translates to:
+  /// **'Padding'**
+  String get screenPadding;
+
+  /// No description provided for @screenSelectHint.
+  ///
+  /// In en, this message translates to:
+  /// **'Click an element on the screen to change it. Drag elements to move them; they snap to the middle and to each other.'**
+  String get screenSelectHint;
+
   /// No description provided for @logicProblemNoVariable.
   ///
   /// In en, this message translates to:

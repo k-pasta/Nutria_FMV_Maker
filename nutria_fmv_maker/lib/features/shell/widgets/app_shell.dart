@@ -14,6 +14,8 @@ import 'package:nutria_fmv_maker/features/nodes/widgets/node_layer.dart';
 import 'package:nutria_fmv_maker/features/preferences/providers/preferences_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/clipboard_provider.dart';
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
+import 'package:nutria_fmv_maker/features/screens/providers/screens_provider.dart';
+import 'package:nutria_fmv_maker/features/screens/widgets/screens_view.dart';
 import 'package:nutria_fmv_maker/features/shell/providers/overlay_provider.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/notifications_window.dart';
 import 'package:nutria_fmv_maker/features/shell/widgets/side_panels.dart';
@@ -124,9 +126,7 @@ class _AppShellState extends ConsumerState<AppShell> {
                   child: ClipRect(
                     child: Stack(
                       children: [
-                        CanvasView(
-                          layers: [NoodleLayer(), NodeLayer(), MarqueeLayer()],
-                        ),
+                        _MainView(),
                         SidePanels(),
                         _LogoTail(),
                         _Dimmer(),
@@ -205,4 +205,18 @@ class _ModalLayer extends ConsumerWidget {
       ),
     };
   }
+}
+
+/// The story graph, or the screen designer.
+class _MainView extends ConsumerWidget {
+  const _MainView();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) =>
+      switch (ref.watch(editorViewProvider)) {
+        EditorView.graph => const CanvasView(
+          layers: [NoodleLayer(), NodeLayer(), MarqueeLayer()],
+        ),
+        EditorView.screens => const ScreensView(),
+      };
 }
