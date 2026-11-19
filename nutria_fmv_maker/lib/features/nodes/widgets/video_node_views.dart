@@ -288,7 +288,9 @@ class VideoNodeExpansion extends ConsumerWidget {
 }
 
 /// One square per theme swatch; the node's current color is outlined, and
-/// colors with their own defaults show a faint "…".
+/// colors with their own defaults show a faint "…". The first color holds
+/// the project's defaults, so it's marked too as soon as any other color has
+/// its own.
 class SwatchPicker extends StatelessWidget {
   const SwatchPicker({
     super.key,
@@ -307,6 +309,7 @@ class SwatchPicker extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = context.appTheme;
     final swatches = theme.cSwatches;
+    final marked = withDefaults.isEmpty ? const <int>{} : {0, ...withDefaults};
     return SizedBox(
       height: theme.dButtonHeight * 2 / 3,
       child: Row(
@@ -334,7 +337,7 @@ class SwatchPicker extends StatelessWidget {
                               )
                             : null,
                       ),
-                      child: withDefaults.contains(i)
+                      child: marked.contains(i)
                           ? Icon(
                               Icons.more_horiz,
                               color: theme.cSwatchMark,

@@ -6,23 +6,22 @@ import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 /// controls for desktop.
 const kDarkTheme = AppTheme();
 
-/// Node colors of the light theme: deeper versions of the dark theme's, so
-/// knots and lines stand out on the grey canvas, with a charcoal instead of
-/// the violet.
+/// Node colors of the light theme: the dark theme's hues, saturated but deep
+/// enough that knots and lines stand out on the light canvas.
 const kLightSwatches = <Color>[
-  Color(0xffc8243f),
-  Color(0xffc73a1c),
-  Color(0xff946200),
-  Color(0xff137a3a),
-  Color(0xff1f6dcc),
-  Color(0xff3a3a44),
+  Color(0xffe0284a),
+  Color(0xffd44a16),
+  Color(0xffa36a00),
+  Color(0xff108a40),
+  Color(0xff2670e0),
+  Color(0xff7a4fe0),
 ];
 
-/// Light theme: grey canvas, off-white panels, white nodes raised by soft
-/// shadows.
+/// Light theme: a light cool-grey canvas with faint dots, off-white panels,
+/// white nodes raised by soft shadows, and outlined controls.
 const kLightTheme = AppTheme(
-  cBackground: Color(0xffc3c8d0),
-  cBackgroundDots: Color(0xff949aa6),
+  cBackground: Color(0xffd3d8e0),
+  cBackgroundDots: Color(0xffbcc1ca),
   cText: Color(0xd91b1b22),
   cTextActive: Color(0xff111116),
   cTextInactive: Color(0x991b1b22),
@@ -31,7 +30,7 @@ const kLightTheme = AppTheme(
   // selected.
   cCard: Color(0xfff1f3f6),
   cCardHovered: Color(0xffffffff),
-  // Light fills; a small shadow (elevation) sets them apart.
+  // Light fills; a thin outline (elevation) sets them apart.
   cButton: Color(0xffe8ebf0),
   cButtonHovered: Color(0xffdfe3e9),
   cButtonPressed: Color(0xffd3d8e0),
@@ -41,6 +40,7 @@ const kLightTheme = AppTheme(
   cDivider: Color(0x2e000000),
   cOutlines: Color(0x33000000),
   cShadow: Color(0x33252a3a),
+  cControlOutline: Color(0x26252a3a),
   cMenuBar: Color(0xfff5f6f8),
   cMenuBarText: Color(0xff1b1b22),
   cDimmer: Color(0x40000000),

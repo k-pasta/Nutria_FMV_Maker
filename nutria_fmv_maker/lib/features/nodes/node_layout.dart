@@ -147,9 +147,19 @@ class NodeLayout {
       _logicTop + i * metrics.choiceStride + metrics.rowHeight / 2;
 
   /// How many rows a compare node has above its True and False rows: one
-  /// expression, or two per condition and the add/match row.
+  /// expression, or three per condition and the add/match row.
   static int compareTestRows(CompareNode node) =>
-      node.expression != null ? 1 : node.conditions.length * 2 + 1;
+      node.expression != null ? 1 : node.conditions.length * 3 + 1;
+
+  /// How many doubled gaps a compare node has above its True and False
+  /// rows: one before each condition after the first, and one before the
+  /// add/match row.
+  static int compareExtraGaps(CompareNode node) =>
+      node.expression != null ? 0 : node.conditions.length;
+
+  /// The middle of row [i] of compare node [node], past its doubled gaps.
+  double _compareRow(CompareNode node, int i) =>
+      _logicRow(i) + compareExtraGaps(node) * metrics.panelPadding;
 
   /// The input knot on the left edge, or `null` if the node has no input.
   /// Logic nodes have it level with their first row.
@@ -179,11 +189,17 @@ class NodeLayout {
       CompareNode() => switch (port) {
         kTruePortKey => Offset(
           right,
-          _logicRow(compareTestRows(node as CompareNode)),
+          _compareRow(
+            node as CompareNode,
+            compareTestRows(node as CompareNode),
+          ),
         ),
         kFalsePortKey => Offset(
           right,
-          _logicRow(compareTestRows(node as CompareNode) + 1),
+          _compareRow(
+            node as CompareNode,
+            compareTestRows(node as CompareNode) + 1,
+          ),
         ),
         _ => null,
       },

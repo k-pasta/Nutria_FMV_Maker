@@ -204,6 +204,22 @@ class _EmptyCanvasArea extends ConsumerWidget {
       onOpenChanged: ref.read(overlayProvider.notifier).setContextMenuOpen,
       itemsAt: (local) => [
         NutriaContextMenuItem(
+          icon: Icons.videocam,
+          label: t.contextSimpleVideoNode,
+          onSelected: () => editor.addVideoNode(
+            nodePositionAt(local),
+            type: DefaultNodeType.simpleVideo,
+          ),
+        ),
+        NutriaContextMenuItem(
+          icon: Icons.video_call,
+          label: t.contextBranchingVideoNode,
+          onSelected: () => editor.addVideoNode(
+            nodePositionAt(local),
+            type: DefaultNodeType.branchedVideo,
+          ),
+        ),
+        NutriaContextMenuItem(
           icon: Icons.calculate,
           label: t.contextChangeVariable,
           onSelected: () => editor.addChangeNode(nodePositionAt(local)),
@@ -220,22 +236,6 @@ class _EmptyCanvasArea extends ConsumerWidget {
             final id = editor.addComment(nodePositionAt(local));
             ref.read(editingCommentProvider.notifier).start(id);
           },
-        ),
-        NutriaContextMenuItem(
-          icon: Icons.videocam,
-          label: t.contextSimpleVideoNode,
-          onSelected: () => editor.addVideoNode(
-            nodePositionAt(local),
-            type: DefaultNodeType.simpleVideo,
-          ),
-        ),
-        NutriaContextMenuItem(
-          icon: Icons.video_call,
-          label: t.contextBranchingVideoNode,
-          onSelected: () => editor.addVideoNode(
-            nodePositionAt(local),
-            type: DefaultNodeType.branchedVideo,
-          ),
         ),
         if (ref.read(clipboardHasNodesProvider))
           NutriaContextMenuItem(

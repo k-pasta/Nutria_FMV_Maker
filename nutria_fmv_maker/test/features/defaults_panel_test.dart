@@ -74,6 +74,10 @@ void main() {
     editor.addColorDefaults();
     editor.addColorDefaults();
     await tester.pumpAndSettle();
-    expect(find.byIcon(Icons.more_horiz), findsNWidgets(2));
+    expect(
+      find.byIcon(Icons.more_horiz),
+      findsNWidgets(3),
+      reason: 'the two new colors, and the first one (the project defaults)',
+    );
   });
 }

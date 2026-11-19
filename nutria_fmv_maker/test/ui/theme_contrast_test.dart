@@ -24,15 +24,17 @@ void main() {
       // Themes with elevation separate buttons and fields from what they sit
       // on with a shadow, so their fills may be closer.
       final controls = t.dElevation > 0 ? 1.05 : 1.3;
+      // Nodes in those themes are raised by a shadow too.
+      final nodes = t.dElevation > 0 ? 1.25 : 1.5;
       // (what, foreground, background, minimum)
       final pairs = <(String, Color, Color, double)>[
-        ('nodes on the canvas', t.cCard, t.cBackground, 1.5),
+        ('nodes on the canvas', t.cCard, t.cBackground, nodes),
         ('panels next to the canvas', t.cPanel, t.cBackground, 1.2),
         ('buttons on nodes', t.cButton, t.cCard, controls),
         ('buttons on lit nodes', t.cButton, t.cCardHovered, controls),
         ('buttons on panels', t.cButton, t.cPanel, controls),
         ('text fields on nodes', t.cTextField, t.cCard, controls),
-        ('grid dots', t.cBackgroundDots, t.cBackground, 1.6),
+        ('grid dots', t.cBackgroundDots, t.cBackground, 1.2),
         for (final (surface, color) in [
           ('canvas', t.cBackground),
           ('panel', t.cPanel),
@@ -57,6 +59,13 @@ void main() {
           expect(contrast(fg, bg, over: bg), greaterThanOrEqualTo(minimum));
         });
       }
+    });
+  }
+
+  // The grid helps placing nodes but must not distract from them.
+  for (final MapEntry(key: name, value: t) in themes.entries) {
+    test('$name theme: grid dots stay faint (under 1.6:1)', () {
+      expect(contrast(t.cBackgroundDots, t.cBackground), lessThan(1.6));
     });
   }
 

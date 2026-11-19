@@ -1,4 +1,4 @@
-// The bodies of logic nodes: Change Variable and Compare.
+// The bodies of logic nodes: Math (changes a variable) and Compare.
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:material_ui/material_ui.dart';
 import 'package:nutria_fmv_maker/core/document/node.dart';
@@ -69,21 +69,56 @@ class LogicIssueMark extends ConsumerWidget {
   }
 }
 
-/// What an operation is called on its stepper, with its symbol.
-String operationLabel(FmvChangeOperation op, AppLocalizations t) =>
+/// The symbol of an operation, shown large on its stepper; `null` for the
+/// true/false operations, which only have a name.
+String? operationSymbol(FmvChangeOperation op) => switch (op) {
+  FmvChangeOperation.set => '=',
+  FmvChangeOperation.add => '+',
+  FmvChangeOperation.subtract => '−',
+  FmvChangeOperation.multiply => '×',
+  FmvChangeOperation.divide => '÷',
+  FmvChangeOperation.power => '^',
+  FmvChangeOperation.absolute => '|x|',
+  FmvChangeOperation.toggle ||
+  FmvChangeOperation.and ||
+  FmvChangeOperation.or ||
+  FmvChangeOperation.xor => null,
+};
+
+/// The name of an operation.
+String operationName(FmvChangeOperation op, AppLocalizations t) =>
     switch (op) {
-      FmvChangeOperation.set => '= ${t.logicOpSet}',
-      FmvChangeOperation.add => '+ ${t.logicOpAdd}',
-      FmvChangeOperation.subtract => '− ${t.logicOpSubtract}',
-      FmvChangeOperation.multiply => '× ${t.logicOpMultiply}',
-      FmvChangeOperation.divide => '÷ ${t.logicOpDivide}',
-      FmvChangeOperation.power => '^ ${t.logicOpPower}',
-      FmvChangeOperation.absolute => '|x| ${t.logicOpAbsolute}',
+      FmvChangeOperation.set => t.logicOpSet,
+      FmvChangeOperation.add => t.logicOpAdd,
+      FmvChangeOperation.subtract => t.logicOpSubtract,
+      FmvChangeOperation.multiply => t.logicOpMultiply,
+      FmvChangeOperation.divide => t.logicOpDivide,
+      FmvChangeOperation.power => t.logicOpPower,
+      FmvChangeOperation.absolute => t.logicOpAbsolute,
       FmvChangeOperation.toggle => t.logicOpToggle,
       FmvChangeOperation.and => t.logicOpAnd,
       FmvChangeOperation.or => t.logicOpOr,
       FmvChangeOperation.xor => t.logicOpXor,
     };
+
+/// An operation as one line of text (symbol and name), for menus.
+String operationLabel(FmvChangeOperation op, AppLocalizations t) => [
+  ?operationSymbol(op),
+  operationName(op, t),
+].join(' ');
+
+/// A comparison as the sign people write: ≥ rather than `>=`.
+String comparisonSymbol(FmvComparison comparison) =>
+    switch (comparison.symbol) {
+      '==' => '=',
+      '!=' => '≠',
+      '>=' => '≥',
+      '<=' => '≤',
+      final other => other,
+    };
+
+/// How much larger operation and comparison signs are than the text.
+const kLogicSymbolScale = 1.6;
 
 /// The operations offered for a variable of type [isBool]; simple math
 /// leaves out power and absolute, and and/or/xor.
@@ -218,13 +253,16 @@ class _ValueFieldState extends ConsumerState<_ValueField> {
 }
 
 /// A stepper over [values] showing [label], with all of them on
-/// right-click.
+/// right-click. With [symbol], the stepper shows the value's sign large,
+/// before its [name] (if any), instead of [label].
 Widget _stepper<T>({
   required WidgetRef ref,
   required List<T> values,
   required T current,
   required String Function(T) label,
   required ValueChanged<T> onChanged,
+  String? Function(T)? symbol,
+  String? Function(T)? name,
 }) {
   T step(int direction) {
     final i = values.indexOf(current);
@@ -245,13 +283,44 @@ Widget _stepper<T>({
     child: NutriaButton.leftRight(
       onTapLeft: () => onChanged(step(-1)),
       onTapRight: () => onChanged(step(1)),
-      child: NutriaText(text: label(current)),
+      child: switch (symbol?.call(current)) {
+        final sign? => _SignLabel(sign: sign, name: name?.call(current)),
+        null => NutriaText(text: label(current)),
+      },
     ),
   );
 }
 
-/// Change Variable: the variable, the operation and (if it takes one) the
-/// value.
+/// A large operation or comparison sign, with an optional name after it.
+class _SignLabel extends StatelessWidget {
+  const _SignLabel({required this.sign, this.name});
+
+  final String sign;
+  final String? name;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = context.appTheme;
+    final name = this.name;
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        NutriaText(
+          text: sign,
+          state: NutriaTextState.accented,
+          textStyle: NutriaTextStyle.bold,
+          sizeMultiplier: kLogicSymbolScale,
+        ),
+        if (name != null) ...[
+          SizedBox(width: theme.dPanelPadding),
+          Flexible(child: NutriaText(text: name)),
+        ],
+      ],
+    );
+  }
+}
+
+/// Math: the variable, the operation and (if it takes one) the value.
 class ChangeVariableNodeBody extends ConsumerWidget {
   const ChangeVariableNodeBody({super.key, required this.node});
 
@@ -292,6 +361,8 @@ class ChangeVariableNodeBody extends ConsumerWidget {
                   : [...ops, node.operation],
               current: node.operation,
               label: (op) => operationLabel(op, t),
+              symbol: operationSymbol,
+              name: (op) => operationName(op, t),
               onChanged: (op) => editor.setChangeOperation(node.id, op),
             ),
           ),
@@ -337,10 +408,11 @@ class CompareNodeBody extends ConsumerWidget {
     final simple = ref.watch(preferencesProvider.select((p) => p.simpleMath));
     final problem = logicProblem(doc, node, simple: simple);
     final gap = SizedBox(height: theme.dPanelPadding);
-    final rows = <Widget>[];
+    // Each row, and whether a wider gap (a new condition) comes before it.
+    final rows = <(Widget, bool)>[];
     final expression = node.expression;
     if (expression != null) {
-      rows.add(
+      rows.add((
         _Row(
           child: _ValueField(
             text: expression,
@@ -352,9 +424,12 @@ class CompareNodeBody extends ConsumerWidget {
                 editor.setCompareExpression(node.id, text, mergeKey: mergeKey),
           ),
         ),
-      );
+        false,
+      ));
     } else {
-      for (final c in node.conditions) {
+      // Three rows per condition (variable, comparison, value with its x),
+      // set apart from the next one by a wider gap.
+      for (final (i, c) in node.conditions.indexed) {
         final variable = doc.variables
             .where((v) => v.id == c.variableId)
             .firstOrNull;
@@ -364,47 +439,34 @@ class CompareNodeBody extends ConsumerWidget {
           node.copyWith(conditions: [c]),
           simple: simple,
         );
-        rows.add(
+        rows.add((
           _Row(
-            child: Row(
-              children: [
-                Expanded(
-                  child: _VariablePicker(
-                    variableId: c.variableId,
-                    onPicked: (id) =>
-                        editor.setConditionVariable(node.id, c.id, id),
-                  ),
-                ),
-                if (node.conditions.length > 1) ...[
-                  SizedBox(width: theme.dPanelPadding),
-                  NutriaButton.icon(
-                    icon: Icons.close,
-                    tooltip: t.logicRemoveCondition,
-                    onTap: () => editor.removeCondition(node.id, c.id),
-                  ),
-                ],
-              ],
+            child: _VariablePicker(
+              variableId: c.variableId,
+              onPicked: (id) => editor.setConditionVariable(node.id, c.id, id),
             ),
           ),
-        );
-        rows.add(
+          i > 0,
+        ));
+        rows.add((
+          _Row(
+            child: _stepper(
+              ref: ref,
+              values: comparisonsFor(isBool: isBool),
+              current: c.comparison,
+              label: comparisonSymbol,
+              symbol: comparisonSymbol,
+              onChanged: (cmp) =>
+                  editor.setConditionComparison(node.id, c.id, cmp),
+            ),
+          ),
+          false,
+        ));
+        rows.add((
           _Row(
             child: Row(
               children: [
                 Expanded(
-                  flex: 2,
-                  child: _stepper(
-                    ref: ref,
-                    values: comparisonsFor(isBool: isBool),
-                    current: c.comparison,
-                    label: (cmp) => cmp.symbol == '==' ? '=' : cmp.symbol,
-                    onChanged: (cmp) =>
-                        editor.setConditionComparison(node.id, c.id, cmp),
-                  ),
-                ),
-                SizedBox(width: theme.dPanelPadding),
-                Expanded(
-                  flex: 3,
                   child: _ValueField(
                     text: c.value,
                     isBool: isBool,
@@ -419,12 +481,21 @@ class CompareNodeBody extends ConsumerWidget {
                     ),
                   ),
                 ),
+                if (node.conditions.length > 1) ...[
+                  SizedBox(width: theme.dPanelPadding),
+                  NutriaButton.icon(
+                    icon: Icons.close,
+                    tooltip: t.logicRemoveCondition,
+                    onTap: () => editor.removeCondition(node.id, c.id),
+                  ),
+                ],
               ],
             ),
           ),
-        );
+          false,
+        ));
       }
-      rows.add(
+      rows.add((
         _Row(
           child: Row(
             children: [
@@ -446,10 +517,11 @@ class CompareNodeBody extends ConsumerWidget {
             ],
           ),
         ),
-      );
+        true,
+      ));
     }
     for (final label in [t.logicTrue, t.logicFalse]) {
-      rows.add(
+      rows.add((
         _Row(
           child: Align(
             alignment: Alignment.centerRight,
@@ -459,14 +531,21 @@ class CompareNodeBody extends ConsumerWidget {
             ),
           ),
         ),
-      );
+        false,
+      ));
     }
     return Padding(
       padding: EdgeInsets.all(theme.dPanelPadding),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          for (final (i, row) in rows.indexed) ...[if (i > 0) gap, row],
+          // NodeLayout.compareExtraGaps counts the wider gaps, so the True
+          // and False knots stay level with their rows.
+          for (final (i, (row, wide)) in rows.indexed) ...[
+            if (i > 0) gap,
+            if (wide) gap,
+            row,
+          ],
         ],
       ),
     );

@@ -583,7 +583,7 @@ abstract class AppLocalizations {
   /// No description provided for @contextChangeVariable.
   ///
   /// In en, this message translates to:
-  /// **'Change Variable'**
+  /// **'Math'**
   String get contextChangeVariable;
 
   /// No description provided for @contextCompare.
@@ -625,7 +625,7 @@ abstract class AppLocalizations {
   /// No description provided for @logicTitleChange.
   ///
   /// In en, this message translates to:
-  /// **'Change Variable'**
+  /// **'Math'**
   String get logicTitleChange;
 
   /// No description provided for @logicTitleCompare.
@@ -1507,7 +1507,7 @@ abstract class AppLocalizations {
   /// No description provided for @nodeQuestionHint.
   ///
   /// In en, this message translates to:
-  /// **'Question above the choices'**
+  /// **'Question'**
   String get nodeQuestionHint;
 
   /// No description provided for @editRedo.

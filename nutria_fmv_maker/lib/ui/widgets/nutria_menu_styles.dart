@@ -7,6 +7,11 @@ class NutriaMenuStyles {
   NutriaMenuStyles(AppTheme theme)
     : bar = MenuStyle(
         backgroundColor: WidgetStatePropertyAll(theme.cMenuBar),
+        // Material's bar is raised; its shadow ended where the menus end and
+        // made the bar look split in two.
+        elevation: const WidgetStatePropertyAll(0),
+        shadowColor: const WidgetStatePropertyAll(Colors.transparent),
+        surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
         shape: const WidgetStatePropertyAll(
           RoundedRectangleBorder(side: BorderSide.none),
         ),
@@ -33,7 +38,12 @@ class NutriaMenuStyles {
         ),
       ),
       item = ButtonStyle(
-        iconColor: WidgetStatePropertyAll(theme.cAccent),
+        // Unavailable entries grey out their icon along with their text.
+        iconColor: WidgetStateProperty.resolveWith(
+          (states) => states.contains(WidgetState.disabled)
+              ? theme.cTextInactive
+              : theme.cAccent,
+        ),
         overlayColor: WidgetStatePropertyAll(theme.cButtonHovered),
         foregroundColor: WidgetStatePropertyAll(theme.cMenuBarText),
         shape: const WidgetStatePropertyAll(

@@ -395,15 +395,15 @@ extension GraphOps on ProjectDocument {
   ///
   /// Typing into the slot just past the last choice ([index] == choice count)
   /// creates a new choice, up to [kMaxChoices]. Afterwards, trailing empty and
-  /// unconnected choices are trimmed back to [minChoices] ([kMinChoices], or
-  /// 1 when single-answer questions are allowed), which mirrors how the
-  /// editor shows "one empty slot to type the next answer into".
+  /// unconnected choices are trimmed back to [kMinChoices], which mirrors how
+  /// the editor shows "one empty slot to type the next answer into". (A node
+  /// with one answer still has two slots; the export keeps only connected
+  /// choices, so the empty one is dropped there.)
   ProjectDocument setChoiceText(
     String nodeId,
     int index,
     String text, {
     required IdGenerator newId,
-    int minChoices = kMinChoices,
   }) {
     final current = node(nodeId);
     if (current is! BranchedVideoNode) {
@@ -419,13 +419,13 @@ extension GraphOps on ProjectDocument {
     }
     return putNode(
       current.copyWith(choices: choices),
-    )._trimChoices(nodeId, minChoices);
+    )._trimChoices(nodeId);
   }
 
-  ProjectDocument _trimChoices(String nodeId, int minChoices) {
+  ProjectDocument _trimChoices(String nodeId) {
     final current = node(nodeId) as BranchedVideoNode;
     final choices = [...current.choices];
-    while (choices.length > minChoices &&
+    while (choices.length > kMinChoices &&
         choices.last.text.isEmpty &&
         edgeFrom(PortRef(nodeId: nodeId, port: choices.last.id)) == null) {
       choices.removeLast();

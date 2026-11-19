@@ -278,7 +278,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get contextBranchingVideoNode => 'Branching Video';
 
   @override
-  String get contextChangeVariable => 'Change Variable';
+  String get contextChangeVariable => 'Math';
 
   @override
   String get contextCompare => 'Compare';
@@ -299,7 +299,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get logicTitleAbsolute => 'Absolute';
 
   @override
-  String get logicTitleChange => 'Change Variable';
+  String get logicTitleChange => 'Math';
 
   @override
   String get logicTitleCompare => 'Compare';
@@ -774,7 +774,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get nodeQuestion => 'Question';
 
   @override
-  String get nodeQuestionHint => 'Question above the choices';
+  String get nodeQuestionHint => 'Question';
 
   @override
   String get editRedo => 'Redo';

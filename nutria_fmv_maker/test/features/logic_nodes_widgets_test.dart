@@ -11,10 +11,12 @@ import 'package:nutria_fmv_maker/features/project/providers/document_provider.da
 import 'package:nutria_fmv_maker/features/project/providers/document_selectors.dart';
 import 'package:nutria_fmv_maker/features/project/providers/graph_editor.dart';
 
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
+
 import 'app_tester.dart';
 
 void main() {
-  testWidgets('the canvas menu adds a Change Variable node; its variable is '
+  testWidgets('the canvas menu adds a Math node; its variable is '
       'picked by searching', (tester) async {
     final c = await pumpApp(tester);
     c
@@ -29,7 +31,7 @@ void main() {
           ),
         );
     await rightClickAt(tester, kCanvasPoint);
-    await tester.tap(find.text('Change Variable'));
+    await tester.tap(find.text('Math'));
     await tester.pumpAndSettle();
     expect(find.text('Set Variable'), findsOneWidget, reason: 'its title');
     final caution = find.byType(LogicIssueMark);
@@ -87,5 +89,30 @@ void main() {
       (c.read(projectDocumentProvider).nodes[id] as CompareNode).matchAny,
       isTrue,
     );
+  });
+
+  test('comparisons show the signs people write', () {
+    expect(
+      [for (final c in FmvComparison.values) comparisonSymbol(c)],
+      containsAll(['=', '≠', '≥', '≤', '>', '<']),
+    );
+  });
+
+  testWidgets('a compare condition takes three rows, with its x after the '
+      'value', (tester) async {
+    final c = await pumpApp(tester);
+    final editor = c.read(graphEditorProvider);
+    final id = editor.addCompareNode(const Position(-100, -250));
+    editor.addCondition(id);
+    await tester.pumpAndSettle();
+    final remove = find.byTooltip('Remove this condition');
+    expect(remove, findsNWidgets(2));
+    final value = find.text('Value…');
+    expect(
+      tester.getCenter(remove.first).dy,
+      moreOrLessEquals(tester.getCenter(value.first).dy, epsilon: 4),
+      reason: 'the x is on the value row (text sits a little lower)',
+    );
+    expect(c.read(projectDocumentProvider).nodes[id], isA<CompareNode>());
   });
 }

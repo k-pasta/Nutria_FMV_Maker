@@ -144,6 +144,10 @@ class NutriaMenuBar extends StatelessWidget {
           // The box is empty, so it must catch clicks itself.
           behavior: HitTestBehavior.opaque,
           onTap: onLogoTap,
+          // The logo is part of the title bar: it opens the window menu too.
+          onSecondaryTapUp: onTitleSecondaryTap == null
+              ? null
+              : (d) => onTitleSecondaryTap!(d.globalPosition),
           child: SizedBox(
             width: theme.dMenuBarHeight * 2 - theme.dLogoPadding,
             height: theme.dMenuBarHeight,
@@ -156,17 +160,28 @@ class NutriaMenuBar extends StatelessWidget {
           onClose: () => onOpenChanged?.call(false),
           style: styles.barButton,
           menuChildren: [
-            for (final entry in menu.entries) _entry(entry, styles),
+            for (final entry in menu.entries) _entry(entry, theme, styles),
           ],
           child: NutriaText(text: menu.title, state: NutriaTextState.accented),
         ),
     ],
   );
 
-  Widget _entry(NutriaMenuEntry entry, NutriaMenuStyles styles) {
+  Widget _entry(
+    NutriaMenuEntry entry,
+    AppTheme theme,
+    NutriaMenuStyles styles,
+  ) {
     final label = Row(
       children: [
-        if (entry.icon != null) Icon(entry.icon, size: 16),
+        if (entry.icon != null)
+          Icon(
+            entry.icon,
+            size: 16,
+            color: entry.onPressed == null && entry.children.isEmpty
+                ? theme.cTextInactive
+                : null,
+          ),
         const SizedBox(width: 8),
         NutriaText(
           text: entry.label,
@@ -179,7 +194,7 @@ class NutriaMenuBar extends StatelessWidget {
     if (entry.children.isNotEmpty) {
       return SubmenuButton(
         style: styles.item,
-        menuChildren: [for (final c in entry.children) _entry(c, styles)],
+        menuChildren: [for (final c in entry.children) _entry(c, theme, styles)],
         child: label,
       );
     }

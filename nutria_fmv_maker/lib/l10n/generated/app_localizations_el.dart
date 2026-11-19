@@ -279,7 +279,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get contextBranchingVideoNode => 'Βιντεο Πολλαπλών Επιλογών';
 
   @override
-  String get contextChangeVariable => 'Αλλαγή Μεταβλητής';
+  String get contextChangeVariable => 'Μαθηματικά';
 
   @override
   String get contextCompare => 'Σύγκριση';
@@ -300,7 +300,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get logicTitleAbsolute => 'Απόλυτη Τιμή';
 
   @override
-  String get logicTitleChange => 'Αλλαγή Μεταβλητής';
+  String get logicTitleChange => 'Μαθηματικά';
 
   @override
   String get logicTitleCompare => 'Σύγκριση';
@@ -775,7 +775,7 @@ class AppLocalizationsEl extends AppLocalizations {
   String get nodeQuestion => 'Ερώτηση';
 
   @override
-  String get nodeQuestionHint => 'Ερώτηση πάνω από τις επιλογές';
+  String get nodeQuestionHint => 'Ερώτηση';
 
   @override
   String get editRedo => 'Επανάληψη';

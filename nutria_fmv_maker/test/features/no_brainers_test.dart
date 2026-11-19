@@ -11,8 +11,8 @@ import 'harness.dart';
 
 void main() {
   for (final allowed in [false, true]) {
-    test('a branched node trims to ${allowed ? 1 : 2} choices when no-brainers '
-        'are ${allowed ? '' : 'not '}allowed', () async {
+    test('a branched node keeps two answer slots when no-brainers are '
+        '${allowed ? '' : 'not '}allowed', () async {
       final h = await Harness.create(
         preferences: Preferences(allowNoBrainers: allowed),
       );
@@ -21,11 +21,12 @@ void main() {
         Position.zero,
         type: DefaultNodeType.branchedVideo,
       );
+      BranchedVideoNode node() => h.document.nodes[id] as BranchedVideoNode;
+      expect(node().choices, hasLength(2), reason: 'an empty node');
       editor.setChoiceText(id, 0, 'Go');
       editor.setChoiceText(id, 1, 'Stay');
       editor.setChoiceText(id, 1, '');
-      final node = h.document.nodes[id] as BranchedVideoNode;
-      expect(node.choices, hasLength(allowed ? 1 : 2));
+      expect(node().choices, hasLength(2));
     });
   }
 

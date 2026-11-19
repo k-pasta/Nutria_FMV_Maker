@@ -13,7 +13,14 @@ enum NutriaTextState {
 
   /// In the accent color, for something wrong (e.g. a missing file).
   error,
+
+  /// In the accent color, for a changed value (e.g. a node's override).
+  highlighted,
 }
+
+/// Weight of regular [NutriaText]: Light, a little thicker than the font's
+/// thinnest so labels and menus stay easy to read, without looking bold.
+const double kNormalTextWeight = 300;
 
 /// Weight and slant of a [NutriaText].
 enum NutriaTextStyle { normal, bold, italic, boldItalic }
@@ -59,13 +66,13 @@ class NutriaText extends StatelessWidget {
         color: switch (state) {
           NutriaTextState.accented => theme.cTextActive,
           NutriaTextState.inactive => theme.cTextInactive,
-          NutriaTextState.error => theme.cAccent,
+          NutriaTextState.error || NutriaTextState.highlighted => theme.cAccent,
           NutriaTextState.normal => theme.cText,
           NutriaTextState.onAccent => theme.cOnAccent,
         },
         fontSize: theme.dTextHeight * sizeMultiplier,
         fontFamily: 'SourceSans',
-        fontVariations: [FontVariation('wght', bold ? 700 : 100)],
+        fontVariations: [FontVariation('wght', bold ? 700 : kNormalTextWeight)],
         fontStyle: italic ? FontStyle.italic : FontStyle.normal,
       ),
     );

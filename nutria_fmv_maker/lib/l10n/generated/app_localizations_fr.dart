@@ -281,7 +281,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get contextBranchingVideoNode => 'Vidéo Ramifié';
 
   @override
-  String get contextChangeVariable => 'Modifier une variable';
+  String get contextChangeVariable => 'Calcul';
 
   @override
   String get contextCompare => 'Comparer';
@@ -302,7 +302,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get logicTitleAbsolute => 'Valeur absolue';
 
   @override
-  String get logicTitleChange => 'Modifier la variable';
+  String get logicTitleChange => 'Calcul';
 
   @override
   String get logicTitleCompare => 'Comparer';
@@ -777,7 +777,7 @@ class AppLocalizationsFr extends AppLocalizations {
   String get nodeQuestion => 'Question';
 
   @override
-  String get nodeQuestionHint => 'Question au-dessus des choix';
+  String get nodeQuestionHint => 'Question';
 
   @override
   String get editRedo => 'Rétablir';

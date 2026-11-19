@@ -173,7 +173,7 @@ void main() {
     editor.setQuestionEnabled(id, true);
     await tester.pumpAndSettle();
     final question = find.ancestor(
-      of: find.text('Question above the choices'),
+      of: find.text('Question'),
       matching: find.byType(TextField),
     );
     await tester.enterText(question.first, 'Which door?');

@@ -153,11 +153,26 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
                   child: GestureDetector(
                     onTap: () =>
                         setState(() => _openPicker = open ? null : which),
+                    // A colour wheel ("any colour"), or the own colour
+                    // once one is picked.
                     child: Container(
                       width: square,
                       height: square,
                       decoration: BoxDecoration(
-                        color: own ? Color(current) : theme.cButton,
+                        color: own ? Color(current) : null,
+                        gradient: own
+                            ? null
+                            : const SweepGradient(
+                                colors: [
+                                  Color(0xFFFF0000),
+                                  Color(0xFFFFFF00),
+                                  Color(0xFF00FF00),
+                                  Color(0xFF00FFFF),
+                                  Color(0xFF0000FF),
+                                  Color(0xFFFF00FF),
+                                  Color(0xFFFF0000),
+                                ],
+                              ),
                         borderRadius: BorderRadius.circular(
                           theme.dButtonBorderRadius,
                         ),
@@ -165,15 +180,6 @@ class _ScreenPanelState extends ConsumerState<ScreenPanel> {
                           color: own || open ? theme.cAccent : theme.cDivider,
                           width: own || open ? 2 : 1,
                         ),
-                      ),
-                      child: Icon(
-                        Icons.colorize,
-                        size: square * 0.6,
-                        color: own
-                            ? (Color(current).computeLuminance() > 0.5
-                                  ? const Color(0xFF000000)
-                                  : const Color(0xFFFFFFFF))
-                            : theme.cTextActive,
                       ),
                     ),
                   ),

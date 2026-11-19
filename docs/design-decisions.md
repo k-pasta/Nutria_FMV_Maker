@@ -212,21 +212,22 @@ old packages in Flutter's package cache (`ffmpeg_helper`, `ffmpeg_kit_*`,
 about 26 MB) are deleted. Video playback still needs `libmpv`
 (media_kit), which has FFmpeg built in; that can't go.
 
-Waiting for your OK (I was not allowed to delete these on my own):
-- **The Player's `build` folder:** 595 MB, rebuilt automatically.
-- **The Maker's `build` folder:** 1.1 GB, rebuilt automatically. Only while
-  the app isn't running from VS Code.
-- **10 Maker crash dumps** in `%LOCALAPPDATA%\CrashDumps`, 103 MB. They
-  are from earlier crashes during development.
-- **Flutter's package cache:** 1.25 GB; holds several old versions of
-  packages. `flutter pub cache clean` empties it, and the next build
-  downloads only what's needed (slower once).
-- **Old branches** in the Maker repository: `immutable-data`,
-  `k-pasta/issue1`, `k-pasta/issue4`, `new-node-workaround` (local and on
-  GitHub), all from early 2025. The two `k-pasta/issue` branches are fully
-  in `legacy`; `immutable-data` and `new-node-workaround` have commits
-  that never reached `main`, so they are experiments worth a look before
-  deleting. Delete them, or keep them?
+Done after your OK:
+- **The Player's `build` folder** (595 MB) and the **10 Maker crash dumps**
+  (103 MB) are deleted.
+- **Flutter's package cache** is emptied and refilled with only what the
+  two apps use: 1.25 GB → 422 MB.
+- **Old branches** `immutable-data`, `new-node-workaround`,
+  `k-pasta/issue1` and `k-pasta/issue4` are deleted, locally and on GitHub.
+  The two with commits that never reached `main` are kept as the tags
+  `archive/immutable-data` and `archive/new-node-workaround`, so nothing is
+  lost.
+- **Still to do:** the Maker's `build` folder (1.1 GB), next time the Maker
+  isn't running (`flutter clean` in `nutria_fmv_maker`).
+
+**Size of a finished build:** the optimized Maker is 82 MB on disk (about
+30–35 MB zipped): libmpv 28 MB, the Flutter engine 21 MB, the app's code
+12 MB, graphics layers about 18 MB. The Player is about the same.
 
 In the code (done):
 - Names left from when the library held only videos are renamed:
@@ -715,3 +716,44 @@ what the Maker checks.
     shaders.
   - Animation presets.
   - Stock nutria images, whose licences still need checking.
+
+## Sixth round (your list, 2026-11-19)
+
+### A. Fixes and look
+- **No-brainers:** a new branched node has two answer slots again, with
+  the preference on or off. The preference doesn't change editing at all
+  any more: the export keeps only connected answers, so with one answer
+  connected the empty slot is simply dropped. With the preference off,
+  that still gives a warning.
+- **Question placeholder:** "Question".
+- **Node menu order:** Simple Video, Branching Video, Math, Compare,
+  Comment, Paste. "Change Variable" is now called **Math** (its default
+  title too, when it isn't Set, Increment, …).
+- **Menu bar:** Material's menu bar is raised, and its shadow ended where
+  the menus end, which made the bar look split. It's flat now. A
+  right-click on the nutria opens the window menu. Unavailable entries grey
+  out their icon as well as their text.
+- **Text weight:** the app's regular text was ExtraLight; it's Light now
+  (one step thicker, not bold). Bold stays bold.
+- **Light theme:**
+  - Buttons and fields have a thin outline instead of the dark edge under
+    them.
+  - Brighter canvas (`#D3D8E0` instead of `#C3C8D0`) and more saturated
+    node colours (the charcoal is a violet again, like in dark).
+  - Fainter grid dots in both themes. The contrast test now also checks
+    that dots stay under 1.6:1, so they can't become distracting again.
+- **Colour defaults:** once another colour has its own defaults, the first
+  colour shows the "…" too (it holds the project's).
+- **Overrides:** **I chose pink text** for every overridden setting, the
+  way selection time already looked: an overridden value is shown in the
+  accent colour on a normal button. Pink-filled buttons were loud and hard
+  to read in the light theme. Accent-filled buttons now mean only
+  actions (Import, Save, Replace).
+- **Logic signs:** Math shows its operation as a large sign (=, +, −, ×,
+  ÷) before the name; Compare shows =, ≠, >, <, ≥, ≤ large.
+- **Compare layout:** your first option. Each condition takes three rows
+  (variable, comparison, value), the × is at the end of the value row, and
+  conditions are set apart by a double gap.
+- **Colour picker button:** a small colour wheel (Material's "colors" icon
+  is in the newer Material Symbols set only, not in Flutter's icons). After
+  picking your own colour, the square shows that colour.

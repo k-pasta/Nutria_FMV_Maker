@@ -24,7 +24,7 @@ const kDefaultSwatches = <Color>[
 class AppTheme extends ThemeExtension<AppTheme> {
   const AppTheme({
     this.cBackground = const Color(0xff0b0b0e),
-    this.cBackgroundDots = const Color(0xff3c3c46),
+    this.cBackgroundDots = const Color(0xff32323a),
     this.cAccent = const Color(0xffff4e6a),
     this.cAccentButton = const Color(0xffe8455f),
     this.cAccentButtonHovered = const Color(0xffff4e6a),
@@ -47,6 +47,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cSwatchMark = const Color(0x59000000),
     this.cOutlines = const Color(0x29ffffff),
     this.cShadow = const Color(0x99000000),
+    this.cControlOutline = const Color(0x00000000),
     this.cMenuBar = const Color(0xff212128),
     this.cMenuBarText = const Color(0xffffffff),
     this.cLogoBadge = const Color(0x00000000),
@@ -137,6 +138,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
 
   /// Shadows under cards, menus and dialogs.
   final Color cShadow;
+
+  /// The thin line around buttons and fields in themes with elevation.
+  final Color cControlOutline;
   final Color cMenuBar;
   final Color cMenuBarText;
 
@@ -248,6 +252,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cSwatchMark,
     Color? cOutlines,
     Color? cShadow,
+    Color? cControlOutline,
     Color? cMenuBar,
     Color? cMenuBarText,
     Color? cLogoBadge,
@@ -303,6 +308,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     cSwatchMark: cSwatchMark ?? this.cSwatchMark,
     cOutlines: cOutlines ?? this.cOutlines,
     cShadow: cShadow ?? this.cShadow,
+    cControlOutline: cControlOutline ?? this.cControlOutline,
     cMenuBar: cMenuBar ?? this.cMenuBar,
     cMenuBarText: cMenuBarText ?? this.cMenuBarText,
     cLogoBadge: cLogoBadge ?? this.cLogoBadge,

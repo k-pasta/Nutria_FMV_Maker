@@ -9,7 +9,9 @@ import 'package:nutria_fmv_maker/ui/widgets/nutria_tooltip.dart';
 /// Shows [label] and [value]. With [onTap], clicking the value toggles it;
 /// with [onPrevious]/[onNext], its left and right halves step through the
 /// choices. [onReset] adds an (x) before the label, e.g. to remove a node's
-/// override; [isAccented] highlights a changed value.
+/// override; [isAccented] highlights a changed value: its text turns the
+/// accent color, the same as an accented [field] (one look for every
+/// override).
 class NutriaSettingRow extends StatelessWidget {
   const NutriaSettingRow({
     super.key,
@@ -51,7 +53,10 @@ class NutriaSettingRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = context.appTheme;
-    final valueText = NutriaText(text: value);
+    final valueText = NutriaText(
+      text: value,
+      state: isAccented ? NutriaTextState.highlighted : NutriaTextState.normal,
+    );
     final onReset = this.onReset;
     return Row(
       children: [
@@ -104,9 +109,8 @@ class NutriaSettingRow extends StatelessWidget {
     if (field != null) return field;
     final onTap = this.onTap;
     return onTap != null
-        ? NutriaButton(isAccented: isAccented, onTap: onTap, child: valueText)
+        ? NutriaButton(onTap: onTap, child: valueText)
         : NutriaButton.leftRight(
-            isAccented: isAccented,
             onTapLeft: onPrevious!,
             onTapRight: onNext!,
             child: valueText,
