@@ -348,3 +348,23 @@ what the Maker checks.
   - Colouring the expression text.
   - Tab completion of variable names.
   - Showing `*` as `×`.
+
+### Phase 5d: the expression field
+- **While typing, the text is coloured:**
+  - Variable names are bright and bold.
+  - Operators and brackets are faint.
+  - Unknown characters are in the accent color.
+  - The first mistake gets a wavy accent underline, at its exact position.
+- **`*` shows as `×`.** It is still stored as `*`.
+- **Tab completes** the variable name being typed, choosing the shortest
+  one that matches, ignoring case.
+  - The rest of that name shows faintly after the cursor, but only when
+    the cursor is at the end of the text, so cursor positions always
+    match the typed text.
+  - Tab inside a value never moves to the next field. **Ask:** should Tab
+    move on when there is nothing to complete?
+- **`&&` and `||` are not shown as ∧ and ∨.** Replacing two characters
+  with one would make the cursor jump. `and`, `or` and `not` can be typed
+  as words.
+- No separate "simple math" colouring: in simple math the same field
+  just accepts less.

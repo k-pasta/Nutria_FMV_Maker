@@ -174,6 +174,7 @@ class _ValueFieldState extends ConsumerState<_ValueField> {
         text: widget.text,
         hint: widget.hint,
         isError: widget.isError,
+        expressionTypes: variableTypes(ref.watch(projectDocumentProvider)),
         onFocusChanged: (focused) {
           if (focused) _session = Object();
         },

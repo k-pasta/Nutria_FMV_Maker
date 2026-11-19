@@ -1,12 +1,14 @@
 // Theme text field that stays in sync with external changes (e.g. undo).
 import 'package:flutter/services.dart';
 import 'package:material_ui/material_ui.dart';
+import 'package:nutria_fmv_maker/ui/text/expression_text.dart';
 import 'package:nutria_fmv_maker/ui/text/markdown_edit.dart';
 import 'package:nutria_fmv_maker/ui/text/markdown_text.dart';
 import 'package:nutria_fmv_maker/ui/theme/app_theme.dart';
 import 'package:nutria_fmv_maker/ui/theme/ui_constants.dart';
 import 'package:nutria_fmv_maker/ui/widgets/nutria_context_menu.dart';
 import 'package:nutria_fmv_maker/ui/widgets/raised_edge.dart';
+import 'package:nutria_fmv_protocol/nutria_fmv_protocol.dart';
 
 /// A single- or multi-line text field.
 ///
@@ -31,12 +33,14 @@ class NutriaTextField extends StatefulWidget {
     this.onSubmitted,
     this.onEscape,
     this.markdown = false,
+    this.expressionTypes,
   });
 
   final String text;
   final String? hint;
   final ValueChanged<String>? onChanged;
   final ValueChanged<bool>? onFocusChanged;
+
   /// `null`: grows with the text, and Enter starts a new line.
   final int? maxLines;
   final TextAlign textAlign;
@@ -71,12 +75,21 @@ class NutriaTextField extends StatefulWidget {
   /// Ctrl+I make the selection bold or italic.
   final bool markdown;
 
+  /// A logic expression over these variables (by name): coloured as it's
+  /// typed, and Tab completes variable names.
+  final Map<String, FmvValueType>? expressionTypes;
+
   @override
   State<NutriaTextField> createState() => _NutriaTextFieldState();
 }
 
 class _NutriaTextFieldState extends State<NutriaTextField> {
-  late final TextEditingController _controller = widget.markdown
+  late final TextEditingController _controller = widget.expressionTypes != null
+      ? ExpressionTextEditingController(
+          text: widget.text,
+          types: widget.expressionTypes!,
+        )
+      : widget.markdown
       ? MarkdownTextEditingController(text: widget.text)
       : TextEditingController(text: widget.text);
   final FocusNode _focus = FocusNode();
@@ -149,6 +162,11 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
   @override
   void didUpdateWidget(NutriaTextField oldWidget) {
     super.didUpdateWidget(oldWidget);
+    final controller = _controller;
+    final types = widget.expressionTypes;
+    if (controller is ExpressionTextEditingController && types != null) {
+      controller.types = types;
+    }
     if (!_focus.hasFocus && widget.text != _controller.text) {
       _controller.text = widget.text;
     }
@@ -197,6 +215,8 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
     return CallbackShortcuts(
       bindings: {
         const SingleActivator(LogicalKeyboardKey.escape): ?onEscape,
+        if (_controller is ExpressionTextEditingController)
+          const SingleActivator(LogicalKeyboardKey.tab): _complete,
         if (widget.markdown) ...{
           const SingleActivator(LogicalKeyboardKey.keyB, control: true): () =>
               _toggleStyle(bold: true),
@@ -326,6 +346,15 @@ class _NutriaTextFieldState extends State<NutriaTextField> {
         ),
       ),
     ];
+  }
+
+  /// Tab in an expression: completes the variable name being typed.
+  void _complete() {
+    final controller = _controller as ExpressionTextEditingController;
+    final before = controller.text;
+    if (controller.complete() && controller.text != before) {
+      widget.onChanged?.call(controller.text);
+    }
   }
 
   /// Makes the selection bold or italic, or plain again (see
