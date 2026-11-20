@@ -57,6 +57,8 @@ flutter:
   assets:
     - assets/icons/nutria_logo.svg
     - assets/icons/nutria_logo_top.svg
+    - assets/icons/nutria_logo_light.svg
+    - assets/icons/nutria_logo_top_light.svg
   fonts:
     - family: SourceSans
       fonts:

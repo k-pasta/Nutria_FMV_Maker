@@ -21,7 +21,7 @@ class AboutWindow extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       children: [
         SvgPicture.asset(
-          'assets/icons/nutria_logo.svg',
+          theme.aboutLogoAsset,
           width: 150,
           height: 150,
           colorFilter: ColorFilter.mode(

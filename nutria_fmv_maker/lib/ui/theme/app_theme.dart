@@ -52,6 +52,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     this.cMenuBarText = const Color(0xffffffff),
     this.cLogoBadge = const Color(0x00000000),
     this.logoAsset = 'assets/icons/nutria_logo_top.svg',
+    this.aboutLogoAsset = 'assets/icons/nutria_logo.svg',
     this.cDimmer = const Color(0x73000000),
     this.cWindowClose = const Color(0xffc42b1c),
     this.cOnWindowClose = const Color(0xffffffff),
@@ -149,6 +150,9 @@ class AppTheme extends ThemeExtension<AppTheme> {
 
   /// The mascot in the menu bar. Themes can ship their own artwork.
   final String logoAsset;
+
+  /// The large mascot in the About window.
+  final String aboutLogoAsset;
 
   /// Darkens the editor behind open menus and dialogs.
   final Color cDimmer;
@@ -257,6 +261,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     Color? cMenuBarText,
     Color? cLogoBadge,
     String? logoAsset,
+    String? aboutLogoAsset,
     Color? cDimmer,
     Color? cWindowClose,
     Color? cOnWindowClose,
@@ -313,6 +318,7 @@ class AppTheme extends ThemeExtension<AppTheme> {
     cMenuBarText: cMenuBarText ?? this.cMenuBarText,
     cLogoBadge: cLogoBadge ?? this.cLogoBadge,
     logoAsset: logoAsset ?? this.logoAsset,
+    aboutLogoAsset: aboutLogoAsset ?? this.aboutLogoAsset,
     cDimmer: cDimmer ?? this.cDimmer,
     cWindowClose: cWindowClose ?? this.cWindowClose,
     cOnWindowClose: cOnWindowClose ?? this.cOnWindowClose,

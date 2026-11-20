@@ -71,16 +71,16 @@ lib/
   - `media` (`MediaAsset`, `core/document/media.dart`): imported videos, audio, images, subtitles and fonts, by absolute path. The kind comes from the extension. A video can link a subtitle file (`subtitleId`); linked subtitles aren't listed on their own.
   - `info` (title and description), `settings` (`VideoSettings`, the defaults of the first color), `colorDefaults` (other colors' defaults), `variables`
 - `Node` is a sealed freezed union:
-  - `OriginNode` (exactly one, can't be deleted or copied; holds the menu music), `SimpleVideoNode` and `BranchedVideoNode` (with an optional `MusicCue`; branched nodes also have pause music).
+  - `OriginNode` (exactly one, can't be deleted or copied; holds the menu and pause menu music), `SimpleVideoNode` and `BranchedVideoNode` (a branched node's `question` text shows only while its Show Question setting is on).
   - `ChangeVariableNode` and `CompareNode` (logic nodes; outputs `next`, or `true`/`false`). Their problems come from `core/graph/logic_check.dart`, which uses the protocol's expression parser.
   - `CommentNode` (never exported). With `attachedTo` it is drawn above that node by `CommentFrame` and takes its width; its own position is then unused.
   - A branched node has `choices`; each choice's `id` is also its output port key.
-  - Per-node `VideoSettingsOverride` overrides the project settings.
+  - Per-node `VideoSettingsOverride` overrides the project settings (or the node's color's defaults). Everything a video node can set is a setting: playback, Show Question, music (`MusicCue`), pause music, the answer screen. `kFmvSettingTypes` are the ones written as `.fmv` overrides; the exporter resolves the rest per node.
 - All edits are pure functions in `core/graph/`:
   - `graph_ops.dart`: nodes, edges, choices, media, color defaults
   - `fragment.dart`: copy/paste
   - `variable_ops.dart`: variables
-  - `screen_ops.dart`: the main menu design (`menuScreen`) and its shared `styles`
+  - `screen_ops.dart`: the designed screens and their shared `styles`
 - `documentProvider` (`DocumentNotifier`) is the **only** way to change the document: `apply(label, (doc) => newDoc, {mergeKey})`, or `beginTransaction`, several `apply` calls, then `commit` for a whole gesture.
   - History is snapshot-based (`core/history/document_timeline.dart`).
   - Text fields pass a per-focus `mergeKey`, so one typing session is one undo step.
@@ -103,11 +103,12 @@ lib/
 - Laid-out node sizes are recorded in `NodeBounds` (no rebuilds) for box selection and framing.
 - **To add a node type:** add a variant to `Node`; handle it in the switches the compiler flags (`ports.dart`, `node_registry.dart`, `node_layout.dart`, `fmv_exporter.dart`, `fragment.dart`, `graph_ops.dart`); add a body widget.
 - **Screen designer:** `editorViewProvider` swaps the canvas for `ScreensView` (Ctrl+1 / Ctrl+2, or the floating button at the top right) and the right panel for `ScreensSidePanel` (screens, styles, layouts). The left panel then offers only Design, Imported Media and Preferences.
-  - `ProjectDocument.screens` is a list of `ScreenDesign`s (id, `ScreenKind`, name). One main menu, pause menu, settings and saves screen; any number of answer screens (`choice`, and `endChoice` for videos that wait at their end), picked per node by the `choiceScreen`/`endChoiceScreen` settings.
+  - `ProjectDocument.screens` is a list of `ScreenDesign`s (id, `ScreenKind`, name). One main menu, pause menu, settings and saves screen; any number of answer screens (`choice`), picked per node by the `choiceScreen` setting. Answer screens also have fade-in/out, an entrance and an effect.
+  - A screen has at most one element of each kind (`canAddScreenElement`), except free `text` elements.
   - `withRequiredScreens()` keeps what a project must have: the screens (settings and saves once a menu has their buttons) and each screen's `kRequiredScreenElements`, which can't be removed. New projects and loaded files get it.
   - The stage draws with the shared `ScreenView` (`fmvScreenOf` converts a design, `designerContent` gives sample content); `decorate` adds selection and dragging. Element ids are unique across screens, so element ops (`screen_ops.dart`) find the screen themselves.
   - Element positions and sizes are fractions of the screen; style sizes are fractions of its height.
-  - `selectedScreenProvider`, `selectedScreenStyleProvider` and `choiceScenarioProvider` (the preview's answer count, long answers, question) are editor-only.
+  - `selectedScreenProvider`, `selectedScreenStyleProvider`, `choiceScenarioProvider` (the preview's answer count, long answers, question) and `designerBackdropProvider` (what's shown behind answer screens) are editor-only.
 
 ### File formats
 - **`.nfmv`** (`core/serialization/nfmv_codec.dart`): the `ProjectDocument` JSON with `formatVersion` (`kNfmvFormatVersion`), plus media paths relative to the project file.

@@ -46,6 +46,9 @@ const kLightTheme = AppTheme(
   cDimmer: Color(0x40000000),
   cSwatches: kLightSwatches,
   cListSelected: Color(0xffffffff),
+  // Mascots drawn for light backgrounds.
+  logoAsset: 'assets/icons/nutria_logo_top_light.svg',
+  aboutLogoAsset: 'assets/icons/nutria_logo_light.svg',
   // Light surfaces are told apart by soft shadows more than by fill.
   dElevation: 1,
 );
