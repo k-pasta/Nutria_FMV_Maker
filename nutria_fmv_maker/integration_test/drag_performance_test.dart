@@ -222,5 +222,7 @@ class _SilentPlayer implements PreviewPlayer {
   @override
   Future<void> setVolume(double volume) async {}
   @override
+  Future<Uint8List?> frame() async => null;
+  @override
   void dispose() {}
 }
